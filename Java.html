@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Programming Guide</title>
+    <style>
+        :root {
+            --primary: #e76f00;
+            /* Java orange */
+            --secondary: #5382a1;
+            /* Java blue */
+            --accent: #f8981d;
+            /* Java light orange */
+            --dark: #333;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 60px 20px 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 100;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu ul {
+            list-style-type: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            color: var(--dark);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .menu a:hover {
+            background-color: #f0f5ff;
+            color: var(--primary);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+            scroll-margin-top: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-block {
+            position: relative;
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .copy-btn:hover {
+            opacity: 1;
+        }
+
+        /* Code syntax highlighting */
+        .keyword {
+            color: #f92672;
+            /* red for keywords */
+        }
+
+        .type {
+            color: #a6e22e;
+            /* green for types */
+        }
+
+        .method {
+            color: #66d9ef;
+            /* blue for methods */
+        }
+
+        .string {
+            color: #e6db74;
+            /* yellow for strings */
+        }
+
+        .comment {
+            color: #75715e;
+            /* gray for comments */
+        }
+
+        .number {
+            color: #ae81ff;
+            /* purple for numbers */
+        }
+
+        .command {
+            color: #50fa7b;
+        }
+
+        .important {
+            background-color: #fff9e6;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip {
+            background-color: #e6f7ee;
+            padding: 12px 15px;
+            border-left: 4px solid var(--secondary);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .file {
+            color: var(--secondary);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Program list styling */
+        .program-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .program-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .program {
+            margin: 25px 0;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .program:last-child {
+            border-bottom: none;
+        }
+
+        .output {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            margin: 15px 0;
+            border-left: 4px solid var(--info);
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                width: 80%;
+                right: -80%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .program-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu Button -->
+    <button class="menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Menu
+    </button>
+
+    <!-- Menu -->
+    <div class="menu" id="mainMenu">
+        <button class="close-menu">&times;</button>
+        <h3>Java Programming Notes</h3>
+        <ul>
+            <li><a href="#introduction">Introduction to Java</a></li>
+            <li><a href="#advantages">Advantages of Java</a></li>
+            <li><a href="#uses">Uses of Java</a></li>
+            <li><a href="#jdk-jre-jvm">JDK, JRE, JVM</a></li>
+            <li><a href="#operators">Operators</a></li>
+            <li><a href="#condition-statements">Condition Statements</a></li>
+            <li><a href="#loops">Loops</a></li>
+            <li><a href="#variables">Variables</a></li>
+            <li><a href="#data-types">Data Types</a></li>
+            <li><a href="#strings">Strings</a></li>
+            <li><a href="#arrays">Arrays</a></li>
+            <li><a href="#methods">Methods</a></li>
+            <li><a href="#constructors">Constructors</a></li>
+            <li><a href="#oops">OOPS Concepts</a></li>
+            <li><a href="#casting">Casting</a></li>
+            <li><a href="#keywords">Keywords: this and super</a></li>
+            <li><a href="#exception-handling">Exception Handling</a></li>
+            <li><a href="#collections">Collections Framework</a></li>
+            <li><a href="#final-keywords">Final, Finally, and Finalize</a></li>
+            <li><a href="#throw-keywords">Throw, Throws, and Throwable</a></li>
+            <li><a href="#access-modifiers">Access Modifiers</a></li>
+            <li><a href="#collection-vs-collections">Collection vs Collections</a></li>
+            <li><a href="#collection-vs-stream">Collection vs Stream</a></li>
+            <li><a href="#java-programs">Java Programs</a></li>
+        </ul>
+    </div>
+
+    <a href="#" class="back-to-top">↑</a>
+
+    <header>
+        <h1>Java Programming Guide</h1>
+        <p>Complete reference for Java programming language concepts and fundamentals</p>
+    </header>
+
+    <div class="container">
+        <section class="section" id="introduction">
+            <h2>Introduction to Java</h2>
+            <div class="step">
+                <p>Java is a widely-used programming language in the IT industry for developing and testing software
+                    applications.</p>
+                <ul>
+                    <li>Discovered by James Gosling at Sun Microsystems in 1995</li>
+                    <li>Owned by Oracle since 2009-2010</li>
+                    <li>First version: JDK 1.0, Current version: JDK 1.8+</li>
+                    <li>Originally called Oak, then Green, finally named Java after Indonesian coffee</li>
+                    <li>General-purpose language used for both hardware and software applications</li>
+                    <li>Follows WORA (Write Once, Run Anywhere) concept</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="advantages">
+            <h2>Advantages of Java</h2>
+            <ul>
+                <li>Open-source language</li>
+                <li>Object-oriented language for solving real-world problems</li>
+                <li>Write Once, Run Anywhere (WORA)</li>
+                <li>Highly secure compared to other languages</li>
+                <li>Platform independent</li>
+                <li>Portable across systems</li>
+                <li>Automatic garbage collection for better memory management</li>
+            </ul>
+        </section>
+
+        <section class="section" id="uses">
+            <h2>Uses of Java</h2>
+            <ul>
+                <li>Desktop application development</li>
+                <li>Web application development</li>
+                <li>Robotics programming</li>
+                <li>Mobile/Android app development</li>
+                <li>Game development</li>
+                <li>Embedded systems</li>
+            </ul>
+        </section>
+
+        <section class="section full-width" id="jdk-jre-jvm">
+            <h2>JDK, JRE, and JVM</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>JDK (Java Development Kit)</th>
+                        <th>JRE (Java Runtime Environment)</th>
+                        <th>JVM (Java Virtual Machine)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Full Form</td>
+                        <td>Java Development Kit</td>
+                        <td>Java Runtime Environment</td>
+                        <td>Java Virtual Machine</td>
+                    </tr>
+                    <tr>
+                        <td>Purpose</td>
+                        <td>Provides tools for developing Java applications</td>
+                        <td>Provides resources to run Java applications</td>
+                        <td>Executes Java bytecode on multiple OS</td>
+                    </tr>
+                    <tr>
+                        <td>Platform Dependency</td>
+                        <td>Platform dependent</td>
+                        <td>Platform dependent</td>
+                        <td>Platform independent</td>
+                    </tr>
+                    <tr>
+                        <td>Components</td>
+                        <td>Development tools + JRE</td>
+                        <td>Library classes + JVM</td>
+                        <td>No tools, part of JDK and JRE</td>
+                    </tr>
+                    <tr>
+                        <td>Usage</td>
+                        <td>For developers</td>
+                        <td>For end users</td>
+                        <td>Converts bytecode to machine code</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="operators">
+            <h2>Operators in Java</h2>
+
+            <h3>Arithmetic Operators</h3>
+            <ul>
+                <li>Addition (+)</li>
+                <li>Subtraction (-)</li>
+                <li>Multiplication (*)</li>
+                <li>Division (/)</li>
+                <li>Modulus (%)</li>
+                <li>Increment (++)</li>
+                <li>Decrement (--)</li>
+            </ul>
+
+            <h3>Logical Operators</h3>
+            <ul>
+                <li>And (&&)</li>
+                <li>Or (||)</li>
+                <li>Not (!)</li>
+            </ul>
+
+            <h3>Relational Operators</h3>
+            <ul>
+                <li>Greater than (&gt;)</li>
+                <li>Less than (&lt;)</li>
+                <li>Greater than or equal to (&gt;=)</li>
+                <li>Less than or equal to (&lt;=)</li>
+                <li>Not equal to (!=)</li>
+            </ul>
+
+            <h3>Assignment Operator</h3>
+            <ul>
+                <li>Assignment (=)</li>
+            </ul>
+        </section>
+
+        <section class="section" id="condition-statements">
+            <h2>Condition Statements</h2>
+
+            <div class="step">
+                <h3>If Statement</h3>
+                <p>Used when you have one condition and expect a true result</p>
+            </div>
+
+            <div class="step">
+                <h3>If-Else Statement</h3>
+                <p>Used when you have one condition but expect results in both true and false cases</p>
+            </div>
+
+            <div class="step">
+                <h3>Nested If</h3>
+                <p>Used when you have multiple conditions that depend on each other</p>
+            </div>
+
+            <div class="step">
+                <h3>Ladder If (Else-If)</h3>
+                <p>Used when you have multiple conditions that execute parallel to each other</p>
+            </div>
+        </section>
+
+        <section class="section" id="loops">
+            <h2>Loops in Java</h2>
+            <p>Loops are used to execute a set of instructions repeatedly until a condition becomes true.</p>
+
+            <div class="step">
+                <h3>For Loop</h3>
+                <p>Used when the number of iterations is known</p>
+                <div class="code-block">
+                    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i
+                    &lt; <span class="number">10</span>; i++) {<br>
+                    &nbsp;&nbsp;<span class="comment">// Code to execute</span><br>
+                    }
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>While Loop</h3>
+                <p>Used when the number of iterations is not known</p>
+                <div class="code-block">
+                    <span class="type">int</span> i = <span class="number">0</span>;<br>
+                    <span class="keyword">while</span> (i &lt; <span class="number">10</span>) {<br>
+                    &nbsp;&nbsp;<span class="comment">// Code to execute</span><br>
+                    &nbsp;&nbsp;i++;<br>
+                    }
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Do-While Loop</h3>
+                <p>Similar to while loop but executes at least once</p>
+                <div class="code-block">
+                    <span class="type">int</span> i = <span class="number">0</span>;<br>
+                    <span class="keyword">do</span> {<br>
+                    &nbsp;&nbsp;<span class="comment">// Code to execute</span><br>
+                    &nbsp;&nbsp;i++;<br>
+                    } <span class="keyword">while</span> (i &lt; <span class="number">10</span>);
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="variables">
+            <h2>Variables in Java</h2>
+
+            <p>Variables are names that provide memory to store information and values.</p>
+
+            <div class="step">
+                <h3>Local Variables</h3>
+                <ul>
+                    <li>Declared inside the body of a method</li>
+                    <li>Destroyed after execution</li>
+                    <li>Temporary variables</li>
+                    <li>No default value in Java</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Global Variables</h3>
+                <p>Declared inside a class but outside the body of methods</p>
+
+                <h4>Instance Variables (Non-static)</h4>
+                <ul>
+                    <li>Declared without the static keyword</li>
+                    <li>Has default values in Java</li>
+                </ul>
+
+                <h4>Static Variables (Class Variables)</h4>
+                <ul>
+                    <li>Declared with the static keyword</li>
+                    <li>Memory allocation happens once when the class is loaded</li>
+                    <li>Permanent variables</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section full-width" id="data-types">
+            <h2>Data Types in Java</h2>
+
+            <p>Data types represent different sizes and values that can be stored in variables.</p>
+
+            <h3>Primitive Data Types</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Default Value</th>
+                        <th>Size</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>1 bit</td>
+                        <td>Stores true or false values</td>
+                    </tr>
+                    <tr>
+                        <td>char</td>
+                        <td>'\u0000'</td>
+                        <td>2 bytes</td>
+                        <td>Stores single characters</td>
+                    </tr>
+                    <tr>
+                        <td>byte</td>
+                        <td>0</td>
+                        <td>1 byte</td>
+                        <td>Stores whole numbers from -128 to 127</td>
+                    </tr>
+                    <tr>
+                        <td>short</td>
+                        <td>0</td>
+                        <td>2 bytes</td>
+                        <td>Stores whole numbers from -32,768 to 32,767</td>
+                    </tr>
+                    <tr>
+                        <td>int</td>
+                        <td>0</td>
+                        <td>4 bytes</td>
+                        <td>Stores whole numbers from -2^31 to 2^31-1</td>
+                    </tr>
+                    <tr>
+                        <td>long</td>
+                        <td>0L</td>
+                        <td>8 bytes</td>
+                        <td>Stores whole numbers from -2^63 to 2^63-1</td>
+                    </tr>
+                    <tr>
+                        <td>float</td>
+                        <td>0.0f</td>
+                        <td>4 bytes</td>
+                        <td>Stores fractional numbers, 6-7 decimal digits</td>
+                    </tr>
+                    <tr>
+                        <td>double</td>
+                        <td>0.0d</td>
+                        <td>8 bytes</td>
+                        <td>Stores fractional numbers, 15 decimal digits</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Non-Primitive Data Types</h3>
+            <ul>
+                <li>String - stores sequences of characters</li>
+                <li>Class - user-defined data types</li>
+                <li>Array - stores multiple values of the same type</li>
+            </ul>
+        </section>
+
+        <section class="section full-width" id="strings">
+            <h2>Strings in Java</h2>
+
+            <p>Strings are used to store sequences of characters and are immutable in Java.</p>
+
+            <div class="step">
+                <h3>String Declaration</h3>
+                <div class="code-block">
+                    <span class="comment">// Using string literal</span><br>
+                    String str1 = "Hello World";<br><br>
+                    <span class="comment">// Using new keyword</span><br>
+                    String str2 = new String("Hello World");
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Why Strings are Immutable</h3>
+                <ul>
+                    <li><strong>Security</strong> - Strings are used for passwords, URLs, etc.</li>
+                    <li><strong>Memory Optimization</strong> - Java uses String pool to save memory</li>
+                    <li><strong>Thread Safety</strong> - Multiple threads can use strings safely</li>
+                    <li><strong>Performance</strong> - Hash codes are cached for efficiency</li>
+                </ul>
+            </div>
+
+            <h3>String vs StringBuffer vs StringBuilder</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>String</th>
+                        <th>StringBuffer</th>
+                        <th>StringBuilder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Storage</td>
+                        <td>Heap area</td>
+                        <td>Heap area</td>
+                        <td>Heap area</td>
+                    </tr>
+                    <tr>
+                        <td>Mutability</td>
+                        <td>Immutable</td>
+                        <td>Mutable</td>
+                        <td>Mutable</td>
+                    </tr>
+                    <tr>
+                        <td>Memory Usage</td>
+                        <td>Higher (creates new objects)</td>
+                        <td>Lower (reuses objects)</td>
+                        <td>Lower (reuses objects)</td>
+                    </tr>
+                    <tr>
+                        <td>Thread Safety</td>
+                        <td>Thread-safe (immutable)</td>
+                        <td>Thread-safe (synchronized)</td>
+                        <td>Not thread-safe</td>
+                    </tr>
+                    <tr>
+                        <td>Performance</td>
+                        <td>Slow for modifications</td>
+                        <td>Faster than String</td>
+                        <td>Fastest</td>
+                    </tr>
+                    <tr>
+                        <td>Use Case</td>
+                        <td>Data that doesn't change</td>
+                        <td>Multi-threaded environments</td>
+                        <td>Single-threaded environments</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="arrays">
+            <h2>Arrays in Java</h2>
+
+            <p>Arrays are used to store multiple values of the same type in a single variable.</p>
+
+            <div class="step">
+                <h3>Array Characteristics</h3>
+                <ul>
+                    <li>Homogeneous (same data type)</li>
+                    <li>Fixed size (not growable)</li>
+                    <li>Elements stored in contiguous memory locations</li>
+                    <li>Accessed by index (starts at 0)</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Array Declaration</h3>
+                <div class="code-block">
+                    <span class="comment">// Declaration and initialization</span><br>
+                    int[] numbers = {1, 2, 3, 4, 5};<br><br>
+                    <span class="comment">// Declaration then initialization</span><br>
+                    int[] numbers = new int[5];<br>
+                    numbers[0] = 1;<br>
+                    numbers[1] = 2;
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Types of Arrays</h3>
+                <ul>
+                    <li><strong>Single-dimensional arrays</strong> - Data stored in rows</li>
+                    <li><strong>Multidimensional arrays</strong> - Data stored in rows and columns</li>
+                </ul>
+            </div>
+
+            <div class="important">
+                <strong>Note:</strong> Accessing an array with an invalid index throws an
+                ArrayIndexOutOfBoundsException.
+            </div>
+        </section>
+
+        <section class="section" id="methods">
+            <h2>Methods in Java</h2>
+
+            <p>Methods are collections of instructions that perform specific tasks.</p>
+
+            <div class="step">
+                <h3>Main Method</h3>
+                <p>The entry point for JVM to start execution of a Java program</p>
+                <div class="code-block">
+                    <span class="keyword">public static void</span> main(String[] args) {<br>
+                    &nbsp;&nbsp;<span class="comment">// Program execution starts here</span><br>
+                    }
+                </div>
+                <ul>
+                    <li><strong>public</strong> - Access modifier (JVM can access it)</li>
+                    <li><strong>static</strong> - Can be called without creating an object</li>
+                    <li><strong>void</strong> - Doesn't return any value</li>
+                    <li><strong>main</strong> - Method name (predefined)</li>
+                    <li><strong>String[] args</strong> - Command-line arguments</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>User-Defined Methods</h3>
+                <p>Methods created by programmers to perform specific tasks</p>
+
+                <h4>Static Methods</h4>
+                <ul>
+                    <li>Declared with the static keyword</li>
+                    <li>Called using class name</li>
+                    <li>Cannot be modified (static nature)</li>
+                </ul>
+
+                <h4>Non-Static Methods</h4>
+                <ul>
+                    <li>Declared without the static keyword</li>
+                    <li>Called using object reference</li>
+                    <li>Can be modified (dynamic nature)</li>
+                    <li>More secure than static methods</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="constructors">
+            <h2>Constructors in Java</h2>
+
+            <p>Constructors are special methods used to initialize objects and load non-static methods.</p>
+
+            <div class="step">
+                <h3>Constructor Rules</h3>
+                <ul>
+                    <li>Name must be same as class name</li>
+                    <li>No return type (not even void)</li>
+                    <li>Can be overloaded with different parameters</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Types of Constructors</h3>
+
+                <h4>Default Constructor</h4>
+                <ul>
+                    <li>Provided by compiler if no constructor is defined</li>
+                    <li>No parameters</li>
+                    <li>Initializes variables with default values</li>
+                </ul>
+
+                <h4>User-Defined Constructor</h4>
+                <ul>
+                    <li>Created by programmer</li>
+                    <li>Can be zero-argument or parameterized</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Constructor Calling</h3>
+                <p>Constructors are called using the <code>new</code> keyword:</p>
+                <div class="code-block">
+                    MyClass obj = new MyClass(); <span class="comment">// Calls constructor</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section full-width" id="oops">
+            <h2>Object-Oriented Programming (OOP) Concepts</h2>
+
+            <p>OOP is used to solve real-world entity problems with six main pillars:</p>
+
+            <div class="step">
+                <h3>1. Class</h3>
+                <p>A collection of objects that serves as a template for creating objects.</p>
+                <ul>
+                    <li>Contains variables, methods, constructors, and blocks</li>
+                    <li>Does not occupy memory (not a real-world entity)</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>2. Object</h3>
+                <p>An instance of a class that stores non-static methods and variables.</p>
+                <div class="code-block">
+                    <span class="comment">// Object creation syntax</span><br>
+                    ClassName objectName = new ClassName();
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>3. Inheritance</h3>
+                <p>Acquiring properties from one class (superclass) to another (subclass).</p>
+                <ul>
+                    <li>Uses the <code>extends</code> keyword</li>
+                    <li>Promotes code reusability</li>
+                    <li>Types: Single, Multilevel, Multiple (not supported), Hierarchical, Hybrid</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>4. Polymorphism</h3>
+                <p>Allows objects to take multiple forms through method overloading and overriding.</p>
+
+                <h4>Compile-Time Polymorphism (Method Overloading)</h4>
+                <ul>
+                    <li>Multiple methods with same name but different parameters</li>
+                    <li>Determined at compile time</li>
+                </ul>
+
+                <h4>Run-Time Polymorphism (Method Overriding)</h4>
+                <ul>
+                    <li>Subclass provides specific implementation of parent class method</li>
+                    <li>Determined at runtime</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>5. Encapsulation</h3>
+                <p>Wrapping data and methods together in a single unit (class).</p>
+                <ul>
+                    <li>Data hiding using access modifiers (private, protected)</li>
+                    <li>Provides security and control</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>6. Abstraction</h3>
+                <p>Hiding implementation details and showing only essential features.</p>
+                <ul>
+                    <li>Achieved through abstract classes and interfaces</li>
+                    <li>Focuses on what an object does rather than how it does it</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="casting">
+            <h2>Casting in Java</h2>
+            <p>Converting one type of information into another type of information is called casting.</p>
+
+            <h3>Primitive Casting</h3>
+            <p>Converting one primitive data type information into another primitive data type.</p>
+
+            <div class="step">
+                <h4>1. Implicit Casting (Widening)</h4>
+                <p>Converting lower to higher data type information</p>
+                <p>Order: byte → short → int → float → long → double</p>
+                <p>Data size increases - also called widening casting</p>
+            </div>
+
+            <div class="step">
+                <h4>2. Explicit Casting (Narrowing)</h4>
+                <p>Converting higher datatype of information into lower data type</p>
+                <p>Order: double → long → float → int → short → byte</p>
+                <p>Data size decreases - also called narrowing casting</p>
+            </div>
+
+            <div class="step">
+                <h4>3. Boolean Casting</h4>
+                <p>Boolean casting is not supported in Java</p>
+            </div>
+
+            <h3>Non-Primitive Casting</h3>
+            <p>Converting one class of info into another class</p>
+
+            <div class="step">
+                <h4>1. Up Casting</h4>
+                <p>Acquiring the properties of sub class into super class</p>
+                <p>Inheritance is mandatory</p>
+                <div class="code-block">
+                    <span class="comment">// Syntax</span><br>
+                    SuperClass obj = new SubClass();<br><br>
+                    <span class="comment">// Interface example</span><br>
+                    InterfaceClass obj = new ImplementationClass();
+                </div>
+            </div>
+
+            <div class="step">
+                <h4>2. Down Casting</h4>
+                <p>Acquiring the properties of superclass into subclass</p>
+                <p>Can be performed after upcasting only</p>
+                <div class="code-block">
+                    <span class="comment">// Syntax</span><br>
+                    SubClass obj = (SubClass) new SuperClass();<br>
+                    <span class="comment">// Not supported in Java</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="keywords">
+            <h2>Keywords: this and super</h2>
+            <p>Used in non-static methods to access global variables.</p>
+
+            <div class="step">
+                <h3>this Keyword</h3>
+                <p>Used to access the global variable of same class when global variable name and local variable is
+                    same.</p>
+                <div class="code-block">
+                    <span class="keyword">public class</span> Example {<br>
+                    &nbsp;&nbsp;<span class="keyword">private int</span> value;<br><br>
+                    &nbsp;&nbsp;<span class="keyword">public void</span> setValue(<span class="keyword">int</span>
+                    value) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.value = value; <span class="comment">//
+                        Using 'this' to access class variable</span><br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>super Keyword</h3>
+                <p>Used to access the global variable of super class into subclass when variable names are same.</p>
+                <p>Requires extends keyword for inheritance</p>
+                <div class="code-block">
+                    <span class="keyword">public class</span> Parent {<br>
+                    &nbsp;&nbsp;<span class="keyword">protected int</span> value = 10;<br>
+                    }<br><br>
+                    <span class="keyword">public class</span> Child <span class="keyword">extends</span> Parent {<br>
+                    &nbsp;&nbsp;<span class="keyword">private int</span> value = 20;<br><br>
+                    &nbsp;&nbsp;<span class="keyword">public void</span> printValues() {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="keyword">super</span>.value); <span
+                        class="comment">// Prints 10 (parent value)</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="keyword">this</span>.value); <span
+                        class="comment">// Prints 20 (child value)</span><br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="section full-width" id="exception-handling">
+            <h2>Exception Handling</h2>
+
+            <div class="step">
+                <h3>Error vs Exception</h3>
+
+                <h4>Error</h4>
+                <ul>
+                    <li>Problem due to lack of system resources</li>
+                    <li>Application cannot catch these problems</li>
+                    <li>Unchecked by default</li>
+                    <li>Belongs to java.lang.error package</li>
+                    <li>Examples: VirtualMachineError, StackOverflowError, OutOfMemoryError, ClassFormatError</li>
+                </ul>
+
+                <h4>Exception</h4>
+                <ul>
+                    <li>Unexpected condition found during program execution</li>
+                    <li>Can be handled using throws declaration or try-catch-finally blocks</li>
+                    <li>Belongs to java.lang.exception package</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Types of Exceptions</h3>
+
+                <h4>1. Checked Exceptions (Compile Time)</h4>
+                <ul>
+                    <li>Generated at compile time</li>
+                    <li>Handled or declared using throws keyword</li>
+                    <li>Subclass of Exception class</li>
+                    <li>Examples: IOException, ClassNotFoundException, InterruptedException</li>
+                </ul>
+
+                <h4>2. Unchecked Exceptions (Runtime)</h4>
+                <ul>
+                    <li>Generated at runtime</li>
+                    <li>Handled by try-catch-finally blocks</li>
+                    <li>Subclass of RuntimeException class</li>
+                    <li>Examples: NullPointerException, ArithmeticException, IndexOutOfBoundsException</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Exception Handling Blocks</h3>
+                <div class="code-block">
+                    <span class="keyword">try</span> {<br>
+                    &nbsp;&nbsp;<span class="comment">// Code that may throw exception</span><br>
+                    &nbsp;&nbsp;<span class="keyword">int</span> result = 10 / 0; <span class="comment">// This will
+                        throw ArithmeticException</span><br>
+                    } <span class="keyword">catch</span> (ArithmeticException e) {<br>
+                    &nbsp;&nbsp;<span class="comment">// Solution code for exception</span><br>
+                    &nbsp;&nbsp;System.out.println("Cannot divide by zero: " + e.getMessage());<br>
+                    } <span class="keyword">finally</span> {<br>
+                    &nbsp;&nbsp;<span class="comment">// Always executes whether exception is found or not</span><br>
+                    &nbsp;&nbsp;System.out.println("This block always executes");<br>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="section full-width" id="collections">
+            <h2>Collections Framework</h2>
+
+            <p>The Collections Framework provides classes and interfaces to store and manipulate groups of objects.</p>
+
+            <div class="step">
+                <h3>Main Interfaces</h3>
+
+                <h4>Collection</h4>
+                <ul>
+                    <li>Root interface of the hierarchy</li>
+                    <li>Does not maintain order</li>
+                    <li>Accepts duplicates</li>
+                </ul>
+
+                <h4>List</h4>
+                <ul>
+                    <li>Ordered collection (index-based)</li>
+                    <li>Allows duplicates</li>
+                    <li>Best for retrieval operations</li>
+                    <li>Implementations: ArrayList, LinkedList, Vector</li>
+                </ul>
+
+                <h4>Set</h4>
+                <ul>
+                    <li>Does not maintain order</li>
+                    <li>Does not allow duplicates</li>
+                    <li>Best for insertion operations</li>
+                    <li>Implementations: HashSet, LinkedHashSet, TreeSet</li>
+                </ul>
+
+                <h4>Queue</h4>
+                <ul>
+                    <li>Follows FIFO (First-In-First-Out) principle</li>
+                    <li>First element added is the first removed</li>
+                    <li>Implementations: PriorityQueue, LinkedList (as Queue)</li>
+                </ul>
+
+                <div class="code-block">
+                    <span class="keyword">import</span> java.util.LinkedList;<br>
+                    <span class="keyword">import</span> java.util.Queue;<br><br>
+                    <span class="keyword">public class</span> QueueExample {<br>
+                    &nbsp;&nbsp;<span class="keyword">public static void</span> main(String[] args) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Create a queue using LinkedList</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Queue&lt;Integer&gt; myQueue = <span class="keyword">new</span>
+                    LinkedList&lt;&gt;();<br><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Enqueue (add) elements to the queue</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;myQueue.offer(1);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;myQueue.offer(2);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;myQueue.offer(3);<br><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Dequeue (remove) elements from the queue</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> firstItem = myQueue.poll();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> secondItem = myQueue.poll();<br><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;System.out.println(firstItem); <span class="comment">// Output: 1</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;System.out.println(secondItem); <span class="comment">// Output:
+                        2</span><br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+
+                <h4>Map</h4>
+                <ul>
+                    <li>Stores key-value pairs</li>
+                    <li>Keys are unique</li>
+                    <li>Implementations: HashMap, LinkedHashMap, TreeMap, Hashtable</li>
+                </ul>
+            </div>
+
+            <h3>Commonly Used Collections</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>ArrayList</th>
+                        <th>LinkedList</th>
+                        <th>Vector</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Interface</td>
+                        <td>List</td>
+                        <td>List</td>
+                        <td>List</td>
+                    </tr>
+                    <tr>
+                        <td>Usage</td>
+                        <td>Dynamic data storage</td>
+                        <td>Frequent insertions</td>
+                        <td>Legacy code</td>
+                    </tr>
+                    <tr>
+                        <td>Performance</td>
+                        <td>Fast retrieval</td>
+                        <td>Fast insertion</td>
+                        <td>Slow performance</td>
+                    </tr>
+                    <tr>
+                        <td>Thread Safety</td>
+                        <td>Not thread-safe</td>
+                        <td>Not thread-safe</td>
+                        <td>Thread-safe</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Map Implementations Comparison</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>HashMap</th>
+                        <th>LinkedHashMap</th>
+                        <th>Hashtable</th>
+                        <th>TreeMap</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ordering</td>
+                        <td>No ordering</td>
+                        <td>Insertion order</td>
+                        <td>No ordering</td>
+                        <td>Sorted order</td>
+                    </tr>
+                    <tr>
+                        <td>Thread Safety</td>
+                        <td>Not thread-safe</td>
+                        <td>Not thread-safe</td>
+                        <td>Thread-safe</td>
+                        <td>Not thread-safe</td>
+                    </tr>
+                    <tr>
+                        <td>Null Keys/Values</td>
+                        <td>Allows one null key, multiple null values</td>
+                        <td>Allows one null key, multiple null values</td>
+                        <td>Does not allow null keys or values</td>
+                        <td>Does not allow null keys</td>
+                    </tr>
+                    <tr>
+                        <td>Performance</td>
+                        <td>Fast O(1) operations</td>
+                        <td>Fast O(1) operations</td>
+                        <td>Slow due to synchronization</td>
+                        <td>Slower O(log n) operations</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="final-keywords">
+            <h2>Final, Finally, and Finalize</h2>
+
+            <div class="step">
+                <h3>Final</h3>
+                <p>Keyword used for variables, methods, and classes</p>
+                <ul>
+                    <li><strong>Final variable:</strong> Value cannot be changed (constant)</li>
+                    <li><strong>Final method:</strong> Cannot be overridden in subclass</li>
+                    <li><strong>Final class:</strong> Cannot be inherited by another class</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Finally</h3>
+                <p>Block used in exception handling with try-catch</p>
+                <ul>
+                    <li>Always executes whether exception occurs or not</li>
+                    <li>Used for cleanup code (closing resources)</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Finalize</h3>
+                <p>Method called by garbage collector before object destruction</p>
+                <ul>
+                    <li>Used for cleanup before garbage collection</li>
+                    <li>Can be overridden for custom cleanup logic</li>
+                    <li>Not guaranteed to be called immediately</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="throw-keywords">
+            <h2>Throw, Throws, and Throwable</h2>
+
+            <div class="step">
+                <h3>Throw</h3>
+                <p>Keyword used to explicitly throw an exception</p>
+                <ul>
+                    <li>Used within method body</li>
+                    <li>Mainly for unchecked exceptions</li>
+                    <li>Followed by an instance of exception class</li>
+                </ul>
+                <div class="code-block">
+                    <span class="keyword">public void</span> checkAge(<span class="keyword">int</span> age) {<br>
+                    &nbsp;&nbsp;<span class="keyword">if</span> (age &lt; 18) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">throw new</span> ArithmeticException("Access denied -
+                    You must be at least 18 years old.");<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Throws</h3>
+                <p>Keyword used in method declaration to indicate possible exceptions</p>
+                <ul>
+                    <li>Used with method signature</li>
+                    <li>Mainly for checked exceptions</li>
+                    <li>Can declare multiple exceptions</li>
+                </ul>
+                <div class="code-block">
+                    <span class="keyword">public void</span> readFile() <span class="keyword">throws</span> IOException,
+                    FileNotFoundException {<br>
+                    &nbsp;&nbsp;<span class="comment">// Code that may throw these exceptions</span><br>
+                    }
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Throwable</h3>
+                <p>Superclass of all errors and exceptions in Java</p>
+                <ul>
+                    <li>Root class of exception hierarchy</li>
+                    <li>Has two main subclasses: Error and Exception</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="access-modifiers">
+            <h2>Access Modifiers</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Access Modifier</th>
+                        <th>Same Class</th>
+                        <th>Same Package</th>
+                        <th>Subclass (Different Package)</th>
+                        <th>Any Package</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>public</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>protected</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>default (package-private)</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>private</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="collection-vs-collections">
+            <h2>Collection vs Collections</h2>
+
+            <div class="step">
+                <h3>Collection</h3>
+                <ul>
+                    <li>Collection is an interface which is part of collection framework hierarchy in Java</li>
+                    <li>It represents a group of objects known as its elements</li>
+                    <li>It is used with List, Set and Queue interfaces for collecting, manipulating and storing data
+                    </li>
+                    <li>Provides basic operations like add, remove, contains, size, etc.</li>
+                </ul>
+
+                <div class="code-block">
+                    <span class="comment">// Example usage of Collection</span><br>
+                    <span class="keyword">import</span> java.util.ArrayList;<br>
+                    <span class="keyword">import</span> java.util.Collection;<br><br>
+                    Collection&lt;String&gt; arr = <span class="keyword">new</span> ArrayList&lt;&gt;();<br>
+                    arr.add(<span class="string">"index1-pratik"</span>);<br>
+                    arr.add(<span class="string">"index2-shubham"</span>);
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Collections</h3>
+                <ul>
+                    <li>Collections is a utility class which provides static methods</li>
+                    <li>Used to operate on collection objects</li>
+                    <li>Provides methods for sorting, searching, synchronizing, and other utility operations</li>
+                    <li>Cannot be instantiated (private constructor)</li>
+                </ul>
+
+                <div class="code-block">
+                    <span class="comment">// Example usage of Collections utility class</span><br>
+                    <span class="keyword">import</span> java.util.ArrayList;<br>
+                    <span class="keyword">import</span> java.util.Collections;<br>
+                    <span class="keyword">import</span> java.util.List;<br><br>
+                    List&lt;String&gt; arr = <span class="keyword">new</span> ArrayList&lt;&gt;();<br>
+                    arr.add(<span class="string">"index1-pratik"</span>);<br>
+                    arr.add(<span class="string">"index2-shubham"</span>);<br><br>
+                    <span class="comment">// Sorting the list</span><br>
+                    Collections.sort(arr);
+                </div>
+            </div>
+
+            <h3>Key Differences</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Collection (Interface)</th>
+                        <th>Collections (Utility Class)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Root interface of the collection hierarchy</td>
+                        <td>Utility class with only static methods</td>
+                    </tr>
+                    <tr>
+                        <td>Declares methods that all collections will have</td>
+                        <td>Cannot be instantiated (private constructor)</td>
+                    </tr>
+                    <tr>
+                        <td>Can be instantiated via its subinterfaces (List, Set, Queue)</td>
+                        <td>Provides polymorphic algorithms that operate on collections</td>
+                    </tr>
+                    <tr>
+                        <td>Used to represent a group of objects as a single unit</td>
+                        <td>Contains methods for collection manipulation</td>
+                    </tr>
+                    <tr>
+                        <td>Provides basic operations like add, remove, contains, size</td>
+                        <td>Provides methods for sorting, searching, synchronizing</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="step">
+                <h3>Collections Utility Methods</h3>
+                <p>Used to perform operations like sorting, searching, synchronizing, and creating immutable collections
+                </p>
+                <ul>
+                    <li><strong>sort(List&lt;T&gt; list)</strong> - Sorts the specified list into ascending order</li>
+                    <li><strong>binarySearch(List&lt;T&gt; list, T key)</strong> - Searches the list for the specified
+                        object</li>
+                    <li><strong>reverse(List&lt;T&gt; list)</strong> - Reverses the order of elements in the list</li>
+                    <li><strong>shuffle(List&lt;T&gt; list)</strong> - Randomly permutes the specified list</li>
+                    <li><strong>synchronizedCollection(Collection&lt;T&gt; c)</strong> - Returns a synchronized
+                        (thread-safe) collection</li>
+                    <li><strong>unmodifiableCollection(Collection&lt;T&gt; c)</strong> - Returns an unmodifiable view of
+                        the collection</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="collection-vs-stream">
+            <h2>Collection vs Stream</h2>
+
+            <div class="step">
+                <h3>Collection</h3>
+                <ul>
+                    <li>Use when you need to store, modify, or access data repeatedly</li>
+                    <li>Holds all data in memory</li>
+                    <li>Can be modified (add/remove elements)</li>
+                    <li>External iteration (using loops)</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Stream</h3>
+                <ul>
+                    <li>Use for functional processing and read-only operations</li>
+                    <li>Does not store data - processes on demand</li>
+                    <li>Cannot be modified (immutable)</li>
+                    <li>Internal iteration (no explicit loops)</li>
+                    <li>Better for complex transformations and parallel processing</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Stream API Methods</h3>
+                <p>Used to perform operations like filtering, mapping, sorting, and collecting elements</p>
+                <ul>
+                    <li><strong>filter(Predicate&lt;T&gt;)</strong> - Filter elements based on a condition</li>
+                    <li><strong>map(Function&lt;T, R&gt;)</strong> - Transform elements</li>
+                    <li><strong>collect(Collectors.toList())</strong> - Collect the result into a list</li>
+                    <li><strong>forEach(Consumer&lt;T&gt;)</strong> - Perform an action on each element</li>
+                    <li><strong>sorted()</strong> - Sort elements</li>
+                    <li><strong>count()</strong> - Count the elements</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>Stream Example in Automation</h3>
+                <div class="code-block">
+                    <span class="comment">// Example: Filtering and processing product names</span><br>
+                    List&lt;String&gt; filteredSortedNames = driver.findElements(By.className("product-name"))<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;.stream()<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;.map(WebElement::getText)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;.filter(name -> name.contains("Pro"))<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;.map(String::toUpperCase)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;.sorted()<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;.collect(Collectors.toList());<br><br>
+                    <span class="comment">// Print the results</span><br>
+                    filteredSortedNames.forEach(System.out::println);
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+
+    <div class="nav-buttons">
+        <a href="JMeter.html" class="nav-button">← Previous: JMeter Guide</a>
+        <a href="JavaPrograms.html" class="nav-button">Next: Java Programs</a>
+    </div>
+
+    <script>
+        // Menu functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeMenu = document.querySelector('.close-menu');
+        const menu = document.getElementById('mainMenu');
+        const menuLinks = document.querySelectorAll('.menu a');
+
+        // Toggle menu
+        menuToggle.addEventListener('click', () => {
+            menu.classList.add('active');
+        });
+
+        // Close menu
+        closeMenu.addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // Close menu when clicking on links
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement;
+            const textToCopy = codeBlock.innerText.replace('Copy', '');
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Change button text temporarily
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+
+</html>

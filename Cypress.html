@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cypress Setup Guide</title>
+    <style>
+        :root {
+            --primary: #4a6baf;
+            --secondary: #34a853;
+            --accent: #fbbc05;
+            --dark: #333;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 60px 20px 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 100;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu ul {
+            list-style-type: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            color: var(--dark);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .menu a:hover {
+            background-color: #f0f5ff;
+            color: var(--primary);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4a6baf, #6c8bd5);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+            scroll-margin-top: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .command {
+            color: #50fa7b;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        .important {
+            background-color: #fff9e6;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip {
+            background-color: #e6f7ee;
+            padding: 12px 15px;
+            border-left: 4px solid var(--secondary);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .file-structure {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            line-height: 1.8;
+        }
+
+        .folder {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .file {
+            color: var(--secondary);
+        }
+
+        .success {
+            color: var(--secondary);
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), #6c8bd5);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                width: 80%;
+                right: -80%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu Button -->
+    <button class="menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Menu
+    </button>
+
+    <!-- Menu -->
+    <div class="menu" id="mainMenu">
+        <button class="close-menu">&times;</button>
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#project-init">1. Initialize Project</a></li>
+            <li><a href="#install-cypress">2. Install Cypress</a></li>
+            <li><a href="#folder-structure">3. Folder Structure</a></li>
+            <li><a href="#reporting">4. Reporting Dependencies</a></li>
+            <li><a href="#scripts">5. Package.json Scripts</a></li>
+            <li><a href="#run-tests">6. Run Tests with Report</a></li>
+        </ul>
+    </div>
+
+    <a href="#" class="back-to-top">↑</a>
+
+    <header>
+        <h1>Cypress Setup Guide</h1>
+        <p>Complete setup for end-to-end testing with Cypress using POM pattern and reporting</p>
+    </header>
+
+    <div class="container">
+        <section class="section" id="project-init">
+            <h2>✅ 1. Initialize Project</h2>
+            <div class="code-block">
+                <span class="command">mkdir cypress-pom-framework</span><br>
+                <span class="command">cd cypress-pom-framework</span><br>
+                <span class="command">npm init -y</span>
+            </div>
+        </section>
+
+        <section class="section" id="install-cypress">
+            <h2>📦 2. Install Cypress</h2>
+            <div class="code-block">
+                <span class="command">npm install cypress --save-dev</span>
+            </div>
+        </section>
+
+        <section class="section" id="folder-structure">
+            <h2>📁 3. Project Folder Structure</h2>
+            <div class="file-structure">
+                <div class="folder">cypress/</div>
+                <div style="margin-left: 20px;">
+                    <div class="folder">e2e/</div>
+                    <div style="margin-left: 40px;">
+                        <div class="folder">pages/</div>
+                        <div style="margin-left: 60px;">
+                            <div class="file">loginPage.js</div>
+                        </div>
+                        <div class="folder">tests/</div>
+                        <div style="margin-left: 60px;">
+                            <div class="file">loginTest.cy.js</div>
+                        </div>
+                    </div>
+                    <div class="folder">fixtures/</div>
+                    <div style="margin-left: 40px;">
+                        <div class="file">testData.json</div>
+                    </div>
+                    <div class="folder">support/</div>
+                    <div style="margin-left: 40px;">
+                        <div class="file">commands.js</div>
+                        <div class="file">e2e.js</div>
+                    </div>
+                    <div class="file">cypress.config.js</div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="section" id="reporting">
+            <h2>📊 4. Add Reporting Dependencies</h2>
+            <div class="code-block">
+                <span class="command">npm install --save-dev mochawesome-merge mochawesome-report-generator open-cli
+                    rimraf concurrently</span>
+            </div>
+
+            <div class="tip">
+                <strong>What these packages do:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>mochawesome-merge:</strong> Merges multiple mochawesome reports into one</li>
+                    <li><strong>mochawesome-report-generator:</strong> Generates a beautiful HTML report</li>
+                    <li><strong>open-cli:</strong> Automatically opens the report in your default browser</li>
+                    <li><strong>rimraf:</strong> Clean up previous reports</li>
+                    <li><strong>concurrently:</strong> Run multiple scripts in parallel</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="scripts">
+            <h2>📜 5. Add Scripts to package.json</h2>
+            <p>Add these scripts to your package.json file:</p>
+            <div class="code-block">
+                <span class="comment">// package.json</span><br>
+                "scripts": {<br>
+                &nbsp;&nbsp;"clean:report": "rimraf cypress/reports/html && rimraf cypress/screenshots && rimraf
+                cypress/videos",<br>
+                &nbsp;&nbsp;"parallel:run": "cypress run --record false --reporter mochawesome --reporter-options
+                reportDir=cypress/reports/json,overwrite=false,html=false,json=true",<br>
+                &nbsp;&nbsp;"merge:report": "mochawesome-merge cypress/reports/json/*.json >
+                cypress/reports/json/mochawesome.json",<br>
+                &nbsp;&nbsp;"generate:report": "marge cypress/reports/json/mochawesome.json --reportDir
+                cypress/reports/html",<br>
+                &nbsp;&nbsp;"open:report": "open-cli cypress/reports/html/mochawesome.html",<br>
+                &nbsp;&nbsp;"test": "npm run clean:report && npm run parallel:run && npm run merge:report && npm run
+                generate:report && npm run open:report"<br>
+                }
+            </div>
+        </section>
+
+        <section class="section" id="run-tests">
+            <h2>🚀 6. Run Tests with Report</h2>
+            <div class="code-block">
+                <span class="command">npm run test</span>
+            </div>
+        </section>
+    </div>
+
+    <div class="nav-buttons">
+        <a href="Playwright.html" class="nav-button">← Previous: Playwright Guide</a>
+        <a href="Appium.html" class="nav-button">Next: Appium Guide →</a>
+    </div>
+
+    <script>
+        // Menu functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeMenu = document.querySelector('.close-menu');
+        const menu = document.getElementById('mainMenu');
+        const menuLinks = document.querySelectorAll('.menu a');
+
+        // Toggle menu
+        menuToggle.addEventListener('click', () => {
+            menu.classList.add('active');
+        });
+
+        // Close menu
+        closeMenu.addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // Close menu when clicking on links
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

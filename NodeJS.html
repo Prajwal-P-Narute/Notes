@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node.js Installation Guide</title>
+    <style>
+        :root {
+            --primary: #339933;
+            /* Node.js green */
+            --secondary: #333333;
+            --accent: #fbbc05;
+            --dark: #333;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 60px 20px 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 100;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu ul {
+            list-style-type: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            color: var(--dark);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .menu a:hover {
+            background-color: #f0f5ff;
+            color: var(--primary);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), #5cb85c);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+            scroll-margin-top: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .command {
+            color: #50fa7b;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        .important {
+            background-color: #fff9e6;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip {
+            background-color: #e6f7ee;
+            padding: 12px 15px;
+            border-left: 4px solid var(--primary);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .file {
+            color: var(--secondary);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), #5cb85c);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+        }
+
+        .os-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .os-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+
+        .os-tab.active {
+            background: white;
+            border-bottom: 2px solid white;
+            margin-bottom: -2px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .os-content {
+            display: none;
+        }
+
+        .os-content.active {
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                width: 80%;
+                right: -80%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+
+            .os-tabs {
+                flex-direction: column;
+                border-bottom: none;
+            }
+
+            .os-tab {
+                border-radius: 5px;
+                margin-bottom: 5px;
+                border: 1px solid var(--border);
+            }
+
+            .os-tab.active {
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu Button -->
+    <button class="menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Menu
+    </button>
+
+    <!-- Menu -->
+    <div class="menu" id="mainMenu">
+        <button class="close-menu">&times;</button>
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#macos-install">macOS Installation</a></li>
+            <li><a href="#windows-install">Windows Installation</a></li>
+            <li><a href="#verify-install">Verify Installation</a></li>
+            <li><a href="#update-npm">Update npm</a></li>
+        </ul>
+    </div>
+
+    <a href="#" class="back-to-top">↑</a>
+
+    <header>
+        <h1>Node.js Installation Guide</h1>
+        <p>Complete guide to installing Node.js on macOS and Windows</p>
+    </header>
+
+    <div class="container">
+        <section class="section" id="macos-install">
+            <h2>🍎 macOS Installation</h2>
+
+            <div class="step">
+                <h3><span class="step-number">1</span>Install Node.js using Homebrew</h3>
+                <div class="code-block">
+                    <span class="command">brew install node</span>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>Note:</strong> If you don't have Homebrew installed, you can install it from <a
+                    href="https://brew.sh" style="color: var(--primary);">https://brew.sh</a>
+            </div>
+        </section>
+
+        <section class="section" id="windows-install">
+            <h2>🪟 Windows Installation</h2>
+
+            <div class="os-tabs">
+                <div class="os-tab active" data-tab="download">Download</div>
+                <div class="os-tab" data-tab="install">Run Installer</div>
+                <div class="os-tab" data-tab="verify">Verify</div>
+            </div>
+
+            <div class="os-content active" id="download-content">
+                <div class="step">
+                    <h3><span class="step-number">1</span>Download the Installer</h3>
+                    <p>Go to the official Node.js website:</p>
+                    <div class="important">
+                        <strong>👉 https://nodejs.org</strong>
+                    </div>
+                    <p>Choose the <strong>LTS (Long-Term Support)</strong> version — it's more stable for most users.
+                    </p>
+                    <p>For example: <strong>Node.js 20.x.x LTS</strong></p>
+                    <p>This installer includes both Node.js and npm.</p>
+                </div>
+            </div>
+
+            <div class="os-content" id="install-content">
+                <div class="step">
+                    <h3><span class="step-number">2</span>Run the Installer</h3>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>Double-click the downloaded <strong>.msi</strong> file</li>
+                        <li>Click <strong>Next</strong> and accept the license agreement</li>
+                        <li>Keep the default settings (recommended)</li>
+                        <li>Allow it to install necessary tools (like npm, Node.js, and optionally Chocolatey)</li>
+                        <li>Finish the installation</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="os-content" id="verify-content">
+                <div class="step">
+                    <h3><span class="step-number">3</span>Verify Installation</h3>
+                    <p>Open Command Prompt or PowerShell and run:</p>
+                    <div class="code-block">
+                        <span class="command">node -v</span><br>
+                        <span class="command">npm -v</span>
+                    </div>
+                    <p>You should see version numbers like:</p>
+                    <div class="code-block">
+                        v20.12.2<br>
+                        10.5.0
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="verify-install">
+            <h2>🔍 Verify Installation</h2>
+
+            <div class="step">
+                <h3>Check Node.js Version</h3>
+                <div class="code-block">
+                    <span class="command">node -v</span>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Check npm Version</h3>
+                <div class="code-block">
+                    <span class="command">npm -v</span>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>Tip:</strong> If these commands don't work, you may need to restart your terminal or command
+                prompt after installation.
+            </div>
+        </section>
+
+        <section class="section" id="update-npm">
+            <h2>🔄 Optional: Update npm</h2>
+
+            <div class="step">
+                <h3>Update to the latest npm version</h3>
+                <div class="code-block">
+                    <span class="command">npm install -g npm@latest</span>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>Note:</strong> The <code>-g</code> flag installs npm globally, making it available system-wide.
+            </div>
+        </section>
+    </div>
+
+    <div class="nav-buttons">
+        <a href="GitHub.html" class="nav-button">← Previous: Git Guide</a>
+        <a href="JMeter.html" class="nav-button">Next: JMeter</a>
+    </div>
+
+    <script>
+        // Menu functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeMenu = document.querySelector('.close-menu');
+        const menu = document.getElementById('mainMenu');
+        const menuLinks = document.querySelectorAll('.menu a');
+
+        // Toggle menu
+        menuToggle.addEventListener('click', () => {
+            menu.classList.add('active');
+        });
+
+        // Close menu
+        closeMenu.addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // Close menu when clicking on links
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Tab functionality for Windows installation
+        const osTabs = document.querySelectorAll('.os-tab');
+        const osContents = document.querySelectorAll('.os-content');
+
+        osTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                osTabs.forEach(t => t.classList.remove('active'));
+                osContents.forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                // Show corresponding content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

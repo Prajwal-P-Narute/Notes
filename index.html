@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Frameworks Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6baf;
+            --secondary: #34a853;
+            --accent: #fbbc05;
+            --dark: #333;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+            --appium: #8a2be2;
+            --github: #24292e;
+            --nodejs: #339933;
+            --jmeter: #D54F25;
+            --java: #007396;
+            --java-programs: #e76f00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary), #6c8bd5);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .framework-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 280px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .playwright-header {
+            background: linear-gradient(135deg, #4a6baf, #6c8bd5);
+        }
+
+        .cypress-header {
+            background: linear-gradient(135deg, #34a853, #5dbe86);
+        }
+
+        .appium-header {
+            background: linear-gradient(135deg, #8a2be2, #9370db);
+        }
+
+        .github-header {
+            background: linear-gradient(135deg, #24292e, #3f4448);
+        }
+
+        .nodejs-header {
+            background: linear-gradient(135deg, #339933, #66CC66);
+        }
+
+        .jmeter-header {
+            background: linear-gradient(135deg, #D54F25, #e27c52);
+        }
+
+        .java-header {
+            background: linear-gradient(135deg, #007396, #0096c7);
+        }
+
+        .java-programs-header {
+            background: linear-gradient(135deg, #e76f00, #f4a261);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .card-features {
+            list-style-type: none;
+            margin-bottom: 25px;
+        }
+
+        .card-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-features li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .card-button {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+
+        .playwright-button {
+            background: linear-gradient(135deg, #4a6baf, #6c8bd5);
+        }
+
+        .cypress-button {
+            background: linear-gradient(135deg, #34a853, #5dbe86);
+        }
+
+        .appium-button {
+            background: linear-gradient(135deg, #8a2be2, #9370db);
+        }
+
+        .github-button {
+            background: linear-gradient(135deg, #24292e, #3f4448);
+        }
+
+        .nodejs-button {
+            background: linear-gradient(135deg, #339933, #66CC66);
+        }
+
+        .jmeter-button {
+            background: linear-gradient(135deg, #D54F25, #e27c52);
+        }
+
+        .java-button {
+            background: linear-gradient(135deg, #007396, #0096c7);
+        }
+
+        .java-programs-button {
+            background: linear-gradient(135deg, #e76f00, #f4a261);
+        }
+
+        .card-button:hover {
+            opacity: 0.9;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .framework-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Testing Frameworks Guide</h1>
+            <p class="description">Comprehensive guides for setting up and using various testing frameworks and tools
+            </p>
+        </header>
+
+        <div class="framework-cards">
+            <!-- Playwright -->
+            <div class="card">
+                <div class="card-header playwright-header">
+                    <div class="card-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h2 class="card-title">Playwright</h2>
+                    <p>Microsoft's modern testing framework</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Cross-browser testing</li>
+                        <li><i class="fas fa-check feature-icon"></i> Auto-waiting and web-first assertions</li>
+                        <li><i class="fas fa-check feature-icon"></i> MongoDB integration</li>
+                        <li><i class="fas fa-check feature-icon"></i> Powerful automation capabilities</li>
+                    </ul>
+                    <a href="Playwright.html" class="card-button playwright-button">Open Playwright Guide</a>
+                </div>
+            </div>
+
+            <!-- Cypress -->
+            <div class="card">
+                <div class="card-header cypress-header">
+                    <div class="card-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h2 class="card-title">Cypress</h2>
+                    <p>JavaScript end-to-end testing framework</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Time travel debugging</li>
+                        <li><i class="fas fa-check feature-icon"></i> Real-time reloads</li>
+                        <li><i class="fas fa-check feature-icon"></i> POM (Page Object Model) support</li>
+                        <li><i class="fas fa-check feature-icon"></i> Built-in reporting</li>
+                    </ul>
+                    <a href="Cypress.html" class="card-button cypress-button">Open Cypress Guide</a>
+                </div>
+            </div>
+
+            <!-- Appium -->
+            <div class="card">
+                <div class="card-header appium-header">
+                    <div class="card-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h2 class="card-title">Appium</h2>
+                    <p>Mobile automation testing framework</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Cross-platform mobile testing</li>
+                        <li><i class="fas fa-check feature-icon"></i> Android and iOS support</li>
+                        <li><i class="fas fa-check feature-icon"></i> No app modification needed</li>
+                        <li><i class="fas fa-check feature-icon"></i> WebDriver protocol</li>
+                    </ul>
+                    <a href="Appium.html" class="card-button appium-button">Open Appium Guide</a>
+                </div>
+            </div>
+
+            <!-- GitHub -->
+            <div class="card">
+                <div class="card-header github-header">
+                    <div class="card-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h2 class="card-title">Git & GitHub</h2>
+                    <p>Version control and collaboration</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Git configuration & setup</li>
+                        <li><i class="fas fa-check feature-icon"></i> Branching & merging strategies</li>
+                        <li><i class="fas fa-check feature-icon"></i> Rollback & restore techniques</li>
+                        <li><i class="fas fa-check feature-icon"></i> Remote repository management</li>
+                    </ul>
+                    <a href="GitHub.html" class="card-button github-button">Open Git Guide</a>
+                </div>
+            </div>
+
+            <!-- NodeJS -->
+            <div class="card">
+                <div class="card-header nodejs-header">
+                    <div class="card-icon">
+                        <i class="fab fa-node-js"></i>
+                    </div>
+                    <h2 class="card-title">NodeJS</h2>
+                    <p>Installation Guide</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Node configuration & setup</li>
+                        <li><i class="fas fa-check feature-icon"></i> Covers Windows and macOS</li>
+                        <li><i class="fas fa-check feature-icon"></i> Version management</li>
+                        <li><i class="fas fa-check feature-icon"></i> npm package manager</li>
+                    </ul>
+                    <a href="NodeJS.html" class="card-button nodejs-button">Open Node.js Guide</a>
+                </div>
+            </div>
+
+            <!-- JMeter -->
+            <div class="card">
+                <div class="card-header jmeter-header">
+                    <div class="card-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h2 class="card-title">JMeter</h2>
+                    <p>Performance Testing Guide</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Installation & setup</li>
+                        <li><i class="fas fa-check feature-icon"></i> Test plan creation</li>
+                        <li><i class="fas fa-check feature-icon"></i> Performance testing</li>
+                        <li><i class="fas fa-check feature-icon"></i> Results analysis</li>
+                    </ul>
+                    <a href="JMeter.html" class="card-button jmeter-button">Open JMeter Guide</a>
+                </div>
+            </div>
+
+            <!-- Java -->
+            <div class="card">
+                <div class="card-header java-header">
+                    <div class="card-icon">
+                        <i class="fab fa-java"></i>
+                    </div>
+                    <h2 class="card-title">Java</h2>
+                    <p>Java Notes</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Introduction</li>
+                        <li><i class="fas fa-check feature-icon"></i> Data type and Variable</li>
+                        <li><i class="fas fa-check feature-icon"></i> OOPS</li>
+                        <li><i class="fas fa-check feature-icon"></i> Collections</li>
+                    </ul>
+                    <a href="Java.html" class="card-button java-button">Open Java Notes</a>
+                </div>
+            </div>
+
+            <!-- Java Programs -->
+            <div class="card">
+                <div class="card-header java-programs-header">
+                    <div class="card-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h2 class="card-title">Java Programs</h2>
+                    <p>Java Programming Examples</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Find Max number</li>
+                        <li><i class="fas fa-check feature-icon"></i> Array Operations</li>
+                        <li><i class="fas fa-check feature-icon"></i> String Manipulation</li>
+                        <li><i class="fas fa-check feature-icon"></i> Prime Number</li>
+                    </ul>
+                    <a href="JavaPrograms.html" class="card-button java-programs-button">Open Java Programs</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Created with <i class="fas fa-heart" style="color: #e91e63;"></i> for testing enthusiasts</p>
+        </div>
+    </div>
+
+    <script>
+        // Add subtle animation to cards when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 200 * index);
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appium with Java Setup Guide</title>
+    <style>
+        :root {
+            --primary: #4a6baf;
+            --secondary: #34a853;
+            --accent: #fbbc05;
+            --dark: #333;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 60px 20px 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 100;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu ul {
+            list-style-type: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            color: var(--dark);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .menu a:hover {
+            background-color: #f0f5ff;
+            color: var(--primary);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4a6baf, #6c8bd5);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+            scroll-margin-top: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .command {
+            color: #50fa7b;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        .important {
+            background-color: #fff9e6;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip {
+            background-color: #e6f7ee;
+            padding: 12px 15px;
+            border-left: 4px solid var(--secondary);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .file-structure {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            line-height: 1.8;
+        }
+
+        .folder {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .file {
+            color: var(--secondary);
+        }
+
+        .success {
+            color: var(--secondary);
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), #6c8bd5);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .check-icon {
+            color: var(--secondary);
+        }
+
+        .cross-icon {
+            color: #ff6b6b;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                width: 80%;
+                right: -80%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu Button -->
+    <button class="menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Menu
+    </button>
+
+    <!-- Menu -->
+    <div class="menu" id="mainMenu">
+        <button class="close-menu">&times;</button>
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#install-appium">1. Install Appium</a></li>
+            <li><a href="#install-drivers">2. Install Drivers</a></li>
+            <li><a href="#device-type">3. Device Type & UDID</a></li>
+            <li><a href="#java-setup">4. Java Project Setup</a></li>
+            <li><a href="#capabilities">5. Desired Capabilities</a></li>
+            <li><a href="#framework">6. Framework Structure</a></li>
+            <li><a href="#components">7. Key Components</a></li>
+            <li><a href="#ci-cd">8. CI/CD Integration</a></li>
+            <li><a href="#reporting">9. Reporting</a></li>
+        </ul>
+    </div>
+
+    <a href="#" class="back-to-top">↑</a>
+
+    <header>
+        <h1>Appium with Java Setup Guide</h1>
+        <p>Complete setup for mobile automation testing with Appium using Java</p>
+    </header>
+
+    <div class="container">
+        <section class="section" id="install-appium">
+            <h2>📒 1. Install Appium</h2>
+            <div class="code-block">
+                <span class="command">npm install -g appium</span>
+            </div>
+
+            <h3>Verify installation:</h3>
+            <div class="code-block">
+                <span class="command">appium -v</span>
+            </div>
+
+            <h3>Start server:</h3>
+            <div class="code-block">
+                <span class="command">appium</span>
+            </div>
+        </section>
+
+        <section class="section" id="install-drivers">
+            <h2>2. Install Drivers</h2>
+
+            <h3>Android (UIAutomator2)</h3>
+            <div class="code-block">
+                <span class="command">appium driver install uiautomator2</span>
+            </div>
+
+            <h3>iOS (XCUITest)</h3>
+            <div class="code-block">
+                <span class="command">appium driver install xcuitest</span>
+            </div>
+        </section>
+
+        <section class="section" id="device-type">
+            <h2>3. Device Type & UDID Requirement</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Device Type</th>
+                        <th>UDID Required?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>iOS Simulator</td>
+                        <td><span class="cross-icon">❌</span> No</td>
+                    </tr>
+                    <tr>
+                        <td>Real iOS Device</td>
+                        <td><span class="check-icon">✅</span> Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Android Emulator</td>
+                        <td><span class="cross-icon">❌</span> No</td>
+                    </tr>
+                    <tr>
+                        <td>Real Android</td>
+                        <td><span class="check-icon">✅</span> Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="java-setup">
+            <h2>4. Java Project Setup</h2>
+
+            <p><strong>Tools:</strong> JDK 17, Maven, IntelliJ/Eclipse</p>
+
+            <h3>Add Appium client dependency in pom.xml:</h3>
+            <div class="code-block">
+                <span class="comment">&lt;!-- pom.xml --></span><br>
+                &lt;dependency><br>
+                &nbsp;&nbsp;&lt;groupId>io.appium&lt;/groupId><br>
+                &nbsp;&nbsp;&lt;artifactId>java-client&lt;/artifactId><br>
+                &nbsp;&nbsp;&lt;version>9.0.0&lt;/version><br>
+                &lt;/dependency><br><br>
+                &lt;dependency><br>
+                &nbsp;&nbsp;&lt;groupId>org.seleniumhq.selenium&lt;/groupId><br>
+                &nbsp;&nbsp;&lt;artifactId>selenium-java&lt;/artifactId><br>
+                &nbsp;&nbsp;&lt;version>4.23.0&lt;/version><br>
+                &lt;/dependency>
+            </div>
+        </section>
+
+        <section class="section" id="capabilities">
+            <h2>5. Desired Capabilities</h2>
+
+            <h3>Android Example</h3>
+            <div class="code-block">
+                <span class="comment">// Android capabilities</span><br>
+                UiAutomator2Options options = new UiAutomator2Options();<br>
+                options.setDeviceName("emulator-5554");<br>
+                options.setPlatformName("Android");<br>
+                options.setPlatformVersion("15");<br>
+                options.setAppPackage("com.example.app");<br>
+                options.setAppActivity("com.example.app.MainActivity");<br>
+                options.setNoReset(true);<br><br>
+                AndroidDriver driver = new AndroidDriver(new URL("http://127.0.0.1:4723"), options);
+            </div>
+
+            <h3>iOS Example</h3>
+            <div class="code-block">
+                <span class="comment">// iOS capabilities</span><br>
+                XCUITestOptions options = new XCUITestOptions();<br>
+                options.setDeviceName("iPhone 14");<br>
+                options.setPlatformName("iOS");<br>
+                options.setPlatformVersion("16.2");<br>
+                options.setBundleId("com.example.iosapp"); <br>
+                options.setNoReset(true);<br><br>
+                IOSDriver driver = new IOSDriver(new URL("http://127.0.0.1:4723"), options);
+            </div>
+        </section>
+
+        <section class="section full-width" id="framework">
+            <h2>6. Framework Structure (BDD + POM + Utilities)</h2>
+
+            <div class="file-structure">
+                <div class="folder">AppiumFramework/</div>
+                <div style="margin-left: 20px;">
+                    <div class="folder">src/</div>
+                    <div style="margin-left: 40px;">
+                        <div class="folder">main/</div>
+                        <div style="margin-left: 60px;">
+                            <div class="folder">java/</div>
+                            <div style="margin-left: 80px;">
+                                <div class="folder">base/</div>
+                                <div style="margin-left: 100px;">
+                                    <div class="file"># Base setup (Driver, Hooks)</div>
+                                </div>
+                                <div class="folder">pages/</div>
+                                <div style="margin-left: 100px;">
+                                    <div class="file"># Page Object classes</div>
+                                </div>
+                                <div class="folder">utils/</div>
+                                <div style="margin-left: 100px;">
+                                    <div class="file"># Utility methods</div>
+                                </div>
+                                <div class="folder">config/</div>
+                                <div style="margin-left: 100px;">
+                                    <div class="file"># Properties & JSON configs</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="folder">test/</div>
+                        <div style="margin-left: 60px;">
+                            <div class="folder">java/</div>
+                            <div style="margin-left: 80px;">
+                                <div class="folder">stepdefs/</div>
+                                <div style="margin-left: 100px;">
+                                    <div class="file"># Step Definitions</div>
+                                </div>
+                                <div class="folder">runners/</div>
+                                <div style="margin-left: 100px;">
+                                    <div class="file"># Test Runners</div>
+                                </div>
+                            </div>
+                            <div class="folder">resources/</div>
+                            <div style="margin-left: 80px;">
+                                <div class="folder">features/</div>
+                                <div style="margin-left: 100px;">
+                                    <div class="file"># Cucumber Feature files</div>
+                                </div>
+                                <div class="file">config.properties</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="file">pom.xml</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section full-width" id="components">
+            <h2>7. Key Components</h2>
+
+            <h3>✅ BaseSetup (Driver Initialization)</h3>
+            <div class="code-block">
+                <span class="comment">// BaseSetup.java</span><br>
+                public class BaseSetup {<br>
+                &nbsp;&nbsp;public static AppiumDriver driver;<br><br>
+                &nbsp;&nbsp;public static void initDriver(String platform) throws MalformedURLException {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (platform.equalsIgnoreCase("android")) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UiAutomator2Options options = new UiAutomator2Options();<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.setDeviceName("emulator-5554");<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.setAppPackage("com.example.app");<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.setAppActivity("com.example.app.MainActivity");<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;driver = new AndroidDriver(new URL("http://127.0.0.1:4723"),
+                options);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;} else if (platform.equalsIgnoreCase("ios")) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;XCUITestOptions options = new XCUITestOptions();<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.setDeviceName("iPhone 14");<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.setBundleId("com.example.iosapp");<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;driver = new IOSDriver(new URL("http://127.0.0.1:4723"),
+                options);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+
+            <h3>✅ Page Object Example</h3>
+            <div class="code-block">
+                <span class="comment">// LoginPage.java</span><br>
+                public class LoginPage {<br>
+                &nbsp;&nbsp;private AppiumDriver driver;<br><br>
+                &nbsp;&nbsp;By username = By.id("com.example.app:id/username");<br>
+                &nbsp;&nbsp;By password = By.id("com.example.app:id/password");<br>
+                &nbsp;&nbsp;By loginBtn = By.id("com.example.app:id/login");<br><br>
+                &nbsp;&nbsp;public LoginPage(AppiumDriver driver) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;this.driver = driver;<br>
+                &nbsp;&nbsp;}<br><br>
+                &nbsp;&nbsp;public void login(String user, String pass) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;driver.findElement(username).sendKeys(user);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;driver.findElement(password).sendKeys(pass);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;driver.findElement(loginBtn).click();<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+
+            <h3>✅ Feature File (login.feature)</h3>
+            <div class="code-block">
+                <span class="comment"># login.feature</span><br>
+                Feature: Login Functionality<br>
+                &nbsp;&nbsp;Scenario: Valid Login<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Given I launch the app<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;When I login with "testuser" and "password123"<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Then I should see the home page
+            </div>
+
+            <h3>✅ Step Definition</h3>
+            <div class="code-block">
+                <span class="comment">// LoginSteps.java</span><br>
+                public class LoginSteps {<br>
+                &nbsp;&nbsp;LoginPage loginPage = new LoginPage(BaseSetup.driver);<br><br>
+                &nbsp;&nbsp;@Given("I launch the app")<br>
+                &nbsp;&nbsp;public void launchApp() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// App launch handled in hooks</span><br>
+                &nbsp;&nbsp;}<br><br>
+                &nbsp;&nbsp;@When("I login with {string} and {string}")<br>
+                &nbsp;&nbsp;public void iLogin(String user, String pass) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;loginPage.login(user, pass);<br>
+                &nbsp;&nbsp;}<br><br>
+                &nbsp;&nbsp;@Then("I should see the home page")<br>
+                &nbsp;&nbsp;public void verifyHomePage() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Assert.assertTrue(BaseSetup.driver.findElement(By.id("com.example.app:id/home")).isDisplayed());<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+
+            <h3>✅ Hooks (Before/After Test)</h3>
+            <div class="code-block">
+                <span class="comment">// Hooks.java</span><br>
+                public class Hooks {<br>
+                &nbsp;&nbsp;@Before<br>
+                &nbsp;&nbsp;public void setUp() throws MalformedURLException {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;BaseSetup.initDriver("android"); <span class="comment">// or ios</span><br>
+                &nbsp;&nbsp;}<br><br>
+                &nbsp;&nbsp;@After<br>
+                &nbsp;&nbsp;public void tearDown() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (BaseSetup.driver != null) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BaseSetup.driver.quit();<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+
+            <h3>✅ Runner Class</h3>
+            <div class="code-block">
+                <span class="comment">// TestRunner.java</span><br>
+                @RunWith(Cucumber.class)<br>
+                @CucumberOptions(<br>
+                &nbsp;&nbsp;features = "src/test/resources/features",<br>
+                &nbsp;&nbsp;glue = {"stepdefs", "base"},<br>
+                &nbsp;&nbsp;plugin = {"pretty","html:target/cucumber-report.html"}<br>
+                )<br>
+                public class TestRunner {}
+            </div>
+        </section>
+
+        <section class="section" id="ci-cd">
+            <h2>8. CI/CD Integration</h2>
+
+            <h3>Jenkins Pipeline:</h3>
+            <ul>
+                <li>Pull code from GitHub</li>
+                <li>Install dependencies (mvn clean install)</li>
+                <li>Run tests (mvn test)</li>
+                <li>Publish report (Extent / Allure / Cucumber HTML)</li>
+            </ul>
+
+            <h3>Cloud Execution:</h3>
+            <p>Use LambdaTest / BrowserStack / Saucelabs for running on multiple real devices.</p>
+        </section>
+
+        <section class="section" id="reporting">
+            <h2>9. Reporting</h2>
+
+            <ul>
+                <li>Extent Reports or Allure Reports</li>
+                <li>Screenshot capture on failure</li>
+                <li>Jenkins plugin to publish reports</li>
+            </ul>
+        </section>
+    </div>
+
+    <div class="nav-buttons">
+        <a href="Cypress.html" class="nav-button">← Previous: Cypress Guide</a>
+        <a href="GitHub.html" class="nav-button">Next: GitHub</a>
+    </div>
+
+    <script>
+        // Menu functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeMenu = document.querySelector('.close-menu');
+        const menu = document.getElementById('mainMenu');
+        const menuLinks = document.querySelectorAll('.menu a');
+
+        // Toggle menu
+        menuToggle.addEventListener('click', () => {
+            menu.classList.add('active');
+        });
+
+        // Close menu
+        closeMenu.addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // Close menu when clicking on links
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

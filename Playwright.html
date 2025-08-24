@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright & MongoDB Setup Guide</title>
+    <style>
+        :root {
+            --primary: #4a6baf;
+            --secondary: #34a853;
+            --accent: #fbbc05;
+            --dark: #333;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 60px 20px 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 100;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu ul {
+            list-style-type: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            color: var(--dark);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .menu a:hover {
+            background-color: #f0f5ff;
+            color: var(--primary);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), #6c8bd5);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+            scroll-margin-top: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .command {
+            color: #50fa7b;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        .important {
+            background-color: #fff9e6;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip {
+            background-color: #e6f7ee;
+            padding: 12px 15px;
+            border-left: 4px solid var(--secondary);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .file-structure {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            line-height: 1.8;
+        }
+
+        .folder {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .file {
+            color: var(--secondary);
+        }
+
+        .success {
+            color: var(--secondary);
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4a6baf, #6c8bd5);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                width: 80%;
+                right: -80%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu Button -->
+    <button class="menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Menu
+    </button>
+
+    <!-- Menu -->
+    <div class="menu" id="mainMenu">
+        <button class="close-menu">&times;</button>
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#project-init">Project Initialization</a></li>
+            <li><a href="#install-playwright">Install Playwright</a></li>
+            <li><a href="#folder-structure">Folder Structure</a></li>
+            <li><a href="#execute-tests">Execute Tests</a></li>
+            <li><a href="#mongodb-setup">MongoDB Setup</a></li>
+            <li><a href="#install-packages">Install Packages</a></li>
+            <li><a href="#verify-dependencies">Verify Dependencies</a></li>
+            <li><a href="#env-file">.env File</a></li>
+            <li><a href="#utility-js">Utility.js</a></li>
+            <li><a href="#sample-test">Sample Test</a></li>
+        </ul>
+    </div>
+
+    <a href="#" class="back-to-top">↑</a>
+
+    <header>
+        <h1>Playwright</h1>
+        <p>Complete setup for end-to-end testing with Playwright</p>
+    </header>
+
+    <div class="container">
+        <section class="section" id="project-init">
+            <h2>🔹 1. Project Initialization</h2>
+
+            <div class="step">
+                <h3>Navigate to Project Folder</h3>
+                <div class="code-block">
+                    <span class="command">mkdir WEB_PLAYWRIGHT_JS</span><br>
+                    <span class="command">cd WEB_PLAYWRIGHT_JS</span>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Initialize npm</h3>
+                <div class="code-block">
+                    <span class="command">npm init -y</span>
+                </div>
+                <p>Creates a package.json file with default values</p>
+            </div>
+        </section>
+
+        <section class="section" id="install-playwright">
+            <h2>🔹 2. Install Playwright</h2>
+
+            <div class="step">
+                <h3>Install Playwright Test</h3>
+                <div class="code-block">
+                    <span class="command">npm install -D @playwright/test</span>
+                </div>
+                <p>Installs Playwright as a development dependency</p>
+            </div>
+
+            <div class="step">
+                <h3>Install Browsers</h3>
+                <div class="code-block">
+                    <span class="command">npx playwright install</span>
+                </div>
+                <p>Downloads Chromium, Firefox, and WebKit browsers for testing</p>
+            </div>
+
+            <div class="tip">
+                <strong>Tip:</strong> You can install specific browsers with flags:<br>
+                <span class="code-block" style="padding: 8px; margin: 10px 0 0;">
+                    <span class="command">npx playwright install chromium</span> <span class="comment"># Install only
+                        Chromium</span>
+                </span>
+            </div>
+        </section>
+
+        <section class="section" id="folder-structure">
+            <h2>🔹 3. Project Folder Structure</h2>
+
+            <div class="file-structure">
+                <div class="folder">PLAYWRIGHT_PROJECT/</div>
+                <div style="margin-left: 20px;">
+                    <div class="folder">API/</div>
+                    <div style="margin-left: 40px;">
+                        <div class="file">Payloads.json</div>
+                    </div>
+
+                    <div class="folder">Base/</div>
+                    <div style="margin-left: 40px;">
+                        <div class="file">UIAction.js</div>
+                        <div class="file">Utility.js</div>
+                    </div>
+
+                    <div class="folder">node_modules/</div>
+
+                    <div class="folder">Pages/</div>
+                    <div style="margin-left: 40px;">
+                        <div class="file">LoginPage.js</div>
+                    </div>
+
+                    <div class="folder">playwright-reports/</div>
+
+                    <div class="folder">test-results/</div>
+
+                    <div class="folder">Tests/</div>
+                    <div style="margin-left: 40px;">
+                        <div class="file">Login.test.js</div>
+                    </div>
+                    <div class="file">.env</div>
+                    <div class="file">.gitignore</div>
+                    <div class="file">package-lock.json</div>
+                    <div class="file">package.json</div>
+                    <div class="file">playwright.config.js</div>
+                </div>
+            </div>
+
+            <div class="important">
+                <strong>Note:</strong> This structure organizes the project with clear separation of concerns between
+                tests, pages, utilities, and configuration files.
+            </div>
+        </section>
+
+        <section class="section" id="execute-tests">
+            <h2>🔹 4. Execute Playwright Test</h2>
+
+            <div class="code-block">
+                <span class="command">npx playwright test Tests/UpdateProfile.test.js && npx playwright show-report
+                    playwright-reports/html-report</span>
+            </div>
+
+            <p>This command:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Runs the specific test file</li>
+                <li>Generates an HTML report</li>
+                <li>Opens the report in your browser automatically</li>
+            </ul>
+        </section>
+
+        <section class="section full-width" id="mongodb-setup">
+            <h2>📦 MongoDB Database Setup with Playwright</h2>
+
+            <div class="step" id="install-packages">
+                <h3>Step 1: Install Required Packages</h3>
+                <div class="code-block">
+                    <span class="command">npm install mongodb dotenv</span>
+                </div>
+                <p>Adds MongoDB driver and environment variables support</p>
+            </div>
+
+            <div class="step" id="verify-dependencies">
+                <h3>Step 2: Verify package.json Dependencies</h3>
+                <p>Ensure your package.json includes:</p>
+                <div class="code-block">
+                    <span class="comment">// In your package.json</span><br>
+                    "dependencies": {<br>
+                    &nbsp;&nbsp;"dotenv": "^17.2.0",<br>
+                    &nbsp;&nbsp;"mongodb": "^6.17.0"<br>
+                    }
+                </div>
+            </div>
+
+            <div class="step" id="env-file">
+                <h3>Step 3: Create .env File</h3>
+                <p>Create <span class="file">.env</span> in your project root:</p>
+                <div class="code-block">
+                    MONGO_URI=mongodb+srv://prajwalnarute:Prajwala%40123@foodapp.jdid3cd.mongodb.net/?retryWrites=true&w=majority<br>
+                    DB_NAME=foodies
+                </div>
+
+                <div class="important">
+                    <strong>Security Note:</strong> Never commit .env files to version control. Add <span
+                        class="file">.env</span> to your <span class="file">.gitignore</span> file.
+                </div>
+            </div>
+
+            <div class="step" id="utility-js">
+                <h3>Step 4: Create Utility.js</h3>
+                <p>Create <span class="file">Base/Utility.js</span> with MongoDB connection functions:</p>
+
+                <div class="code-block">
+                    <span class="comment">// Base/Utility.js</span><br>
+                    const { MongoClient } = require('mongodb');<br>
+                    require('dotenv').config();<br><br>
+
+                    const uri = process.env.MONGO_URI;<br>
+                    const dbName = process.env.DB_NAME;<br>
+                    let client;<br><br>
+
+                    async function connectToMongoDB() {<br>
+                    &nbsp;&nbsp;console.log(`Connecting MongoDB:\nURL: ${uri}\nDBName: ${dbName}`);<br>
+                    &nbsp;&nbsp;if (!client) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;client = new MongoClient(uri);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;await client.connect();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log('<span class="success">☑ Connected to MongoDB at
+                        ${uri}</span>');<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log('-'.repeat(100));<br>
+                    &nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;return client.db(dbName);<br>
+                    }<br><br>
+
+                    async function closeMongoDB() {<br>
+                    &nbsp;&nbsp;if (client) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;await client.close();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log('<span class="success">☑ Closed MongoDB connection</span>');<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;client = null;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log('-'.repeat(100));<br>
+                    &nbsp;&nbsp;}<br>
+                    }<br><br>
+
+                    async function getCollectionDataFromMongo(collectionName, keyName, keyValue) {<br>
+                    &nbsp;&nbsp;try {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;const db = await connectToMongoDB();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;const query = { [keyName]: keyValue }; <span class="comment">// ✓ dynamic
+                        key</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;const data = await db.collection(collectionName).find(query).toArray();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;if (data.length === 0) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(`<span class="error">No data found for: ${keyName} =
+                        ${keyValue}</span>`);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log('-'.repeat(100));<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return [];<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log(`<span class="success">Retrieved ${data.length} records for
+                        ${keyName} = ${keyValue}</span>`);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log(`\nFull ${collectionName} JSON:\n${JSON.stringify(data, null,
+                    2)}`);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log('-'.repeat(100));<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;return data;<br>
+                    &nbsp;&nbsp;} catch (error) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.error(`<span class="error">✗ Error fetching data from
+                        '${collectionName}': ${error.message}</span>`);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log('-'.repeat(100));<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;return null;<br>
+                    &nbsp;&nbsp;} finally {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;await closeMongoDB();<br>
+                    &nbsp;&nbsp;}<br>
+                    }<br><br>
+
+                    async function validateDataPresence(data, key, expectedValue) {<br>
+                    &nbsp;&nbsp;process.stdout.write(`Verifying: ${expectedValue} present in ${key}...\n`);<br>
+                    &nbsp;&nbsp;const found = data.some(item => item[key] === expectedValue);<br>
+                    &nbsp;&nbsp;if (found) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log('<span class="success">✓ Validation successful</span>');<br>
+                    &nbsp;&nbsp;} else {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log('<span class="error">✗ Validation failed</span>');<br>
+                    &nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;console.log('-'.repeat(100));<br>
+                    &nbsp;&nbsp;return found;<br>
+                    }<br><br>
+
+                    module.exports = {<br>
+                    &nbsp;&nbsp;getCollectionDataFromMongo,<br>
+                    &nbsp;&nbsp;validateDataPresence<br>
+                    };
+                </div>
+            </div>
+
+            <div class="step" id="sample-test">
+                <h3>Step 5: Sample Test Usage</h3>
+                <p>Example of using these utilities in a test:</p>
+
+                <div class="code-block">
+                    <span class="comment">// Tests/UpdateProfile.test.js</span><br>
+                    const { getCollectionDataFromMongo, validateDataPresence } = require('../Base/Utility');<br><br>
+
+                    test('Verify profile update in MongoDB', async () => {<br>
+                    &nbsp;&nbsp;<span class="comment">// Your Playwright test code here</span><br>
+                    &nbsp;&nbsp;await page.goto('https://yourapp.com/profile');<br>
+                    &nbsp;&nbsp;await page.fill('#name', 'John Doe');<br>
+                    &nbsp;&nbsp;await page.click('#save');<br><br>
+                    &nbsp;&nbsp;<span class="comment">// Verify data in MongoDB</span><br>
+                    &nbsp;&nbsp;const userData = await getCollectionDataFromMongo('users', 'email',
+                    'john@example.com');<br>
+                    &nbsp;&nbsp;await validateDataPresence(userData, 'name', 'John Doe');<br>
+                    });
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0;">
+        <a href="Cypress.html" class="nav-button">Next: Cypress Guide →</a>
+    </div>
+
+    <script>
+        // Menu functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeMenu = document.querySelector('.close-menu');
+        const menu = document.getElementById('mainMenu');
+        const menuLinks = document.querySelectorAll('.menu a');
+
+        // Toggle menu
+        menuToggle.addEventListener('click', () => {
+            menu.classList.add('active');
+        });
+
+        // Close menu
+        closeMenu.addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // Close menu when clicking on links
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
