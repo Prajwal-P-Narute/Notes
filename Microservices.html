@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservices Architecture Guide</title>
+    <style>
+        :root {
+            --primary: #4a6baf;
+            --secondary: #34a853;
+            --accent: #fbbc05;
+            --dark: #333;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+            --code-bg: #2d2d2d;
+            --code-text: #f8f8f2;
+            --code-comment: #6272a4;
+            --code-command: #50fa7b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 60px 20px 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 100;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu ul {
+            list-style-type: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            color: var(--dark);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .menu a:hover {
+            background-color: #f0f5ff;
+            color: var(--primary);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4a6baf, #6c8bd5);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+            scroll-margin-top: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .command {
+            color: var(--code-command);
+        }
+
+        .comment {
+            color: var(--code-comment);
+        }
+
+        .important {
+            background-color: #fff9e6;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip {
+            background-color: #e6f7ee;
+            padding: 12px 15px;
+            border-left: 4px solid var(--secondary);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .file-structure {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            line-height: 1.8;
+        }
+
+        .folder {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .file {
+            color: var(--secondary);
+        }
+
+        .success {
+            color: var(--secondary);
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), #6c8bd5);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .component-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .component-card h4 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                width: 80%;
+                right: -80%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+
+            .component-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu Button -->
+    <button class="menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Menu
+    </button>
+
+    <!-- Menu -->
+    <div class="menu" id="mainMenu">
+        <button class="close-menu">&times;</button>
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#monolith">Monolith Architecture</a></li>
+            <li><a href="#drawbacks">Drawbacks of Monolith</a></li>
+            <li><a href="#microservices">Microservices Overview</a></li>
+            <li><a href="#benefits">Benefits</a></li>
+            <li><a href="#challenges">Challenges</a></li>
+            <li><a href="#architecture">Architecture Components</a></li>
+            <li><a href="#service-registry">Service Registry</a></li>
+            <li><a href="#admin-server">Admin Server</a></li>
+            <li><a href="#zipkin">Zipkin Server</a></li>
+            <li><a href="#apis">Backend APIs</a></li>
+            <li><a href="#feign">Feign Client</a></li>
+            <li><a href="#gateway">API Gateway</a></li>
+            <li><a href="#config">Config Server</a></li>
+            <li><a href="#kafka">Apache Kafka</a></li>
+            <li><a href="#redis">Redis Cache</a></li>
+            <li><a href="#welcome-api">WELCOME-API</a></li>
+            <li><a href="#greet-api">GREET-API</a></li>
+            <li><a href="#communication">Inter-service Communication</a></li>
+            <li><a href="#load-balancing">Load Balancing</a></li>
+            <li><a href="#auto-scaling">Auto Scaling</a></li>
+            <li><a href="#circuit-breaker">Circuit Breaker</a></li>
+        </ul>
+    </div>
+
+    <a href="#" class="back-to-top">↑</a>
+
+    <header>
+        <h1>Microservices Architecture Guide</h1>
+        <p>Comprehensive overview of microservices architecture, components, and implementation</p>
+    </header>
+
+    <div class="container">
+        <section class="section" id="monolith">
+            <h2>Monolith Architecture</h2>
+            <ul>
+                <li>Develop all functionalities in single app</li>
+                <li>Application will be packaged as one fat jar / fat war</li>
+                <li>App will be deployed in single server</li>
+            </ul>
+        </section>
+
+        <section class="section" id="drawbacks">
+            <h2>Drawbacks</h2>
+            <ol>
+                <li>Single Point of failure</li>
+                <li>Re-Deploy entire app</li>
+                <li>Maintenance of the app</li>
+                <li>Burden on server</li>
+            </ol>
+        </section>
+
+        <section class="section" id="microservices">
+            <h2>Microservices</h2>
+            <ul>
+                <li>Microservices is not a technology</li>
+                <li>Microservices is not a framework</li>
+                <li>Microservices is not an API</li>
+                <li>Microservices is an architectural design pattern</li>
+                <li>Microservices design pattern is universal</li>
+                <li>The main aim of microservices is to develop app with loosely coupling</li>
+                <li>Microservices based application means collection of REST APIs</li>
+                <li>Microservices means independently deployable and executable services</li>
+            </ul>
+        </section>
+
+        <section class="section" id="benefits">
+            <h2>Benefits</h2>
+            <ol>
+                <li>Loosely Coupled</li>
+                <li>Easy Maintenance</li>
+                <li>Load will be distributed</li>
+                <li>Technology Independency</li>
+                <li>High Availability</li>
+            </ol>
+        </section>
+
+        <section class="section" id="challenges">
+            <h2>Challenges</h2>
+            <ol>
+                <li>Bounded Context (deciding no. of REST APIs to develop)</li>
+                <li>Duplicate Configuration</li>
+                <li>Visibility</li>
+            </ol>
+        </section>
+
+        <section class="section full-width" id="architecture">
+            <h2>Microservices Architecture</h2>
+            <p>There is no standard architecture for Microservices development. People are customizing microservices project architecture according to their requirement.</p>
+            
+            <div class="component-grid">
+                <div class="component-card">
+                    <h4>1. Service Registry</h4>
+                    <p>Maintains list of services available in the project</p>
+                </div>
+                <div class="component-card">
+                    <h4>2. Admin Server</h4>
+                    <p>UI to monitor and manage all APIs using actuator endpoints</p>
+                </div>
+                <div class="component-card">
+                    <h4>3. Zipkin Server</h4>
+                    <p>Used for distributed tracing</p>
+                </div>
+                <div class="component-card">
+                    <h4>4. Backend Services</h4>
+                    <p>REST APIs containing business logic</p>
+                </div>
+                <div class="component-card">
+                    <h4>5. API Gateway</h4>
+                    <p>Manages backend APIs and acts as entry point</p>
+                </div>
+                <div class="component-card">
+                    <h4>6. Feign Client</h4>
+                    <p>Used for inter-service communication</p>
+                </div>
+                <div class="component-card">
+                    <h4>7. Config Server</h4>
+                    <p>Externalizes configuration properties</p>
+                </div>
+                <div class="component-card">
+                    <h4>8. Apache Kafka</h4>
+                    <p>Message broker for event-driven applications</p>
+                </div>
+                <div class="component-card">
+                    <h4>9. Redis Cache</h4>
+                    <p>Used for distributed cache implementation</p>
+                </div>
+                <div class="component-card">
+                    <h4>10. Docker</h4>
+                    <p>Containerization platform</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="service-registry">
+            <h2>Service Registry</h2>
+            <ul>
+                <li>Maintains list of services available in the project</li>
+                <li>Provides information about registered services (name, URL, status)</li>
+                <li>Provides number of instances available for each service</li>
+                <li>We can use Eureka Server as a service registry</li>
+                <li>Eureka server provided by Spring Cloud Netflix library</li>
+            </ul>
+            
+            <h3>Steps to develop Service Registry Application (Eureka Server)</h3>
+            <div class="step">
+                <p>1. Create Service Registry application with EurekaServer dependency</p>
+                <div class="code-block">
+                    <span class="comment">&lt;!-- pom.xml --&gt;</span><br>
+                    &lt;dependency&gt;<br>
+                    &nbsp;&nbsp;&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;<br>
+                    &nbsp;&nbsp;&lt;artifactId&gt;spring-cloud-starter-netflix-eureka-server&lt;/artifactId&gt;<br>
+                    &lt;/dependency&gt;
+                </div>
+            </div>
+            
+            <div class="step">
+                <p>2. Configure @EnableEurekaServer annotation in boot start class</p>
+                <div class="code-block">
+                    <span class="comment">// Application.java</span><br>
+                    @SpringBootApplication<br>
+                    @EnableEurekaServer<br>
+                    public class Application {<br>
+                    &nbsp;&nbsp;public static void main(String[] args) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;SpringApplication.run(Application.class, args);<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+            
+            <div class="step">
+                <p>3. Configure properties in application.yml file</p>
+                <div class="code-block">
+                    <span class="comment"># application.yml</span><br>
+                    server:<br>
+                    &nbsp;&nbsp;port: 8761<br>
+                    <br>
+                    eureka:<br>
+                    &nbsp;&nbsp;client:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;register-with-eureka: false
+                </div>
+                <p class="tip">If Service-Registry project port is 8761 then clients can discover service-registry and will register automatically.</p>
+            </div>
+            
+            <div class="step">
+                <p>4. Access Eureka Dashboard</p>
+                <p>URL: <span class="command">http://localhost:8761/</span></p>
+            </div>
+        </section>
+
+        <section class="section" id="admin-server">
+            <h2>Admin Server</h2>
+            <ul>
+                <li>Actuators are used to monitor and manage our applications</li>
+                <li>Monitoring and managing all the APIs separately is challenging</li>
+                <li>Admin Server provides a UI to monitor and manage all APIs at one place using actuator endpoints</li>
+            </ul>
+            
+            <h3>Steps to develop Spring Admin-Server</h3>
+            <ol>
+                <li>Create Boot application with admin-server dependency</li>
+                <li>Configure @EnableAdminServer annotation at start class</li>
+                <li>Change Port Number (Optional)</li>
+                <li>Run the boot application</li>
+                <li>Access application URL in browser</li>
+            </ol>
+        </section>
+
+        <section class="section" id="zipkin">
+            <h2>Zipkin Server</h2>
+            <ul>
+                <li>Used for Distributed tracing</li>
+                <li>Monitor which API is taking more time to process request</li>
+                <li>Understand how many APIs involved in request processing</li>
+            </ul>
+            
+            <h3>Steps to work with Zipkin Server</h3>
+            <ol>
+                <li>Download Zipkin Jar file from <span class="command">https://zipkin.io/pages/quickstart.html</span></li>
+                <li>Run zipkin jar file: <span class="command">java -jar &lt;jar-name&gt;</span></li>
+                <li>Zipkin Server runs on port 9411</li>
+                <li>Access dashboard: <span class="command">http://localhost:9411/</span></li>
+            </ol>
+        </section>
+
+        <section class="section" id="apis">
+            <h2>Backend APIs</h2>
+            <ul>
+                <li>Contain business logic</li>
+                <li>Also called as REST APIs / services / microservices</li>
+                <li>Examples: payment-api, cart-api, flights-api, hotels-api</li>
+                <li>Can register as client for Service Registry, Admin server & Zipkin server (optional)</li>
+            </ul>
+        </section>
+
+        <section class="section" id="feign">
+            <h2>Feign Client</h2>
+            <ul>
+                <li>Provided by Spring Cloud libraries</li>
+                <li>Used for Inter Service Communication</li>
+                <li>One API accessing another API using Service Registry</li>
+                <li>No need to mention URL of the API to access</li>
+                <li>Uses service name to get service URL from service registry</li>
+                <li>Uses Ribbon for client-side load balancing</li>
+            </ul>
+        </section>
+
+        <section class="section" id="gateway">
+            <h2>API Gateway</h2>
+            <ul>
+                <li>Used to manage backend APIs</li>
+                <li>Acts as mediator between user requests and backend APIs</li>
+                <li>Acts as entrypoint for all backend APIs</li>
+                <li>Contains two types of logics:
+                    <ol>
+                        <li>Request Filter: To validate the request (go / no-go)</li>
+                        <li>Request Router: Forward request to particular backend-API based on URL pattern</li>
+                    </ol>
+                </li>
+            </ul>
+            
+            <h3>API Gateway Configuration</h3>
+            <div class="code-block">
+                <span class="comment"># application.yml</span><br>
+                spring:<br>
+                &nbsp;&nbsp;cloud:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;gateway:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;routes:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- id: welcome-api<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri: lb://WELCOME-API<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;predicates:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Path=/welcome<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- id: greet-api<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri: lb://GREET-API<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;predicates:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Path=/greet
+            </div>
+        </section>
+
+        <section class="section" id="config">
+            <h2>Config Server</h2>
+            <ul>
+                <li>Part of Spring Cloud Library</li>
+                <li>Used to externalize config properties of application</li>
+                <li>In realtime, config properties are kept outside of the project to simplify maintenance</li>
+                <li>Config properties files are maintained in GitHub repo</li>
+                <li>Config server loads properties and provides them to applications based on application name</li>
+            </ul>
+        </section>
+
+        <section class="section" id="kafka">
+            <h2>Apache Kafka</h2>
+            <ul>
+                <li>Message broker</li>
+                <li>Works based on Publisher-Subscriber model</li>
+                <li>Sends messages from one app to another app as a mediator</li>
+                <li>Used to develop Event Driven Microservices based applications</li>
+            </ul>
+        </section>
+
+        <section class="section" id="redis">
+            <h2>Redis Cache</h2>
+            <ul>
+                <li>Two types of tables in applications:
+                    <ol>
+                        <li>Transactional tables (DML operations)</li>
+                        <li>Non-Transactional tables (DQL operations)</li>
+                    </ol>
+                </li>
+                <li>Not recommended to load non-transactional tables data from DB every time</li>
+                <li>Cache reduces number of round trips between Java app and Database</li>
+                <li>Redis is used for distributed cache implementation</li>
+            </ul>
+        </section>
+
+        <section class="section" id="welcome-api">
+            <h2>Steps to develop WELCOME-API</h2>
+            <ol>
+                <li>Create Spring Boot application with dependencies:
+                    <ul>
+                        <li>eureka-discovery-client</li>
+                        <li>starter-web</li>
+                        <li>devtools</li>
+                        <li>actuator</li>
+                        <li>zipkin</li>
+                        <li>admin-client</li>
+                    </ul>
+                </li>
+                <li>Configure @EnableDiscoveryClient annotation at boot start class</li>
+                <li>Create RestController with required method</li>
+                <li>Configure properties in application.yml file:
+                    <div class="code-block">
+                        <span class="comment"># application.yml</span><br>
+                        server:<br>
+                        &nbsp;&nbsp;port: 1111<br>
+                        spring:<br>
+                        &nbsp;&nbsp;application:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;name: WELCOME-API<br>
+                        &nbsp;&nbsp;boot:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;admin:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;client:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: http://localhost:9090/<br>
+                        eureka:<br>
+                        &nbsp;&nbsp;client:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;serviceUrl:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;defaultZone: http://localhost:8761/eureka<br>
+                        management:<br>
+                        &nbsp;&nbsp;endpoints:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;web:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exposure:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;include: '*'
+                    </div>
+                </li>
+                <li>Run the application and check in Eureka Dashboard</li>
+                <li>Check Admin Server Dashboard</li>
+                <li>Send Request to REST API method</li>
+                <li>Check Zipkin Server UI</li>
+            </ol>
+        </section>
+
+        <section class="section" id="greet-api">
+            <h2>Steps to develop GREET-API</h2>
+            <ol>
+                <li>Create Spring Boot application with dependencies:
+                    <ul>
+                        <li>eureka-discovery-client</li>
+                        <li>starter-web</li>
+                        <li>devtools</li>
+                        <li>actuator</li>
+                        <li>zipkin</li>
+                        <li>admin-client</li>
+                        <li>openfeign</li>
+                    </ul>
+                </li>
+                <li>Configure @EnableDiscoveryClient annotation at boot start class</li>
+                <li>Create RestController with required method</li>
+                <li>Configure properties in application.yml file:
+                    <div class="code-block">
+                        <span class="comment"># application.yml</span><br>
+                        server:<br>
+                        &nbsp;&nbsp;port: 2222<br>
+                        spring:<br>
+                        &nbsp;&nbsp;application:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;name: GREET-API<br>
+                        &nbsp;&nbsp;boot:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;admin:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;client:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: http://localhost:9090/<br>
+                        management:<br>
+                        &nbsp;&nbsp;endpoints:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;web:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exposure:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;include: '*'
+                    </div>
+                </li>
+                <li>Run the application and check in Eureka Dashboard</li>
+                <li>Check Admin Server Dashboard</li>
+                <li>Send Request to REST API method</li>
+                <li>Check Zipkin Server UI</li>
+            </ol>
+        </section>
+
+        <section class="section" id="communication">
+            <h2>Inter-service Communication</h2>
+            <ol>
+                <li>Add @EnableFeignClients dependency in GREET-API boot start class</li>
+                <li>Create FeignClient interface:
+                    <div class="code-block">
+                        <span class="comment">// WelcomeApiClient.java</span><br>
+                        @FeignClient(name = "WELCOME-API")<br>
+                        public interface WelcomeApiClient {<br>
+                        &nbsp;&nbsp;@GetMapping("/welcome")<br>
+                        &nbsp;&nbsp;public String invokeWelcomeMsg();<br>
+                        }
+                    </div>
+                </li>
+                <li>Inject feign client into GreetRestController:
+                    <div class="code-block">
+                        <span class="comment">// GreetRestController.java</span><br>
+                        @RestController<br>
+                        public class GreetRestController {<br>
+                        &nbsp;&nbsp;@Autowired<br>
+                        &nbsp;&nbsp;private WelcomeApiClient welcomeClient;<br>
+                        <br>
+                        &nbsp;&nbsp;@GetMapping("/greet")<br>
+                        &nbsp;&nbsp;public String getGreetMsg() {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;String welcomeMsg = welcomeClient.invokeWelcomeMsg();<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;String greetMsg = "Good Morning, ";<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;return greetMsg.concat(welcomeMsg);<br>
+                        &nbsp;&nbsp;}<br>
+                        }
+                    </div>
+                </li>
+                <li>Run the applications and access greet-api method</li>
+            </ol>
+        </section>
+
+        <section class="section" id="load-balancing">
+            <h2>Load Balancing</h2>
+            <ul>
+                <li>Distribute requests to multiple servers</li>
+                <li>Run welcome-api in multiple instances:
+                    <ol>
+                        <li>Remove port number configuration from welcome-api yml file</li>
+                        <li>Make changes in rest controller to display port number in response</li>
+                        <li>Run with different ports using VM arguments:
+                            <div class="code-block">
+                                <span class="command">-Dserver.port=8081</span><br>
+                                <span class="command">-Dserver.port=8082</span>
+                            </div>
+                        </li>
+                    </ol>
+                </li>
+            </ul>
+        </section>
+
+        <section class="section" id="auto-scaling">
+            <h2>Auto Scaling</h2>
+            <ul>
+                <li>Scale up or scale down servers based on incoming traffic</li>
+                <li>Benefits:
+                    <ol>
+                        <li>Fault Tolerance</li>
+                        <li>High Availability</li>
+                        <li>Cost Management</li>
+                    </ol>
+                </li>
+            </ul>
+        </section>
+
+        <section class="section" id="circuit-breaker">
+            <h2>Circuit Breaker Design Pattern</h2>
+            <ul>
+                <li>Protects from high voltage or low voltage power (electrical concept)</li>
+                <li>Diverts traffic when problems detected in normal execution flow</li>
+                <li>Used in microservices to implement fault tolerance/resilience systems</li>
+                <li>When main logic fails continuously, executes fallback logic for some time</li>
+            </ul>
+            
+            <h3>Circuit Breaker Implementation</h3>
+            <ol>
+                <li>Create Spring Boot project with dependencies:
+                    <ul>
+                        <li>web-starter</li>
+                        <li>actuator</li>
+                        <li>aop</li>
+                        <li>resilience4j</li>
+                    </ul>
+                </li>
+                <li>Create Rest Controller:
+                    <div class="code-block">
+                        <span class="comment">// DataRestController.java</span><br>
+                        @RestController<br>
+                        public class DataRestController {<br>
+                        &nbsp;&nbsp;@GetMapping("/data")<br>
+                        &nbsp;&nbsp;@CircuitBreaker(fallbackMethod = "getDataFromDB", name = "ashokit")<br>
+                        &nbsp;&nbsp;public String getData() {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;System.out.println("redis method called..");<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;int i = 10 / 0;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;return "Redis Data sent to u r email";<br>
+                        &nbsp;&nbsp;}<br>
+                        <br>
+                        &nbsp;&nbsp;public String getDataFromDB(Throwable t) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;System.out.println("db method called..");<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;return "DB Data sent to u r email";<br>
+                        &nbsp;&nbsp;}<br>
+                        }
+                    </div>
+                </li>
+                <li>Configure Circuit Breaker Properties:
+                    <div class="code-block">
+                        <span class="comment"># application.yml</span><br>
+                        spring:<br>
+                        &nbsp;&nbsp;application.name: resilience4j-demo<br>
+                        management:<br>
+                        &nbsp;&nbsp;endpoints.web.exposure.include: '*'<br>
+                        &nbsp;&nbsp;endpoint.health.show-details: always<br>
+                        &nbsp;&nbsp;health.circuitbreakers.enabled: true<br>
+                        resilience4j.circuitbreaker:<br>
+                        &nbsp;&nbsp;configs:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;default:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;registerHealthIndicator: true<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;slidingWindowSize: 10<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minimumNumberOfCalls: 5<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;permittedNumberOfCallsInHalfOpenState: 3<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;automaticTransitionFromOpenToHalfOpenEnabled: true<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;waitDurationInOpenState: 5s<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failureRateThreshold: 50<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eventConsumerBufferSize: 10
+                    </div>
+                </li>
+                <li>Test the application and monitor actuator health endpoint</li>
+            </ol>
+        </section>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0;">
+        <a href="index.html" class="nav-button">Go To Index</a>
+    </div>
+
+    <script>
+        // Menu functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeMenu = document.querySelector('.close-menu');
+        const menu = document.getElementById('mainMenu');
+        const menuLinks = document.querySelectorAll('.menu a');
+
+        // Toggle menu
+        menuToggle.addEventListener('click', () => {
+            menu.classList.add('active');
+        });
+
+        // Close menu
+        closeMenu.addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // Close menu when clicking on links
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
