@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testing Frameworks Guide</title>
+    <title>IT Topics Hub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -21,6 +21,10 @@
             --java: #007396;
             --java-programs: #e76f00;
             --microservices: #6a0dad;
+            --testing: #e74c3c;
+            --devops: #9b59b6;
+            --database: #16a085;
+            --linux: #1793D1;
         }
 
         * {
@@ -46,23 +50,41 @@
         header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 30px;
-            background: linear-gradient(135deg, var(--primary), #6c8bd5);
+            padding: 40px 30px;
+            background: linear-gradient(135deg, #4a6baf, #6c8bd5);
             color: white;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
+            font-size: 3.2rem;
+            margin-bottom: 15px;
         }
 
         .description {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             opacity: 0.9;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .category-title i {
+            margin-right: 15px;
         }
 
         .framework-cards {
@@ -126,6 +148,18 @@
 
         .microservices-header {
             background: linear-gradient(135deg, #6a0dad, #8a2be2);
+        }
+
+        .devops-header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .database-header {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+        }
+
+        .linux-header {
+            background: linear-gradient(135deg, #1793D1, #67b8e3);
         }
 
         .card-icon {
@@ -210,6 +244,18 @@
             background: linear-gradient(135deg, #6a0dad, #8a2be2);
         }
 
+        .devops-button {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .database-button {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+        }
+
+        .linux-button {
+            background: linear-gradient(135deg, #1793D1, #67b8e3);
+        }
+
         .card-button:hover {
             opacity: 0.9;
         }
@@ -231,6 +277,14 @@
                 width: 100%;
                 max-width: 400px;
             }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .description {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
@@ -238,195 +292,273 @@
 <body>
     <div class="container">
         <header>
-            <h1>Testing Frameworks Guide</h1>
-            <p class="description">Comprehensive guides for setting up and using various testing frameworks and tools
-            </p>
+            <h1><i class="fas fa-laptop-code"></i> IT Topics Hub</h1>
+            <p class="description">Comprehensive guides for all IT topics - from programming to DevOps and beyond</p>
         </header>
 
-        <div class="framework-cards">
-            <!-- Playwright -->
-            <div class="card">
-                <div class="card-header playwright-header">
-                    <div class="card-icon">
-                        <i class="fas fa-desktop"></i>
+        <div class="category-section">
+            <h2 class="category-title"><i class="fas fa-vial"></i> Testing Frameworks</h2>
+            <div class="framework-cards">
+                <!-- Playwright -->
+                <div class="card">
+                    <div class="card-header playwright-header">
+                        <div class="card-icon">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <h2 class="card-title">Playwright</h2>
+                        <p>Microsoft's modern testing framework</p>
                     </div>
-                    <h2 class="card-title">Playwright</h2>
-                    <p>Microsoft's modern testing framework</p>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Cross-browser testing</li>
+                            <li><i class="fas fa-check feature-icon"></i> Auto-waiting and web-first assertions</li>
+                            <li><i class="fas fa-check feature-icon"></i> MongoDB integration</li>
+                            <li><i class="fas fa-check feature-icon"></i> Powerful automation capabilities</li>
+                        </ul>
+                        <a href="Playwright.html" class="card-button playwright-button">Open Playwright Guide</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <ul class="card-features">
-                        <li><i class="fas fa-check feature-icon"></i> Cross-browser testing</li>
-                        <li><i class="fas fa-check feature-icon"></i> Auto-waiting and web-first assertions</li>
-                        <li><i class="fas fa-check feature-icon"></i> MongoDB integration</li>
-                        <li><i class="fas fa-check feature-icon"></i> Powerful automation capabilities</li>
-                    </ul>
-                    <a href="Playwright.html" class="card-button playwright-button">Open Playwright Guide</a>
+
+                <!-- Cypress -->
+                <div class="card">
+                    <div class="card-header cypress-header">
+                        <div class="card-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h2 class="card-title">Cypress</h2>
+                        <p>JavaScript end-to-end testing framework</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Time travel debugging</li>
+                            <li><i class="fas fa-check feature-icon"></i> Real-time reloads</li>
+                            <li><i class="fas fa-check feature-icon"></i> POM (Page Object Model) support</li>
+                            <li><i class="fas fa-check feature-icon"></i> Built-in reporting</li>
+                        </ul>
+                        <a href="Cypress.html" class="card-button cypress-button">Open Cypress Guide</a>
+                    </div>
+                </div>
+
+                <!-- Appium -->
+                <div class="card">
+                    <div class="card-header appium-header">
+                        <div class="card-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h2 class="card-title">Appium</h2>
+                        <p>Mobile automation testing framework</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Cross-platform mobile testing</li>
+                            <li><i class="fas fa-check feature-icon"></i> Android and iOS support</li>
+                            <li><i class="fas fa-check feature-icon"></i> No app modification needed</li>
+                            <li><i class="fas fa-check feature-icon"></i> WebDriver protocol</li>
+                        </ul>
+                        <a href="Appium.html" class="card-button appium-button">Open Appium Guide</a>
+                    </div>
+                </div>
+
+                <!-- JMeter -->
+                <div class="card">
+                    <div class="card-header jmeter-header">
+                        <div class="card-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <h2 class="card-title">JMeter</h2>
+                        <p>Performance Testing Guide</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Installation & setup</li>
+                            <li><i class="fas fa-check feature-icon"></i> Test plan creation</li>
+                            <li><i class="fas fa-check feature-icon"></i> Performance testing</li>
+                            <li><i class="fas fa-check feature-icon"></i> Results analysis</li>
+                        </ul>
+                        <a href="JMeter.html" class="card-button jmeter-button">Open JMeter Guide</a>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Cypress -->
-            <div class="card">
-                <div class="card-header cypress-header">
-                    <div class="card-icon">
-                        <i class="fas fa-bolt"></i>
+        <div class="category-section">
+            <h2 class="category-title"><i class="fab fa-java"></i> Java Programming</h2>
+            <div class="framework-cards">
+                <!-- Java -->
+                <div class="card">
+                    <div class="card-header java-header">
+                        <div class="card-icon">
+                            <i class="fab fa-java"></i>
+                        </div>
+                        <h2 class="card-title">Java</h2>
+                        <p>Java Notes</p>
                     </div>
-                    <h2 class="card-title">Cypress</h2>
-                    <p>JavaScript end-to-end testing framework</p>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Introduction</li>
+                            <li><i class="fas fa-check feature-icon"></i> Data type and Variable</li>
+                            <li><i class="fas fa-check feature-icon"></i> OOPS</li>
+                            <li><i class="fas fa-check feature-icon"></i> Collections</li>
+                        </ul>
+                        <a href="Java.html" class="card-button java-button">Open Java Notes</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <ul class="card-features">
-                        <li><i class="fas fa-check feature-icon"></i> Time travel debugging</li>
-                        <li><i class="fas fa-check feature-icon"></i> Real-time reloads</li>
-                        <li><i class="fas fa-check feature-icon"></i> POM (Page Object Model) support</li>
-                        <li><i class="fas fa-check feature-icon"></i> Built-in reporting</li>
-                    </ul>
-                    <a href="Cypress.html" class="card-button cypress-button">Open Cypress Guide</a>
+
+                <!-- Java Programs -->
+                <div class="card">
+                    <div class="card-header java-programs-header">
+                        <div class="card-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h2 class="card-title">Java Programs</h2>
+                        <p>Java Programming Examples</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Find Max number</li>
+                            <li><i class="fas fa-check feature-icon"></i> Array Operations</li>
+                            <li><i class="fas fa-check feature-icon"></i> String Manipulation</li>
+                            <li><i class="fas fa-check feature-icon"></i> Prime Number</li>
+                        </ul>
+                        <a href="JavaPrograms.html" class="card-button java-programs-button">Open Java Programs</a>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Appium -->
-            <div class="card">
-                <div class="card-header appium-header">
-                    <div class="card-icon">
-                        <i class="fas fa-mobile-alt"></i>
+        <div class="category-section">
+            <h2 class="category-title"><i class="fas fa-cogs"></i> Development Tools</h2>
+            <div class="framework-cards">
+                <!-- GitHub -->
+                <div class="card">
+                    <div class="card-header github-header">
+                        <div class="card-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <h2 class="card-title">Git & GitHub</h2>
+                        <p>Version control and collaboration</p>
                     </div>
-                    <h2 class="card-title">Appium</h2>
-                    <p>Mobile automation testing framework</p>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Git configuration & setup</li>
+                            <li><i class="fas fa-check feature-icon"></i> Branching & merging strategies</li>
+                            <li><i class="fas fa-check feature-icon"></i> Rollback & restore techniques</li>
+                            <li><i class="fas fa-check feature-icon"></i> Remote repository management</li>
+                        </ul>
+                        <a href="GitHub.html" class="card-button github-button">Open Git Guide</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <ul class="card-features">
-                        <li><i class="fas fa-check feature-icon"></i> Cross-platform mobile testing</li>
-                        <li><i class="fas fa-check feature-icon"></i> Android and iOS support</li>
-                        <li><i class="fas fa-check feature-icon"></i> No app modification needed</li>
-                        <li><i class="fas fa-check feature-icon"></i> WebDriver protocol</li>
-                    </ul>
-                    <a href="Appium.html" class="card-button appium-button">Open Appium Guide</a>
+
+                <!-- NodeJS -->
+                <div class="card">
+                    <div class="card-header nodejs-header">
+                        <div class="card-icon">
+                            <i class="fab fa-node-js"></i>
+                        </div>
+                        <h2 class="card-title">NodeJS</h2>
+                        <p>Installation Guide</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Node configuration & setup</li>
+                            <li><i class="fas fa-check feature-icon"></i> Covers Windows and macOS</li>
+                            <li><i class="fas fa-check feature-icon"></i> Version management</li>
+                            <li><i class="fas fa-check feature-icon"></i> npm package manager</li>
+                        </ul>
+                        <a href="NodeJS.html" class="card-button nodejs-button">Open Node.js Guide</a>
+                    </div>
+                </div>
+
+                <!-- Linux -->
+                <div class="card">
+                    <div class="card-header linux-header">
+                        <div class="card-icon">
+                            <i class="fab fa-linux"></i>
+                        </div>
+                        <h2 class="card-title">Linux</h2>
+                        <p>Operating System Guide</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Command Line Basics</li>
+                            <li><i class="fas fa-check feature-icon"></i> File System Operations</li>
+                            <li><i class="fas fa-check feature-icon"></i> Process Management</li>
+                            <li><i class="fas fa-check feature-icon"></i> Shell Scripting</li>
+                        </ul>
+                        <a href="Linux.html" class="card-button linux-button">Open Linux Guide</a>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- GitHub -->
-            <div class="card">
-                <div class="card-header github-header">
-                    <div class="card-icon">
-                        <i class="fab fa-github"></i>
+        <div class="category-section">
+            <h2 class="category-title"><i class="fas fa-network-wired"></i> Architecture & Infrastructure</h2>
+            <div class="framework-cards">
+                <!-- Microservices  -->
+                <div class="card">
+                    <div class="card-header microservices-header">
+                        <div class="card-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <h2 class="card-title">Microservices</h2>
+                        <p>Architecture Guide</p>
                     </div>
-                    <h2 class="card-title">Git & GitHub</h2>
-                    <p>Version control and collaboration</p>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Service Registry</li>
+                            <li><i class="fas fa-check feature-icon"></i> API Gateway</li>
+                            <li><i class="fas fa-check feature-icon"></i> Config Server</li>
+                            <li><i class="fas fa-check feature-icon"></i> Circuit Breaker</li>
+                        </ul>
+                        <a href="Microservices.html" class="card-button microservices-button">Open Microservices
+                            Guide</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <ul class="card-features">
-                        <li><i class="fas fa-check feature-icon"></i> Git configuration & setup</li>
-                        <li><i class="fas fa-check feature-icon"></i> Branching & merging strategies</li>
-                        <li><i class="fas fa-check feature-icon"></i> Rollback & restore techniques</li>
-                        <li><i class="fas fa-check feature-icon"></i> Remote repository management</li>
-                    </ul>
-                    <a href="GitHub.html" class="card-button github-button">Open Git Guide</a>
-                </div>
-            </div>
 
-            <!-- NodeJS -->
-            <div class="card">
-                <div class="card-header nodejs-header">
-                    <div class="card-icon">
-                        <i class="fab fa-node-js"></i>
+                <!-- DevOps -->
+                <div class="card">
+                    <div class="card-header devops-header">
+                        <div class="card-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h2 class="card-title">DevOps</h2>
+                        <p>CI/CD & Automation</p>
                     </div>
-                    <h2 class="card-title">NodeJS</h2>
-                    <p>Installation Guide</p>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> Docker & Containers</li>
+                            <li><i class="fas fa-check feature-icon"></i> Kubernetes</li>
+                            <li><i class="fas fa-check feature-icon"></i> Jenkins Pipelines</li>
+                            <li><i class="fas fa-check feature-icon"></i> Infrastructure as Code</li>
+                        </ul>
+                        <a href="DevOps.html" class="card-button devops-button">Open DevOps Guide</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <ul class="card-features">
-                        <li><i class="fas fa-check feature-icon"></i> Node configuration & setup</li>
-                        <li><i class="fas fa-check feature-icon"></i> Covers Windows and macOS</li>
-                        <li><i class="fas fa-check feature-icon"></i> Version management</li>
-                        <li><i class="fas fa-check feature-icon"></i> npm package manager</li>
-                    </ul>
-                    <a href="NodeJS.html" class="card-button nodejs-button">Open Node.js Guide</a>
-                </div>
-            </div>
 
-            <!-- JMeter -->
-            <div class="card">
-                <div class="card-header jmeter-header">
-                    <div class="card-icon">
-                        <i class="fas fa-tachometer-alt"></i>
+                <!-- Database -->
+                <div class="card">
+                    <div class="card-header database-header">
+                        <div class="card-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h2 class="card-title">Database</h2>
+                        <p>SQL & NoSQL Guides</p>
                     </div>
-                    <h2 class="card-title">JMeter</h2>
-                    <p>Performance Testing Guide</p>
-                </div>
-                <div class="card-body">
-                    <ul class="card-features">
-                        <li><i class="fas fa-check feature-icon"></i> Installation & setup</li>
-                        <li><i class="fas fa-check feature-icon"></i> Test plan creation</li>
-                        <li><i class="fas fa-check feature-icon"></i> Performance testing</li>
-                        <li><i class="fas fa-check feature-icon"></i> Results analysis</li>
-                    </ul>
-                    <a href="JMeter.html" class="card-button jmeter-button">Open JMeter Guide</a>
-                </div>
-            </div>
-
-            <!-- Java -->
-            <div class="card">
-                <div class="card-header java-header">
-                    <div class="card-icon">
-                        <i class="fab fa-java"></i>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> SQL Queries</li>
+                            <li><i class="fas fa-check feature-icon"></i> MongoDB</li>
+                            <li><i class="fas fa-check feature-icon"></i> Redis</li>
+                            <li><i class="fas fa-check feature-icon"></i> Database Design</li>
+                        </ul>
+                        <a href="Database.html" class="card-button database-button">Open Database Guide</a>
                     </div>
-                    <h2 class="card-title">Java</h2>
-                    <p>Java Notes</p>
-                </div>
-                <div class="card-body">
-                    <ul class="card-features">
-                        <li><i class="fas fa-check feature-icon"></i> Introduction</li>
-                        <li><i class="fas fa-check feature-icon"></i> Data type and Variable</li>
-                        <li><i class="fas fa-check feature-icon"></i> OOPS</li>
-                        <li><i class="fas fa-check feature-icon"></i> Collections</li>
-                    </ul>
-                    <a href="Java.html" class="card-button java-button">Open Java Notes</a>
-                </div>
-            </div>
-
-            <!-- Java Programs -->
-            <div class="card">
-                <div class="card-header java-programs-header">
-                    <div class="card-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <h2 class="card-title">Java Programs</h2>
-                    <p>Java Programming Examples</p>
-                </div>
-                <div class="card-body">
-                    <ul class="card-features">
-                        <li><i class="fas fa-check feature-icon"></i> Find Max number</li>
-                        <li><i class="fas fa-check feature-icon"></i> Array Operations</li>
-                        <li><i class="fas fa-check feature-icon"></i> String Manipulation</li>
-                        <li><i class="fas fa-check feature-icon"></i> Prime Number</li>
-                    </ul>
-                    <a href="JavaPrograms.html" class="card-button java-programs-button">Open Java Programs</a>
-                </div>
-            </div>
-
-            <!-- Microservices  -->
-            <div class="card">
-                <div class="card-header microservices-header">
-                    <div class="card-icon">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <h2 class="card-title">Microservices</h2>
-                    <p>Architecture Guide</p>
-                </div>
-                <div class="card-body">
-                    <ul class="card-features">
-                        <li><i class="fas fa-check feature-icon"></i> Service Registry</li>
-                        <li><i class="fas fa-check feature-icon"></i> API Gateway</li>
-                        <li><i class="fas fa-check feature-icon"></i> Config Server</li>
-                        <li><i class="fas fa-check feature-icon"></i> Circuit Breaker</li>
-                    </ul>
-                    <a href="Microservices.html" class="card-button microservices-button">Open Microservices Guide</a>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            <p>Created with <i class="fas fa-heart" style="color: #e91e63;"></i> for testing enthusiasts</p>
+            <p>Created with <i class="fas fa-heart" style="color: #e91e63;"></i> for IT enthusiasts</p>
         </div>
     </div>
 

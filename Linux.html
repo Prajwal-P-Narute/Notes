@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux OS Guide</title>
+    <style>
+        :root {
+            --primary: #1793d1;
+            --secondary: #e95420;
+            --accent: #772953;
+            --dark: #333;
+            --light: #f8f9fa;
+            --border: #e1e4e8;
+            --code-bg: #f6f8fa;
+            --code-text: #24292e;
+            --code-comment: #6a737d;
+            --code-command: #032f62;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 60px 20px 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 100;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu ul {
+            list-style-type: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            color: var(--dark);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .menu a:hover {
+            background-color: #f6f8fa;
+            color: var(--primary);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), #2c974b);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+            scroll-margin-top: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            border: 1px solid var(--border);
+        }
+
+        .command {
+            color: var(--code-command);
+            font-weight: bold;
+        }
+
+        .comment {
+            color: var(--code-comment);
+        }
+
+        .important {
+            background-color: #fff5b1;
+            padding: 15px;
+            border-left: 4px solid #f9c513;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip {
+            background-color: #dcffe4;
+            padding: 12px 15px;
+            border-left: 4px solid var(--secondary);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning {
+            background-color: #ffdce0;
+            padding: 12px 15px;
+            border-left: 4px solid #d73a49;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .file {
+            color: var(--secondary);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), #2c974b);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f6f8fa;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f6f8fa;
+        }
+
+        .check-icon {
+            color: var(--secondary);
+        }
+
+        .cross-icon {
+            color: #cb2431;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                width: 80%;
+                right: -80%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu Button -->
+    <button class="menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Menu
+    </button>
+
+    <!-- Menu -->
+    <div class="menu" id="mainMenu">
+        <button class="close-menu">&times;</button>
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#introduction">Linux OS Introduction</a></li>
+            <li><a href="#os">What is OS?</a></li>
+            <li><a href="#windows-vs-linux">Windows vs Linux</a></li>
+            <li><a href="#history">Linux History</a></li>
+            <li><a href="#distributions">Linux Distributions</a></li>
+            <li><a href="#setup">Linux Setup</a></li>
+            <li><a href="#basic-commands">Basic Commands</a></li>
+            <li><a href="#file-commands">File Commands</a></li>
+            <li><a href="#text-editors">Text Editors</a></li>
+            <li><a href="#sed">SED Command</a></li>
+            <li><a href="#user-management">User Management</a></li>
+            <li><a href="#permissions">File Permissions</a></li>
+            <li><a href="#chown">chown Command</a></li>
+            <li><a href="#find">Find Command</a></li>
+            <li><a href="#zip">Zip Files</a></li>
+            <li><a href="#networking">Networking Commands</a></li>
+            <li><a href="#package-managers">Package Managers</a></li>
+            <li><a href="#webserver">Webserver Setup</a></li>
+            <li><a href="#systemctl">systemctl</a></li>
+            <li><a href="#links">Link Files</a></li>
+            <li><a href="#process-management">Process Management</a></li>
+            <li><a href="#hostname">Changing Hostname</a></li>
+            <li><a href="#summary">Summary</a></li>
+        </ul>
+    </div>
+
+    <a href="#" class="back-to-top">↑</a>
+
+    <header>
+        <h1>Linux OS Guide</h1>
+        <p>Complete guide to Linux operating system, commands, and administration</p>
+    </header>
+
+    <div class="container">
+        <section class="section" id="introduction">
+            <h2>Linux OS</h2>
+            <p>Where we will use Linux OS in real-time:</p>
+            <ul>
+                <li>Jenkins Server</li>
+                <li>Docker Server</li>
+                <li>K8S cluster</li>
+                <li>SonarQube server</li>
+                <li>Nexus Server</li>
+                <li>ELK stack</li>
+                <li>Grafana & Prometheus servers</li>
+                <li>Ansible server</li>
+            </ul>
+        </section>
+
+        <section class="section" id="os">
+            <h2>What is OS?</h2>
+            <ul>
+                <li>It is a software which acts as mediator between user and computer.</li>
+                <li>Users will communicate with computers using OS</li>
+                <li>Without OS we can't use any computer</li>
+                <li>OS provides platform to run our applications in computer.</li>
+                <li>Examples: notepad, calculator, browser, tomcat...</li>
+                <li>We have several operating systems in market:
+                    <ul>
+                        <li>Windows</li>
+                        <li>Linux</li>
+                        <li>Mac</li>
+                        <li>Android</li>
+                        <li>IOS</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section class="section" id="windows-vs-linux">
+            <h2>Windows OS vs Linux OS</h2>
+            
+            <h3>Windows OS</h3>
+            <ul>
+                <li>Developed by Microsoft company (Bill Gates)</li>
+                <li>Windows os is licensed (commercial)</li>
+                <li>Windows is single user based os</li>
+                <li>Security features are less in windows os (anti virus s/w required)</li>
+                <li>Windows is GUI based (graphical user interface)</li>
+                <li>Windows is recommended for personal use</li>
+                <li>Examples: watch movies, play games, online classes...</li>
+            </ul>
+            
+            <h3>Linux OS</h3>
+            <ul>
+                <li>Linux is community based os (not specific to any company)</li>
+                <li>Linux is free and open source os</li>
+                <li>Linux is Multi User based OS</li>
+                <li>Linux is highly secured (anti virus is not required)</li>
+                <li>Linux is CLI based os (command line interface)</li>
+                <li>Linux is highly recommended for business use (servers management)</li>
+                <li>Examples: App Servers, DB servers, jenkins, docker, k8s, nexus...</li>
+            </ul>
+        </section>
+
+        <section class="section" id="history">
+            <h2>Linux History</h2>
+            <ul>
+                <li>Linux OS developed by "Linus Torvalds"</li>
+                <li>Linus Torvalds identified some challenges/issues in Unix OS</li>
+                <li>Linus Torvalds identified one OS which is matching with his ideas i.e Minux os</li>
+                <li>Linus Torvalds used Minux OS code and made some changes and released into market as new OS i.e Linux OS</li>
+                <li>(Li)nus + Mi(nux) = Linux</li>
+            </ul>
+        </section>
+
+        <section class="section" id="distributions">
+            <h2>Linux Distributions</h2>
+            <ul>
+                <li>Linus Torvalds provided Linux OS source code for free of cost</li>
+                <li>So many companies downloaded Linux OS source code and modified according to their requirement and released into market with their brand names</li>
+                <li>Those are called as Linux Distributions/ Linux Flavours</li>
+                <li>We have 200+ Linux Distributions in the market</li>
+                <li>Examples: Amazon Linux, Ubuntu, Red HAT, suse, debian, kali, fedora...</li>
+            </ul>
+        </section>
+
+        <section class="section" id="setup">
+            <h2>How to setup Linux Machine?</h2>
+            <ul>
+                <li>Approach-1: Download and Install Linux OS in our System</li>
+                <li>Approach-2: Use Virtual Box and install Linux os as guest os</li>
+                <li>Approach-3: Setup Linux VM in AWS Cloud for free of cost (1 year & monthly 750 hours you can use)</li>
+            </ul>
+            
+            <div class="important">
+                <h3>Useful Links:</h3>
+                <ul>
+                    <li>AWS Account Setup: <a href="https://youtu.be/xi-JDeceLeI?si=4MgBX_H4_NPuzdT8" target="_blank">https://youtu.be/xi-JDeceLeI?si=4MgBX_H4_NPuzdT8</a></li>
+                    <li>Linux VM Setup in AWS: <a href="https://www.youtube.com/watch?v=JMlQaTXvw5o" target="_blank">https://www.youtube.com/watch?v=JMlQaTXvw5o</a></li>
+                    <li>Connect Linux VM with MobaXterm: <a href="https://youtu.be/uI2iDk8iTps?si=ZuZs0lQTxoRpbRMk" target="_blank">https://youtu.be/uI2iDk8iTps?si=ZuZs0lQTxoRpbRMk</a></li>
+                    <li>Connect Linux VM with putty: <a href="https://youtu.be/GXc_bxmP0AA?si=HgSydrP89mPxv23s" target="_blank">https://youtu.be/GXc_bxmP0AA?si=HgSydrP89mPxv23s</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="basic-commands">
+            <h2>Linux Basic Commands</h2>
+            
+            <div class="code-block">
+                <span class="command">whoami</span> : display logged in username<br>
+                <span class="command">pwd</span> : display present working directory<br>
+                <span class="command">date</span> : display today's date<br>
+                <span class="command">cal</span> : display current month calendar<br>
+                <span class="command">cal 2025</span> : display 2025 year calendar<br>
+                <span class="command">clear</span> : clear the terminal content<br>
+                <span class="command">mkdir</span> : make directory (create folder)<br>
+                <span class="command">rmdir</span> : remove empty directory (delete)<br>
+                <span class="command">rm -rf &lt;dir&gt;</span> : remove non-empty directory<br>
+                <span class="command">ls</span> : display present working directory content<br>
+                <span class="command">ls -l</span> : long list the files in alphabetical order<br>
+                <span class="command">ls -lr</span> : display files in reverse of alphabetical order<br>
+                <span class="command">ls -lt</span> : display latest files on top<br>
+                <span class="command">ls -ltr</span> : display old files on top<br>
+                <span class="command">ls -la</span> : display hidden files<br>
+                <span class="command">touch</span> : To create empty files in linux<br>
+                <span class="command">cd</span> : change directory<br>
+                <span class="command">rm</span> : to delete file<br>
+                <span class="command">mv</span> : For rename & move<br>
+                <span class="command">cat</span> : create new file with data + append data to file + print file data<br>
+                <span class="command">tac</span> : To print file data from bottom to top<br>
+            </div>
+        </section>
+
+        <section class="section" id="file-commands">
+            <h2>File Commands</h2>
+            
+            <div class="code-block">
+                <span class="command">cp</span> : copy file data from one file to another file<br>
+                <span class="command">head</span> : print first 10 lines of the file<br>
+                <span class="command">head -n 20 f1.txt</span> : print first 20 lines<br>
+                <span class="command">tail</span> : print last 10 lines of the file<br>
+                <span class="command">tail -n 25 f1.txt</span> : print last 25 lines<br>
+                <span class="command">grep</span> : global regular expression print<br>
+                <span class="command">grep 'teen' abc.txt</span> : print lines which contains teen keyword<br>
+                <span class="command">grep -i 'teen' abc.txt</span> : ignore case sensitivity<br>
+                <span class="command">grep -n 'teen' abc.txt</span> : print lines contains teen with line number<br>
+                <span class="command">grep -v 'teen' abc.txt</span> : print lines which doesn't contain teen keyword<br>
+                <span class="command">grep 'teen' *</span> : search for teen keyword in all files of pwd<br>
+                <span class="command">tail abc.txt | grep 'teen'</span> : tail with grep combination<br>
+                <span class="command">wc</span> : word count<br>
+            </div>
+        </section>
+
+        <section class="section" id="text-editors">
+            <h2>Text Editors in Linux</h2>
+            
+            <ul>
+                <li>vi (visual editor) it is default editor in linux machines</li>
+                <li>Using 'vi' we can create new files and we can modify existing file data</li>
+                <li>vi command is having 3 modes:
+                    <ol>
+                        <li>command mode (just to open the file)</li>
+                        <li>insert mode (to edit the file) - press 'i' in keyboard</li>
+                        <li>esc mode (to comeout from insert mode) - press 'esc' in keyboard</li>
+                    </ol>
+                </li>
+                <li>Save changes & close the file => <span class="command">:wq</span></li>
+                <li>Without saving changes close the file => <span class="command">:q!</span></li>
+            </ul>
+            
+            <div class="tip">
+                <strong>Note:</strong> vi command will open the file if it is available otherwise it will create new file and it will open that file.
+            </div>
+        </section>
+
+        <section class="section" id="sed">
+            <h2>SED Command</h2>
+            
+            <ul>
+                <li>SED stands for stream editor</li>
+                <li>SED is used to process the data (substitute, delete, print, insert)</li>
+                <li>Using SED command we can perform operations on the file without opening the file</li>
+                <li>SED is very powerful command in linux</li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># replace first occurance of linux keyword with unix</span><br>
+                <span class="command">sed 's/linux/unix/' data.txt</span><br><br>
+                <span class="comment"># replace all occurances of linux keyword with unix</span><br>
+                <span class="command">sed 's/linux/unix/g' data.txt</span><br><br>
+                <span class="comment"># substitute and save changes in original file</span><br>
+                <span class="command">sed -i 's/linux/unix/g' data.txt</span><br><br>
+                <span class="comment"># delete first line of the file</span><br>
+                <span class="command">sed -i '1d' data.txt</span><br><br>
+                <span class="comment"># delete last line of the file</span><br>
+                <span class="command">sed -i '$d' data.txt</span><br><br>
+                <span class="comment"># print data from line number 10 to 20</span><br>
+                <span class="command">sed -n '10,20p' data.txt</span><br><br>
+                <span class="comment"># insert data at 2nd line</span><br>
+                <span class="command">sed '2i\i love india' data.txt</span><br><br>
+                <span class="comment"># insert data at last line</span><br>
+                <span class="command">sed '$a\i am from ashokit' data.txt</span><br>
+            </div>
+        </section>
+
+        <section class="section" id="user-management">
+            <h2>User Management</h2>
+            
+            <ul>
+                <li>Linux is a multi user based OS</li>
+                <li>Multiple users can access single linux machine and can perform multi tasking at time</li>
+                <li>"ec2-user" is a default user in amazon linux vm. ec2-user having sudo privileges</li>
+                <li>Within one linux machine we can create multiple user accounts</li>
+                <li>When we create user account, for user one home directory will be created</li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># create user</span><br>
+                <span class="command">sudo useradd &lt;uname&gt;</span><br><br>
+                <span class="comment"># set password for user & update pwd for user</span><br>
+                <span class="command">sudo passwd &lt;uname&gt;</span><br><br>
+                <span class="comment"># display all users created</span><br>
+                <span class="command">cat /etc/passwd</span><br><br>
+                <span class="comment"># switch user account</span><br>
+                <span class="command">su &lt;uname&gt;</span><br><br>
+                <span class="comment"># navigate to current user home directory</span><br>
+                <span class="command">cd ~</span><br><br>
+                <span class="comment"># Delete user</span><br>
+                <span class="command">sudo userdel &lt;uname&gt;</span><br><br>
+                <span class="comment"># Delete user along with user home directory</span><br>
+                <span class="command">sudo userdel &lt;uname&gt; --remove</span><br><br>
+                <span class="comment"># how to change username</span><br>
+                <span class="command">sudo usermod -l &lt;new-name&gt; &lt;old-name&gt;</span><br>
+            </div>
+        </section>
+
+        <section class="section" id="permissions">
+            <h2>File Permissions in Linux</h2>
+            
+            <ul>
+                <li>Using file permissions we can secure our files and we can protect our file data</li>
+                <li>We have 3 types of permissions in linux:
+                    <ul>
+                        <li>r => read</li>
+                        <li>w => write</li>
+                        <li>x => execute</li>
+                    </ul>
+                </li>
+                <li>File/directory permissions will be represented like: rwxrwxrwx f1.txt</li>
+                <li>File permissions contains in 9 characters:
+                    <ul>
+                        <li>First 3 characters => user/owner permissions</li>
+                        <li>Middle 3 characters => group permissions</li>
+                        <li>Last 3 characters => others permissions</li>
+                    </ul>
+                </li>
+                <li>To change file/directory permissions we will use 'chmod' command</li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># Giving execute permission for user</span><br>
+                <span class="command">chmod u+x f1.txt</span><br><br>
+                <span class="comment"># giving write permission for group</span><br>
+                <span class="command">chmod g+w f1.txt</span><br><br>
+                <span class="comment"># Remove execute permission for others</span><br>
+                <span class="command">chmod o-x f1.txt</span><br><br>
+                <span class="comment"># Remove all permissions for others</span><br>
+                <span class="command">chmod o-rwx f1.txt</span><br><br>
+                <span class="comment"># give all permissions for group</span><br>
+                <span class="command">chmod g+rwx f1.txt</span><br>
+            </div>
+            
+            <h3>File Permissions in Numeric Format</h3>
+            <ul>
+                <li>0 => no permissions</li>
+                <li>1 => Execute</li>
+                <li>2 => Write</li>
+                <li>3 => (2+1) => Write + Execute</li>
+                <li>4 => Read</li>
+                <li>5 => (4 + 1) => Read + Execute</li>
+                <li>6 => (4+2) => Read + Write</li>
+                <li>7 => (6+1) => Read + Write + Execute</li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># ugo+x</span><br>
+                <span class="command">chmod 111 f1.txt</span><br><br>
+                <span class="comment"># u+rwx, g+rwx, o+rwx</span><br>
+                <span class="command">chmod 777 f1.txt</span><br><br>
+                <span class="comment"># u+rw, g+rx, o+rx</span><br>
+                <span class="command">chmod 655 f1.txt</span><br>
+            </div>
+        </section>
+
+        <section class="section" id="chown">
+            <h2>chown command</h2>
+            
+            <ul>
+                <li>It is used to change file/directory ownership</li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># change owner</span><br>
+                <span class="command">sudo chown new-owner file/directory</span><br><br>
+                <span class="comment"># change owner-group</span><br>
+                <span class="command">sudo chown :new-group file/directory</span><br><br>
+                <span class="comment"># change owner & group of file/directory</span><br>
+                <span class="command">sudo chown new-owner:new-group file/directory</span><br>
+            </div>
+            
+            <div class="important">
+                <strong>Q) What is the diff between chmod & chown ?</strong><br>
+                chmod => To change file/directory permissions<br>
+                chown => To change owner/group
+            </div>
+        </section>
+
+        <section class="section" id="find">
+            <h2>How to find the location of files in linux?</h2>
+            
+            <ul>
+                <li>In linux we can use 'find' command to search file paths</li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># search for the files which are having name as f1.txt</span><br>
+                <span class="command">sudo find /home -name f1.txt</span><br><br>
+                <span class="comment"># search for empty files inside /home</span><br>
+                <span class="command">sudo find /home -type f -empty</span><br><br>
+                <span class="comment"># search for empty directories inside /home</span><br>
+                <span class="command">sudo find /home -type d -empty</span><br><br>
+                <span class="comment"># print 30 days old files in linux vm</span><br>
+                <span class="command">sudo find /home -mtime 30 -print</span><br><br>
+                <span class="comment"># print 1 day old files in linux vm</span><br>
+                <span class="command">sudo find /home -mtime 1 -print</span><br><br>
+                <span class="comment"># delete 30 days old files in linux vm</span><br>
+                <span class="command">sudo find /home -mtime 30 -delete</span><br>
+            </div>
+        </section>
+
+        <section class="section" id="zip">
+            <h2>Working with Zip files in linux</h2>
+            
+            <ul>
+                <li>Zip is used for files archive (compress)</li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># create some empty files</span><br>
+                <span class="command">touch f1.txt f2.txt f3.txt</span><br><br>
+                <span class="comment"># create zip file with content</span><br>
+                <span class="command">zip ashokit_data *.txt</span><br><br>
+                <span class="comment"># unzip the zip file</span><br>
+                <span class="command">unzip ashokit_data.zip</span><br>
+            </div>
+        </section>
+
+        <section class="section" id="networking">
+            <h2>Networking commands</h2>
+            
+            <div class="code-block">
+                <span class="command">ping</span> : To check connectivity<br>
+                <span class="command">ping 192.168.23.321</span><br><br>
+                <span class="command">wget</span> : It is used to download files from internet<br>
+                <span class="command">wget &lt;url&gt;</span><br><br>
+                <span class="command">curl</span> : It is used to send HTTP request to server<br>
+                <span class="command">curl https://type.fit/api/quotes</span><br><br>
+                <span class="command">ifconfig</span> : To get ip address of the machine<br>
+            </div>
+        </section>
+
+        <section class="section" id="package-managers">
+            <h2>Package Managers in Linux</h2>
+            
+            <ul>
+                <li>Package means a software (Ex: git, maven, java, python etc...)</li>
+                <li>Package Managers are used to install / update / manage software packages in linux machines</li>
+                <li>Package managers are specific to linux distribution:
+                    <ul>
+                        <li>amazon linux / Red Hat Linux / Cent OS : yum</li>
+                        <li>ubuntu / debian : apt</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># check git client installed or not</span><br>
+                <span class="command">git --version</span><br><br>
+                <span class="comment"># install git client s/w</span><br>
+                <span class="command">sudo yum install git</span><br><br>
+                <span class="comment"># check git installation path</span><br>
+                <span class="command">whereis git</span><br><br>
+                <span class="comment"># check java version</span><br>
+                <span class="command">java -version</span><br><br>
+                <span class="comment"># check java path</span><br>
+                <span class="command">whereis java</span><br><br>
+                <span class="comment"># install java</span><br>
+                <span class="command">sudo yum install java</span><br>
+            </div>
+        </section>
+
+        <section class="section" id="webserver">
+            <h2>Webserver Setup in Linux VM</h2>
+            
+            <ul>
+                <li>Webserver is a software which is used to run websites</li>
+                <li>Website means collection of web pages (ex: login page, register page, dashboard page, about us page)</li>
+                <li>Websites are divided into 2 types:
+                    <ol>
+                        <li>Static website - gives same response for every user</li>
+                        <li>Dynamic website - gives response based on logged in user</li>
+                    </ol>
+                </li>
+                <li>To run static websites we can use 'httpd' as webserver</li>
+                <li>To run dynamic websites we can use 'tomcat, iis' as webservers</li>
+            </ul>
+            
+            <h3>Static website hosting in linux</h3>
+            <div class="code-block">
+                <span class="comment"># install webserver</span><br>
+                <span class="command">sudo yum install httpd</span><br><br>
+                <span class="comment"># start webserver</span><br>
+                <span class="command">sudo service httpd start</span><br><br>
+                <span class="comment"># Navigate to website content directory</span><br>
+                <span class="command">cd /var/www/html</span><br><br>
+                <span class="comment"># create index.html file with website content</span><br>
+                <span class="command">sudo vi index.html</span><br>
+            </div>
+            
+            <div class="tip">
+                <strong>Note:</strong> httpd webserver runs on 80 port number. To access our webserver we need to enable 80 port number in security group inbound rules. We can access our webserver using ec2-vm public ip.
+            </div>
+        </section>
+
+        <section class="section" id="systemctl">
+            <h2>What is systemctl in linux?</h2>
+            
+            <ul>
+                <li>systemctl is used to manage services in linux machines</li>
+                <li>Using systemctl we can perform below operations:
+                    <ul>
+                        <li>start a service</li>
+                        <li>stop a service</li>
+                        <li>restart a service</li>
+                        <li>enable/disable service</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># stop httpd server</span><br>
+                <span class="command">sudo systemctl stop httpd</span><br><br>
+                <span class="comment"># start httpd server</span><br>
+                <span class="command">sudo systemctl start httpd</span><br><br>
+                <span class="comment"># reload service</span><br>
+                <span class="command">sudo systemctl reload httpd</span><br>
+            </div>
+            
+            <div class="code-block">
+                <span class="command">uptime</span> : from when our linux vm is running<br>
+                <span class="command">free</span> : to display memory details<br>
+                <span class="command">top</span> : display running processes<br>
+                <span class="command">htop</span> : display running process in table format<br>
+                <span class="command">cat /etc/os-release</span> : check linux os version<br>
+                <span class="command">uname -r</span> : check linux kernel version<br>
+            </div>
+        </section>
+
+        <section class="section" id="links">
+            <h2>Working with Link Files</h2>
+            
+            <ul>
+                <li>In linux we can create link files (similar to shortcut files in windows)</li>
+                <li>We have 2 types of link files in linux:
+                    <ol>
+                        <li>Hard link</li>
+                        <li>Soft link (symbolic link)</li>
+                    </ol>
+                </li>
+            </ul>
+            
+            <h3>Hard Link</h3>
+            <div class="code-block">
+                <span class="command">touch f1.txt</span><br>
+                <span class="command">ln f1.txt f100.txt</span><br>
+                <span class="command">ls -li</span><br>
+            </div>
+            
+            <div class="tip">
+                <strong>Note:</strong> If we write some data to original file, it is reflecting in link file also. When we delete original file, link file is not effected (hard link).
+            </div>
+            
+            <h3>Soft Link</h3>
+            <div class="code-block">
+                <span class="command">touch s1.txt</span><br>
+                <span class="command">ln -s s1.txt s100.txt</span><br>
+                <span class="command">ls -li</span><br>
+            </div>
+            
+            <div class="tip">
+                <strong>Note:</strong> Original file and link file having diff inode numbers. When we remove original file then soft link file will become dangling file. We can't access that file.
+            </div>
+        </section>
+
+        <section class="section" id="process-management">
+            <h2>Process management</h2>
+            
+            <ul>
+                <li>Process management in Linux involves controlling and monitoring the execution of programs (processes) on the system</li>
+            </ul>
+            
+            <div class="code-block">
+                <span class="comment"># display processing running</span><br>
+                <span class="command">ps aux</span><br><br>
+                <span class="comment"># terminate process immediately (forcefully)</span><br>
+                <span class="command">kill -9 PID</span><br>
+            </div>
+        </section>
+
+        <section class="section" id="hostname">
+            <h2>Changing Hostname</h2>
+            
+            <h3>Change hostname temporarily</h3>
+            <div class="code-block">
+                <span class="command">sudo hostname &lt;new-name&gt;</span><br>
+                <span class="command">exit</span><br>
+            </div>
+            
+            <div class="tip">
+                <strong>Note:</strong> Connect back to vm then we can see configured hostname
+            </div>
+            
+            <h3>Set hostname permanently</h3>
+            <div class="code-block">
+                <span class="comment"># update hostname in below file</span><br>
+                <span class="command">sudo vi /etc/hostname</span><br>
+                <span class="comment"># restart the vm</span><br>
+            </div>
+        </section>
+
+        <section class="section" id="summary">
+            <h2>Summary</h2>
+            
+            <ol>
+                <li>What is Linux OS</li>
+                <li>Windows Vs Linux</li>
+                <li>Linux VM Setup in AWS cloud</li>
+                <li>Connecting with Linux VM using SSH client</li>
+                <li>Directories & Files Based Operations</li>
+                <li>Text Editors</li>
+                <li>Text filters</li>
+                <li>User & Group Management</li>
+                <li>File Permissions</li>
+                <li>File Ownership</li>
+                <li>Archives</li>
+                <li>Networking</li>
+                <li>sudoers file</li>
+                <li>sshd_config</li>
+                <li>package managers</li>
+                <li>static website hosting (httpd)</li>
+                <li>Service Management (systemctl)</li>
+                <li>Process management</li>
+                <li>Working with link files</li>
+                <li>Changing Hostname</li>
+            </ol>
+        </section>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0;">
+        <a href="index.html" class="nav-button">Go To Index</a>
+    </div>
+
+    <script>
+        // Menu functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeMenu = document.querySelector('.close-menu');
+        const menu = document.getElementById('mainMenu');
+        const menuLinks = document.querySelectorAll('.menu a');
+
+        // Toggle menu
+        menuToggle.addEventListener('click', () => {
+            menu.classList.add('active');
+        });
+
+        // Close menu
+        closeMenu.addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // Close menu when clicking on links
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
