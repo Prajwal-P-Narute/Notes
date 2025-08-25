@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Testing Manual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --highlight: #f39c12;
+            --text: #333;
+            --text-light: #777;
+            --bg-light: #f5f7fa;
+            --card-bg: #fff;
+            --border: #e0e6ed;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text);
+            line-height: 1.6;
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 0.8rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--highlight);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            display: block;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Dropdown */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--dark);
+            min-width: 220px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            overflow: hidden;
+            z-index: 2000;
+        }
+
+        .dropdown-content a {
+            padding: 12px 15px;
+            color: white;
+            white-space: nowrap;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--primary);
+        }
+
+        .nav-links li:hover .dropdown-content {
+            display: block;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(52, 152, 219, 0.85), rgba(44, 62, 80, 0.85)),
+                url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 4rem 1rem;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .content-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .content-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px dashed var(--light);
+            padding-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .content-section h2 i {
+            margin-right: 10px;
+        }
+
+        .content-section h3 {
+            color: var(--dark);
+            margin: 1.5rem 0 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .content-section h3 i {
+            margin-right: 8px;
+            color: var(--primary);
+            font-size: 0.9em;
+        }
+
+        .content-section p {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .content-section ul,
+        .content-section ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Cards for methodologies and types */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        .card h4 {
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card h4 i {
+            margin-right: 8px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        /* Definition Lists */
+        dl {
+            margin: 1.5rem 0;
+        }
+
+        dt {
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 1rem;
+        }
+
+        dd {
+            margin-left: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Process Model Diagram */
+        .process-diagram {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .process-diagram img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .process-diagram .caption {
+            margin-top: 1rem;
+            font-style: italic;
+            color: var(--text-light);
+        }
+
+        /* Status Flow */
+        .status-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .status-item {
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin: 0 5px;
+            font-size: 0.9rem;
+        }
+
+        .status-arrow {
+            margin: 0 5px;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2.5rem 0;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s, background 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: var(--dark);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                padding: 1rem;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                background: rgba(0, 0, 0, 0.2);
+                margin: 0.5rem 0;
+                width: 100%;
+            }
+
+            .dropdown-content a {
+                padding-left: 2rem;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+
+            .status-flow {
+                flex-direction: column;
+            }
+
+            .status-arrow {
+                transform: rotate(90deg);
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-bug"></i>
+                    <span>Testing Manual</span>
+                </div>
+                <ul class="nav-links">
+                    <li>
+                        <a href="javascript:void(0)">Menu ▾</a>
+                        <div class="dropdown-content">
+                            <a href="#intro"><i class="fas fa-info-circle"></i> Introduction</a>
+                            <a href="#sqa"><i class="fas fa-star"></i> SQA</a>
+                            <a href="#sdlc"><i class="fas fa-sitemap"></i> SDLC</a>
+                            <a href="#models"><i class="fas fa-shapes"></i> Process Models</a>
+                            <a href="#agile"><i class="fas fa-arrows-alt-h"></i> Agile Methodology</a>
+                            <a href="#testing-levels"><i class="fas fa-layer-group"></i> Testing Levels</a>
+                            <a href="#testing-types"><i class="fas fa-check-double"></i> Testing Types</a>
+                            <a href="#functionality-testing"><i class="fas fa-cogs"></i> Functionality Testing</a>
+                            <a href="#testing-terminology"><i class="fas fa-book"></i> Testing Terminology</a>
+                        </div>
+                    </li>
+                </ul>
+                <div class="hamburger"><i class="fas fa-bars"></i></div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="hero">
+            <h1>Software Testing Manual</h1>
+            <p>Comprehensive guide to software testing concepts, methodologies, and best practices</p>
+        </section>
+
+        <section id="intro" class="content-section">
+            <h2><i class="fas fa-info-circle"></i> Introduction to Software Testing</h2>
+            <p>Software is the collection of specialized programs which take user input & generate desired output.</p>
+            <p>Software testing is the process of verifying that a given software or application is generating the
+                desired output or not. It is the process of checking completeness and correctness of the software with
+                respect to customer expectations.</p>
+
+            <h3><i class="fas fa-users"></i> Resources involved in Software Development</h3>
+            <ul>
+                <li><strong>Customer</strong> - Provides requirements and expectations</li>
+                <li><strong>Business Analyst</strong> - Gathers and documents requirements</li>
+                <li><strong>Developer</strong> - Develops application as per requirements</li>
+                <li><strong>Tester</strong> - Checks correctness & completeness of functionality</li>
+                <li><strong>End User</strong> - Ultimately uses the final product</li>
+            </ul>
+        </section>
+
+        <section id="sqa" class="content-section">
+            <h2><i class="fas fa-star"></i> Software Quality Assurance (SQA)</h2>
+            <p>SQA is communication between customer & BA. It ensures the product quality by considering several
+                factors:</p>
+
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-check-circle"></i> Meeting Requirements</h4>
+                    <p>Identify type of application (banking, telecom, healthcare, finance, etc.) and ensure it meets
+                        all specified requirements.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-user-shield"></i> Meeting Expectations</h4>
+                    <p>Ensure privacy and security of the application, and verify performance under heavy load
+                        conditions.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-dollar-sign"></i> Cost Management</h4>
+                    <p>Manage project costs as per customer requirements and available resources.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-calendar-alt"></i> Timely Delivery</h4>
+                    <p>Deliver the project within the agreed timeframe to avoid penalties (escalation).</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-tools"></i> Maintenance</h4>
+                    <p>Provide service after delivery and fix any post-delivery issues free of cost.</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-exclamation-circle"></i> Key SQA Factors</h3>
+            <ul>
+                <li><strong>To meet customers' requirements</strong> - Identify type of application (banking, telecom,
+                    healthcare, finance, etc.)</li>
+                <li><strong>To meet customers' expectations</strong>
+                    <ul>
+                        <li>Privacy → includes security of application</li>
+                        <li>Performance → application should be stable under heavy load</li>
+                    </ul>
+                </li>
+                <li><strong>Cost of project</strong> → Decided as per customer requirements & resources</li>
+                <li><strong>Timing of delivery</strong> → Discussed during requirement gathering. Delay may cause
+                    penalty (escalation)</li>
+                <li><strong>Maintenance</strong> → Service provided after delivery. Any post-delivery issues must be
+                    fixed free of cost</li>
+            </ul>
+        </section>
+
+        <section id="sdlc" class="content-section">
+            <h2><i class="fas fa-sitemap"></i> Software Development Life Cycle (SDLC)</h2>
+            <p>Software development life cycle consists of set of particular stages which start from information
+                gathering to the maintenance of product.</p>
+
+            <h3><i class="fas fa-list-ol"></i> Stages in SDLC</h3>
+            <ol>
+                <li>Information gathering</li>
+                <li>Analysis</li>
+                <li>Design</li>
+                <li>Coding (developer)</li>
+                <li>Testing</li>
+                <li>Maintenance</li>
+            </ol>
+
+            <h3><i class="fas fa-info-circle"></i> 1. Information Gathering</h3>
+            <ul>
+                <li>BA is responsible for gathering the information from customers</li>
+                <li>Information gathering is nothing but collecting requirement from customers</li>
+                <li>Information gathering involves business requirements specification (BRS)</li>
+                <li>BRS is bridge between client to developers & testers</li>
+                <li>BRS is a document that contains all (overall) requirements related to the application</li>
+                <li>BA is responsible for preparing BRS documents</li>
+            </ul>
+
+            <h3><i class="fas fa-chart-bar"></i> 2. Analysis</h3>
+            <ul>
+                <li>Here also BA is responsible person</li>
+                <li>In this phase BA will prepare software requirement specification (SRS)</li>
+                <li>SRS is detail level documents</li>
+                <li>SRS document is also known as functional requirement specification</li>
+            </ul>
+
+            <h4><i class="fas fa-project-diagram"></i> SRS Components:</h4>
+            <ul>
+                <li><strong>Functional flow diagram</strong>
+                    <ul>
+                        <li>It is flow of our application</li>
+                        <li>This flow shows relation between the tasks</li>
+                        <li>It will give the idea about sequence of functionality</li>
+                        <li>Relationship of functionality is nothing but dependency of each other</li>
+                        <li>Ex (sign up page → login page → home page → account page)</li>
+                    </ul>
+                </li>
+                <li><strong>Functional requirements</strong>
+                    <ul>
+                        <li>It is nothing but attributes which are required to complete a specific function</li>
+                        <li>Ex. Sign up page - for sign up page required 1st name, last name, mob no, email id,
+                            passwords, sign up button</li>
+                        <li>Ex. For name should be some requirements
+                            <ol type="I">
+                                <li>Name should be in character only</li>
+                                <li>Name should not accept number</li>
+                                <li>It should not accept any blank space</li>
+                                <li>It should not accept any special symbols</li>
+                            </ol>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Use cases</strong>
+                    <ul>
+                        <li>Use cases is nothing but functionality in term of input and output</li>
+                        <li>Use cases is nothing but users how to deal with functionality to achieve target</li>
+                        <li>It help to create foundation for creating user stories or test cases in agile methodologies
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Snapshots</strong>
+                    <ul>
+                        <li>Snapshots are visualization of any functionality before development of any application</li>
+                        <li>Snapshot are created by BA</li>
+                        <li>Snapshot give idea to developer and designer that how software supposed to look like</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3><i class="fas fa-pencil-ruler"></i> 3. Design</h3>
+
+            <h4><i class="fas fa-arrow-up"></i> High Level Design</h4>
+            <ul>
+                <li>High level design contains the working of main module</li>
+                <li>It includes relation and dependency of main module</li>
+                <li>It includes what and how any module works</li>
+                <li>High level design is created by design Architecture</li>
+            </ul>
+
+            <h4><i class="fas fa-arrow-down"></i> Low Level Design</h4>
+            <ul>
+                <li>It designs contain the working of sub modules</li>
+                <li>Low level design is created by Front end developer</li>
+                <li>Ex. If any sign-up page is main module, then name, password, mobile no etc. are the sub
+                    functionality of main module</li>
+            </ul>
+
+            <h3><i class="fas fa-code"></i> 4. Coding</h3>
+            <ul>
+                <li>It means developing the codes</li>
+                <li>One line is code</li>
+                <li>Multiple line of code is program</li>
+                <li>Set of programs written by developer creates the software</li>
+            </ul>
+
+            <h4><i class="fas fa-laptop-code"></i> Code is written by three types of developer</h4>
+            <ol>
+                <li><strong>Front end developer</strong>
+                    <ul>
+                        <li>UI functionality, function flows, process are developed by the front-end developer</li>
+                    </ul>
+                </li>
+                <li><strong>Back-end developer</strong>
+                    <ul>
+                        <li>Data management, Data gathering, Data security, Algorithm selection is done by back-end
+                            developer</li>
+                    </ul>
+                </li>
+                <li><strong>Full stack developer</strong>
+                    <ul>
+                        <li>Note: person/developer who can work as front end as well as back-end developer known as full
+                            stack developer</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3><i class="fas fa-vial"></i> 5. Testing</h3>
+            <p>Testing is the process checking a completeness and correctness of the software.</p>
+
+            <h4><i class="fas fa-vial"></i> Types of Testing</h4>
+            <table>
+                <tr>
+                    <th>White Box Testing</th>
+                    <th>Black Box Testing</th>
+                </tr>
+                <tr>
+                    <td>It is also called as Unit code level testing, and clear box testing</td>
+                    <td>Black box testing is also known system and function testing</td>
+                </tr>
+                <tr>
+                    <td>Developer is responsible for white box testing</td>
+                    <td>Tester is responsible for black box testing</td>
+                </tr>
+                <tr>
+                    <td>Developer will debug or compile the code and check the code if any error is there</td>
+                    <td>Tester has to check overall functionality (internal and external) of the application</td>
+                </tr>
+                <tr>
+                    <td>Developer will test only positive scenario</td>
+                    <td>Tester has to test app in positive as well as negative way</td>
+                </tr>
+                <tr>
+                    <td>Aim of white box testing completeness and correctness of code and program</td>
+                    <td>
+                        <ul>
+                            <li>Positive testing: providing correct input to the application</li>
+                            <li>Negative testing: providing negative inputs</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+
+            <h4><i class="fas fa-box"></i> Gray Box Testing</h4>
+            <ul>
+                <li>It is combination of white and black box testing</li>
+                <li>To do gray box testing tester should have some programming knowledge</li>
+            </ul>
+
+            <h3><i class="fas fa-cogs"></i> 6. Maintenance</h3>
+            <ul>
+                <li>Maintenance means provide service after delivery of product/software in free of cost</li>
+                <li>Maintenance involves non-technical support as well as technical support</li>
+                <li>Non-technical support called as BPO (Business process outsource)</li>
+                <li>Technical support is called as KPO (Knowledge process outsource)</li>
+            </ul>
+        </section>
+
+        <section id="models" class="content-section">
+            <h2><i class="fas fa-shapes"></i> Software Development Process Models</h2>
+
+            <h3><i class="fas fa-fish"></i> Fish Model</h3>
+            <p>The Fish Model is an advanced version of the SDLC that consists of verification and validation processes
+                working together to ensure software quality.</p>
+
+            <h4><i class="fas fa-check-double"></i> Verification vs Validation</h4>
+            <table>
+                <tr>
+                    <th>Verification</th>
+                    <th>Validation</th>
+                </tr>
+                <tr>
+                    <td>Verification is the process of checking whether the developed product fulfills the customer's
+                        requirements or not</td>
+                    <td>Validation is the process of checking whether the developed product is free from bugs or not
+                    </td>
+                </tr>
+                <tr>
+                    <td>Verification is done in different stages of SDLC</td>
+                    <td>Validation is done after complete development and at the testing stage</td>
+                </tr>
+                <tr>
+                    <td>It is also known as static testing</td>
+                    <td>It is also known as Quality control or dynamic testing</td>
+                </tr>
+                <tr>
+                    <td>The focus of verification is on methods/process like reviews, inspection and walk through etc.
+                    </td>
+                    <td>The focus of validation is on Quality of software, so we can deliver software free from bugs
+                    </td>
+                </tr>
+                <tr>
+                    <td>It helps to find the bug in early stage</td>
+                    <td>It helps to increase the quality of software</td>
+                </tr>
+                <tr>
+                    <td>Quality assurance team does the verification</td>
+                    <td>Quality analyst team does the validation</td>
+                </tr>
+                <tr>
+                    <td>Budget required less for verification as compared to validation</td>
+                    <td>Budget required for validation is more than verification</td>
+                </tr>
+            </table>
+
+            <h3><i class="fas fa-water"></i> Waterfall Model</h3>
+            <ul>
+                <li>Waterfall model is step by step implementation of SDLC</li>
+                <li>In waterfall model requirements are fixed</li>
+                <li>If first stage is complete and process goes to next phase, then we cannot revert back to the first
+                    phase</li>
+                <li>Generally, waterfall model is used in small scale company or small application</li>
+                <li>The general time duration of waterfall model is 3 months</li>
+                <li>In waterfall model, when tester finds any bug then they do not send that back to the developer,
+                    instead they log the bug, make report & those bugs get fixed in next version of software</li>
+            </ul>
+
+            <h3><i class="fas fa-check-circle"></i> V-Model</h3>
+            <ul>
+                <li>V stands for verification and validation</li>
+                <li>V model has working in which verification and validation phases run parallel</li>
+                <li>In V model development stages are mapped with testing stages</li>
+                <li>In V model, if one stage gets completed and 2nd is running but changes occurred in 1st phase then we
+                    can revert back to 1st phase but customer have to pay some amount to company</li>
+                <li>The duration of V model is 3 months</li>
+                <li>It is used for large application. Generally, this method is not used nowadays</li>
+            </ul>
+        </section>
+
+        <section id="agile" class="content-section">
+            <h2><i class="fas fa-arrows-alt-h"></i> Agile Methodology</h2>
+            <p>Agile Methodology is a way of working in software development that focuses on delivering small parts of a
+                project step-by-step instead of completing everything at once. The idea behind this is to be flexible,
+                work closely with the team and customers, and make changes as needed.</p>
+
+            <h3><i class="fas fa-key"></i> Key Points:</h3>
+            <ul>
+                <li><strong>Work in Sprints:</strong> Projects are divided into smaller pieces (called sprints) so teams
+                    can deliver updates regularly</li>
+                <li><strong>Customer Involvement:</strong> Customers give feedback, so the product meets their
+                    expectations</li>
+                <li><strong>Quick Changes:</strong> Agile allows teams to make changes easily if requirements change
+                </li>
+                <li><strong>Team Collaboration:</strong> Everyone works together and shares ideas to solve problems</li>
+                <li><strong>Continuous Improvement:</strong> Teams review their work for continuous improvements</li>
+            </ul>
+
+            <h3><i class="fas fa-th-large"></i> Popular Frameworks in Agile:</h3>
+            <ul>
+                <li><strong>Scrum:</strong> Teams work in sprints, and there are meetings like daily standups to track
+                    progress</li>
+                <li><strong>Kanban:</strong> Tasks are managed visually using boards to track progress</li>
+            </ul>
+
+            <h3><i class="fas fa-trophy"></i> Benefits:</h3>
+            <ul>
+                <li>Faster delivery of features</li>
+                <li>Happier customers due to regular updates</li>
+                <li>Better teamwork and communication</li>
+                <li>Fewer mistakes because of frequent testing</li>
+            </ul>
+
+            <h3><i class="fas fa-exchange-alt"></i> V-Model vs Agile Methodology</h3>
+            <table>
+                <tr>
+                    <th>V Model</th>
+                    <th>Agile Methodology</th>
+                </tr>
+                <tr>
+                    <td>Customers</td>
+                    <td>Stake holder</td>
+                </tr>
+                <tr>
+                    <td>BA</td>
+                    <td>Project owner</td>
+                </tr>
+                <tr>
+                    <td>BRS</td>
+                    <td>Product backlog</td>
+                </tr>
+                <tr>
+                    <td>SRS</td>
+                    <td>Sprint backlog</td>
+                </tr>
+                <tr>
+                    <td>Functional requirement in SRS</td>
+                    <td>User stories</td>
+                </tr>
+                <tr>
+                    <td>Release</td>
+                    <td>Sprint</td>
+                </tr>
+                <tr>
+                    <td>Project manager</td>
+                    <td>Scrum master</td>
+                </tr>
+            </table>
+
+            <h3><i class="fas fa-sitemap"></i> Architecture of Agile Methodology</h3>
+            <div class="process-diagram">
+                <div class="caption">Agile Methodology Process Flow</div>
+                <p>Stake holder → Project owner → Product backlog → Estimation → Sprint backlog → User stories → Test
+                    cases</p>
+            </div>
+
+            <h3><i class="fas fa-user-tie"></i> Stake Holder</h3>
+            <ul>
+                <li>Stake holder is nothing but customer</li>
+                <li>In agile methodology, stake holder is the member of top most body in the company</li>
+                <li>Stake holder can change the requirement in any phase</li>
+                <li>Stake holder having bunch of requirement. All that requirement are provided to project owner</li>
+            </ul>
+
+            <h3><i class="fas fa-user-check"></i> Project Owner</h3>
+            <ul>
+                <li>Project owner is nothing but BA</li>
+                <li>Project owner gather all requirement from stake holder</li>
+                <li>PO is team member of grooming meeting and sprint planning meeting</li>
+                <li>Project owner is responsible for creating project backlog</li>
+            </ul>
+
+            <h3><i class="fas fa-clipboard-list"></i> Product Backlog</h3>
+            <ul>
+                <li>Project backlog is nothing but BRS</li>
+                <li>Project backlog include total requirement of whole project</li>
+            </ul>
+
+            <h3><i class="fas fa-calculator"></i> Estimation</h3>
+            <ul>
+                <li>In the agile method, the focus is on the parts of project</li>
+                <li>So, all the requirements are not needed for specific part</li>
+                <li>Ex. if we are working on 1st module but customer ask us to complete 3rd module first. Then we need
+                    to only 3rd module data not required 1st & 2nd module</li>
+                <li>Estimation is the sorting of requirement to complete specific module</li>
+                <li>Estimation is the part of sprint planning meeting</li>
+                <li>In estimation, user stories are decided</li>
+                <li>People involved while estimation:
+                    <ol>
+                        <li>Project owner</li>
+                        <li>Development leader</li>
+                        <li>Test leader</li>
+                    </ol>
+                </li>
+                <li>Project owner have ensured that the priority of user stories can be estimate first to complete</li>
+                <li>Estimation is the process of how to deal with problem when obstacle comes</li>
+                <li>There are three main factors are considered while estimation:
+                    <ol>
+                        <li><strong>Knowledge:</strong> Each member of team should have knowledge about domain of the
+                            project</li>
+                        <li><strong>Effort:</strong> Authority decides how much efforts are required to complete the
+                            project. Ex how much resources and manual power required</li>
+                        <li><strong>Complexity:</strong> To do estimation, how much time, cost as well as resources is
+                            required to work on it and decide complexity of work</li>
+                    </ol>
+                </li>
+            </ul>
+
+            <h3><i class="fas fa-tasks"></i> Sprint Backlog</h3>
+            <ul>
+                <li>Sprint backlog is the nothing but SRS which is created by project owner</li>
+                <li>Sprint backlog contains user story</li>
+                <li>It contains detail information of the requirement which is needed for module development</li>
+            </ul>
+
+            <h3><i class="fas fa-book"></i> User Stories</h3>
+            <ul>
+                <li>User stories are the functional requirement for the module development</li>
+                <li>User stories are get decided in the estimation phase</li>
+                <li>It is the part of sprint backlog</li>
+            </ul>
+
+            <h3><i class="fas fa-check-square"></i> Test Cases</h3>
+            <ul>
+                <li>Test case are design by tester</li>
+                <li>Test case are mapped with the user stories</li>
+                <li>There should not any point left behind in testing phase</li>
+                <li>Tester write test cases during developing phase</li>
+            </ul>
+
+            <h3><i class="fas fa-award"></i> Advantages of Agile Methodology</h3>
+            <ul>
+                <li>Customer can change requirement at any phase, but it does not effect on cost of the project,
+                    delivery timing of project and other module functionality</li>
+                <li><strong>Scrum meeting:</strong>
+                    <ul>
+                        <li>It is based on daily status call and daily standup meeting</li>
+                        <li>The duration of scrum meeting is daily 15 to 30 minutes</li>
+                        <li>Scrum master, development team, testing team and project owner are involved in this meeting
+                        </li>
+                        <li>The agenda of this meeting is to check what progress of our work is</li>
+                        <li>Three important things are discussed in scrum meeting:
+                            <ol type="a">
+                                <li>What we did yesterday</li>
+                                <li>What we are going to do today</li>
+                                <li>What are roadblock on issue</li>
+                            </ol>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3><i class="fas fa-robot"></i> Implementation of Automation</h3>
+            <ul>
+                <li>We can implement automation in agile methodology</li>
+                <li>In our organization we are following 70% manual testing and 30% automation testing</li>
+                <li>We are using selenium tools to do automation</li>
+                <li>There are several advantages of automation:
+                    <ol type="a">
+                        <li>Less resources required</li>
+                        <li>Less resources means less cost</li>
+                        <li>Less human error</li>
+                        <li>High accuracy</li>
+                        <li>Require less time to compete the task</li>
+                    </ol>
+                </li>
+            </ul>
+
+            <h3><i class="fas fa-truck"></i> Sprint Wise Delivery</h3>
+            <table>
+                <tr>
+                    <th>In V Model</th>
+                    <th>In Agile Methodology</th>
+                </tr>
+                <tr>
+                    <td>Project duration = 3 month</td>
+                    <td>Project duration = 1 month</td>
+                </tr>
+                <tr>
+                    <td>1 year = 4 release</td>
+                    <td>1 year = 12 release</td>
+                </tr>
+                <tr>
+                    <td>If we complete 5 modules in 3 months but we can't deliver all modules into project duration only
+                        one module allowed to deliver because in V model there are some restriction to deliver</td>
+                    <td>But in case of agile methodology we can deliver all modules suddenly when it complete, because
+                        of there are no any restriction</td>
+                </tr>
+            </table>
+
+            <h3><i class="fas fa-search"></i> Check Point</h3>
+            <ul>
+                <li>Check point is nothing but the systematic process of finding defects. Consider an example where we
+                    have to develop a module & module has sub module</li>
+                <li>In V model, if any defect occurs at the time of production, then developer have to do post mortems
+                    testing</li>
+                <li>But in agile method, when any problem occurs at time of production, tester check the check points.
+                    so, no post mortem testing required</li>
+                <li>Ex. If 1 is starting phase & 4 is end phase. When at the time of production error occur, then tester
+                    check 'check point' between 1& 2, if it is correct then he checks between 2 & 3. If defect occur in
+                    this, check 'check point' then tester sent it to developer</li>
+                <li>We have use AVAS tool for testing</li>
+                <li>Developer then simply click on that check point & coding appears, then the defects & code is
+                    highlight with color</li>
+            </ul>
+
+            <h3><i class="fas fa-exclamation-triangle"></i> Disadvantages of Agile Methodology</h3>
+            <ul>
+                <li>To implement new module in previous development software, tester and developer should have total
+                    knowledge about flows of software, scenario, dependency and relationship of the module, if developer
+                    and tester have knowledge of all this then they can work in agile</li>
+                <li>There is no time for knowledge transfer in agile methodology because release sprint time only 1/2
+                    month</li>
+            </ul>
+
+            <h3><i class="fas fa-list"></i> Types of Agile Methodology</h3>
+            <ol>
+                <li>Kanban extra, programming</li>
+                <li>Extreme programming scrum</li>
+                <li>Scrum methodology (we are involved in this methodology)</li>
+                <li>Feature driven development</li>
+                <li>Dynamic system development method</li>
+                <li>Crystal</li>
+                <li>Lean</li>
+            </ol>
+
+            <h3><i class="fas fa-users"></i> Meeting in Agile Methodology</h3>
+            <ol>
+                <li><strong>Sprint grooming meeting / grooming session / Refinement</strong>
+                    <ul>
+                        <li>This meeting happens only once before starting the sprint</li>
+                        <li>Here project owner clears all requirement to team</li>
+                        <li>If we have any doubts then we can ask to PO immediately</li>
+                        <li>Duration of this meeting is 2 to 4 hours</li>
+                        <li>Dev team, testing team, PO, scrum master is present in this meeting</li>
+                        <li>This meeting conducted by PO</li>
+                    </ul>
+                </li>
+                <li><strong>Sprint planning meeting</strong>
+                    <ul>
+                        <li>This meeting conducted by scrum master</li>
+                        <li>Scrum master will do the job allocation, resource allocation and estimation here</li>
+                        <li>Duration of this meeting in 1 to 2 hours</li>
+                        <li>Dev team, testing team, PO, scrum master is involved in this meeting</li>
+                    </ul>
+                </li>
+                <li><strong>Scrum meeting</strong>
+                    <ul>
+                        <li>Scrum meeting is based on daily status call and daily standup meeting</li>
+                        <li>The duration of scrum meeting is daily 15 to 30 minute</li>
+                        <li>Scrum master, development team, testing team and project owner are involved in this meeting
+                        </li>
+                        <li>The agenda of this meeting is to check what progress of our work is</li>
+                        <li>Three important things are discussed in scrum meeting:
+                            <ol type="a">
+                                <li>What we did yesterday</li>
+                                <li>What we are going to do today</li>
+                                <li>What are road block on issue</li>
+                            </ol>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Sprint review meeting</strong>
+                    <ul>
+                        <li>Sprint review meeting is nothing but taking feedback from PO/customer</li>
+                        <li>Duration of sprint review meeting is 1 to 2 hr</li>
+                        <li>Whatever functionality we have developed in sprint, we must give demo or presentation to
+                            PO/customer</li>
+                        <li>If any changes are there, then we must work those changes immediately, if changes are major,
+                            then we forward those changes to next sprint</li>
+                        <li>After sprint review meeting, we can conduct the retrospective meeting</li>
+                    </ul>
+                </li>
+                <li><strong>Sprint Retrospective meeting</strong>
+                    <ul>
+                        <li>This meeting is conducted at the end of sprint</li>
+                        <li>In this meeting we discuss about the:
+                            <ul>
+                                <li>What went well</li>
+                                <li>What could be improved</li>
+                                <li>What should be the actions can implement</li>
+                            </ul>
+                        </li>
+                        <li>Duration of this meeting is half hour to 45 minutes</li>
+                        <li>All team member is involved in this meeting</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+
+        <!-- New Testing Levels Section -->
+        <section id="testing-levels" class="content-section">
+            <h2><i class="fas fa-layer-group"></i> Software Testing Levels</h2>
+            <p>Software testing is typically performed at different levels to ensure comprehensive coverage and early
+                defect detection.</p>
+
+            <h3><i class="fas fa-cube"></i> Unit Testing</h3>
+            <p>Testing individual components or modules of the software in isolation from the rest of the system.</p>
+
+            <h4><i class="fas fa-check-circle"></i> Key Characteristics:</h4>
+            <ul>
+                <li>Performed by developers during the coding phase</li>
+                <li>Focuses on internal program logic and code structure</li>
+                <li>Uses white-box testing techniques</li>
+                <li>Helps identify defects early in the development cycle</li>
+                <li>Typically automated using frameworks like JUnit, NUnit, or TestNG</li>
+            </ul>
+
+            <h3><i class="fas fa-puzzle-piece"></i> Integration Testing</h3>
+            <p>Testing the interaction between integrated units or components to verify they work together as expected.
+            </p>
+
+            <h4><i class="fas fa-project-diagram"></i> Integration Approaches:</h4>
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-bomb"></i> Big Bang Integration</h4>
+                    <p>All components are integrated simultaneously and tested as a whole.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-arrow-down"></i> Top-Down Integration</h4>
+                    <p>Testing starts from the top-level modules and progressively incorporates lower-level modules.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-arrow-up"></i> Bottom-Up Integration</h4>
+                    <p>Testing begins with lower-level modules and progressively adds higher-level modules.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-random"></i> Sandwich/Hybrid Integration</h4>
+                    <p>Combination of top-down and bottom-up approaches.</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-desktop"></i> System Testing</h3>
+            <p>Testing the complete, integrated system to verify that it meets specified requirements.</p>
+
+            <h4><i class="fas fa-tasks"></i> System Testing Includes:</h4>
+            <ul>
+                <li>Functionality testing</li>
+                <li>Performance testing (load, stress, volume)</li>
+                <li>Security testing</li>
+                <li>Usability testing</li>
+                <li>Compatibility testing</li>
+                <li>Installation testing</li>
+                <li>Recovery testing</li>
+            </ul>
+
+            <h3><i class="fas fa-user-check"></i> Acceptance Testing</h3>
+            <p>Final testing phase performed to determine whether the system is ready for release.</p>
+
+            <h4><i class="fas fa-clipboard-check"></i> Types of Acceptance Testing:</h4>
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-building"></i> Alpha Testing</h4>
+                    <p>Performed by the internal test team within the organization.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-users"></i> Beta Testing</h4>
+                    <p>Performed by a limited number of actual users in their environment.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-file-contract"></i> Contract Acceptance Testing</h4>
+                    <p>Performed to verify compliance with contractual requirements.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-regulations"></i> Regulation Acceptance Testing</h4>
+                    <p>Performed to verify compliance with governmental, legal, or safety regulations.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="testing-types" class="content-section">
+            <h2><i class="fas fa-check-double"></i> Software Testing Types</h2>
+
+            <h3><i class="fas fa-puzzle-piece"></i> Integration Testing</h3>
+            <p>Integration is the process of mapping new modules with existing modules. Integration Testing is the
+                process of verifying the interaction and data flow between interconnected modules/components of an
+                application.</p>
+
+            <h4><i class="fas fa-bullseye"></i> Main Purpose of Integration Testing</h4>
+            <p>Focus on validating data flow, error handling, and module interactions.</p>
+
+            <h4><i class="fas fa-project-diagram"></i> Types of Integration Testing</h4>
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-bomb"></i> Big Bang Approach</h4>
+                    <p>All modules are integrated and tested together.</p>
+                    <ul>
+                        <li><strong>Pros:</strong> Simple, suitable for small systems</li>
+                        <li><strong>Cons:</strong> Difficult to catch defects, debugging is challenging</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-step-forward"></i> Incremental Approach</h4>
+                    <p>Modules are integrated and tested step by step.</p>
+                    <ul>
+                        <li><strong>Top-Down:</strong> Starts with high-level modules and moves to lower-level ones</li>
+                        <li><strong>Bottom-Up:</strong> Starts with lower-level modules and progresses upward</li>
+                        <li><strong>Hybrid/Sandwich:</strong> Combines both top-down and bottom-up approaches</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-code"></i> Stub and Driver-Based</h4>
+                    <p>Used when modules are dependent but incomplete.</p>
+                    <ul>
+                        <li><strong>Stub:</strong> A dummy implementation for lower-level module that provides responses
+                            to the higher-level module</li>
+                        <li><strong>Driver:</strong> A dummy implementation for higher-level module that supplies inputs
+                            to the lower-level module</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4><i class="fas fa-tools"></i> Tools Used in Integration Testing</h4>
+            <ul>
+                <li><strong>Postman or SoapUI:</strong> For API-level testing during integration</li>
+                <li><strong>JUnit/TestNG:</strong> For testing Java-based integrations</li>
+                <li><strong>Selenium:</strong> For UI-level integration testing</li>
+                <li><strong>REST Assured:</strong> For API integration testing in Java</li>
+            </ul>
+
+            <h3><i class="fas fa-vial"></i> Sanity Testing</h3>
+            <p>It is also known as zero level testing or built verification testing. The aim of sanity testing is to
+                check basic or core functionality of the application.</p>
+
+            <h4><i class="fas fa-cogs"></i> Working</h4>
+            <ul>
+                <li>Whenever integration test ends, zero level testing starts</li>
+                <li>Database analyst team create a test environment by creating URL which is useful to run the built
+                </li>
+                <li>After creating test environment, tester tests and checks if it generated desired output or not</li>
+                <li>In sanity testing, Tester tests for:
+                    <ul>
+                        <li>Basic core functionality</li>
+                        <li>Tab validation</li>
+                        <li>Link validation</li>
+                        <li>Page validation</li>
+                        <li>GUI validation (Graphical User Interface)</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4><i class="fas fa-check-circle"></i> Sanity Testing Components</h4>
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-cog"></i> Basic Core Functionality</h4>
+                    <p>Testing buttons, icons, forms which allow users to proceed to next stages.</p>
+                    <p><strong>Example:</strong> In Facebook application, testing if the submit button on the sign up
+                        page works correctly.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-keyboard"></i> Tab Validation</h4>
+                    <p>Testing the functionality of input fields and tabs.</p>
+                    <p><strong>Example:</strong> In Facebook application, verifying that characters, symbols, numbers
+                        entered via keyboard appear correctly in input fields.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-link"></i> Link Validation</h4>
+                    <p>Checking the sequence of interlinked pages work correctly.</p>
+                    <p><strong>Example:</strong> In Amazon application, testing payment process links work correctly
+                        with UPI or third-party applications.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-file-alt"></i> Page Validation</h4>
+                    <p>Checking navigation between pages works correctly using next and back buttons.</p>
+                    <p><strong>Example:</strong> In WPS application, testing PDF page navigation works properly.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-desktop"></i> GUI Testing</h4>
+                    <p>Validating the visual interface where users interact directly.</p>
+                    <p><strong>Example:</strong> Checking if pages display correctly, images are clear, and there's no
+                        blurring anywhere on the page.</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-smoking"></i> Smoke Testing</h3>
+            <p>It is an advanced version of sanity testing. Back-end developers and testers are involved in smoke
+                testing.</p>
+            <p>Smoke test = sanity test + trouble shooting = sanity test + package validation</p>
+
+            <h4><i class="fas fa-cube"></i> Package Validation</h4>
+            <p>Package is a collection of objects that is downloaded to our system when we install a build.</p>
+
+            <h4><i class="fas fa-not-equal"></i> Difference Between Smoke and Sanity Testing</h4>
+            <table>
+                <tr>
+                    <th>Smoke Testing</th>
+                    <th>Sanity Testing</th>
+                </tr>
+                <tr>
+                    <td>Also known as built verification testing</td>
+                    <td>Also known as zero level testing and built verification testing</td>
+                </tr>
+                <tr>
+                    <td>Verifies basic and critical (high priority) functionality at initial stage</td>
+                    <td>Verifies basic and core functionality after build has passed smoke testing</td>
+                </tr>
+                <tr>
+                    <td>Advanced version: sanity + trouble shooting + package validation</td>
+                    <td>Done on enhancement features; kind of regression testing</td>
+                </tr>
+                <tr>
+                    <td>Primary goal: ensure software build is stable for further testing</td>
+                    <td>Primary goal: ensure build is ready for detailed level testing</td>
+                </tr>
+                <tr>
+                    <td>Done by developers and testers</td>
+                    <td>Done by QA team</td>
+                </tr>
+            </table>
+
+            <h3><i class="fas fa-box"></i> Black Box Testing</h3>
+            <p>Black box testing is also called system integration testing, functional testing, or detail level testing.
+                Testers are involved in this testing where we check overall functionality (internal and external) of the
+                application.</p>
+
+            <h4><i class="fas fa-tasks"></i> System and Function Testing Includes</h4>
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-cogs"></i> Functionality Testing</h4>
+                    <p>We are more involved in this testing</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-user-check"></i> Usability Testing</h4>
+                    <p>We are more involved in this testing</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-shield-alt"></i> Security Testing</h4>
+                    <p>We are less involved in this testing</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-tachometer-alt"></i> Performance Testing</h4>
+                    <p>We are less involved in this testing</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="functionality-testing" class="content-section">
+            <h2><i class="fas fa-cogs"></i> Functionality Testing</h2>
+            <p>It is the process of checking correctness and completeness of functionality. There are 2 types of
+                functionality testing:</p>
+            <ol>
+                <li>Functional testing</li>
+                <li>Non-functional testing</li>
+            </ol>
+
+            <h3><i class="fas fa-microchip"></i> Functional Testing</h3>
+            <p>In functional testing, we must check internal functionality of the application. It includes:</p>
+
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-brain"></i> Behavioral Coverage</h4>
+                    <p>Checking property and behavior of the object.</p>
+                    <p><strong>Example:</strong> In RedBus application, selecting a specific seat highlights it
+                        (behavior) and books it (property).</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-keyboard"></i> Input Domain Coverage</h4>
+                    <p>Checking size and data type of input using BVA and ECP techniques.</p>
+                    <p><strong>Example:</strong> Telegram mobile number field accepts exactly 10 digits (BVA) and
+                        rejects characters/symbols (ECP).</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Error Handling Coverage</h4>
+                    <p>Checking that system shows appropriate error messages.</p>
+                    <p><strong>Example:</strong> Telegram shows "please enter 10-digit mobile no" when less digits are
+                        entered.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-database"></i> Back-end Coverage</h4>
+                    <p>Verifying data is correctly stored and retrieved from database.</p>
+                    <p><strong>Example:</strong> In Upstox app, verifying all account opening information is saved in
+                        database.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-project-diagram"></i> Service Level Coverage</h4>
+                    <p>Checking system works according to function flow diagram.</p>
+                    <p><strong>Example:</strong> Google Drive app follows correct page sequence: home page → folders →
+                        saved data.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-calculator"></i> Calculation Base Coverage</h4>
+                    <p>Verifying arithmetic operations work correctly.</p>
+                    <p><strong>Example:</strong> Amazon correctly calculates total price for multiple quantities of
+                        products.</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-desktop"></i> Non-functional Testing</h3>
+            <p>It is process of checking external functionality of application. Non-functional testing includes:</p>
+
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-redo"></i> Recovery Testing</h4>
+                    <p>Checking application can recover from abnormal to normal situations.</p>
+                    <p><strong>Example:</strong> Result website recovers after too many students access it
+                        simultaneously.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-exchange-alt"></i> Compatibility Testing</h4>
+                    <p>Ensures software works across different environments, browsers, OS, devices.</p>
+                    <table>
+                        <tr>
+                            <th>Forward Compatibility</th>
+                            <th>Backward Compatibility</th>
+                        </tr>
+                        <tr>
+                            <td>Tests software on newer versions</td>
+                            <td>Tests software on older versions</td>
+                        </tr>
+                        <tr>
+                            <td>Ensures app works with future updates</td>
+                            <td>Ensures app works with legacy systems</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-sliders-h"></i> Configuration Testing</h4>
+                    <p>Testing how software performs with different system configurations.</p>
+                    <p><strong>Example:</strong> Testing application on Windows with different RAM sizes (4GB, 8GB,
+                        16GB).</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-network-wired"></i> Inter System Testing</h4>
+                    <p>Validating interaction and data flow between multiple integrated systems.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-download"></i> Installation Testing</h4>
+                    <p>Verifying build installs correctly on user expected platform.</p>
+                    <ul>
+                        <li>Application creates desktop shortcut</li>
+                        <li>All required files are present</li>
+                        <li>User-friendly interface</li>
+                        <li>Disk space validation</li>
+                        <li>Proper uninstallation</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-globe"></i> Globalization Testing</h4>
+                    <p>Verifying application supports different languages, regions, and cultural conventions.</p>
+                    <p><strong>Example:</strong> Daily News Hunt app correctly displays content in multiple languages
+                        with proper formatting.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-gem"></i> Gold Plating</h4>
+                    <p>Testing extra features not mentioned in customer requirements.</p>
+                    <p>If developer adds features without permission, tester logs defects.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-users"></i> Parallel Testing</h4>
+                    <p>Running same tests on different versions/system configurations simultaneously.</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-user-friends"></i> Usability Testing</h3>
+            <p>Evaluates how easy and user-friendly a system is. Not the same as Accessibility Testing.</p>
+
+            <h4><i class="fas fa-bullseye"></i> Main Purpose</h4>
+            <ul>
+                <li>Improves customer satisfaction</li>
+                <li>Reduces support costs</li>
+                <li>Identifies UX issues early</li>
+            </ul>
+
+            <h4><i class="fas fa-tasks"></i> Aspects of Usability Testing</h4>
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-desktop"></i> GUI Testing</h4>
+                    <p>Verifying graphical user interface is user-friendly and aligned with expectations.</p>
+                    <p><strong>Example:</strong> E-commerce checkout button size and contrast affecting success rates.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-hands-helping"></i> Manual Support Testing</h4>
+                    <p>Ensuring users can easily access help resources when needed.</p>
+                    <p><strong>Example:</strong> Banking app provides clear guidance when OTP entry fails.</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-shield-alt"></i> Security Testing</h3>
+            <p>Finding and fixing weaknesses in a system to ensure it's safe from hackers and unauthorized access.</p>
+
+            <h4><i class="fas fa-bullseye"></i> Purpose</h4>
+            <ul>
+                <li>Ensure only authorized access</li>
+                <li>Protect sensitive data</li>
+                <li>Handle attacks without breaking</li>
+            </ul>
+
+            <h4><i class="fas fa-tools"></i> Techniques</h4>
+            <ul>
+                <li>Vulnerability Scanning</li>
+                <li>Penetration Testing</li>
+                <li>Security Auditing</li>
+            </ul>
+
+            <h4><i class="fas fa-key"></i> Security Terminology</h4>
+            <table>
+                <tr>
+                    <th>Authentication</th>
+                    <th>Authorization</th>
+                </tr>
+                <tr>
+                    <td>Verifies user identity</td>
+                    <td>Verifies user permissions</td>
+                </tr>
+                <tr>
+                    <td>Username/password, biometrics, 2FA</td>
+                    <td>Role-based access (admin, user)</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th>Encryption</th>
+                    <th>Decryption</th>
+                </tr>
+                <tr>
+                    <td>Changes readable data to unreadable format</td>
+                    <td>Converts encrypted data back to readable format</td>
+                </tr>
+                <tr>
+                    <td>Protects sensitive data</td>
+                    <td>Allows authorized access to original data</td>
+                </tr>
+            </table>
+
+            <h4><i class="fas fa-bug"></i> Security Testing Types</h4>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Purpose</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>Penetration Testing</td>
+                    <td>Simulates real cyberattacks</td>
+                    <td>SQL Injection attacks</td>
+                </tr>
+                <tr>
+                    <td>Vulnerability Scanning</td>
+                    <td>Identifies security loopholes</td>
+                    <td>Detecting outdated software</td>
+                </tr>
+                <tr>
+                    <td>Authentication Testing</td>
+                    <td>Ensures proper user access</td>
+                    <td>Bypassing login attempts</td>
+                </tr>
+            </table>
+
+            <h3><i class="fas fa-tachometer-alt"></i> Performance Testing</h3>
+            <p>Checking the speed and processing capability of our build under various conditions.</p>
+
+            <h4><i class="fas fa-list"></i> Types</h4>
+            <ul>
+                <li><strong>Load Testing:</strong> Tests system behavior under expected user loads</li>
+                <li><strong>Stress Testing:</strong> Determines system behavior under extreme conditions</li>
+                <li><strong>Spike Testing:</strong> Examines how system handles sudden traffic spikes</li>
+            </ul>
+
+            <h3><i class="fas fa-retweet"></i> Re-Testing</h3>
+            <p>Testing specific fixed defects to ensure issues are resolved.</p>
+
+            <h4><i class="fas fa-check-circle"></i> Key Points</h4>
+            <ul>
+                <li>Purpose: Confirm defects have been fixed</li>
+                <li>When: After bug fixes or code changes</li>
+                <li>How: Re-execute failed test cases</li>
+                <li>Scope: Focuses only on specific defects</li>
+            </ul>
+
+            <h3><i class="fas fa-code-branch"></i> Regression Testing</h3>
+            <p>Checking that new changes don't negatively impact existing functionality.</p>
+
+            <h4><i class="fas fa-not-equal"></i> Re-Testing vs. Regression Testing</h4>
+            <table>
+                <tr>
+                    <th>Re-Testing</th>
+                    <th>Regression Testing</th>
+                </tr>
+                <tr>
+                    <td>Verify fixed bugs</td>
+                    <td>Ensure no new bugs from changes</td>
+                </tr>
+                <tr>
+                    <td>Only failed test cases</td>
+                    <td>All impacted test cases</td>
+                </tr>
+                <tr>
+                    <td>Specific defect focus</td>
+                    <td>Overall system stability</td>
+                </tr>
+            </table>
+
+            <h3><i class="fas fa-user-check"></i> User Acceptance Testing (UAT)</h3>
+            <p>Final testing phase where real users validate if application meets business requirements.</p>
+
+            <h4><i class="fas fa-info-circle"></i> Key Points</h4>
+            <ul>
+                <li>Conducted by business users/stakeholders</li>
+                <li>Focuses on business workflows</li>
+                <li>Performed in UAT/pre-production environment</li>
+                <li>Sign-off required before release</li>
+            </ul>
+
+            <h4><i class="fas fa-not-equal"></i> Alpha vs Beta Testing</h4>
+            <table>
+                <tr>
+                    <th>Alpha Testing</th>
+                    <th>Beta Testing</th>
+                </tr>
+                <tr>
+                    <td>Controlled environment</td>
+                    <td>Uncontrolled environment</td>
+                </tr>
+                <tr>
+                    <td>Testers, developers, customers involved</td>
+                    <td>Less involvement of developers/testers</td>
+                </tr>
+                <tr>
+                    <td>Internal testing</td>
+                    <td>Real-world testing by customers</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="testing-terminology" class="content-section">
+            <h2><i class="fas fa-book"></i> Testing Terminology and Concepts</h2>
+
+            <h3><i class="fas fa-exclamation-circle"></i> Difference between Error, Defect, Bugs, Issues</h3>
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-times-circle"></i> Error</h4>
+                    <p>Mistakes found in program by programmers</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-bug"></i> Defect</h4>
+                    <p>Mistakes found by testers</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-code"></i> Bugs</h4>
+                    <p>Actual defects accepted by developers</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Issues</h4>
+                    <p>Difficulties in solving bugs by developers</p>
+                </div>
+            </div>
+
+            <h4><i class="fas fa-question-circle"></i> Relationship Questions</h4>
+            <table class="comparison-table">
+                <tr>
+                    <th>Question</th>
+                    <th>Answer</th>
+                </tr>
+                <tr>
+                    <td>If every error can be defect?</td>
+                    <td>No, errors may not always manifest as defects</td>
+                </tr>
+                <tr>
+                    <td>If every error can be a bug?</td>
+                    <td>No, only errors that cause incorrect behavior become bugs</td>
+                </tr>
+                <tr>
+                    <td>If every error can be issues?</td>
+                    <td>No, only errors that are difficult to fix become issues</td>
+                </tr>
+                <tr>
+                    <td>If every defect can be a error?</td>
+                    <td>Yes, defects originate from errors</td>
+                </tr>
+                <tr>
+                    <td>If every defect can be bug?</td>
+                    <td>No, only defects accepted by developers become bugs</td>
+                </tr>
+                <tr>
+                    <td>If every defect can be issues?</td>
+                    <td>No, only defects difficult to resolve become issues</td>
+                </tr>
+                <tr>
+                    <td>If every bug can be a error?</td>
+                    <td>Yes, bugs originate from errors</td>
+                </tr>
+                <tr>
+                    <td>If every bug can be a defect?</td>
+                    <td>Yes, bugs are a subset of defects</td>
+                </tr>
+                <tr>
+                    <td>If every bug can be issue?</td>
+                    <td>No, only bugs difficult to fix become issues</td>
+                </tr>
+                <tr>
+                    <td>If every issue can be error?</td>
+                    <td>Yes, issues originate from errors</td>
+                </tr>
+                <tr>
+                    <td>If every issue can be a defect?</td>
+                    <td>Yes, issues are a subset of defects</td>
+                </tr>
+                <tr>
+                    <td>If every issue can be a bug?</td>
+                    <td>Yes, issues are a subset of bugs</td>
+                </tr>
+            </table>
+
+            <h3><i class="fas fa-fire"></i> Hot Fix and Production Issues</h3>
+            <p>Defects found by customers in production environment are called hot fix and production issues.</p>
+
+            <h4><i class="fas fa-cogs"></i> Process Flow</h4>
+            <ol>
+                <li>After UAT completion, product goes to production</li>
+                <li>Regression test engineer deploys product</li>
+                <li>Customers use the product</li>
+                <li>When customers find defects, they contact customer care</li>
+                <li>Customer care assigns ticket to tech support team</li>
+                <li>If unresolved, ticket is transferred to production team (developers and testers)</li>
+                <li>BA assigns hot fix team (developer and tester)</li>
+                <li>After fixing, testing (retesting) begins</li>
+            </ol>
+
+            <h3><i class="fas fa-search"></i> Testing Terminology Overview</h3>
+            <p>Different approaches used for testing software applications when formal test cases are not predefined.
+            </p>
+
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-running"></i> Monkey Testing</h4>
+                    <p>Used when time is limited and only high-priority test cases need execution.</p>
+                    <p><strong>Example:</strong> Quickly validating login, checkout, and payment features before release
+                        deadline.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-compass"></i> Exploratory Testing</h4>
+                    <p>Testing without predefined test cases when testers have domain knowledge.</p>
+                    <p><strong>Example:</strong> Navigating through banking app without test plan to find unexpected
+                        errors.</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-bolt"></i> Ad-hoc Testing</h4>
+                    <p>Quick, informal testing without documentation when tester is familiar with application.</p>
+                    <p><strong>Example:</strong> Randomly checking social media app features before release.</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-cube"></i> Component Testing</h3>
+            <p>Testing performed on each individual component separately without integrating with other components. Also
+                known as Unit Testing, Program Testing or Module Testing.</p>
+
+            <h3><i class="fas fa-shake"></i> Shakedown Testing</h3>
+            <p>Testing system in live environment in controlled manner to ensure all components work together as
+                expected. Occurs after integration testing when system is considered stable.</p>
+
+            <h3><i class="fas fa-border-style"></i> BVA and ECP</h3>
+            <p>Boundary Value Analysis (BVA) and Equivalence Class Partitioning (ECP) are techniques to identify test
+                cases efficiently.</p>
+
+            <h4><i class="fas fa-object-group"></i> Equivalence Class Partitioning (ECP)</h4>
+            <ul>
+                <li>Divides input data into groups where all inputs behave similarly</li>
+                <li>Reduces total number of test cases while covering maximum functionality</li>
+                <li><strong>Example:</strong> Password field (8-12 characters):
+                    <ul>
+                        <li>Valid: 8-12 characters ("password123")</li>
+                        <li>Invalid: Less than 8 ("pass")</li>
+                        <li>Invalid: More than 12 ("passwordislonger")</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4><i class="fas fa-vector-square"></i> Boundary Value Analysis (BVA)</h4>
+            <ul>
+                <li>Focuses on testing values at edges of input ranges</li>
+                <li>Catches boundary-related defects</li>
+                <li><strong>Example:</strong> Password field (8-12 characters):
+                    <ul>
+                        <li>Boundary: 8, 12 characters</li>
+                        <li>Just outside: 7, 13 characters</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3><i class="fas fa-method"></i> Testing Methodology</h3>
+            <p>Strategies and approaches used to ensure software meets quality standards and requirements.</p>
+
+            <div class="card-container">
+                <div class="card">
+                    <h4><i class="fas fa-box"></i> Black Box Testing</h4>
+                    <p>Functional testing without knowledge of internal code</p>
+                    <ul>
+                        <li>Equivalence Partitioning</li>
+                        <li>Boundary Value Analysis</li>
+                        <li>Decision Table Testing</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-code"></i> White Box Testing</h4>
+                    <p>Testing internal logic and structure of code</p>
+                    <ul>
+                        <li>Statement Coverage</li>
+                        <li>Branch Coverage</li>
+                        <li>Path Coverage</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-box-open"></i> Gray Box Testing</h4>
+                    <p>Combination of Black Box and White Box techniques</p>
+                    <p>Testing with partial knowledge of the system</p>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-pause-circle"></i> Static Testing</h4>
+                    <p>Testing without executing the code</p>
+                    <ul>
+                        <li>Code reviews</li>
+                        <li>Walkthroughs</li>
+                        <li>Inspections</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-play-circle"></i> Dynamic Testing</h4>
+                    <p>Testing by executing the application</p>
+                    <ul>
+                        <li>Functional Testing</li>
+                        <li>Non-functional Testing</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-hands"></i> Manual Testing</h4>
+                    <p>Testing without automation tools</p>
+                    <ul>
+                        <li>Exploratory Testing</li>
+                        <li>Ad-hoc Testing</li>
+                        <li>Regression Testing</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-robot"></i> Automated Testing</h4>
+                    <p>Using tools and scripts for repeated test execution</p>
+                    <p><strong>Tools:</strong> Selenium, JUnit, TestNG, Pytest, REST Assured</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-sitemap"></i> Manual Testing Framework and STLC</h3>
+            <p>Structured approach ensuring comprehensive test coverage, efficiency, and consistency.</p>
+
+            <h4><i class="fas fa-list-ol"></i> STLC Steps</h4>
+            <ol>
+                <li><strong>Define Objectives & Scope:</strong> Understand business requirements</li>
+                <li><strong>Establish Test Strategy & Planning:</strong> Define approach, allocate resources</li>
+                <li><strong>Design Test Scenarios & Test Cases:</strong> Create detailed test cases</li>
+                <li><strong>Execute & Track Testing:</strong> Perform testing, log results and defects</li>
+                <li><strong>Review & Continuous Improvement:</strong> Conduct reviews, identify gaps</li>
+            </ol>
+
+            <h3><i class="fas fa-bug"></i> Defect Life Cycle</h3>
+            <p>Systematic process for identifying, logging, managing, and resolving issues.</p>
+
+            <h4><i class="fas fa-road"></i> Defect Life Cycle Flow</h4>
+            <div class="status-flow">
+                <div class="status-item">New/Open</div>
+                <div class="status-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="status-item">Assigned</div>
+                <div class="status-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="status-item">In Progress</div>
+                <div class="status-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="status-item">Fixed/Resolved</div>
+                <div class="status-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="status-item">Closed</div>
+            </div>
+
+            <h4><i class="fas fa-info-circle"></i> Defect Status Details</h4>
+            <ul>
+                <li><strong>New/Open:</strong> When the defect is first logged</li>
+                <li><strong>Assigned:</strong> When the defect is assigned to a developer</li>
+                <li><strong>In Progress:</strong> When the developer is actively working on the defect</li>
+                <li><strong>Deferred:</strong> When the defect is postponed for later releases</li>
+                <li><strong>Rejected/Not a Bug:</strong> When the defect is invalid or not reproducible</li>
+                <li><strong>Fixed/Resolved:</strong> When the developer has implemented the fix</li>
+                <li><strong>Reopened:</strong> If the defect is not resolved during retesting</li>
+                <li><strong>Closed:</strong> When the defect is verified as fixed</li>
+                <li><strong>Duplicate:</strong> When the defect is already reported by someone else</li>
+            </ul>
+
+            <h3><i class="fas fa-exclamation"></i> Priority and Severity</h3>
+            <p>Key attributes in defect management that help determine order and impact of resolving defects.</p>
+
+            <h4><i class="fas fa-arrows-alt-v"></i> Severity vs Priority</h4>
+            <table class="comparison-table">
+                <tr>
+                    <th>Severity</th>
+                    <th>Priority</th>
+                </tr>
+                <tr>
+                    <td>Impact of defect on functionality</td>
+                    <td>Urgency with which defect should be fixed</td>
+                </tr>
+                <tr>
+                    <td>Assigned by QA/Test team</td>
+                    <td>Assigned by Project Manager/Product Owner</td>
+                </tr>
+                <tr>
+                    <td>Categories: Critical, High, Medium, Low</td>
+                    <td>Categories: High, Medium, Low</td>
+                </tr>
+            </table>
+
+            <h4><i class="fas fa-th"></i> Priority and Severity Matrix</h4>
+            <table class="comparison-table">
+                <tr>
+                    <th>Severity \ Priority</th>
+                    <th>High Priority</th>
+                    <th>Low Priority</th>
+                </tr>
+                <tr>
+                    <td>High Severity</td>
+                    <td>Critical defect impacting core functionality<br>(Login not working)</td>
+                    <td>"Forgot Password" feature not working in staging environment</td>
+                </tr>
+                <tr>
+                    <td>Low Severity</td>
+                    <td>Minor issue with high visibility<br>(Homepage typo or logo)</td>
+                    <td>Minor issue with low visibility<br>(Text misalignment)</td>
+                </tr>
+            </table>
+
+            <h3><i class="fas fa-eye"></i> Review and Types of Review</h3>
+            <ol>
+                <li><strong>Self-review:</strong> Review by own</li>
+                <li><strong>Peer review:</strong> Review by colleagues</li>
+                <li><strong>Internal review:</strong> Review within organization</li>
+                <li><strong>External review:</strong> Review by external stakeholders</li>
+            </ol>
+
+            <h3><i class="fas fa-table"></i> Traceability Matrix</h3>
+            <p>Document that establishes relationships between testing process elements like requirements, test cases,
+                and defects.</p>
+
+            <h4><i class="fas fa-bullseye"></i> Purpose</h4>
+            <ul>
+                <li>Ensure all requirements are covered by test cases</li>
+                <li>Identify gaps in testing</li>
+                <li>Track test coverage</li>
+            </ul>
+
+            <h4><i class="fas fa-directions"></i> Types</h4>
+            <ul>
+                <li><strong>Forward Traceability:</strong> Links test cases with requirements</li>
+                <li><strong>Backward Traceability:</strong> Links test results and defects back to requirements</li>
+            </ul>
+
+            <h3><i class="fas fa-chart-pie"></i> Test Coverage</h3>
+            <p>Measures how much of the software code base is covered by existing test suites, usually expressed in
+                percentage.</p>
+            <p>Helps evaluate testing effort and analyze root causes in critical conditions (bugs found in live
+                environment).</p>
+
+            <h3><i class="fas fa-gavel"></i> Seven Principles of Testing</h3>
+            <ol>
+                <li><strong>Testing Shows the Presence of Defects:</strong> Testing identifies defects but doesn't prove
+                    their absence</li>
+                <li><strong>Exhaustive Testing Is Impossible:</strong> Focus on critical and high-risk areas</li>
+                <li><strong>Early Testing:</strong> Start testing early in SDLC to reduce cost</li>
+                <li><strong>Defect Clustering:</strong> Small number of modules contain most defects</li>
+                <li><strong>Pesticide Paradox:</strong> Regularly update test cases to maintain effectiveness</li>
+                <li><strong>Testing Is Context-Dependent:</strong> Tailor testing to project context</li>
+                <li><strong>Absence-of-Errors Fallacy:</strong> Passing tests doesn't guarantee defect-free product</li>
+            </ol>
+        </section>
+    </div>
+
+    <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
+
+    <footer>
+        <div class="container">
+            <p>Software Testing Manual &copy; 2023. All rights reserved.</p>
+            <p>Comprehensive guide to software testing concepts and practices</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking link (on mobile)
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
