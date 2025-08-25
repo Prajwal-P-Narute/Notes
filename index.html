@@ -26,7 +26,8 @@
             --database: #16a085;
             --linux: #1793D1;
             --selenium: #43B02A;
-            /* Selenium green color */
+            --testing-manual: #9C27B0;
+            /* New color for testing manual */
         }
 
         * {
@@ -168,6 +169,10 @@
             background: linear-gradient(135deg, var(--selenium), #6bd34b);
         }
 
+        .testing-manual-header {
+            background: linear-gradient(135deg, var(--testing-manual), #BA68C8);
+        }
+
         .card-icon {
             font-size: 3rem;
             margin-bottom: 15px;
@@ -266,6 +271,10 @@
             background: linear-gradient(135deg, var(--selenium), #6bd34b);
         }
 
+        .testing-manual-button {
+            background: linear-gradient(135deg, var(--testing-manual), #BA68C8);
+        }
+
         .card-button:hover {
             opacity: 0.9;
         }
@@ -309,6 +318,26 @@
         <div class="category-section">
             <h2 class="category-title"><i class="fas fa-vial"></i> Testing Frameworks</h2>
             <div class="framework-cards">
+                <!-- Testing Manual-1 -->
+                <div class="card">
+                    <div class="card-header testing-manual-header">
+                        <div class="card-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h2 class="card-title">Testing Manual-1</h2>
+                        <p>Comprehensive Software Testing Guide</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> SDLC & Testing Methodologies</li>
+                            <li><i class="fas fa-check feature-icon"></i> Agile Testing Process</li>
+                            <li><i class="fas fa-check feature-icon"></i> Test Types & Techniques</li>
+                            <li><i class="fas fa-check feature-icon"></i> Defect Management</li>
+                        </ul>
+                        <a href="manual-1.html" class="card-button testing-manual-button">Open Testing Manual</a>
+                    </div>
+                </div>
+
                 <!-- Playwright -->
                 <div class="card">
                     <div class="card-header playwright-header">
