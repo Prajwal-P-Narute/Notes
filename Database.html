@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Database Guide</title>
+    <style>
+        :root {
+            --primary: #16a085;
+            /* Database green */
+            --secondary: #2c3e50;
+            --accent: #e67e22;
+            --dark: #333;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+            --code-bg: #2d2d2d;
+            --code-text: #f8f8f2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 60px 20px 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 100;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu ul {
+            list-style-type: none;
+        }
+
+        .menu li {
+            margin-bottom: 8px;
+        }
+
+        .menu a {
+            color: var(--dark);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .menu a:hover {
+            background-color: #f0f5ff;
+            color: var(--primary);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary), #1abc9c);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+            scroll-margin-top: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .command {
+            color: #50fa7b;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        .important {
+            background-color: #fff9e6;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip {
+            background-color: #e6f7ee;
+            padding: 12px 15px;
+            border-left: 4px solid var(--primary);
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning {
+            background-color: #ffe6e6;
+            padding: 12px 15px;
+            border-left: 4px solid #e74c3c;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), #1abc9c);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .comparison-table {
+            overflow-x: auto;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                width: 80%;
+                right: -80%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu Button -->
+    <button class="menu-toggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Menu
+    </button>
+
+    <!-- Menu -->
+    <div class="menu" id="mainMenu">
+        <button class="close-menu">&times;</button>
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#sql-intro">SQL Introduction</a></li>
+            <li><a href="#sql-use">Use of SQL</a></li>
+            <li><a href="#database-defined">Database Defined</a></li>
+            <li><a href="#sql-commands">SQL Commands</a></li>
+            <li><a href="#select-query">SELECT Query</a></li>
+            <li><a href="#distinct">DISTINCT</a></li>
+            <li><a href="#order-by">ORDER BY</a></li>
+            <li><a href="#where">WHERE Clause</a></li>
+            <li><a href="#and-or-not">AND, OR, NOT</a></li>
+            <li><a href="#like">LIKE Operator</a></li>
+            <li><a href="#insert">INSERT INTO</a></li>
+            <li><a href="#update">UPDATE</a></li>
+            <li><a href="#delete">DELETE</a></li>
+            <li><a href="#select-into">SELECT INTO</a></li>
+            <li><a href="#in">IN Operator</a></li>
+            <li><a href="#between">BETWEEN</a></li>
+            <li><a href="#aliases">Aliases</a></li>
+            <li><a href="#union">UNION</a></li>
+            <li><a href="#clause-summary">Clause Summary</a></li>
+            <li><a href="#delete-truncate-drop">DELETE vs TRUNCATE vs DROP</a></li>
+        </ul>
+    </div>
+
+    <a href="#" class="back-to-top">↑</a>
+
+    <header>
+        <h1>SQL Database Guide</h1>
+        <p>Comprehensive reference for Structured Query Language (SQL)</p>
+    </header>
+
+    <div class="container">
+        <section class="section" id="sql-intro">
+            <h2>📊 Introduction to SQL</h2>
+            <div class="step">
+                <p><strong>SQL (Structured Query Language)</strong> is used for accessing and manipulating databases.
+                </p>
+                <p>SQL keywords are NOT case sensitive: <code>select</code> is the same as <code>SELECT</code>.</p>
+            </div>
+        </section>
+
+        <section class="section" id="sql-use">
+            <h2>🎯 Use of SQL</h2>
+            <div class="step">
+                <p>SQL can:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Execute queries against a database</li>
+                    <li>Retrieve data from a database</li>
+                    <li>Insert records in a database</li>
+                    <li>Update records in a database</li>
+                    <li>Delete records from a database</li>
+                    <li>Create new databases and tables</li>
+                    <li>Create stored procedures and views</li>
+                    <li>Set permissions on tables, procedures, and views</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="database-defined">
+            <h2>🗃️ Database Defined</h2>
+            <div class="step">
+                <p>A database is an organized collection of structured information typically stored electronically in a
+                    computer system.</p>
+                <p>Data is typically modeled in rows and columns in a series of tables for efficient processing and
+                    querying.</p>
+                <p>Most databases use structured query language (SQL) for data management.</p>
+            </div>
+        </section>
+
+        <section class="section full-width" id="sql-commands">
+            <h2>🔧 SQL Commands</h2>
+            <div class="step">
+                <p>Some of the most important SQL commands:</p>
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td><code>SELECT</code></td>
+                        <td>Extracts data from a database</td>
+                    </tr>
+                    <tr>
+                        <td><code>UPDATE</code></td>
+                        <td>Updates data in a database</td>
+                    </tr>
+                    <tr>
+                        <td><code>DELETE</code></td>
+                        <td>Deletes data from a database</td>
+                    </tr>
+                    <tr>
+                        <td><code>INSERT INTO</code></td>
+                        <td>Inserts new data into a database</td>
+                    </tr>
+                    <tr>
+                        <td><code>CREATE DATABASE</code></td>
+                        <td>Creates a new database</td>
+                    </tr>
+                    <tr>
+                        <td><code>ALTER DATABASE</code></td>
+                        <td>Modifies a database</td>
+                    </tr>
+                    <tr>
+                        <td><code>CREATE TABLE</code></td>
+                        <td>Creates a new table</td>
+                    </tr>
+                    <tr>
+                        <td><code>ALTER TABLE</code></td>
+                        <td>Modifies a table</td>
+                    </tr>
+                    <tr>
+                        <td><code>DROP TABLE</code></td>
+                        <td>Deletes a table</td>
+                    </tr>
+                    <tr>
+                        <td><code>CREATE INDEX</code></td>
+                        <td>Creates an index (search key)</td>
+                    </tr>
+                    <tr>
+                        <td><code>DROP INDEX</code></td>
+                        <td>Deletes an index</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section class="section" id="select-query">
+            <h2>🔍 SELECT Query</h2>
+            <div class="step">
+                <p>Used to fetch data from database tables.</p>
+                <div class="code-block">
+                    <span class="comment">-- Fetch all data from a table</span><br>
+                    <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> table_name;<br><br>
+
+                    <span class="comment">-- Fetch specific column</span><br>
+                    <span class="keyword">SELECT</span> column_name <span class="keyword">FROM</span>
+                    table_name;<br><br>
+
+                    <span class="comment">-- Fetch multiple columns</span><br>
+                    <span class="keyword">SELECT</span> column1, column2, column3 <span class="keyword">FROM</span>
+                    table_name;
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="distinct">
+            <h2>✨ DISTINCT</h2>
+            <div class="step">
+                <p>Returns only distinct (different) values.</p>
+                <div class="code-block">
+                    <span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> column1, column2<br>
+                    <span class="keyword">FROM</span> table_name;
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="order-by">
+            <h2>📈 ORDER BY</h2>
+            <div class="step">
+                <p>Sorts the result-set in ascending or descending order.</p>
+                <div class="code-block">
+                    <span class="keyword">SELECT</span> column1, column2<br>
+                    <span class="keyword">FROM</span> table_name<br>
+                    <span class="keyword">ORDER BY</span> column1 <span class="keyword">ASC</span>|<span
+                        class="keyword">DESC</span>;
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="where">
+            <h2>🔎 WHERE Clause</h2>
+            <div class="step">
+                <p>Filters records based on specified conditions.</p>
+                <div class="code-block">
+                    <span class="keyword">SELECT</span> column1, column2<br>
+                    <span class="keyword">FROM</span> table_name<br>
+                    <span class="keyword">WHERE</span> condition;
+                </div>
+                <div class="tip">
+                    <strong>Example:</strong><br>
+                    <code>SELECT * FROM Customers WHERE Country='Brazil';</code>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="and-or-not">
+            <h2>🧮 AND, OR, NOT</h2>
+            <div class="step">
+                <p>Combine multiple conditions in WHERE clause.</p>
+                <div class="code-block">
+                    <span class="comment">-- AND operator (all conditions must be true)</span><br>
+                    <span class="keyword">SELECT</span> column1, column2<br>
+                    <span class="keyword">FROM</span> table_name<br>
+                    <span class="keyword">WHERE</span> condition1 <span class="keyword">AND</span> condition2;<br><br>
+
+                    <span class="comment">-- OR operator (any condition can be true)</span><br>
+                    <span class="keyword">SELECT</span> column1, column2<br>
+                    <span class="keyword">FROM</span> table_name<br>
+                    <span class="keyword">WHERE</span> condition1 <span class="keyword">OR</span> condition2;<br><br>
+
+                    <span class="comment">-- NOT operator (negates a condition)</span><br>
+                    <span class="keyword">SELECT</span> column1, column2<br>
+                    <span class="keyword">FROM</span> table_name<br>
+                    <span class="keyword">WHERE</span> <span class="keyword">NOT</span> condition;
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="like">
+            <h2>🔍 LIKE Operator</h2>
+            <div class="step">
+                <p>Used in WHERE clause to search for a specified pattern.</p>
+                <div class="code-block">
+                    <span class="keyword">SELECT</span> column1, column2<br>
+                    <span class="keyword">FROM</span> table_name<br>
+                    <span class="keyword">WHERE</span> columnN <span class="keyword">LIKE</span> pattern;
+                </div>
+                <div class="tip">
+                    <strong>Pattern examples:</strong><br>
+                    <code>WHERE CustomerName LIKE 'a%'</code> - Starts with "a"<br>
+                    <code>WHERE CustomerName LIKE '%a'</code> - Ends with "a"<br>
+                    <code>WHERE CustomerName LIKE '%or%'</code> - Has "or" in any position<br>
+                    <code>WHERE CustomerName LIKE '_r%'</code> - Has "r" in the second position
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="insert">
+            <h2>➕ INSERT INTO</h2>
+            <div class="step">
+                <p>Inserts new records in a table.</p>
+                <div class="code-block">
+                    <span class="comment">-- Specify both column names and values</span><br>
+                    <span class="keyword">INSERT INTO</span> table_name (column1, column2, column3)<br>
+                    <span class="keyword">VALUES</span> (value1, value2, value3);<br><br>
+
+                    <span class="comment">-- If adding values for all columns</span><br>
+                    <span class="keyword">INSERT INTO</span> table_name<br>
+                    <span class="keyword">VALUES</span> (value1, value2, value3);
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="update">
+            <h2>✏️ UPDATE</h2>
+            <div class="step">
+                <p>Modifies existing records in a table.</p>
+                <div class="code-block">
+                    <span class="keyword">UPDATE</span> table_name<br>
+                    <span class="keyword">SET</span> column1 = value1, column2 = value2<br>
+                    <span class="keyword">WHERE</span> condition;
+                </div>
+                <div class="warning">
+                    <strong>Warning:</strong> Be careful when updating records. If you omit the WHERE clause, ALL
+                    records will be updated!
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="delete">
+            <h2>🗑️ DELETE</h2>
+            <div class="step">
+                <p>Deletes existing records from a table.</p>
+                <div class="code-block">
+                    <span class="keyword">DELETE FROM</span> table_name <span class="keyword">WHERE</span> condition;
+                </div>
+                <div class="warning">
+                    <strong>Warning:</strong> Be careful when deleting records. If you omit the WHERE clause, ALL
+                    records will be deleted!
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="select-into">
+            <h2>📤 SELECT INTO</h2>
+            <div class="step">
+                <p>Copies data from one table into a new table.</p>
+                <div class="code-block">
+                    <span class="comment">-- Copy all columns into a new table</span><br>
+                    <span class="keyword">SELECT</span> *<br>
+                    <span class="keyword">INTO</span> new_table<br>
+                    <span class="keyword">FROM</span> old_table<br>
+                    <span class="keyword">WHERE</span> condition;<br><br>
+
+                    <span class="comment">-- Copy only some columns</span><br>
+                    <span class="keyword">SELECT</span> column1, column2<br>
+                    <span class="keyword">INTO</span> new_table<br>
+                    <span class="keyword">FROM</span> old_table<br>
+                    <span class="keyword">WHERE</span> condition;
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="in">
+            <h2>📋 IN Operator</h2>
+            <div class="step">
+                <p>Allows specifying multiple values in a WHERE clause.</p>
+                <div class="code-block">
+                    <span class="comment">-- With list of values</span><br>
+                    <span class="keyword">SELECT</span> column_name<br>
+                    <span class="keyword">FROM</span> table_name<br>
+                    <span class="keyword">WHERE</span> column_name <span class="keyword">IN</span> (value1, value2,
+                    ...);<br><br>
+
+                    <span class="comment">-- With subquery</span><br>
+                    <span class="keyword">SELECT</span> column_name<br>
+                    <span class="keyword">FROM</span> table_name<br>
+                    <span class="keyword">WHERE</span> column_name <span class="keyword">IN</span> (<span
+                        class="keyword">SELECT</span> statement);
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="between">
+            <h2>↔️ BETWEEN Operator</h2>
+            <div class="step">
+                <p>Selects values within a given range (inclusive).</p>
+                <div class="code-block">
+                    <span class="keyword">SELECT</span> column_name<br>
+                    <span class="keyword">FROM</span> table_name<br>
+                    <span class="keyword">WHERE</span> column_name <span class="keyword">BETWEEN</span> value1 <span
+                        class="keyword">AND</span> value2;
+                </div>
+                <div class="tip">
+                    <strong>Example:</strong><br>
+                    <code>SELECT * FROM Products WHERE Price BETWEEN 10 AND 20;</code>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="aliases">
+            <h2>🏷️ Aliases</h2>
+            <div class="step">
+                <p>Give a table or column a temporary name.</p>
+                <div class="code-block">
+                    <span class="comment">-- Column alias</span><br>
+                    <span class="keyword">SELECT</span> column_name <span class="keyword">AS</span> alias_name<br>
+                    <span class="keyword">FROM</span> table_name;<br><br>
+
+                    <span class="comment">-- Table alias</span><br>
+                    <span class="keyword">SELECT</span> column_name<br>
+                    <span class="keyword">FROM</span> table_name <span class="keyword">AS</span> alias_name;
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="union">
+            <h2>🔄 UNION Operator</h2>
+            <div class="step">
+                <p>Combines the result-set of two or more SELECT statements.</p>
+                <div class="code-block">
+                    <span class="comment">-- UNION (removes duplicates)</span><br>
+                    <span class="keyword">SELECT</span> column_name <span class="keyword">FROM</span> table1<br>
+                    <span class="keyword">UNION</span><br>
+                    <span class="keyword">SELECT</span> column_name <span class="keyword">FROM</span> table2;<br><br>
+
+                    <span class="comment">-- UNION ALL (keeps duplicates)</span><br>
+                    <span class="keyword">SELECT</span> column_name <span class="keyword">FROM</span> table1<br>
+                    <span class="keyword">UNION ALL</span><br>
+                    <span class="keyword">SELECT</span> column_name <span class="keyword">FROM</span> table2;
+                </div>
+            </div>
+        </section>
+
+        <section class="section full-width" id="clause-summary">
+            <h2>📋 SQL Clause Summary</h2>
+            <div class="step">
+                <table>
+                    <tr>
+                        <th>SQL Clause</th>
+                        <th>Query Example</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>SELECT</td>
+                        <td><code>SELECT * FROM table;</code></td>
+                        <td>Retrieves all or specific columns from a table</td>
+                    </tr>
+                    <tr>
+                        <td>SELECT DISTINCT</td>
+                        <td><code>SELECT DISTINCT column FROM table;</code></td>
+                        <td>Retrieves unique values from a column</td>
+                    </tr>
+                    <tr>
+                        <td>ORDER BY</td>
+                        <td><code>SELECT column FROM table ORDER BY column;</code></td>
+                        <td>Sorts query results in ascending or descending order</td>
+                    </tr>
+                    <tr>
+                        <td>WHERE</td>
+                        <td><code>SELECT column FROM table WHERE column = 'value';</code></td>
+                        <td>Filters records based on a condition</td>
+                    </tr>
+                    <tr>
+                        <td>AND, OR, NOT</td>
+                        <td><code>SELECT column FROM table WHERE condition1 AND condition2;</code></td>
+                        <td>Combines multiple conditions in a query</td>
+                    </tr>
+                    <tr>
+                        <td>LIKE</td>
+                        <td><code>SELECT column FROM table WHERE column LIKE '%a';</code></td>
+                        <td>Finds values matching a pattern</td>
+                    </tr>
+                    <tr>
+                        <td>INSERT INTO</td>
+                        <td><code>INSERT INTO table (col1, col2) VALUES ('val1', 'val2');</code></td>
+                        <td>Adds new records to a table</td>
+                    </tr>
+                    <tr>
+                        <td>UPDATE</td>
+                        <td><code>UPDATE table SET col1 = 'val1' WHERE condition;</code></td>
+                        <td>Modifies existing records in a table</td>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td><code>DELETE FROM table WHERE condition;</code></td>
+                        <td>Removes records from a table</td>
+                    </tr>
+                    <tr>
+                        <td>SELECT INTO</td>
+                        <td><code>SELECT col1, col2 INTO new_table FROM old_table;</code></td>
+                        <td>Copies data from one table to another</td>
+                    </tr>
+                    <tr>
+                        <td>IN</td>
+                        <td><code>SELECT column FROM table WHERE column IN ('val1', 'val2');</code></td>
+                        <td>Filters results based on a list of values</td>
+                    </tr>
+                    <tr>
+                        <td>BETWEEN</td>
+                        <td><code>SELECT column FROM table WHERE column BETWEEN val1 AND val2;</code></td>
+                        <td>Selects values within a specified range</td>
+                    </tr>
+                    <tr>
+                        <td>ALIASES</td>
+                        <td><code>SELECT column1 AS alias1 FROM table;</code></td>
+                        <td>Renames columns or tables temporarily</td>
+                    </tr>
+                    <tr>
+                        <td>UNION</td>
+                        <td><code>SELECT col1 FROM table1 UNION SELECT col2 FROM table2;</code></td>
+                        <td>Combines results from multiple SELECT queries</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section class="section full-width" id="delete-truncate-drop">
+            <h2>⚖️ DELETE vs TRUNCATE vs DROP</h2>
+            <div class="step">
+                <div class="comparison-table">
+                    <table>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                            <th>Rollback?</th>
+                            <th>Performance</th>
+                        </tr>
+                        <tr>
+                            <td>DELETE</td>
+                            <td>Removes specific rows based on condition</td>
+                            <td>✅ Yes (if inside a transaction)</td>
+                            <td>Slower, as it logs each row deleted</td>
+                        </tr>
+                        <tr>
+                            <td>TRUNCATE</td>
+                            <td>Removes all rows but keeps table structure</td>
+                            <td>❌ No</td>
+                            <td>Faster than DELETE, but no rollback</td>
+                        </tr>
+                        <tr>
+                            <td>DROP</td>
+                            <td>Deletes the entire table (structure + data)</td>
+                            <td>❌ No</td>
+                            <td>Fastest, but irreversible</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0;">
+        <a href="index.html" class="nav-button">Back to IT Topics Hub</a>
+    </div>
+
+    <script>
+        // Menu functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeMenu = document.querySelector('.close-menu');
+        const menu = document.getElementById('mainMenu');
+        const menuLinks = document.querySelectorAll('.menu a');
+
+        // Toggle menu
+        menuToggle.addEventListener('click', () => {
+            menu.classList.add('active');
+        });
+
+        // Close menu
+        closeMenu.addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // Close menu when clicking on links
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

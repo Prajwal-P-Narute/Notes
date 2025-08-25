@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selenium Automation Testing Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --gray: #7f8c8d;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar {
+            flex: 0 0 280px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+            color: var(--primary);
+        }
+
+        h2 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: var(--dark);
+            margin: 1rem 0 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul,
+        ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .nav-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-title i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            background-color: var(--light);
+            color: var(--primary);
+        }
+
+        .nav-links a i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .comparison-table th {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .keyword {
+            color: #f92672;
+        }
+
+        .method {
+            color: #66d9ef;
+        }
+
+        .string {
+            color: #a6e22e;
+        }
+
+        .comment {
+            color: #75715e;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .badge-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .badge-info {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .section-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .nav-button {
+            text-align: center;
+        }
+
+        .tag {
+            padding: 0.25rem 0.5rem;
+            background-color: var(--light);
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        footer {
+            background-color: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                flex: 1;
+                width: 100%;
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+
+            .code-block {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .back-to-top:hover {
+            background-color: var(--secondary);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>Selenium Automation Testing Guide</h1>
+                <p class="subtitle">Comprehensive reference for Selenium WebDriver automation testing</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="nav-card">
+                    <h3 class="nav-title"><i class="fas fa-bookmark"></i> Navigation</h3>
+                    <ul class="nav-links">
+                        <li><a href="#automation-testing"><i class="fas fa-robot"></i> Automation Testing</a></li>
+                        <li><a href="#selenium-components"><i class="fas fa-puzzle-piece"></i> Selenium Components</a>
+                        </li>
+                        <li><a href="#get-vs-navigate"><i class="fas fa-exchange-alt"></i> get() vs navigate()</a></li>
+                        <li><a href="#method-chaining"><i class="fas fa-link"></i> Method Chaining</a></li>
+                        <li><a href="#webdriver-vs-webelement"><i class="fas fa-not-equal"></i> WebDriver vs
+                                WebElement</a></li>
+                        <li><a href="#locators"><i class="fas fa-search"></i> Locators</a></li>
+                        <li><a href="#xpath"><i class="fas fa-code"></i> XPath</a></li>
+                        <li><a href="#exceptions"><i class="fas fa-exclamation-circle"></i> Exceptions</a></li>
+                        <li><a href="#dropdowns"><i class="fas fa-caret-down"></i> Dropdown Handling</a></li>
+                        <li><a href="#screenshots"><i class="fas fa-camera"></i> Screenshots</a></li>
+                        <li><a href="#mouse-actions"><i class="fas fa-mouse"></i> Mouse Actions</a></li>
+                        <li><a href="#waits"><i class="fas fa-clock"></i> Waits</a></li>
+                        <!-- New sections added below -->
+                        <li><a href="#iframe-handling"><i class="fas fa-window-restore"></i> IFrame Handling</a></li>
+                        <li><a href="#defect-logging"><i class="fas fa-bug"></i> Defect Logging</a></li>
+                        <li><a href="#broken-links"><i class="fas fa-link"></i> Broken Links</a></li>
+                        <li><a href="#data-tables"><i class="fas fa-table"></i> Data Tables vs Examples</a></li>
+                    </ul>
+                </div>
+            </aside>
+            <main class="content">
+                <section id="automation-testing" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-robot icon"></i>
+                        <h2>Automation Testing</h2>
+                    </div>
+                    <p>Using automated tools and scripts to test application functionality instead of manual testing.
+                    </p>
+
+                    <h3>Disadvantages of Manual Testing</h3>
+                    <ul>
+                        <li>Longer project duration</li>
+                        <li>Requires more human effort</li>
+                        <li>Slow regression testing</li>
+                        <li>Difficult cross-browser testing</li>
+                    </ul>
+
+                    <h3>Advantages of Automation</h3>
+                    <ul>
+                        <li>Reusable test scripts</li>
+                        <li>Faster cross-browser testing</li>
+                        <li>Reduces project time & cost</li>
+                        <li>Less human effort</li>
+                        <li>Reliable & efficient</li>
+                    </ul>
+
+                    <h3>Advantages of Selenium</h3>
+                    <ul>
+                        <li>Open-source (widely used by 80-90% of companies)</li>
+                        <li>Supports multiple programming languages</li>
+                        <li>Enables cross-browser testing</li>
+                    </ul>
+
+                    <h3>Disadvantages of Selenium</h3>
+                    <ul>
+                        <li>Only supports web applications (not desktop/mobile apps)</li>
+                        <li>Cannot automate CAPTCHA or OTP</li>
+                        <li>Does not support file uploads</li>
+                        <li>Cannot handle barcode scanning</li>
+                        <li>Does not automate ad hoc test cases</li>
+                    </ul>
+                </section>
+
+                <section id="selenium-components" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-puzzle-piece icon"></i>
+                        <h2>Selenium Components & Architecture</h2>
+                    </div>
+
+                    <h3>Key Components of Selenium</h3>
+                    <ul>
+                        <li><strong>WebDriver</strong> – Automates browsers, supports multiple languages.</li>
+                        <li><strong>Selenium Grid</strong> – Runs tests in parallel on multiple browsers/machines.</li>
+                        <li><strong>Selenium IDE</strong> – Records & plays back tests (for beginners, no coding
+                            needed).</li>
+                        <li><strong>Browser Drivers</strong> – Connects Selenium with browsers (e.g., ChromeDriver).
+                        </li>
+                        <li><strong>Framework Integration</strong> – Works with TestNG, JUnit, Cucumber BDD, etc.</li>
+                    </ul>
+
+                    <h3>Hypertext Markup Language (HTML)</h3>
+                    <ul>
+                        <li>Used to create web pages.</li>
+                        <li>Not case-sensitive (can be written in Notepad, Notepad++).</li>
+                        <li>File extension should be .html.</li>
+                        <li>Why HTML in Selenium? – Helps uniquely identify elements for automation.</li>
+                    </ul>
+
+                    <h3>Selenium Architecture (Client-Server Model)</h3>
+                    <h4>Key Components</h4>
+                    <ul>
+                        <li><strong>Test Script</strong> – Written in Java, Python, or C# to define actions.</li>
+                        <li><strong>WebDriver</strong> – Acts as a bridge between script & browser.</li>
+                        <li><strong>Browser Driver</strong> – Communicates with the browser (e.g., ChromeDriver).</li>
+                    </ul>
+
+                    <h4>How Selenium Works (Simple Flow)</h4>
+                    <ol>
+                        <li>Test Script sends commands (e.g., click a button).</li>
+                        <li>WebDriver converts them into browser-understandable actions.</li>
+                        <li>Browser Driver sends instructions to the actual browser.</li>
+                        <li>Browser executes actions and sends results back to WebDriver.</li>
+                    </ol>
+
+                    <h4>Advantages of Selenium Architecture</h4>
+                    <ul>
+                        <li>✅ Cross-Browser Testing – Works on Chrome, Firefox, Safari, etc.</li>
+                        <li>✅ Multi-Language Support – Java, Python, C#, etc.</li>
+                        <li>✅ Parallel Testing – Runs tests on multiple browsers/machines (via Selenium Grid).</li>
+                    </ul>
+                </section>
+
+                <section id="get-vs-navigate" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-exchange-alt icon"></i>
+                        <h2>Difference between get() and navigate() methods</h2>
+                    </div>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>get() Method</th>
+                                <th>navigate() Method</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Purpose</td>
+                                <td>Launches a new URL.</td>
+                                <td>Launches a URL with additional navigation controls.</td>
+                            </tr>
+                            <tr>
+                                <td>History Handling</td>
+                                <td>Does not maintain history.</td>
+                                <td>Maintains browser history (can go back, forward, or refresh).</td>
+                            </tr>
+                            <tr>
+                                <td>Page Load</td>
+                                <td>Waits for the page to fully load.</td>
+                                <td>Does not wait for full page load.</td>
+                            </tr>
+                            <tr>
+                                <td>Syntax</td>
+                                <td>driver.get("https://example.com");</td>
+                                <td>driver.navigate().to("https://example.com");</td>
+                            </tr>
+                            <tr>
+                                <td>Navigation Features</td>
+                                <td>Only loads the page.</td>
+                                <td>Supports back, forward, refresh.</td>
+                            </tr>
+                            <tr>
+                                <td>Code Simplicity</td>
+                                <td>Easier to write.</td>
+                                <td>Slightly longer syntax.</td>
+                            </tr>
+                            <tr>
+                                <td>Usage Order</td>
+                                <td>Used before navigate().</td>
+                                <td>Used after launching a URL.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-block">
+                        <span class="comment">// Example of navigate() methods</span><br>
+                        driver.navigate().to(<span class="string">"https://www.example.com"</span>);<br>
+                        driver.navigate().back(); <span class="comment">// Go to previous page</span><br>
+                        driver.navigate().forward(); <span class="comment">// Move forward in history</span><br>
+                        driver.navigate().refresh(); <span class="comment">// Refresh the page</span>
+                    </div>
+                </section>
+
+                <section id="method-chaining" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-link icon"></i>
+                        <h2>Method Chaining in Selenium</h2>
+                    </div>
+
+                    <p><strong>What is Method Chaining?</strong></p>
+                    <ul>
+                        <li>🔹 Allows calling multiple methods in a single line, reducing code length.</li>
+                        <li>🔹 Makes test scripts more readable and efficient.</li>
+                    </ul>
+
+                    <div class="code-block">
+                        <span class="comment">// Example: Maximizing Browser Window</span><br>
+                        driver.manage().window().maximize();
+                    </div>
+
+                    <p><strong>How It Works?</strong></p>
+                    <ul>
+                        <li>manage() → Returns the Options interface.</li>
+                        <li>window() → Returns the Window interface.</li>
+                        <li>maximize() → Maximizes the browser window.</li>
+                    </ul>
+
+                    <p><strong>Other Methods in Window Interface</strong></p>
+                    <ul>
+                        <li>✔ minimize() – Minimizes the browser.</li>
+                        <li>✔ setSize() – Resizes the browser.</li>
+                        <li>✔ setPosition() – Moves the browser to a specific location.</li>
+                    </ul>
+
+                    <div class="code-block">
+                        <span class="comment">// Without Method Chaining (Longer Code)</span><br>
+                        Options opt = driver.manage();<br>
+                        Window win = opt.window();<br>
+                        win.maximize();<br><br>
+
+                        <span class="comment">// With Method Chaining (Optimized Code)</span><br>
+                        driver.manage().window().maximize();
+                    </div>
+                </section>
+
+                <section id="webdriver-vs-webelement" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-not-equal icon"></i>
+                        <h2>Difference Between WebDriver and WebElement Interfaces</h2>
+                    </div>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>WebDriver</th>
+                                <th>WebElement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Definition</td>
+                                <td>Interface used to interact with the browser.</td>
+                                <td>Interface used to interact with elements on a web page.</td>
+                            </tr>
+                            <tr>
+                                <td>Purpose</td>
+                                <td>Controls browser actions (e.g., open, close, navigate).</td>
+                                <td>Finds and manipulates elements (e.g., click, input text).</td>
+                            </tr>
+                            <tr>
+                                <td>Example Methods</td>
+                                <td>get(), navigate(), manage(), switchTo(), quit()</td>
+                                <td>click(), sendKeys(), getText(), isDisplayed()</td>
+                            </tr>
+                            <tr>
+                                <td>Usage Example</td>
+                                <td>driver.get("https://example.com");</td>
+                                <td>WebElement button = driver.findElement(By.id("btn"));</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>WebDriver Interface Methods (Used for browser control)</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>get()</td>
+                                <td>Opens a URL.</td>
+                            </tr>
+                            <tr>
+                                <td>getTitle()</td>
+                                <td>Retrieves the page title.</td>
+                            </tr>
+                            <tr>
+                                <td>getCurrentUrl()</td>
+                                <td>Gets the current page URL.</td>
+                            </tr>
+                            <tr>
+                                <td>getWindowHandle()</td>
+                                <td>Returns the unique ID of the current window.</td>
+                            </tr>
+                            <tr>
+                                <td>getWindowHandles()</td>
+                                <td>Returns all open window handles.</td>
+                            </tr>
+                            <tr>
+                                <td>navigate()</td>
+                                <td>Performs browser navigation (back, forward, refresh).</td>
+                            </tr>
+                            <tr>
+                                <td>findElement()</td>
+                                <td>Locates a single web element.</td>
+                            </tr>
+                            <tr>
+                                <td>findElements()</td>
+                                <td>Locates multiple web elements.</td>
+                            </tr>
+                            <tr>
+                                <td>manage()</td>
+                                <td>Manages browser settings (cookies, timeouts, window size).</td>
+                            </tr>
+                            <tr>
+                                <td>toString()</td>
+                                <td>Returns a string representation of WebDriver.</td>
+                            </tr>
+                            <tr>
+                                <td>switchTo()</td>
+                                <td>Switches focus to another window, frame, or alert.</td>
+                            </tr>
+                            <tr>
+                                <td>close()</td>
+                                <td>Closes the current browser window.</td>
+                            </tr>
+                            <tr>
+                                <td>quit()</td>
+                                <td>Closes all open browser windows.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>WebElement Interface Methods (Used for element interactions)</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>getLocation()</td>
+                                <td>Returns the element's position on the page.</td>
+                            </tr>
+                            <tr>
+                                <td>getSize()</td>
+                                <td>Returns the element's height & width.</td>
+                            </tr>
+                            <tr>
+                                <td>getText()</td>
+                                <td>Gets the text inside the element.</td>
+                            </tr>
+                            <tr>
+                                <td>getTagName()</td>
+                                <td>Returns the tag name (e.g., &lt;input&gt;, &lt;button&gt;).</td>
+                            </tr>
+                            <tr>
+                                <td>sendKeys()</td>
+                                <td>Enters text into an input field.</td>
+                            </tr>
+                            <tr>
+                                <td>click()</td>
+                                <td>Clicks on the element.</td>
+                            </tr>
+                            <tr>
+                                <td>isDisplayed()</td>
+                                <td>Checks if the element is visible.</td>
+                            </tr>
+                            <tr>
+                                <td>isEnabled()</td>
+                                <td>Checks if the element is enabled.</td>
+                            </tr>
+                            <tr>
+                                <td>isSelected()</td>
+                                <td>Checks if a checkbox/radio button is selected.</td>
+                            </tr>
+                            <tr>
+                                <td>equals()</td>
+                                <td>Compares two elements.</td>
+                            </tr>
+                            <tr>
+                                <td>submit()</td>
+                                <td>Submits a form.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="locators" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-search icon"></i>
+                        <h2>Locators in Selenium</h2>
+                    </div>
+
+                    <p><strong>What are Locators?</strong></p>
+                    <p>Locators help identify and interact with web elements on a web page during automation.</p>
+
+                    <h3>Types of Locators</h3>
+                    <ul>
+                        <li><strong>Attribute-Based Locators</strong> – id, name, class name, accessibility id, text()
+                        </li>
+                        <li><strong>Tag Name</strong> – Uses the HTML tag itself (e.g., &lt;button&gt;, &lt;input&gt;,
+                            etc.).</li>
+                        <li><strong>XPath</strong> – Advanced method to locate elements.</li>
+                        <li><strong>CSS Selector</strong> – Uses CSS patterns to find elements.</li>
+                    </ul>
+                </section>
+
+                <section id="xpath" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-code icon"></i>
+                        <h2>XPath in Selenium</h2>
+                    </div>
+
+                    <p>🔹 XPath (XML Path Language) is a flexible way to locate elements based on structure and
+                        attributes.</p>
+
+                    <h3>Types of XPath</h3>
+                    <ul>
+                        <li>✅ XPath by Attribute → //tag[@attribute='value']</li>
+                        <li>✅ XPath by Text → //tag[text()='text value']</li>
+                        <li>✅ XPath by Contains → //tag[contains(@attribute, 'partial value')]</li>
+                        <li>✅ Absolute XPath → Uses the full path from the root (/html/body/...) but not recommended due
+                            to maintenance issues.</li>
+                        <li>✅ Relative XPath → Shorter and flexible path (//parent//child), preferred for automation.
+                        </li>
+                        <li>✅ XPath by Index → Used when multiple elements share the same attributes
+                            ((//tag[@attribute='value'])[index]).</li>
+                    </ul>
+
+                    <h3>Special XPath Keywords</h3>
+                    <ul>
+                        <li>✔ Parent → Finds the immediate parent of an element.
+                            <div class="code-block">
+                                //input[@type='text']/parent::div
+                            </div>
+                        </li>
+                        <li>✔ Ancestor → Finds the grandparent or higher elements.
+                            <div class="code-block">
+                                //input[@id='pass']/ancestor::div
+                            </div>
+                        </li>
+                        <li>✔ Sibling → Finds elements at the same level.
+                            <div class="code-block">
+                                //input[@id='pass']/following-sibling::div <span class="comment">(Next
+                                    element)</span><br>
+                                //input[@id='pass']/preceding-sibling::div <span class="comment">(Previous
+                                    element)</span>
+                            </div>
+                        </li>
+                        <li>✔ AND Condition → Both conditions must be true.
+                            <div class="code-block">
+                                //input[@name='email' and @id='username']
+                            </div>
+                        </li>
+                        <li>✔ OR Condition → At least one condition must be true.
+                            <div class="code-block">
+                                //input[@id='Gmail' or @name='userid']
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <section id="exceptions" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-exclamation-circle icon"></i>
+                        <h2>Common Exceptions in Selenium & Solutions</h2>
+                    </div>
+
+                    <p>Selenium exceptions occur when an error or unexpected condition arises while executing a
+                        WebDriver script.</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Exception</th>
+                                <th>Reason</th>
+                                <th>Solution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>NoSuchElementException</td>
+                                <td>WebDriver cannot find the element.</td>
+                                <td>Verify locator, use implicit or explicit waits</td>
+                            </tr>
+                            <tr>
+                                <td>TimeoutException</td>
+                                <td>Operation takes too long.</td>
+                                <td>Increase wait time, use explicit waits</td>
+                            </tr>
+                            <tr>
+                                <td>ElementNotInteractableException</td>
+                                <td>Element exists but is hidden or disabled.</td>
+                                <td>Ensure element is visible, use WebDriverWait</td>
+                            </tr>
+                            <tr>
+                                <td>NoSuchWindowException</td>
+                                <td>Trying to switch to a closed window.</td>
+                                <td>Ensure target window is open</td>
+                            </tr>
+                            <tr>
+                                <td>NoSuchFrameException</td>
+                                <td>Switching to non-existent frame.</td>
+                                <td>Verify frame locator, ensure frame is loaded</td>
+                            </tr>
+                            <tr>
+                                <td>StaleElementReferenceException</td>
+                                <td>Element is no longer attached to DOM.</td>
+                                <td>Relocate element, use explicit waits</td>
+                            </tr>
+                            <tr>
+                                <td>InvalidElementStateException</td>
+                                <td>Trying to modify read-only element.</td>
+                                <td>Verify element's state before interacting</td>
+                            </tr>
+                            <tr>
+                                <td>WebDriverException</td>
+                                <td>General error (browser crash, driver mismatch).</td>
+                                <td>Ensure browser and WebDriver versions match</td>
+                            </tr>
+                            <tr>
+                                <td>MoveTargetOutOfBoundsException</td>
+                                <td>Mouse moved outside visible screen.</td>
+                                <td>Verify element location</td>
+                            </tr>
+                            <tr>
+                                <td>SessionNotCreatedException</td>
+                                <td>WebDriver fails to create a session.</td>
+                                <td>Ensure browser and WebDriver versions match</td>
+                            </tr>
+                            <tr>
+                                <td>ElementClickInterceptedException</td>
+                                <td>Another element is blocking the target.</td>
+                                <td>Scroll to element, wait until clickable</td>
+                            </tr>
+                            <tr>
+                                <td>FileNotFoundException</td>
+                                <td>File missing or path incorrect.</td>
+                                <td>Use correct file path</td>
+                            </tr>
+                            <tr>
+                                <td>NullPointerException</td>
+                                <td>Using uninitialized object reference.</td>
+                                <td>Ensure objects are initialized before use</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Best Practices to Handle Exceptions</h3>
+                    <ul>
+                        <li>✅ Use Try-Catch Blocks to prevent crashes.</li>
+                        <li>✅ Implement Explicit Waits for dynamic elements.</li>
+                        <li>✅ Verify Locators (XPath, CSS Selectors) before execution.</li>
+                    </ul>
+                </section>
+
+                <section id="dropdowns" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-caret-down icon"></i>
+                        <h2>Dropdown Handling</h2>
+                    </div>
+
+                    <p>To handle dropdown functionality in Selenium:</p>
+                    <ol>
+                        <li>Find the dropdown element using XPath and store it in a WebElement reference</li>
+                        <li>Create a Select class object passing the WebElement reference</li>
+                        <li>Use Select class methods to interact with the dropdown</li>
+                    </ol>
+
+                    <div class="code-block">
+                        <span class="comment">// Example of dropdown handling</span><br>
+                        WebElement ref = driver.findElement(By.xpath(<span
+                            class="string">"xpath_expression"</span>));<br>
+                        Select ref1 = <span class="keyword">new</span> Select(ref);<br><br>
+
+                        <span class="comment">// Various dropdown operations</span><br>
+                        ref1.selectByIndex(index);<br>
+                        ref1.selectByValue(<span class="string">"value"</span>);<br>
+                        ref1.selectByVisibleText(<span class="string">"text"</span>);<br>
+                        ref1.deselectAll();<br>
+                        ref1.getFirstSelectedOption();<br>
+                        ref1.getOptions();
+                    </div>
+                </section>
+
+                <section id="screenshots" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-camera icon"></i>
+                        <h2>Taking Screenshots</h2>
+                    </div>
+
+                    <p>Selenium provides the TakesScreenshot interface to capture screenshots:</p>
+
+                    <div class="code-block">
+                        <span class="comment">// Take screenshot and save to file</span><br>
+                        File source = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);<br>
+                        File dest = <span class="keyword">new</span> File(<span
+                            class="string">"C:\\Users\\username\\Pictures\\Selenium\\screenshot.png"</span>);<br>
+                        FileHandler.copy(source, dest);
+                    </div>
+
+                    <p>Note: You need to handle IOException when working with files in Java.</p>
+                </section>
+
+                <section id="mouse-actions" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-mouse icon"></i>
+                        <h2>Mouse Actions</h2>
+                    </div>
+
+                    <p>Selenium's Actions class enables advanced mouse interactions:</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Method</th>
+                                <th>Usage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Hover (Mouse Over)</td>
+                                <td>moveToElement(element)</td>
+                                <td>Hover over an element</td>
+                            </tr>
+                            <tr>
+                                <td>Right Click</td>
+                                <td>contextClick(element)</td>
+                                <td>Opens right-click menu</td>
+                            </tr>
+                            <tr>
+                                <td>Double Click</td>
+                                <td>doubleClick(element)</td>
+                                <td>Double-clicks an element</td>
+                            </tr>
+                            <tr>
+                                <td>Drag and Drop</td>
+                                <td>dragAndDrop(source, target)</td>
+                                <td>Moves element from source to target</td>
+                            </tr>
+                            <tr>
+                                <td>Click and Hold</td>
+                                <td>clickAndHold(element)</td>
+                                <td>Clicks and holds without releasing</td>
+                            </tr>
+                            <tr>
+                                <td>Release</td>
+                                <td>release()</td>
+                                <td>Releases the held click</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-block">
+                        <span class="comment">// Example of mouse actions</span><br>
+                        Actions actions = <span class="keyword">new</span> Actions(driver);<br>
+                        WebElement element = driver.findElement(By.id(<span class="string">"menu"</span>));<br><br>
+
+                        actions.moveToElement(element).perform(); <span class="comment">// Hover</span><br>
+                        actions.contextClick(element).perform(); <span class="comment">// Right Click</span><br>
+                        actions.doubleClick(element).perform(); <span class="comment">// Double Click</span>
+                    </div>
+
+                    <h3>Key Points:</h3>
+                    <ul>
+                        <li>Always use perform() to execute the action</li>
+                        <li>For complex interactions, chain multiple actions using build().perform()</li>
+                        <li>moveToElement() is useful for hover menus</li>
+                        <li>dragAndDrop() handles draggable elements</li>
+                    </ul>
+                </section>
+
+                <section id="waits" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-clock icon"></i>
+                        <h2>Waits in Selenium</h2>
+                    </div>
+
+                    <p>Synchronization ensures test scripts run at the right pace with the application:</p>
+
+                    <h3>1. Unconditional Synchronization (Static Wait)</h3>
+                    <div class="code-block">
+                        Thread.sleep(5000); <span class="comment">// Wait for 5 seconds</span>
+                    </div>
+                    <p>Not recommended for production tests as it's inflexible</p>
+
+                    <h3>2. Conditional Synchronization (Dynamic Waits)</h3>
+
+                    <h4>Implicit Wait</h4>
+                    <div class="code-block">
+                        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+                    </div>
+                    <p>Applied globally to all elements. Activates when NoSuchElementException occurs.</p>
+
+                    <h4>Explicit Wait</h4>
+                    <div class="code-block">
+                        WebDriverWait wait = <span class="keyword">new</span> WebDriverWait(driver,
+                        Duration.ofSeconds(10));<br>
+                        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(<span
+                            class="string">"xpath"</span>)));
+                    </div>
+                    <p>Applied to specific elements. Most preferred wait mechanism.</p>
+
+                    <h4>Fluent Wait</h4>
+                    <div class="code-block">
+                        Wait&lt;WebDriver&gt; wait = <span class="keyword">new</span>
+                        FluentWait&lt;WebDriver&gt;(driver)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;.withTimeout(Duration.ofSeconds(10))<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;.pollingEvery(Duration.ofSeconds(2))<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;.ignoring(NoSuchElementException.class);
+                    </div>
+                    <p>Most flexible wait with configurable polling and exception ignoring.</p>
+                </section>
+                <section id="iframe-handling" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-window-restore icon"></i>
+                        <h2>IFrame Handling</h2>
+                    </div>
+
+                    <ul>
+                        <li>IFrame is the external webpage which is implemented within main HTML page.</li>
+                        <li>Main purpose of using IFrame is to implement another external sources like videos, map,
+                            webpages with different technology like Flutter, Angular and advertise etc. into main HTML
+                            page document.</li>
+                        <li>We cannot handle IFrame directly in Selenium, to handle IFrame we have to switch focus on
+                            IFrame first.</li>
+                        <li>To handle the IFrame there is IFrame tag is present within HTML code.</li>
+                    </ul>
+
+                    <div class="code-block">
+                        <span class="comment">&lt;html&gt;</span><br>
+                        <span class="comment">&nbsp;&nbsp;&nbsp;&nbsp;&lt;iframe&gt;&lt;/iframe&gt;</span><br>
+                        <span class="comment">&lt;/html&gt;</span>
+                    </div>
+
+                    <p>To switch the focus from main window to frame window, we have switchTo() method which returns the
+                        TargetLocator and from TargetLocator call frame() method which takes three types of arguments:
+                    </p>
+
+                    <ol>
+                        <li>Index</li>
+                        <li>Name of IFrame</li>
+                        <li>WebElement</li>
+                    </ol>
+
+                    <div class="code-block">
+                        <span class="comment">// Switching to IFrame by index</span><br>
+                        driver.switchTo().frame(0);<br><br>
+
+                        <span class="comment">// Switching to IFrame by name</span><br>
+                        driver.switchTo().frame("Iframe");<br><br>
+
+                        <span class="comment">// Switching to IFrame by WebElement</span><br>
+                        driver.switchTo().frame(driver.findElement(By.xpath("")));
+                    </div>
+
+                    <p>After switching the focus on IFrame, then we can easily perform the actions on IFrame window.</p>
+
+                    <p>To navigate/switch the focus from IFrame window to the immediate frame, we have a parentFrame()
+                        method:</p>
+                    <div class="code-block">
+                        driver.switchTo().parentFrame();
+                    </div>
+
+                    <p>To navigate/switch the focus from IFrame to the main page, we have a defaultContent() method:</p>
+                    <div class="code-block">
+                        driver.switchTo().defaultContent();
+                    </div>
+                </section>
+
+                <section id="defect-logging" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-bug icon"></i>
+                        <h2>Process of Logging the Defect in Automation</h2>
+                    </div>
+
+                    <p>Logging a defect in automation ensures that the issue is properly documented, tracked, and
+                        addressed. Following is the general process of logging defect in automation:</p>
+
+                    <ol>
+                        <li><strong>Identification the Defect during execution:</strong> Find and recognize the issue
+                            during test execution.</li>
+                        <li><strong>Capture the Defect Details:</strong> Collect error messages, logs, screenshots and
+                            other relevant details.</li>
+                        <li><strong>Create automated report:</strong> Generate report with defect description, severity,
+                            test steps and environment details.</li>
+                        <li><strong>Automation tool Integration:</strong> Connect with a Defect Tracking tool such as
+                            Jira, Bugzilla through API integrations.</li>
+                        <li><strong>Notification to Relevant Stakeholders:</strong> Notify QA engineer, developer and PM
+                            via email through defect tracking tool.</li>
+                        <li><strong>Monitoring and Follow-up:</strong> Track the status of defect (open, work in
+                            progress, retest, reopen and close).</li>
+                        <li><strong>Documentation and Analysis:</strong> Analyze the root cause to prevent similar issue
+                            in future.</li>
+                    </ol>
+                </section>
+
+                <section id="broken-links" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-link icon"></i>
+                        <h2>Broken Links Validation</h2>
+                    </div>
+
+                    <p>To validate or handle the broken links on the web page, follow this step-by-step approach:</p>
+
+                    <ol>
+                        <li><strong>Visit the web page:</strong> Navigate to the page you want to test.</li>
+                        <li><strong>Identify all links on the web page:</strong> Use the &lt;a&gt; tag to find all links
+                            present on the web page.</li>
+                        <li><strong>Send HTTP request to each link:</strong> Create object of HttpURLConnection class to
+                            send HTTP request to each link.</li>
+                        <li><strong>Check the response code:</strong> If response code is 200, the link is valid. For
+                            codes 400+, the link is broken.</li>
+                        <li><strong>Handle exception:</strong> Handle checked exceptions like MalformedURLException,
+                            IOException using try-catch block or throws keyword.</li>
+                    </ol>
+
+                    <h3>Test script to validate broken links</h3>
+                    <div class="code-block">
+                        <span class="comment">// Setup WebDriver</span><br>
+                        WebDriverManager.chromedriver().setup();<br>
+                        ChromeOptions opt = new ChromeOptions();<br>
+                        opt.addArguments("--remote-allow-origins=*");<br>
+                        WebDriver driver = new ChromeDriver(opt);<br><br>
+
+                        <span class="comment">// Browser configuration</span><br>
+                        driver.manage().window().maximize();<br>
+                        driver.manage().deleteAllCookies();<br>
+                        driver.get("https://www.google.com/");<br><br>
+
+                        <span class="comment">// Perform a search</span><br>
+                        WebElement search_input = driver.findElement(By.xpath("//textarea[@type='search']"));<br>
+                        search_input.sendKeys("java");<br>
+                        search_input.sendKeys(Keys.ENTER);<br><br>
+
+                        <span class="comment">// Find all links</span><br>
+                        List&lt;WebElement&gt; links = driver.findElements(By.xpath("//a"));<br>
+                        System.out.println(links.size());<br><br>
+
+                        <span class="comment">// Check each link</span><br>
+                        for (int count = 0; count < links.size(); count++) {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;String url = links.get(count).getAttribute("href");<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;System.out.println("URL: " + url);<br><br>
+
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Check if the URL is not null and is an HTTP
+                                link</span><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;if (url != null && url.startsWith("http")) {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpURLConnection httpURLConnection =
+                            (HttpURLConnection) (new URL(url).openConnection());<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpURLConnection.setRequestMethod("HEAD");<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpURLConnection.connect();<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int responseCode =
+                            httpURLConnection.getResponseCode();<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("response code: " +
+                            responseCode);<br><br>
+
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (responseCode >= 400) {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("It
+                            is a broken link: " + url);<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("It
+                            is a valid link: " + url);<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                            }<br>
+                            System.out.println("***");
+                    </div>
+                </section>
+
+                <section id="data-tables" class="card">
+                    <div class="card-header">
+                        <i class="fas fa-table icon"></i>
+                        <h2>Data Tables vs Examples in Cucumber</h2>
+                    </div>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Data Table</th>
+                                <th>Examples with Scenario Outline</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Purpose</td>
+                                <td>Pass multiple rows of data to one step</td>
+                                <td>Run the same scenario multiple times with different inputs</td>
+                            </tr>
+                            <tr>
+                                <td>Usage</td>
+                                <td>Used within a scenario step</td>
+                                <td>Used with Scenario Outline</td>
+                            </tr>
+                            <tr>
+                                <td>Structure</td>
+                                <td>More flexible, supports complex structures</td>
+                                <td>Simple tabular format for parameterization</td>
+                            </tr>
+                            <tr>
+                                <td>Execution</td>
+                                <td>Single scenario execution with multiple inputs</td>
+                                <td>Multiple executions (one for each row in Examples)</td>
+                            </tr>
+                            <tr>
+                                <td>Step Definition</td>
+                                <td>Requires DataTable object handling</td>
+                                <td>Uses parameterized step definitions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Data Table Example</h3>
+                    <div class="code-block">
+                        <span class="comment"># Feature file</span><br>
+                        Scenario: Login with multiple credentials<br>
+                        &nbsp;&nbsp;Given the user is on the login page<br>
+                        &nbsp;&nbsp;When the user enters the following credentials:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;| username | password |<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;| user1 | pass123 |<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;| user2 | pass456 |<br>
+                        &nbsp;&nbsp;Then the user should be redirected to the dashboard
+                    </div>
+
+                    <div class="code-block">
+                        <span class="comment">// Step definition</span><br>
+                        @When("the user enters the following credentials:")<br>
+                        public void the_user_enters_the_following_credentials(DataTable dataTable) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;List&lt;Map&lt;String, String&gt;&gt; credentials =
+                        dataTable.asMaps(String.class, String.class);<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;for (Map&lt;String, String&gt; data : credentials) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String username = data.get("username");<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String password = data.get("password");<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Perform login
+                            action</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                        }
+                    </div>
+
+                    <h3>Examples with Scenario Outline</h3>
+                    <div class="code-block">
+                        <span class="comment"># Feature file</span><br>
+                        Scenario Outline: Login with valid credentials<br>
+                        &nbsp;&nbsp;Given the user is on the login page<br>
+                        &nbsp;&nbsp;When the user enters username "&lt;username&gt;" and password "&lt;password&gt;"<br>
+                        &nbsp;&nbsp;Then the user should be redirected to the dashboard<br><br>
+
+                        &nbsp;&nbsp;Examples:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;| username | password |<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;| user1 | pass123 |<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;| user2 | pass456 |
+                    </div>
+
+                    <div class="code-block">
+                        <span class="comment">// Step definition</span><br>
+                        @When("the user enters username {string} and password {string}")<br>
+                        public void the_user_enters_username_and_password(String username, String password) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Perform login action with username and
+                            password</span><br>
+                        }
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+    <div style="text-align: center; margin: 40px 0;">
+        <a href="index.html" class="nav-button">Back to IT Topics Hub</a>
+    </div>
+
+    <a href="#" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <footer>
+        <div class="container">
+            <p>Selenium Automation Testing Guide | Comprehensive Reference</p>
+        </div>
+    </footer>
+
+    <script>
+        // Back to top button functionality
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-links a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                window.scrollTo({
+                    top: targetElement.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
