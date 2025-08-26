@@ -443,29 +443,38 @@
 <body>
     <header>
         <div class="container">
-            <nav>
-                <div class="logo">
-                    <i class="fas fa-bug"></i>
-                    <span>Testing Manual</span>
-                </div>
-                <ul class="nav-links">
-                    <li>
-                        <a href="javascript:void(0)">Menu ▾</a>
-                        <div class="dropdown-content">
-                            <a href="#intro"><i class="fas fa-info-circle"></i> Introduction</a>
-                            <a href="#sqa"><i class="fas fa-star"></i> SQA</a>
-                            <a href="#sdlc"><i class="fas fa-sitemap"></i> SDLC</a>
-                            <a href="#models"><i class="fas fa-shapes"></i> Process Models</a>
-                            <a href="#agile"><i class="fas fa-arrows-alt-h"></i> Agile Methodology</a>
-                            <a href="#testing-levels"><i class="fas fa-layer-group"></i> Testing Levels</a>
-                            <a href="#testing-types"><i class="fas fa-check-double"></i> Testing Types</a>
-                            <a href="#functionality-testing"><i class="fas fa-cogs"></i> Functionality Testing</a>
-                            <a href="#testing-terminology"><i class="fas fa-book"></i> Testing Terminology</a>
-                        </div>
-                    </li>
-                </ul>
-                <div class="hamburger"><i class="fas fa-bars"></i></div>
-            </nav>
+            <ul class="nav-links">
+                <li>
+                    <a href="javascript:void(0)">Menu ▾</a>
+                    <div class="dropdown-content" style="max-height: 400px; overflow-y: auto;">
+                        <a href="#intro"><i class="fas fa-info-circle"></i> Introduction</a>
+                        <a href="#sqa"><i class="fas fa-star"></i> SQA</a>
+                        <a href="#sdlc"><i class="fas fa-sitemap"></i> SDLC</a>
+                        <a href="#models"><i class="fas fa-shapes"></i> Process Models</a>
+                        <a href="#agile-methodology"><i class="fas fa-rocket"></i> Agile Methodology</a>
+                        <a href="#sanity-smoke-testing"><i class="fas fa-stethoscope"></i> Sanity & Smoke Testing</a>
+                        <a href="#integration-testing"><i class="fas fa-puzzle-piece"></i> Integration Testing</a>
+                        <a href="#black-box-testing"><i class="fas fa-box"></i> Black Box Testing</a>
+                        <a href="#usability-testing"><i class="fas fa-user-check"></i> Usability Testing</a>
+                        <a href="#performance-testing"><i class="fas fa-tachometer-alt"></i> Performance Testing</a>
+                        <a href="#security-testing"><i class="fas fa-shield-alt"></i> Security Testing</a>
+                        <a href="#uat"><i class="fas fa-users"></i> UAT</a>
+                        <a href="#retesting"><i class="fas fa-redo-alt"></i> Re-Testing</a>
+                        <a href="#regression-testing"><i class="fas fa-sync-alt"></i> Regression Testing</a>
+                        <a href="#reviews-section"><i class="fas fa-search"></i> Reviews</a>
+                        <a href="#traceability-matrix"><i class="fas fa-table"></i> Traceability Matrix</a>
+                        <a href="#priority-severity"><i class="fas fa-bug"></i> Priority & Severity</a>
+                        <a href="#defect-tracking"><i class="fas fa-clipboard-list"></i> Defect Tracking</a>
+                        <a href="#testing-methodology"><i class="fas fa-flask"></i> Testing Methodology</a>
+                        <a href="#shakedown-testing"><i class="fas fa-sliders-h"></i> Shakedown Testing</a>
+                        <a href="#component-testing"><i class="fas fa-puzzle-piece"></i> Component Testing</a>
+                        <a href="#testing-terminology"><i class="fas fa-book"></i> Testing Terminology</a>
+                        <a href="#hot-fix"><i class="fas fa-fire"></i> Hot Fix</a>
+                        <a href="#manual-testing-framework"><i class="fas fa-hands"></i> Manual Testing Framework</a>
+                    </div>
+                </li>
+            </ul>
+
         </div>
     </header>
 
@@ -10749,12 +10758,52 @@
     </div>
 
     <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
-
     <footer>
-        <div class="container">
-            <p>Software Testing Manual &copy; 2023. All rights reserved.</p>
-            <p>Comprehensive guide to software testing concepts and practices</p>
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="index.html" class="nav-button" style="
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            color: #fff;
+            font-size: 1.18rem;
+            font-weight: 700;
+            border-radius: 36px;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(52,117,252,0.12);
+            letter-spacing: 1.2px;
+            transition: background 0.3s, box-shadow 0.3s;
+        ">
+                <i class="fas fa-arrow-circle-left"
+                    style="margin-right:10px; font-size:1.3rem; vertical-align:middle;"></i>
+                Go To Index
+            </a>
         </div>
+        <div style="
+        text-align: center;
+        margin-bottom: 18px;
+        color: #2575fc;
+        font-size: 1.08rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        background: linear-gradient(90deg, #e0e7ff 0%, #f3f3fd 100%);
+        border-radius: 24px;
+        padding: 12px 0;
+        box-shadow: 0 2px 8px rgba(52,117,252,0.07);
+        margin: 0 20px 18px 20px;
+    ">
+            <i class="fas fa-phone-alt" style="color:#6a11cb; margin-right:6px;"></i>
+            If any query, call
+            <a href="tel:8625812214" style="color:#6a11cb; text-decoration:underline; font-weight:600;">8625812214</a>
+            <span style="margin:0 10px;">|</span>
+            <i class="fas fa-envelope" style="color:#6a11cb; margin-right:6px;"></i>
+            or mail
+            <a href="mailto:pratiknarute2@gmail.com"
+                style="color:#6a11cb; text-decoration:underline; font-weight:600;">pratiknarute2@gmail.com</a>
+        </div>
+        <p style="text-align:center; color:#888; font-size:1rem; margin-bottom:0;">
+            <i class="fas fa-copyright" style="color:#2575fc; margin-right:4px;"></i>
+            2025 Software Testing Manual. All rights reserved.
+        </p>
     </footer>
 
     <script>

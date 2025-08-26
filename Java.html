@@ -1617,86 +1617,129 @@
 
     </div>
 
-    <div style="text-align: center; margin: 40px 0;">
-        <a href="index.html" class="nav-button">Go To Index</a>
-    </div>
+    <<footer>
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="index.html" class="nav-button" style="
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #f57c00, #1976d2);
+            color: #fff;
+            font-size: 1.18rem;
+            font-weight: 700;
+            border-radius: 36px;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(25,118,210,0.12);
+            letter-spacing: 1.2px;
+            transition: background 0.3s, box-shadow 0.3s;
+        ">
+                <i class="fab fa-java" style="margin-right:10px; font-size:1.3rem; vertical-align:middle;"></i>
+                Go To Index
+            </a>
+        </div>
+        <div style="
+        text-align: center;
+        margin-bottom: 18px;
+        color: #1976d2;
+        font-size: 1.08rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        background: linear-gradient(90deg, #e3f2fd 0%, #f3f3fd 100%);
+        border-radius: 24px;
+        padding: 12px 0;
+        box-shadow: 0 2px 8px rgba(25,118,210,0.07);
+        margin: 0 20px 18px 20px;
+    ">
+            <i class="fas fa-coffee" style="color:#f57c00; margin-right:6px;"></i>
+            If any query, call
+            <a href="tel:8625812214" style="color:#f57c00; text-decoration:underline; font-weight:600;">8625812214</a>
+            <span style="margin:0 10px;">|</span>
+            <i class="fas fa-envelope" style="color:#1976d2; margin-right:6px;"></i>
+            or mail
+            <a href="mailto:pratiknarute2@gmail.com"
+                style="color:#1976d2; text-decoration:underline; font-weight:600;">pratiknarute2@gmail.com</a>
+        </div>
+        <p style="text-align:center; color:#888; font-size:1rem; margin-bottom:0;">
+            <i class="fas fa-copyright" style="color:#1976d2; margin-right:4px;"></i>
+            2025 Java Guide. All rights reserved.
+        </p>
+        </footer>
 
-    <script>
-        // Menu functionality
-        const menuToggle = document.querySelector('.menu-toggle');
-        const closeMenu = document.querySelector('.close-menu');
-        const menu = document.getElementById('mainMenu');
-        const menuLinks = document.querySelectorAll('.menu a');
+        <script>
+            // Menu functionality
+            const menuToggle = document.querySelector('.menu-toggle');
+            const closeMenu = document.querySelector('.close-menu');
+            const menu = document.getElementById('mainMenu');
+            const menuLinks = document.querySelectorAll('.menu a');
 
-        // Toggle menu
-        menuToggle.addEventListener('click', () => {
-            menu.classList.add('active');
-        });
+            // Toggle menu
+            menuToggle.addEventListener('click', () => {
+                menu.classList.add('active');
+            });
 
-        // Close menu
-        closeMenu.addEventListener('click', () => {
-            menu.classList.remove('active');
-        });
-
-        // Close menu when clicking on links
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
+            // Close menu
+            closeMenu.addEventListener('click', () => {
                 menu.classList.remove('active');
             });
-        });
 
-        // Back to top button
-        const backToTopButton = document.querySelector('.back-to-top');
+            // Close menu when clicking on links
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.remove('active');
+                });
+            });
 
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        });
+            // Back to top button
+            const backToTopButton = document.querySelector('.back-to-top');
 
-        backToTopButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 20,
-                        behavior: 'smooth'
-                    });
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
                 }
             });
-        });
 
-        // Copy code functionality
-        function copyCode(button) {
-            const codeBlock = button.parentElement;
-            const textToCopy = codeBlock.innerText.replace('Copy', '');
-
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                // Change button text temporarily
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
-
-                setTimeout(() => {
-                    button.textContent = originalText;
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
+            backToTopButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
-        }
-    </script>
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Copy code functionality
+            function copyCode(button) {
+                const codeBlock = button.parentElement;
+                const textToCopy = codeBlock.innerText.replace('Copy', '');
+
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    // Change button text temporarily
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+            }
+        </script>
 </body>
 
 </html>
