@@ -453,6 +453,7 @@
             .hamburger {
                 display: block !important;
             }
+
             .nav-links {
                 display: none;
                 flex-direction: column;
@@ -462,9 +463,10 @@
                 top: 100%;
                 left: 0;
                 padding: 1rem;
-                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
                 z-index: 2000;
             }
+
             .nav-links.active {
                 display: flex;
             }
@@ -10898,10 +10900,9 @@
 
     <script>
         // Mobile menu toggle
-        const hamburger = document.querySelector('.hamburger');
-        const navLinks = document.querySelector('.nav-links');
-
-        hamburger.addEventListener('click', () => {
+        const hamburger = document.getElementById('hamburger-menu');
+        const navLinks = document.getElementById('nav-links');
+        hamburger.addEventListener('click', function () {
             navLinks.classList.toggle('active');
         });
 
