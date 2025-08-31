@@ -27,7 +27,8 @@
             --linux: #1793D1;
             --selenium: #43B02A;
             --testing-manual: #9C27B0;
-            /* New color for testing manual */
+            --api: #FF6B35;
+            /* New color for API testing */
         }
 
         * {
@@ -173,6 +174,10 @@
             background: linear-gradient(135deg, var(--testing-manual), #BA68C8);
         }
 
+        .api-header {
+            background: linear-gradient(135deg, var(--api), #FF9E6D);
+        }
+
         .card-icon {
             font-size: 3rem;
             margin-bottom: 15px;
@@ -273,6 +278,10 @@
 
         .testing-manual-button {
             background: linear-gradient(135deg, var(--testing-manual), #BA68C8);
+        }
+
+        .api-button {
+            background: linear-gradient(135deg, var(--api), #FF9E6D);
         }
 
         .card-button:hover {
@@ -418,7 +427,7 @@
                     </div>
                 </div>
 
-                <!-- Selenium-1 -->
+                <!-- Selenium -->
                 <div class="card">
                     <div class="card-header selenium-header">
                         <div class="card-icon">
@@ -435,6 +444,26 @@
                             <li><i class="fas fa-check feature-icon"></i> Extensive community</li>
                         </ul>
                         <a href="Selenium1.html" class="card-button selenium-button">Open Selenium Guide</a>
+                    </div>
+                </div>
+
+                <!-- API Testing -->
+                <div class="card">
+                    <div class="card-header api-header">
+                        <div class="card-icon">
+                            <i class="fas fa-plug"></i>
+                        </div>
+                        <h2 class="card-title">API Testing</h2>
+                        <p>Web Services Testing Guide</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check feature-icon"></i> REST API Testing</li>
+                            <li><i class="fas fa-check feature-icon"></i> SOAP Web Services</li>
+                            <li><i class="fas fa-check feature-icon"></i> Postman & Tools</li>
+                            <li><i class="fas fa-check feature-icon"></i> Automation Techniques</li>
+                        </ul>
+                        <a href="API.html" class="card-button api-button">Open API Guide</a>
                     </div>
                 </div>
 
