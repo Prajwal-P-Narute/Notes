@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Manager - Sprint 5 Features</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --success: #06d6a0;
+            --danger: #ef476f;
+            --warning: #ffd166;
+            --info: #118ab2;
+            --dark: #073b4c;
+            --light: #f8f9fa;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(17, 138, 178, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%234361ee" opacity="0.2"/><path d="M0 0L100 100" stroke="white" stroke-width="0.5" opacity="0.2"/><path d="M100 0L0 100" stroke="white" stroke-width="0.5" opacity="0.2"/></svg>');
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .feature-card {
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 2rem;
+            background: white;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .acceptance-criteria {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-left: 4px solid var(--info);
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .impact-section {
+            background-color: rgba(6, 214, 160, 0.1);
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--success);
+        }
+
+        .screenshot {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.5rem;
+            background: white;
+            margin: 1rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background: var(--info);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1.5em;
+            font-size: 1.2rem;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+            margin: 0.2rem;
+        }
+
+        .debit-category {
+            color: #fff;
+            background-color: var(--danger);
+        }
+
+        .credit-category {
+            color: #fff;
+            background-color: var(--success);
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        /* Animation for cards */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .feature-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .feature-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .feature-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .feature-card:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Sprint 5 Requirements</h1>
+            <p class="lead">Description, Acceptance Criteria, and Impact</p>
+
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Edit Transaction Feature -->
+        <div class="feature-card card mb-5">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-edit me-3"></i>
+                <h3 class="mb-0">Edit Transaction</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-text">As a user, I should be able to edit an existing transaction so that I can correct
+                    mistakes or update details such as amount, category, label, or description.</p>
+
+                <div class="acceptance-criteria">
+                    <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                    <ul class="feature-list">
+                        <li>User should be able to select an existing transaction and edit its fields</li>
+                        <li>Updated values should reflect immediately in the transaction list</li>
+                        <li>Calculations should update automatically based on the new transaction details</li>
+                        <li>System should maintain data consistency and not duplicate records</li>
+                    </ul>
+                </div>
+
+                <div class="impact-section">
+                    <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                    <ul class="feature-list">
+                        <li>Current Balance, Total Expense, and Total Income will be recalculated after edit</li>
+                        <li>Data accuracy will improve by allowing correction of errors</li>
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- Delete Transaction Feature -->
+        <div class="feature-card card mb-5">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-trash-alt me-3"></i>
+                <h3 class="mb-0">Delete Transaction</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-text">As a user, I should be able to delete a transaction so that I can remove unwanted
+                    or incorrect entries.</p>
+
+                <div class="acceptance-criteria">
+                    <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                    <ul class="feature-list">
+                        <li>User should be able to select a transaction and delete it</li>
+                        <li>Deleted transaction should be removed from the transaction list</li>
+                        <li>Calculations should update correctly after deletion</li>
+                        <li>System should prevent accidental deletions by confirmation prompt</li>
+                    </ul>
+                </div>
+
+                <div class="impact-section">
+                    <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                    <ul class="feature-list">
+                        <li>Current Balance, Total Expense, and Total Income will be recalculated after deletion</li>
+                        <li>Database will maintain only valid transactions</li>
+                    </ul>
+                </div>
+
+                <div class="screenshot text-center mt-4">
+                    <p class="fst-italic text-muted">Delete Confirmation Dialog</p>
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'><rect x='0' y='0' width='400' height='200' fill='%23f8f9fa'/><rect x='50' y='40' width='300' height='120' rx='10' fill='white' stroke='%23ef476f' stroke-width='2'/><text x='200' y='80' font-family='Arial' font-size='16' text-anchor='middle' fill='%23333'>Are you sure you want to delete?</text><rect x='120' y='120' width='80' height='30' rx='5' fill='%23ef476f'/><rect x='220' y='120' width='80' height='30' rx='5' fill='%23adb5bd'/></svg>"
+                        class="img-fluid" alt="Delete Confirmation Dialog">
+                </div>
+            </div>
+        </div>
+
+        <!-- Master Module for Category Feature -->
+        <div class="feature-card card mb-5">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-tags me-3"></i>
+                <h3 class="mb-0">Master Module for Category</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-text">As a user, I should be able to manage (add, update, delete) expense and income
+                    categories so that I can personalize the classification of my transactions.</p>
+
+                <div class="acceptance-criteria">
+                    <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                    <ul class="feature-list">
+                        <li>User can add new categories under Debit or Credit type</li>
+                        <li>User can edit the name of an existing category (including default)</li>
+                        <li>User can delete any category unless it is currently linked to an existing transaction</li>
+                        <li>UI should display updated category list in dropdowns</li>
+                    </ul>
+                </div>
+
+                <div class="mt-3">
+                    <h5><i class="fas fa-list me-2"></i>Default Categories</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mt-3">Debit Categories</h6>
+                            <div>
+                                <span class="category-badge debit-category">Food</span>
+                                <span class="category-badge debit-category">Transport</span>
+                                <span class="category-badge debit-category">Accommodation</span>
+                                <span class="category-badge debit-category">Entertainment</span>
+                                <span class="category-badge debit-category">Lending</span>
+                                <span class="category-badge debit-category">Family Support</span>
+                                <span class="category-badge debit-category">Donation</span>
+                                <span class="category-badge debit-category">Grocery</span>
+                                <span class="category-badge debit-category">Rent</span>
+                                <span class="category-badge debit-category">Utilities</span>
+                                <span class="category-badge debit-category">EMI</span>
+                                <span class="category-badge debit-category">Others</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mt-3">Credit Categories</h6>
+                            <div>
+                                <span class="category-badge credit-category">Salary</span>
+                                <span class="category-badge credit-category">Refund</span>
+                                <span class="category-badge credit-category">Investment</span>
+                                <span class="category-badge credit-category">Gift</span>
+                                <span class="category-badge credit-category">Other Income</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="impact-section">
+                    <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                    <ul class="feature-list">
+                        <li>Transactions will reflect user-defined categories</li>
+                        <li>Flexibility for personalization</li>
+                        <li>Possible re-mapping needed when deleting default categories</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Remove Reimbursable Column Feature -->
+        <div class="feature-card card mb-5">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-eye-slash me-3"></i>
+                <h3 class="mb-0">Remove Reimbursable (Y/N) Column from UI</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Remove the "Reimbursable (Y/N)" column from the UI since it is not needed, but keep
+                    backend functionality intact.</p>
+
+                <div class="acceptance-criteria">
+                    <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                    <ul class="feature-list">
+                        <li>Reimbursable column should no longer be visible on transaction listing screens</li>
+                        <li>Backend logic should continue to work</li>
+                        <li>Existing reports or calculations dependent on reimbursable should continue working</li>
+                    </ul>
+                </div>
+
+                <div class="impact-section">
+                    <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                    <ul class="feature-list">
+                        <li>Cleaner UI</li>
+                        <li>No functional change in calculations, only visual removal</li>
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- Label Functionality Feature -->
+        <div class="feature-card card mb-5">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-tag me-3"></i>
+                <h3 class="mb-0">Add Label Functionality for Transactions</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-text">As a user, I want to add labels to my transactions (like "Essential", "Luxury",
+                    "Recurring") so that I can analyze my necessary and unnecessary expenses in more detail.</p>
+
+                <div class="acceptance-criteria">
+                    <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                    <ul class="feature-list">
+                        <li>User should be able to create, update, and delete labels as a master list</li>
+                        <li>While adding/editing a transaction, user should be able to assign one or more labels</li>
+                        <li>Labels are non-mandatory</li>
+                        <li>Labels should be displayed along with the transaction in listing screens</li>
+                        <li>User should be able to filter transactions by label</li>
+                    </ul>
+                </div>
+
+                <div class="impact-section">
+                    <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                    <ul class="feature-list">
+                        <li>New labels field will be added to transaction table</li>
+                        <li>Users gain advanced categorization for analysis</li>
+                        <li>Filtering and reporting logic will be extended to include labels</li>
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p>&copy; 2023 Finance Manager. All rights reserved.</p>
+            <div class="mt-3">
+                <button class="btn btn-outline-light me-2"><i class="fab fa-facebook-f"></i></button>
+                <button class="btn btn-outline-light me-2"><i class="fab fa-twitter"></i></button>
+                <button class="btn btn-outline-light me-2"><i class="fab fa-instagram"></i></button>
+                <button class="btn btn-outline-light"><i class="fab fa-linkedin-in"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple animation for feature cards when they come into view
+        document.addEventListener('DOMContentLoaded', function () {
+            const featureCards = document.querySelectorAll('.feature-card');
+
+            featureCards.forEach(card => {
+                card.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                featureCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                    }, 200 * index);
+                });
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>

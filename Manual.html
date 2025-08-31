@@ -3160,11 +3160,7 @@
                         <h4>2. Input Domain Coverage</h4>
                         <p>This coverage focuses on validating the size and data type of inputs using techniques like
                             Boundary Value Analysis (BVA) and Equivalence Class Partitioning (ECP).</p>
-                        <div class="example">
-                            <h5>Example:</h5>
-                            <p>In a messaging app, the mobile number field should accept exactly 10 digits (BVA) and
-                                should not accept characters or special symbols (ECP).</p>
-                        </div>
+
                         <section id="bva-ecp">
                             <div class="content-section">
                                 <h2><i class="fas fa-border-all"></i> Boundary Value Analysis (BVA) and Equivalence
@@ -3712,7 +3708,7 @@
                     <div class="benefits-grid">
                         <div class="benefit">
                             <i class="fas fa-user-friends"></i>
-                            <h4>Unbiased Testing</h4>
+                            <h4>Independent Testing</h4>
                             <p>Testers don't need knowledge of internal code, preventing developer bias</p>
                         </div>
                         <div class="benefit">
@@ -4025,676 +4021,241 @@
                 }
             }
         </style>
-        <section id="usability-testing">
-            <div class="content-section">
-                <h2><i class="fas fa-user-check"></i> Usability Testing</h2>
-                <p>Usability Testing is a technique used in user-centered interaction design to evaluate a product by
-                    testing it on real users. This helps identify any usability problems, collect qualitative and
-                    quantitative data, and determine the participant's satisfaction with the product.</p>
+        <section class="usability-testing-section">
+            <div class="container">
+                <h2>Usability Testing</h2>
+                <p class="intro">Usability testing is a type of testing where real users are asked to interact with the
+                    application to check how easy, efficient, and user-friendly it is. The main goal is to identify any
+                    problems in navigation, design, or interaction so that the product delivers a smooth user
+                    experience.</p>
 
-                <div class="card-container">
-                    <div class="card purpose-card">
+                <div class="grid-container">
+                    <div class="card">
                         <div class="card-header">
-                            <h4><i class="fas fa-bullseye"></i> Purpose of Usability Testing</h4>
+                            <h3>📌 Detailed Notes on Usability Testing</h3>
                         </div>
-                        <div class="card-body">
-                            <ul class="purpose-list">
-                                <li><i class="fas fa-check-circle"></i> Identify usability problems in the design</li>
-                                <li><i class="fas fa-check-circle"></i> Uncover opportunities for improvement</li>
-                                <li><i class="fas fa-check-circle"></i> Learn about user behavior and preferences</li>
-                                <li><i class="fas fa-check-circle"></i> Validate product design decisions</li>
-                                <li><i class="fas fa-check-circle"></i> Measure user satisfaction and ease of use</li>
+                        <div class="card-content">
+                            <h4>🔹 Objectives</h4>
+                            <ul>
+                                <li>Verify ease of use of the application.</li>
+                                <li>Measure user satisfaction.</li>
+                                <li>Identify navigation/design issues before release.</li>
+                            </ul>
+
+                            <h4>🔹 When to Perform</h4>
+                            <ul>
+                                <li>During the design stage (prototypes/wireframes).</li>
+                                <li>Before releasing a new feature.</li>
+                                <li>Before the final product launch.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <div class="card metrics-card">
+                    <div class="card">
                         <div class="card-header">
-                            <h4><i class="fas fa-chart-line"></i> Key Usability Metrics</h4>
+                            <h3>🔹 Steps</h3>
                         </div>
-                        <div class="card-body">
-                            <div class="metrics-grid">
-                                <div class="metric-item">
-                                    <div class="metric-icon">
-                                        <i class="fas fa-clock"></i>
-                                    </div>
-                                    <div class="metric-content">
-                                        <h5>Time on Task</h5>
-                                        <p>How long it takes users to complete specific tasks</p>
-                                    </div>
-                                </div>
-
-                                <div class="metric-item">
-                                    <div class="metric-icon">
-                                        <i class="fas fa-tasks"></i>
-                                    </div>
-                                    <div class="metric-content">
-                                        <h5>Completion Rate</h5>
-                                        <p>Percentage of correctly completed tasks</p>
-                                    </div>
-                                </div>
-
-                                <div class="metric-item">
-                                    <div class="metric-icon">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </div>
-                                    <div class="metric-content">
-                                        <h5>Error Rate</h5>
-                                        <p>Number of errors users make during tasks</p>
-                                    </div>
-                                </div>
-
-                                <div class="metric-item">
-                                    <div class="metric-icon">
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <div class="metric-content">
-                                        <h5>Satisfaction</h5>
-                                        <p>User satisfaction ratings and feedback</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="card-content">
+                            <ol>
+                                <li><strong>Plan</strong> → Define goals, tasks, and user scenarios.</li>
+                                <li><strong>Recruit Users</strong> → Select real or representative users.</li>
+                                <li><strong>Execute Test</strong> → Ask users to perform tasks while being observed.
+                                </li>
+                                <li><strong>Collect Data</strong> → Record time taken, errors, feedback.</li>
+                                <li><strong>Analyze & Report</strong> → Suggest improvements.</li>
+                            </ol>
                         </div>
                     </div>
-                </div>
 
-                <div class="content-section">
-                    <h3><i class="fas fa-layer-group"></i> Types of Usability Testing</h3>
-
-                    <div class="card-container">
-                        <div class="card type-card">
-                            <div class="card-header">
-                                <h4><i class="fas fa-lab"></i> Lab Usability Testing</h4>
-                            </div>
-                            <div class="card-body">
-                                <p>Conducted in a controlled environment with a moderator present to guide participants
-                                    and observe their behavior.</p>
-                                <div class="testing-details">
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-plus-circle"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <h5>Advantages</h5>
-                                            <p>Controlled environment, detailed observation</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-minus-circle"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <h5>Limitations</h5>
-                                            <p>Artificial setting, higher cost</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>🔹 Types of Usability Testing</h3>
                         </div>
-
-                        <div class="card type-card">
-                            <div class="card-header">
-                                <h4><i class="fas fa-laptop"></i> Remote Usability Testing</h4>
-                            </div>
-                            <div class="card-body">
-                                <p>Participants use their own devices in their natural environment while researchers
-                                    observe via screen sharing.</p>
-                                <div class="testing-details">
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-plus-circle"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <h5>Advantages</h5>
-                                            <p>Natural environment, broader participant pool</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-minus-circle"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <h5>Limitations</h5>
-                                            <p>Less control, technical issues possible</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card type-card">
-                            <div class="card-header">
-                                <h4><i class="fas fa-unlock"></i> Unmoderated Testing</h4>
-                            </div>
-                            <div class="card-body">
-                                <p>Participants complete tasks independently without a moderator, often using
-                                    specialized software.</p>
-                                <div class="testing-details">
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-plus-circle"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <h5>Advantages</h5>
-                                            <p>Scalable, cost-effective, natural behavior</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-minus-circle"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <h5>Limitations</h5>
-                                            <p>No follow-up questions, less contextual data</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card type-card">
-                            <div class="card-header">
-                                <h4><i class="fas fa-eye"></i> Guerrilla Testing</h4>
-                            </div>
-                            <div class="card-body">
-                                <p>Quick, informal testing conducted in public places with random people to get rapid
-                                    feedback.</p>
-                                <div class="testing-details">
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-plus-circle"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <h5>Advantages</h5>
-                                            <p>Quick, inexpensive, diverse feedback</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-minus-circle"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <h5>Limitations</h5>
-                                            <p>Limited depth, not representative</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Remote vs. In-person</strong> – Testing done online or face-to-face.</li>
+                                <li><strong>Moderated vs. Unmoderated</strong> – With or without a facilitator guiding
+                                    the user.</li>
+                                <li><strong>Explorative</strong> – Early-stage testing for ideas.</li>
+                                <li><strong>Comparative</strong> – Comparing two designs/versions.</li>
+                            </ul>
                         </div>
                     </div>
-                </div>
 
-                <div class="content-section">
-                    <h3><i class="fas fa-cogs"></i> Usability Testing Process</h3>
-
-                    <div class="process-flow">
-                        <div class="process-step">
-                            <div class="step-number">1</div>
-                            <div class="step-content">
-                                <h5>Plan the Test</h5>
-                                <p>Define objectives, recruit participants, create tasks</p>
-                            </div>
+                    <div class="card example-card">
+                        <div class="card-header">
+                            <h3>🔹 Example</h3>
                         </div>
-
-                        <div class="step-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-
-                        <div class="process-step">
-                            <div class="step-number">2</div>
-                            <div class="step-content">
-                                <h5>Prepare Materials</h5>
-                                <p>Develop test script, consent forms, surveys</p>
-                            </div>
-                        </div>
-
-                        <div class="step-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-
-                        <div class="process-step">
-                            <div class="step-number">3</div>
-                            <div class="step-content">
-                                <h5>Conduct Sessions</h5>
-                                <p>Moderate tests, observe participants, take notes</p>
-                            </div>
-                        </div>
-
-                        <div class="step-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-
-                        <div class="process-step">
-                            <div class="step-number">4</div>
-                            <div class="step-content">
-                                <h5>Analyze Data</h5>
-                                <p>Compile findings, identify patterns, prioritize issues</p>
-                            </div>
-                        </div>
-
-                        <div class="step-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-
-                        <div class="process-step">
-                            <div class="step-number">5</div>
-                            <div class="step-content">
-                                <h5>Report Findings</h5>
-                                <p>Share insights, recommend improvements, track changes</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="content-section">
-                    <h3><i class="fas fa-lightbulb"></i> Example Scenario</h3>
-
-                    <div class="example-scenario">
-                        <div class="scenario-step">
-                            <div class="step-number">1</div>
-                            <div class="step-content">
-                                <h5>E-commerce Checkout Process</h5>
-                                <p>An online store notices high cart abandonment rates during checkout</p>
-                            </div>
-                        </div>
-
-                        <div class="step-arrow">
-                            <i class="fas fa-arrow-down"></i>
-                        </div>
-
-                        <div class="scenario-step">
-                            <div class="step-number">2</div>
-                            <div class="step-content">
-                                <h5>Usability Testing</h5>
-                                <p>8 participants are asked to complete a purchase while observers note difficulties</p>
-                            </div>
-                        </div>
-
-                        <div class="step-arrow">
-                            <i class="fas fa-arrow-down"></i>
-                        </div>
-
-                        <div class="scenario-step">
-                            <div class="step-number">3</div>
-                            <div class="step-content">
-                                <h5>Findings</h5>
-                                <p>6 out of 8 participants struggled with the unclear shipping options presentation</p>
-                            </div>
-                        </div>
-
-                        <div class="step-arrow">
-                            <i class="fas fa-arrow-down"></i>
-                        </div>
-
-                        <div class="scenario-step">
-                            <div class="step-number">4</div>
-                            <div class="step-content">
-                                <h5>Solution</h5>
-                                <p>Redesign the shipping options to be more clear and intuitive</p>
-                            </div>
-                        </div>
-
-                        <div class="step-arrow">
-                            <i class="fas fa-arrow-down"></i>
-                        </div>
-
-                        <div class="scenario-step">
-                            <div class="step-number">5</div>
-                            <div class="step-content">
-                                <h5>Result</h5>
-                                <p>Cart abandonment decreases by 35% after implementing changes</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="content-section">
-                    <h3><i class="fas fa-clipboard-list"></i> Usability Testing Best Practices</h3>
-
-                    <div class="best-practices">
-                        <div class="practice-item">
-                            <div class="practice-icon">
-                                <i class="fas fa-user-friends"></i>
-                            </div>
-                            <div class="practice-content">
-                                <h4>Recruit Representative Users</h4>
-                                <p>Test with people who match your actual user demographics and characteristics</p>
-                            </div>
-                        </div>
-
-                        <div class="practice-item">
-                            <div class="practice-icon">
-                                <i class="fas fa-comment"></i>
-                            </div>
-                            <div class="practice-content">
-                                <h4>Think Aloud Protocol</h4>
-                                <p>Encourage participants to verbalize their thoughts as they complete tasks</p>
-                            </div>
-                        </div>
-
-                        <div class="practice-item">
-                            <div class="practice-icon">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <div class="practice-content">
-                                <h4>Focus on Key Tasks</h4>
-                                <p>Test the most important user journeys and critical functionality</p>
-                            </div>
-                        </div>
-
-                        <div class="practice-item">
-                            <div class="practice-icon">
-                                <i class="fas fa-chart-pie"></i>
-                            </div>
-                            <div class="practice-content">
-                                <h4>Small Sample Sizes</h4>
-                                <p>5-8 participants typically uncover 80% of usability issues</p>
+                        <div class="card-content">
+                            <p>In a food delivery app, if users take too long to find the "Order History" button, it's a
+                                usability issue.</p>
+                            <div class="example-visual">
+                                <div class="phone-mockup">
+                                    <div class="phone-screen">
+                                        <div class="app-header">Food Delivery App</div>
+                                        <div class="search-bar">Search for food...</div>
+                                        <div class="menu-item">Home</div>
+                                        <div class="menu-item">Categories</div>
+                                        <div class="menu-item">Cart</div>
+                                        <div class="menu-item">Account</div>
+                                        <div class="highlighted-element">Order History</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <style>
-                #usability-testing .content-section {
-                    background: white;
-                    border-radius: 10px;
-                    padding: 30px;
-                    margin-bottom: 30px;
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                }
-
-                #usability-testing h2 {
-                    color: #2575fc;
-                    margin-bottom: 20px;
-                    padding-bottom: 10px;
-                    border-bottom: 2px solid #eaeaea;
-                    display: flex;
-                    align-items: center;
-                }
-
-                #usability-testing h2 i {
-                    margin-right: 15px;
-                }
-
-                #usability-testing h3 {
-                    color: #6a11cb;
-                    margin: 25px 0 15px;
-                    display: flex;
-                    align-items: center;
-                }
-
-                #usability-testing h3 i {
-                    margin-right: 10px;
-                    font-size: 0.9em;
-                }
-
-                #usability-testing h4 {
-                    color: #333;
-                    margin: 15px 0 10px;
-                }
-
-                #usability-testing h5 {
-                    color: #444;
-                    margin: 10px 0 5px;
-                }
-
-                #usability-testing p {
-                    margin-bottom: 15px;
-                    color: #444;
-                }
-
-                #usability-testing .card-container {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-                    gap: 25px;
-                    margin: 25px 0;
-                }
-
-                #usability-testing .card {
-                    background: white;
-                    border-radius: 10px;
-                    overflow: hidden;
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-                    transition: transform 0.3s, box-shadow 0.3s;
-                    border-top: 4px solid;
-                }
-
-                #usability-testing .card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
-                }
-
-                #usability-testing .purpose-card {
-                    border-top-color: #6a11cb;
-                }
-
-                #usability-testing .metrics-card {
-                    border-top-color: #2ecc71;
-                }
-
-                #usability-testing .type-card {
-                    border-top-color: #e67e22;
-                }
-
-                #usability-testing .card-header {
-                    padding: 20px;
-                    text-align: center;
-                    color: white;
-                    font-weight: bold;
-                }
-
-                #usability-testing .purpose-card .card-header {
-                    background: linear-gradient(135deg, #6a11cb, #2575fc);
-                }
-
-                #usability-testing .metrics-card .card-header {
-                    background: linear-gradient(135deg, #2ecc71, #27ae60);
-                }
-
-                #usability-testing .type-card .card-header {
-                    background: linear-gradient(135deg, #e67e22, #d35400);
-                }
-
-                #usability-testing .card-body {
-                    padding: 20px;
-                }
-
-                #usability-testing .card h4 {
-                    font-size: 1.2rem;
-                    margin-bottom: 0;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                #usability-testing .card h4 i {
-                    margin-right: 10px;
-                }
-
-                #usability-testing .purpose-list {
-                    list-style: none;
-                    margin-left: 0;
-                }
-
-                #usability-testing .purpose-list li {
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 12px;
-                    padding: 8px;
-                    background-color: #f9f9f9;
-                    border-radius: 6px;
-                }
-
-                #usability-testing .purpose-list i {
-                    color: #2ecc71;
-                    margin-right: 10px;
-                    font-size: 1.1rem;
-                }
-
-                #usability-testing .metrics-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                    gap: 15px;
-                }
-
-                #usability-testing .metric-item {
-                    display: flex;
-                    align-items: flex-start;
-                    padding: 10px;
-                    background-color: #f9f9f9;
-                    border-radius: 8px;
-                }
-
-                #usability-testing .metric-icon {
-                    margin-right: 15px;
-                    font-size: 1.5rem;
-                    color: #6a11cb;
-                    min-width: 24px;
-                }
-
-                #usability-testing .testing-details {
-                    margin-top: 15px;
-                }
-
-                #usability-testing .detail-item {
-                    display: flex;
-                    align-items: flex-start;
-                    margin-bottom: 15px;
-                }
-
-                #usability-testing .detail-icon {
-                    margin-right: 15px;
-                    font-size: 1.2rem;
-                    color: #6a11cb;
-                    min-width: 24px;
-                }
-
-                #usability-testing .process-flow {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-top: 20px;
-                }
-
-                #usability-testing .process-step {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    text-align: center;
-                    flex: 1;
-                    min-width: 120px;
-                    margin: 10px;
-                }
-
-                #usability-testing .step-number {
-                    width: 40px;
-                    height: 40px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: #2575fc;
-                    color: white;
-                    border-radius: 50%;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                }
-
-                #usability-testing .step-arrow {
-                    color: #2575fc;
-                    font-size: 1.5rem;
-                }
-
-                #usability-testing .example-scenario {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                }
-
-                #usability-testing .scenario-step {
-                    display: flex;
-                    align-items: center;
-                    padding: 12px;
-                    background-color: #f5f7fa;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-                }
-
-                #usability-testing .scenario-step .step-number {
-                    margin-bottom: 0;
-                    margin-right: 15px;
-                }
-
-                #usability-testing .best-practices {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                    gap: 20px;
-                }
-
-                #usability-testing .practice-item {
-                    display: flex;
-                    align-items: flex-start;
-                    padding: 20px;
-                    background-color: #f5f7fa;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-                }
-
-                #usability-testing .practice-icon {
-                    margin-right: 15px;
-                    font-size: 1.5rem;
-                    color: #6a11cb;
-                    min-width: 24px;
-                }
-
-                @media (max-width: 768px) {
-
-                    #usability-testing .card-container,
-                    #usability-testing .metrics-grid,
-                    #usability-testing .best-practices {
-                        grid-template-columns: 1fr;
-                    }
-
-                    #usability-testing .metric-item,
-                    #usability-testing .detail-item,
-                    #usability-testing .practice-item {
-                        flex-direction: column;
-                        text-align: center;
-                    }
-
-                    #usability-testing .metric-icon,
-                    #usability-testing .detail-icon,
-                    #usability-testing .practice-icon {
-                        margin-right: 0;
-                        margin-bottom: 10px;
-                    }
-
-                    #usability-testing .process-flow {
-                        flex-direction: column;
-                    }
-
-                    #usability-testing .step-arrow {
-                        transform: rotate(90deg);
-                        margin: 10px 0;
-                    }
-
-                    #usability-testing .scenario-step {
-                        flex-direction: column;
-                        text-align: center;
-                    }
-
-                    #usability-testing .scenario-step .step-number {
-                        margin-right: 0;
-                        margin-bottom: 10px;
-                    }
-                }
-            </style>
         </section>
+
+        <style>
+            .usability-testing-section {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                padding: 40px 0;
+                background-color: #f9f9f9;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            h2 {
+                text-align: center;
+                color: #2c3e50;
+                margin-bottom: 30px;
+                font-size: 2.5rem;
+            }
+
+            .intro {
+                text-align: center;
+                max-width: 800px;
+                margin: 0 auto 40px;
+                font-size: 1.1rem;
+                color: #555;
+            }
+
+            .grid-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 25px;
+            }
+
+            .card {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                transition: transform 0.3s ease;
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+            .card-header {
+                background: #3498db;
+                color: white;
+                padding: 15px 20px;
+            }
+
+            .card-header h3 {
+                margin: 0;
+                font-size: 1.2rem;
+            }
+
+            .card-content {
+                padding: 20px;
+            }
+
+            .card-content h4 {
+                color: #2c3e50;
+                margin-top: 0;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+
+            .card-content ul,
+            .card-content ol {
+                padding-left: 20px;
+            }
+
+            .card-content li {
+                margin-bottom: 10px;
+            }
+
+            .example-card .card-header {
+                background: #e74c3c;
+            }
+
+            .example-visual {
+                margin-top: 20px;
+                display: flex;
+                justify-content: center;
+            }
+
+            .phone-mockup {
+                width: 220px;
+                height: 400px;
+                background: #333;
+                border-radius: 25px;
+                padding: 15px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            }
+
+            .phone-screen {
+                background: white;
+                height: 100%;
+                border-radius: 15px;
+                padding: 15px;
+                display: flex;
+                flex-direction: column;
+                font-size: 0.8rem;
+            }
+
+            .app-header {
+                text-align: center;
+                font-weight: bold;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
+            }
+
+            .search-bar {
+                background: #f0f0f0;
+                padding: 8px;
+                border-radius: 20px;
+                text-align: center;
+                margin-bottom: 15px;
+                color: #888;
+            }
+
+            .menu-item {
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+            }
+
+            .highlighted-element {
+                padding: 10px;
+                background: #ffeaa7;
+                border-radius: 5px;
+                margin-top: 10px;
+                font-weight: bold;
+            }
+
+            @media (max-width: 768px) {
+                .grid-container {
+                    grid-template-columns: 1fr;
+                }
+
+                h2 {
+                    font-size: 2rem;
+                }
+            }
+        </style>
         <section id="performance-testing">
             <div class="content-section">
                 <h2><i class="fas fa-tachometer-alt"></i> Performance Testing</h2>
