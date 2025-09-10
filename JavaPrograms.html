@@ -5,278 +5,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java Programs Collection</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #4a6baf;
-            --secondary: #34a853;
-            --accent: #fbbc05;
-            --dark: #2c3e50;
-            --light: #f8f9fa;
-            --border: #dee2e6;
-            --code-bg: #2d2d2d;
-            --code-text: #f8f8f2;
-            --code-keyword: #ff79c6;
-            --code-string: #f1fa8c;
-            --code-comment: #6272a4;
-            --code-function: #50fa7b;
-            --code-type: #8be9fd;
-        }
-
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 30px;
+        }
+
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            position: relative;
-        }
-
-        /* Menu Button */
-        .menu-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            z-index: 101;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .menu-toggle:hover {
-            transform: rotate(90deg);
-            background: #3a5a9f;
-        }
-
-        /* Menu */
-        .menu {
-            position: fixed;
-            top: 0;
-            right: -300px;
-            width: 300px;
-            height: 100vh;
-            background: white;
-            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
-            padding: 70px 20px 20px;
-            overflow-y: auto;
-            transition: right 0.3s ease;
-            z-index: 100;
-        }
-
-        .menu.active {
-            right: 0;
-        }
-
-        .menu h3 {
-            margin-bottom: 15px;
-            color: var(--primary);
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .menu ul {
-            list-style-type: none;
-        }
-
-        .menu li {
-            margin-bottom: 8px;
-        }
-
-        .menu a {
-            color: var(--dark);
-            text-decoration: none;
-            display: block;
-            padding: 10px 15px;
-            border-radius: 6px;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-
-        .menu a:hover {
-            background-color: #f0f5ff;
-            color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        .close-menu {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--dark);
-            transition: all 0.3s;
-        }
-
-        .close-menu:hover {
-            color: var(--primary);
-            transform: scale(1.2);
+            padding: 20px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 30px;
-            background: linear-gradient(135deg, #4a6baf 0%, #6c8bd5 100%);
+            padding: 30px 0;
             color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             font-size: 2.8rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        h2 {
-            color: var(--primary);
-            margin: 30px 0 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid var(--accent);
-            scroll-margin-top: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .description {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        h3 {
-            color: var(--secondary);
-            margin: 25px 0 15px;
-            scroll-margin-top: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-        }
-
-        .section {
-            background: white;
+        .menu-container {
+            background-color: white;
             border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            scroll-margin-top: 20px;
-        }
-
-        .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-        }
-
-        .code-container {
-            position: relative;
-            margin: 20px 0;
-            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
 
-        .code-header {
-            background: var(--code-bg);
-            color: white;
-            padding: 12px 20px;
+        .menu {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'Consolas', 'Monaco', monospace;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            gap: 15px;
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
         }
 
-        .run-button {
-            background: var(--secondary);
-            color: white;
+        .menu-btn {
+            padding: 12px 25px;
+            background: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            border-radius: 50px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #2c3e50;
         }
 
-        .run-button:hover {
-            background: #2d9545;
-            transform: translateY(-2px);
+        .menu-btn:hover {
+            background: #2c3e50;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .code-block {
-            background-color: var(--code-bg);
-            color: var(--code-text);
-            padding: 20px;
-            overflow-x: auto;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 15px;
-            line-height: 1.5;
-            tab-size: 4;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
+        .menu-btn.active {
+            background: #2c3e50;
+            color: white;
         }
 
-        .code-block .keyword {
-            color: var(--code-keyword);
-            font-weight: bold;
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 0 0 12px 12px;
         }
 
-        .code-block .string {
-            color: var(--code-string);
-        }
-
-        .code-block .comment {
-            color: var(--code-comment);
-            font-style: italic;
-        }
-
-        .code-block .function {
-            color: var(--code-function);
-        }
-
-        .code-block .type {
-            color: var(--code-type);
-        }
-
-        .output-block {
-            background-color: #f5f7fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-family: monospace;
-            white-space: pre-wrap;
-            border-left: 5px solid var(--accent);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        .program {
             display: none;
         }
 
-        .output-block.visible {
+        .program.active {
             display: block;
-            animation: fadeIn 0.5s;
+            animation: fadeIn 0.5s ease;
         }
 
         @keyframes fadeIn {
@@ -289,127 +111,72 @@
             }
         }
 
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--primary);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
-            z-index: 99;
-        }
-
-        .back-to-top.visible {
-            opacity: 1;
-        }
-
-        .back-to-top:hover {
-            transform: translateY(-5px);
-            background: #3a5a9f;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin: 50px 0 20px;
-        }
-
-        .nav-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 28px;
-            background: linear-gradient(135deg, var(--primary), #6c8bd5);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s;
-        }
-
-        .nav-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-        }
-
-        .program-tabs {
-            display: flex;
-            flex-wrap: wrap;
+        .program-title {
+            color: #2c3e50;
             margin-bottom: 20px;
-            gap: 8px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4facfe;
         }
 
-        .program-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background: #e9ecef;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.2s;
+        .code-container {
+            background: #2d3436;
+            color: #dfe6e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        .program-tab.active {
-            background: var(--primary);
+        .output-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #4facfe;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .output-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .output {
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .note {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ffd43b;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
             color: white;
-        }
-
-        .program-tab:hover {
-            background: #dde1e6;
-        }
-
-        .program-tab.active:hover {
-            background: #3a5a9f;
-        }
-
-        .program-content {
-            display: none;
-        }
-
-        .program-content.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .full-width {
-                grid-column: 1 / -1;
-            }
+            margin-top: 40px;
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
 
         @media (max-width: 768px) {
             .menu {
-                width: 85%;
-                right: -85%;
-            }
-
-            .nav-buttons {
                 flex-direction: column;
-                gap: 15px;
             }
 
-            .nav-button {
-                text-align: center;
-                justify-content: center;
-            }
-
-            .program-tabs {
-                overflow-x: auto;
-                white-space: nowrap;
-                padding-bottom: 10px;
+            .menu-btn {
+                width: 100%;
             }
 
             h1 {
@@ -420,1276 +187,1338 @@
 </head>
 
 <body>
-    <!-- Menu Button -->
-    <button class="menu-toggle">
-        <i class="fas fa-bars"></i>
-    </button>
-
-    <!-- Menu -->
-    <div class="menu" id="mainMenu">
-        <button class="close-menu">&times;</button>
-        <h3>Table of Contents</h3>
-        <ul>
-            <li><a href="#max-number"><i class="fas fa-search"></i> Find Max Number</a></li>
-            <li><a href="#min-number"><i class="fas fa-search"></i> Find Min Number</a></li>
-            <li><a href="#armstrong"><i class="fas fa-calculator"></i> Armstrong Numbers</a></li>
-            <li><a href="#palindrome"><i class="fas fa-exchange-alt"></i> Palindrome Number</a></li>
-            <li><a href="#prime"><i class="fas fa-shield-alt"></i> Prime Numbers</a></li>
-            <li><a href="#fibonacci"><i class="fas fa-project-diagram"></i> Fibonacci Series</a></li>
-            <li><a href="#string-ops"><i class="fas fa-font"></i> String Operations</a></li>
-            <li><a href="#array-ops"><i class="fas fa-layer-group"></i> Array Operations</a></li>
-        </ul>
-    </div>
-
-    <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
-
-    <header>
-        <h1><i class="fab fa-java"></i> Java Programs Collection</h1>
-        <p>Comprehensive guide to common Java programming problems and solutions</p>
-    </header>
-
     <div class="container">
-        <!-- Find Max Number Section -->
-        <section class="section" id="max-number">
-            <h2><i class="fas fa-arrow-up"></i> Find Max Number</h2>
-            <p>Various approaches to find the maximum number from given values</p>
+        <header>
+            <h1>Java Programs Collection</h1>
+            <p class="description">Explore various Java programs including number operations, string manipulations,
+                array operations, and pattern printing</p>
+        </header>
 
-            <div class="program-tabs">
-                <div class="program-tab active" onclick="showProgram('max-program1')">Using Array</div>
-                <div class="program-tab" onclick="showProgram('max-program2')">Using Logical Operators</div>
-                <div class="program-tab" onclick="showProgram('max-program3')">From 3 Variables</div>
+        <div class="menu-container">
+            <div class="menu">
+                <button class="menu-btn active" onclick="showProgram('maxNumber')">Find Max Number</button>
+                <button class="menu-btn" onclick="showProgram('minNumber')">Find Min Number</button>
+                <button class="menu-btn" onclick="showProgram('armstrong')">Armstrong Numbers</button>
+                <button class="menu-btn" onclick="showProgram('palindrome')">Palindrome Number</button>
+                <button class="menu-btn" onclick="showProgram('prime')">Prime Number</button>
+                <button class="menu-btn" onclick="showProgram('fibonacci')">Fibonacci Series</button>
+                <button class="menu-btn" onclick="showProgram('string')">String Operations</button>
+                <button class="menu-btn" onclick="showProgram('arrays')">Array Operations</button>
+                <button class="menu-btn" onclick="showProgram('patterns')">Star Patterns</button>
             </div>
 
-            <div id="max-program1" class="program-content active">
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>MaxNumber.java</span>
-                        <button class="run-button" onclick="runCode('max-output1')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">package</span> numbers;
-
-                        <span class="keyword">public class</span> <span class="type">MaxNumber</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">Array</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">logicalOperator</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">from_3Variables_ByConditionStatement</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">from_4Variables_ByConditionStatement</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">from_5Variables_ByConditionStatement</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">from_6Variables_ByConditionStatement</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        }
-
-                        <span class="keyword">public static void</span> <span class="function">Array</span>() {
-                        <span class="keyword">int</span> a[] = {1000, 15, 25, 500, 20};
-                        <span class="keyword">int</span> max = 0;
-
-                        <span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i < a.length; i++) {
-                            <span class="keyword">if</span> (max < a[i]) { max=a[i]; } } System.out.println(max); }
-                                <span class="keyword">public static void</span> <span
-                                    class="function">logicalOperator</span>() {
-                                <span class="keyword">int</span> a = 10, b = 20, c = 30, d = 40;
-                                <span class="keyword">int</span> max = (a > b && a > c && a > d) ? a :
-                                (b > c && b > d) ? b :
-                                (c > d) ? c : d;
-                                System.out.println(max);
-                                }
-
-                                <span class="comment">// Additional methods would follow...</span>
-                                }
-                    </div>
-                </div>
-
-                <div id="max-output1" class="output-block">
-                    =========================================
-                    1000
-                    =========================================
-                    40
-                    =========================================
-                    50
-                    =========================================
-                    500
-                    =========================================
-                    100
-                    =========================================
-                    170
-                    =========================================
-                </div>
-            </div>
-
-            <div id="max-program2" class="program-content">
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>Logical Operator Approach</span>
-                        <button class="run-button" onclick="runCode('max-output2')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="comment">// Logical operator approach for finding maximum</span>
-                        <span class="keyword">public static void</span> <span class="function">logicalOperator</span>()
-                        {
-                        <span class="keyword">int</span> a = 10, b = 20, c = 30, d = 40;
-                        <span class="keyword">int</span> max = (a > b && a > c && a > d) ? a :
-                        (b > c && b > d) ? b :
-                        (c > d) ? c : d;
-                        System.out.println(max);
-                        }
-                    </div>
-                </div>
-
-                <div id="max-output2" class="output-block">
-                    40
-                </div>
-            </div>
-
-            <div id="max-program3" class="program-content">
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>From 3 Variables</span>
-                        <button class="run-button" onclick="runCode('max-output3')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="comment">// From 3 variables using condition statements</span>
-                        <span class="keyword">public static void</span> <span
-                            class="function">from_3Variables_ByConditionStatement</span>() {
-                        <span class="keyword">int</span> a = 10, b = 20, c = 50;
-                        <span class="keyword">int</span> max;
-
-                        <span class="keyword">if</span> (a > b && a > c) {
-                        max = a;
-                        } <span class="keyword">else if</span> (b > c) {
-                        max = b;
-                        } <span class="keyword">else</span> {
-                        max = c;
-                        }
-                        System.out.println(max);
-                        }
-                    </div>
-                </div>
-
-                <div id="max-output3" class="output-block">
-                    50
-                </div>
-            </div>
-        </section>
-
-        <!-- Find Min Number Section -->
-        <section class="section" id="min-number">
-            <h2><i class="fas fa-arrow-down"></i> Find Min Number</h2>
-            <p>Different methods to find the minimum number from given values</p>
-
-            <div class="code-container">
-                <div class="code-header">
-                    <span>MinNumber.java</span>
-                    <button class="run-button" onclick="runCode('min-output')">
-                        <i class="fas fa-play"></i> Run
-                    </button>
-                </div>
-                <div class="code-block">
-                    <span class="keyword">package</span> numbers;
-
-                    <span class="keyword">public class</span> <span class="type">MinNumber</span> {
-                    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {
-                    System.out.println(<span class="string">"======================"</span>);
-                    <span class="function">array</span>();
-                    System.out.println(<span class="string">"======================"</span>);
-                    <span class="function">from_6Variables_ByConditionStatement</span>();
-                    System.out.println(<span class="string">"======================"</span>);
-                    }
-
-                    <span class="keyword">public static void</span> <span class="function">array</span>() {
-                    <span class="keyword">int</span> a[] = {10, 50, 100, 20, 5};
-                    <span class="keyword">int</span> min = 10;
-
-                    <span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i < a.length; i++) { <span
-                        class="keyword">if</span> (min > a[i]) {
-                        min = a[i];
-                        }
-                        }
-                        System.out.println(min);
-                        }
-
-                        <span class="comment">// Additional methods would follow...</span>
-                        }
-                </div>
-            </div>
-
-            <div id="min-output" class="output-block">
-                ======================
-                5
-                ======================
-                10
-                ======================
-            </div>
-        </section>
-
-        <!-- Armstrong Numbers Section -->
-        <section class="section" id="armstrong">
-            <h2><i class="fas fa-calculator"></i> Armstrong Numbers</h2>
-            <p>Check if a number is an Armstrong number</p>
-
-            <div class="code-container">
-                <div class="code-header">
-                    <span>ArmstrongNumber.java</span>
-                    <button class="run-button" onclick="runCode('armstrong-output')">
-                        <i class="fas fa-play"></i> Run
-                    </button>
-                </div>
-                <div class="code-block">
-                    <span class="keyword">package</span> numbers;
-                    <span class="keyword">import</span> java.util.Scanner;
-
-                    <span class="keyword">public class</span> <span class="type">ArmstrongNumber</span> {
-                    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {
-                    System.out.println(<span class="string">"======================"</span>);
-                    <span class="function">multipleNumber</span>();
-                    System.out.println(<span class="string">"======================"</span>);
-                    <span class="function">singleNumber</span>();
-                    System.out.println(<span class="string">"======================"</span>);
-                    }
-
-                    <span class="keyword">public static void</span> <span class="function">singleNumber</span>() {
-                    Scanner scan = <span class="keyword">new</span> Scanner(System.in);
-                    System.out.println(<span class="string">"Enter Number to check weather is Armstrong Number or
-                        Not"</span>);
-
-                    <span class="keyword">int</span> a = scan.nextInt();
-                    <span class="keyword">int</span> n = a, count = 0, rem;
-                    <span class="keyword">double</span> sum = 0;
-
-                    <span class="keyword">while</span> (n > 0) {
-                    count++;
-                    n = n / 10;
-                    }
-                    n = a;
-                    <span class="keyword">while</span> (n > 0) {
-                    rem = n % 10;
-                    sum = sum + Math.pow(rem, count);
-                    n = n / 10;
-                    }
-
-                    <span class="keyword">if</span> (a == sum) {
-                    System.out.println(a + <span class="string">" this is an Armstrong Number"</span>);
-                    } <span class="keyword">else</span> {
-                    System.out.println(a + <span class="string">" this is not an Armstrong Number"</span>);
-                    }
-                    }
-
-                    <span class="comment">// Additional method would follow...</span>
-                    }
-                </div>
-            </div>
-
-            <div id="armstrong-output" class="output-block">
-                ======================
-                1 it is an Armstrong Number
-                2 it is an Armstrong Number
-                3 it is an Armstrong Number
-                4 it is an Armstrong Number
-                5 it is an Armstrong Number
-                6 it is an Armstrong Number
-                7 it is an Armstrong Number
-                8 it is an Armstrong Number
-                9 it is an Armstrong Number
-                153 it is an Armstrong Number
-                370 it is an Armstrong Number
-                371 it is an Armstrong Number
-                407 it is an Armstrong Number
-                ======================
-                Enter Number to check weather is Armstrong Number or Not
-                500
-                500 this is not an Armstrong Number
-                ======================
-            </div>
-        </section>
-
-        <!-- Palindrome Number Section -->
-        <section class="section" id="palindrome">
-            <h2><i class="fas fa-exchange-alt"></i> Palindrome Number</h2>
-            <p>Determine if a number is a palindrome</p>
-
-            <div class="code-container">
-                <div class="code-header">
-                    <span>PalindromeNumber.java</span>
-                    <button class="run-button" onclick="runCode('palindrome-output')">
-                        <i class="fas fa-play"></i> Run
-                    </button>
-                </div>
-                <div class="code-block">
-                    <span class="keyword">package</span> numbers;
-
-                    <span class="keyword">public class</span> <span class="type">PalindromeNumber</span> {
-                    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {
-                    <span class="keyword">int</span> num = 121;
-                    <span class="keyword">int</span> reversed = 0, remainder, original = num;
-
-                    <span class="keyword">while</span> (num != 0) {
-                    remainder = num % 10;
-                    reversed = reversed * 10 + remainder;
-                    num /= 10;
-                    }
-
-                    <span class="keyword">if</span> (original == reversed) {
-                    System.out.println(original + <span class="string">" is a palindrome."</span>);
-                    } <span class="keyword">else</span> {
-                    System.out.println(original + <span class="string">" is not a palindrome."</span>);
-                    }
-                    }
-                    }
-                </div>
-            </div>
-
-            <div id="palindrome-output" class="output-block">
-                121 is a palindrome.
-            </div>
-        </section>
-
-        <!-- Prime Numbers Section -->
-        <section class="section" id="prime">
-            <h2><i class="fas fa-shield-alt"></i> Prime Numbers</h2>
-            <p>Find and check prime numbers</p>
-
-            <div class="code-container">
-                <div class="code-header">
-                    <span>PrimeNumbers.java</span>
-                    <button class="run-button" onclick="runCode('prime-output')">
-                        <i class="fas fa-play"></i> Run
-                    </button>
-                </div>
-                <div class="code-block">
-                    <span class="keyword">package</span> numbers;
-
-                    <span class="keyword">public class</span> <span class="type">PrimeNumbers</span> {
-                    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {
-                    System.out.println(<span class="string">"Prime numbers between 1 and 50:"</span>);
-
-                    <span class="keyword">for</span> (<span class="keyword">int</span> i = 2; i <= 50; i++) { <span
-                        class="keyword">if</span> (<span class="function">isPrime</span>(i)) {
-                        System.out.print(i + <span class="string">" "</span>);
-                        }
-                        }
-                        }
-
-                        <span class="keyword">public static boolean</span> <span class="function">isPrime</span>(<span
-                            class="keyword">int</span> num) {
-                        <span class="keyword">if</span> (num <= 1) { <span class="keyword">return</span> <span
-                                class="keyword">false</span>;
-                            }
-                            <span class="keyword">for</span> (<span class="keyword">int</span> i = 2; i <=
-                                Math.sqrt(num); i++) { <span class="keyword">if</span> (num % i == 0) {
-                                <span class="keyword">return</span> <span class="keyword">false</span>;
-                                }
-                                }
-                                <span class="keyword">return</span> <span class="keyword">true</span>;
-                                }
-                                }
-                </div>
-            </div>
-
-            <div id="prime-output" class="output-block">
-                Prime numbers between 1 and 50:
-                2 3 5 7 11 13 17 19 23 29 31 37 41 43 47
-            </div>
-        </section>
-
-        <!-- Fibonacci Series Section -->
-        <section class="section" id="fibonacci">
-            <h2><i class="fas fa-project-diagram"></i> Fibonacci Series</h2>
-            <p>Generate Fibonacci sequence</p>
-
-            <div class="code-container">
-                <div class="code-header">
-                    <span>FibonacciSeries.java</span>
-                    <button class="run-button" onclick="runCode('fibonacci-output')">
-                        <i class="fas fa-play"></i> Run
-                    </button>
-                </div>
-                <div class="code-block">
-                    <span class="keyword">package</span> numbers;
-
-                    <span class="keyword">public class</span> <span class="type">FibonacciSeries</span> {
-                    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {
-                    <span class="keyword">int</span> n = 10, firstTerm = 0, secondTerm = 1;
-
-                    System.out.println(<span class="string">"Fibonacci Series till "</span> + n + <span class="string">"
-                        terms:"</span>);
-
-                    <span class="keyword">for</span> (<span class="keyword">int</span> i = 1; i <= n; ++i) {
-                        System.out.print(firstTerm + <span class="string">" "</span>);
-
-                        <span class="keyword">int</span> nextTerm = firstTerm + secondTerm;
-                        firstTerm = secondTerm;
-                        secondTerm = nextTerm;
-                        }
-                        }
-                        }
-                </div>
-            </div>
-
-            <div id="fibonacci-output" class="output-block">
-                Fibonacci Series till 10 terms:
-                0 1 1 2 3 5 8 13 21 34
-            </div>
-        </section>
-
-        <!-- String Operations Section -->
-        <section class="section full-width" id="string-ops">
-            <h2><i class="fas fa-font"></i> String Operations</h2>
-            <p>Various string manipulation techniques and algorithms in Java</p>
-
-            <div class="program-tabs">
-                <div class="program-tab active" onclick="showProgram('string-program1')">Reverse String</div>
-                <div class="program-tab" onclick="showProgram('string-program2')">Reverse Words</div>
-                <div class="program-tab" onclick="showProgram('string-program3')">Sorting Strings</div>
-                <div class="program-tab" onclick="showProgram('string-program4')">Count Operations</div>
-                <div class="program-tab" onclick="showProgram('string-program5')">Duplicate Words</div>
-                <div class="program-tab" onclick="showProgram('string-program6')">Duplicate Characters</div>
-            </div>
-
-            <div id="string-program1" class="program-content active">
-                <h3>Reverse String</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>ReverseString.java</span>
-                        <button class="run-button" onclick="runCode('string-output1')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">package</span> string;
-
-                        <span class="keyword">public class</span> <span class="type">ReverseString</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        String a = <span class="string">"Pratik"</span>;
-
-                        <span class="comment">// First approach</span>
-                        <span class="keyword">for</span> (<span class="keyword">int</span> i = a.length() - 1; i >= 0;
-                        i--) {
-                        <span class="keyword">char</span> b = a.charAt(i);
-                        System.out.print(b + <span class="string">" "</span>);
-                        }
-                        System.out.println();
-
-                        <span class="comment">// Second approach using StringBuilder</span>
-                        StringBuilder sb = <span class="keyword">new</span> StringBuilder();
-                        sb.append(a);
-                        sb.reverse();
-                        System.out.println(sb);
-                        }
-                        }
-                    </div>
-                </div>
-
-                <div id="string-output1" class="output-block">
-                    k i t a r P
-                    kitarP
-                </div>
-            </div>
-
-            <div id="string-program2" class="program-content">
-                <h3>Reverse String At Same Word</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>ReverseStringAtSameWord.java</span>
-                        <button class="run-button" onclick="runCode('string-output2')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">public class</span> <span class="type">ReverseStringAtSameWord</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        String str = <span class="string">"Pratik Pandurang Narute"</span>;
-                        String [] ArrayString = str.split(<span class="string">" "</span>);
-
-                        <span class="keyword">for</span>(<span class="keyword">int</span> a = ArrayString.length - 1; a
-                        >= 0; a--) {
-                        System.out.print(ArrayString[a] + <span class="string">" "</span>);
-                        }
-                        }
-                        }
-                    </div>
-                </div>
-
-                <div id="string-output2" class="output-block">
-                    Narute Pandurang Pratik
-                </div>
-            </div>
-
-            <div id="string-program3" class="program-content">
-                <h3>Sorting Of String</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>SortingOfString.java</span>
-                        <button class="run-button" onclick="runCode('string-output3')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">package</span> string;
-
-                        <span class="keyword">public class</span> <span class="type">SortingOfString</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        String a = <span class="string">"Pratik@Narute #^"</span>;
-
-                        <span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i < a.length(); i++) {
-                            <span class="keyword">char</span> c = a.charAt(i);
-                            <span class="keyword">if</span>((c >= 32 && c <= 47) || (c>= 58 && c <= 64) || (c>= 91 && c
-                                    <= 96) || (c>= 123 && c <= 126)) { System.out.println(<span class="string">"Special
-                                            char from given String: "</span> + c);
-                                            }
-                                            }
-                                            }
-                                            }
-                    </div>
-                </div>
-
-                <div id="string-output3" class="output-block">
-                    Special char from given String: @
-                    Special char from given String:
-                    Special char from given String: #
-                    Special char from given String: ^
-                </div>
-            </div>
-
-            <div id="string-program4" class="program-content">
-                <h3>Count Of String</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>CountOfString.java</span>
-                        <button class="run-button" onclick="runCode('string-output4')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">package</span> string;
-
-                        <span class="keyword">public class</span> <span class="type">CountOfString</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">removingChar</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">removingSpecialChar</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">removingNumber</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        <span class="function">removingSpecificChar</span>();
-                        System.out.println(<span class="string">"========================================="</span>);
-                        }
-
-                        <span class="keyword">public static void</span> <span class="function">removingChar</span>() {
-                        String a = <span class="string">"pratiknarute1997@gmil.com"</span>;
-                        <span class="keyword">int</span> count = 0;
-
-                        <span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i < a.length(); i++) {
-                            <span class="keyword">char</span> c = a.charAt(i);
-
-                            <span class="keyword">if</span> ((c >= 32 && c <= 64) || (c>= 91 && c <= 96) || (c>= 123 &&
-                                    c <= 126)) { count++; } } System.out.println(<span class="string">"String: "</span>
-                                        + a);
-                                        System.out.println(<span class="string">"Total Count Of String: "</span> +
-                                        (a.length()));
-                                        System.out.println(<span class="string">"Count Of String After Removing
-                                            Characters: "</span> + count);
-                                        }
-
-                                        <span class="comment">// Additional methods would follow...</span>
-                                        }
-                    </div>
-                </div>
-
-                <div id="string-output4" class="output-block">
-                    =========================================
-                    String: pratiknarute1997@gmil.com
-                    Total Count Of String: 25
-                    Count Of String After Removing Characters: 6
-                    =========================================
-                    Count Of String After Removing Special Characters: 23
-                    =========================================
-                    Count Of String After Removing Numbers: 21
-                    =========================================
-                    String After Removing a-Char: prtiknrute1997@gmil.com
-                    Count Of String After Removing a-Char: 23
-                    =========================================
-                </div>
-            </div>
-
-            <div id="string-program5" class="program-content">
-                <h3>Count of Duplicate Words in String</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>DuplicateWordCount.java</span>
-                        <button class="run-button" onclick="runCode('string-output5')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">import</span> java.util.HashMap;
-
-                        <span class="keyword">public class</span> <span class="type">DuplicateWordCount</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        String str = <span class="string">"Hello world hello hello"</span>;
-
-                        <span class="comment">// Split the string into words</span>
-                        String[] strArray = str.split(<span class="string">" "</span>);
-
-                        <span class="comment">// Create a HashMap to store the unique element as a key and value
-                            pair</span>
-                        HashMap<String, Integer> map = <span class="keyword">new</span> HashMap<>();
-
-                                <span class="comment">// Add element of string into map</span>
-                                <span class="keyword">for</span> (String word : strArray) {
-                                map.put(word, <span class="keyword">null</span>);
-                                }
-
-                                <span class="keyword">for</span> (String mapKey : map.keySet()) {
-                                <span class="keyword">int</span> count = 0;
-                                <span class="keyword">for</span> (<span class="keyword">int</span> a = 0; a <
-                                    strArray.length; a++) { <span class="keyword">if</span>
-                                    ((strArray[a]).equals(mapKey)) {
-                                    count++;
-                                    }
-                                    }
-                                    System.out.println(<span class="string">"Count of key '"</span> + mapKey + <span
-                                        class="string">"' is: "</span> + count);
-                                    }
-                                    }
-                                    }
-                    </div>
-                </div>
-
-                <div id="string-output5" class="output-block">
-                    Count of key 'world' is: 1
-                    Count of key 'Hello' is: 1
-                    Count of key 'hello' is: 2
-                </div>
-            </div>
-
-            <div id="string-program6" class="program-content">
-                <h3>Count of Duplicate Characters in String</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>DuplicateCharCount.java</span>
-                        <button class="run-button" onclick="runCode('string-output6')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">import</span> java.util.HashMap;
-
-                        <span class="keyword">public class</span> <span class="type">DuplicateCharCount</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        String str = <span class="string">"Pratik Narute"</span>;
-
-                        <span class="comment">// Create a HashMap to store the unique element as a key and value
-                            pair</span>
-                        HashMap<Character, Integer> map = <span class="keyword">new</span> HashMap<>();
-
-                                <span class="comment">// Add element of string into map</span>
-                                <span class="keyword">for</span> (<span class="keyword">int</span> a = 0; a <
-                                    str.length(); a++) { map.put(str.charAt(a), <span class="keyword">null</span>);
-                                    }
-
-                                    <span class="keyword">for</span> (<span class="keyword">char</span> mapKey :
-                                    map.keySet()) {
-                                    <span class="keyword">int</span> count = 0;
-                                    <span class="keyword">for</span> (<span class="keyword">int</span> a = 0; a <
-                                        str.length(); a++) { <span class="keyword">if</span> (str.charAt(a) == mapKey) {
-                                        count++;
-                                        }
-                                        }
-                                        System.out.println(<span class="string">"Count of Char '"</span> + mapKey +
-                                        <span class="string">"' is: "</span> + count);
-                                        }
-                                        }
-                                        }
-                    </div>
-                </div>
-
-                <div id="string-output6" class="output-block">
-                    Count of Char 'P' is: 1
-                    Count of Char ' ' is: 1
-                    Count of Char 'a' is: 2
-                    Count of Char 'r' is: 2
-                    Count of Char 't' is: 2
-                    Count of Char 'u' is: 1
-                    Count of Char 'e' is: 1
-                    Count of Char 'i' is: 1
-                    Count of Char 'k' is: 1
-                    Count of Char 'N' is: 1
-                </div>
-            </div>
-        </section>
-
-        <!-- Array Operations Section -->
-        <section class="section full-width" id="array-ops">
-            <h2><i class="fas fa-layer-group"></i> Array Operations</h2>
-            <p>Various array manipulation techniques and algorithms in Java</p>
-
-            <div class="program-tabs">
-                <div class="program-tab active" onclick="showProgram('array-program1')">Array Comparison</div>
-                <div class="program-tab" onclick="showProgram('array-program2')">Element Counting</div>
-                <div class="program-tab" onclick="showProgram('array-program3')">Array Addition</div>
-                <div class="program-tab" onclick="showProgram('array-program4')">Remove Duplicates</div>
-                <div class="program-tab" onclick="showProgram('array-program5')">Sorting Arrays</div>
-                <div class="program-tab" onclick="showProgram('array-program6')">2D Array Swap</div>
-            </div>
-
-            <div id="array-program1" class="program-content active">
-                <h3>Comparison of Two Arrays</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>SameNumbersFromTwoArrays.java</span>
-                        <button class="run-button" onclick="runCode('array-output1')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">package</span> arrays;
-                        <span class="keyword">import</span> java.util.Arrays;
-
-                        <span class="keyword">public class</span> <span class="type">SameNumbersFromTwoArrays</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        System.out.println(<span class="string">"==============================="</span>);
-                        <span class="function">byMethod</span>();
-                        System.out.println(<span class="string">"==============================="</span>);
-                        <span class="function">byConditionStatement</span>();
-                        System.out.println(<span class="string">"==============================="</span>);
-                        <span class="function">byForLoop</span>();
-                        System.out.println(<span class="string">"==============================="</span>);
-                        }
-
-                        <span class="keyword">public static void</span> <span class="function">byMethod</span> () {
-                        <span class="keyword">int</span> a [] = {1,2,3,4,5,6};
-                        <span class="keyword">int</span> b [] = {1,2,3,4,5,6};
-
-                        <span class="keyword">boolean</span> status = Arrays.equals(a, b);
-
-                        <span class="keyword">if</span> (status == <span class="keyword">true</span>) {
-                        System.out.println(<span class="string">"Equal Arrays"</span>);
-                        } <span class="keyword">else</span> {
-                        System.out.println(<span class="string">"Not Equal Arrays"</span>);
-                        }
-                        }
-
-                        <span class="comment">// Additional methods would follow...</span>
-                        }
-                    </div>
-                </div>
-
-                <div id="array-output1" class="output-block">
-                    ===============================
-                    Equal Arrays
-                    ===============================
-                    Not equal Arrays
-                    ===============================
-                    6 6 4 7
-                    ===============================
-                </div>
-            </div>
-
-            <div id="array-program2" class="program-content">
-                <h3>Count of Elements from Arrays</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>Interview.java</span>
-                        <button class="run-button" onclick="runCode('array-output2')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">package</span> demo;
-                        <span class="keyword">import</span> java.util.HashSet;
-                        <span class="keyword">import</span> java.util.Set;
-
-                        <span class="keyword">public class</span> <span class="type">Interview</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span> (String[]
-                        args) {
-                        <span class="keyword">int</span> array [] = {1,3,1,1,2,1,2,4};
-
-                        Set <<span class="type">Integer</span>> set = <span class="keyword">new</span> HashSet<>();
-
-                                <span class="keyword">for</span> (<span class="keyword">int</span> arrayValues : array )
-                                {
-                                set.add(arrayValues);
-                                }
-                                <span class="keyword">for</span> (<span class="keyword">int</span> setvalue : set) {
-                                <span class="keyword">int</span> count = 0;
-                                <span class="keyword">for</span> (<span class="keyword">int</span> arrayValues : array)
-                                {
-                                <span class="keyword">if</span>(setvalue == arrayValues) {
-                                count++;
-                                }
-                                }
-                                System.out.println(<span class="string">"Count of "</span> + setvalue + <span
-                                    class="string">" is: "</span> + count);
-                                }
-                                }
-                                }
-                    </div>
-                </div>
-
-                <div id="array-output2" class="output-block">
-                    Count of 1 is: 4
-                    Count of 2 is: 2
-                    Count of 3 is: 1
-                    Count of 4 is: 1
-                </div>
-            </div>
-
-            <div id="array-program3" class="program-content">
-                <h3>Addition of Two Arrays</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>AdditionOfArrays.java</span>
-                        <button class="run-button" onclick="runCode('array-output3')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">package</span> arrays;
-
-                        <span class="keyword">public class</span> <span class="type">AdditionOfArrays</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        System.out.println(<span class="string">"==================="</span>);
-                        <span class="function">byForLoop</span>();
-                        System.out.println(<span class="string">"==================="</span>);
-                        <span class="function">byWhileLoop</span>();
-                        System.out.println(<span class="string">"==================="</span>);
-                        }
-
-                        <span class="keyword">public static void</span> <span class="function">byForLoop</span>() {
-                        <span class="keyword">int</span> a[] = {3,7,10,20};
-                        <span class="keyword">int</span> b[] = {8,9,6,5};
-                        <span class="keyword">int</span> sum;
-
-                        <span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i < a.length; i++) {
-                            sum=a[i] + b[i]; System.out.print(sum + <span class="string">" "</span>);
-                            }
-                            System.out.println();
-                            }
-
-                            <span class="keyword">public static void</span> <span class="function">byWhileLoop</span>()
-                            {
-                            <span class="keyword">int</span> a[] = {3,7,10,20};
-                            <span class="keyword">int</span> b[] = {8,9,6,5};
-                            <span class="keyword">int</span> sum;
-                            <span class="keyword">int</span> n = 0;
-
-                            <span class="keyword">while</span>(n < a.length) { sum=a[n] + b[n]; System.out.print(sum +
-                                <span class="string">" "</span>);
-                                n++;
-                                }
-                                System.out.println();
-                                }
-                                }
-                    </div>
-                </div>
-
-                <div id="array-output3" class="output-block">
-                    ===================
-                    11 16 16 25
-                    ===================
-                    11 16 16 25
-                    ===================
-                </div>
-            </div>
-
-            <div id="array-program4" class="program-content">
-                <h3>Remove Duplicate Numbers from Arrays</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>RemoveDuplicates.java</span>
-                        <button class="run-button" onclick="runCode('array-output4')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="comment">// Using Set Interface</span>
-                        <span class="keyword">package</span> demo;
-
-                        <span class="keyword">import</span> java.util.ArrayList;
-                        <span class="keyword">import</span> java.util.HashSet;
-                        <span class="keyword">import</span> java.util.List;
-                        <span class="keyword">import</span> java.util.Set;
-
-                        <span class="keyword">public class</span> <span class="type">Interview</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span> (String[]
-                        args) {
-                        <span class="keyword">int</span> array [] = {1,3,1,1,2,1,2,4};
-                        List list = <span class="keyword">new</span> ArrayList();
-
-                        Set <<span class="type">Integer</span>> set = <span class="keyword">new</span> HashSet<>();
-
-                                <span class="comment">// Add array element into set for remove duplicate values</span>
-                                <span class="keyword">for</span> (<span class="keyword">int</span> arrayValues : array )
-                                {
-                                set.add(arrayValues);
-                                }
-
-                                <span class="comment">// Add set object into list</span>
-                                list.add(set);
-                                System.out.println(<span class="string">"Remove duplicate values from array: "</span> +
-                                list);
-                                }
-                                }
-
-                                <span class="comment">// Using HashMap</span>
-                                <span class="keyword">import</span> java.util.HashMap;
-
-                                <span class="keyword">public class</span> <span
-                                    class="type">RemoveDuplicatesWithHashMap</span> {
-                                <span class="keyword">public static void</span> <span class="function">main</span>
-                                (String [] args) {
-                                <span class="keyword">int</span> array [] = {1, 1, 1, 2, 3, 3, 6, 6, 7};
-                                HashMap<<span class="type">Integer</span>, String> mapData = <span
-                                        class="keyword">new</span> HashMap<>();
-
-                                        <span class="keyword">for</span> (<span class="keyword">int</span> a = 0; a <
-                                            array.length; a++) { mapData.put(array[a], <span class="keyword">
-                                            null</span>);
-                                            }
-
-                                            <span class="keyword">for</span> (<span class="keyword">int</span> data :
-                                            mapData.keySet()) {
-                                            System.out.print(data + <span class="string">" "</span>);
-                                            }
-                                            }
-                                            }
-
-                                            <span class="comment">// Using normal for loop</span>
-                                            <span class="keyword">public class</span> <span
-                                                class="type">RemoveDuplicatesWithLoop</span> {
-                                            <span class="keyword">public static void</span> <span
-                                                class="function">main</span> (String [] args) {
-                                            <span class="keyword">int</span> array [] = {1, 1, 1, 2, 3, 3, 6, 6, 7};
-                                            <span class="keyword">int</span> c = 0;
-
-                                            <span class="keyword">for</span> (<span class="keyword">int</span> a = 0; a
-                                            < array.length; a++) { c=0; <span class="keyword">for</span> (<span
-                                                    class="keyword">int</span> b = a + 1; b < array.length; b++) { <span
-                                                    class="keyword">if</span> (array[a] == array[b]) {
-                                                    c = 1;
-                                                    <span class="keyword">break</span>;
-                                                    }
-                                                    }
-                                                    <span class="keyword">if</span> (c == 0) {
-                                                    System.out.println(array[a]);
-                                                    }
-                                                    }
-                                                    }
-                                                    }
-                    </div>
-                </div>
-
-                <div id="array-output4" class="output-block">
-                    Remove duplicate values from array: [[1, 2, 3, 4]]
-
-                    Using HashMap: 1 2 3 6 7
-
-                    Using normal for loop: 1 2 3 6 7
-                </div>
-            </div>
-
-            <div id="array-program5" class="program-content">
-                <h3>Sorting Arrays in Ascending and Descending Order</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>AscendingDescendingOrder.java</span>
-                        <button class="run-button" onclick="runCode('array-output5')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">package</span> arrays;
-
-                        <span class="keyword">public class</span> <span class="type">AscendingDescendingOrder</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        System.out.println(<span class="string">"=========================="</span>);
-                        <span class="function">withoutUsingVariable</span>();
-                        System.out.println(<span class="string">"=========================="</span>);
-                        <span class="function">withUsingVariable</span>();
-                        System.out.println(<span class="string">"=========================="</span>);
-                        }
-
-                        <span class="keyword">public static void</span> <span
-                            class="function">withoutUsingVariable</span>() {
-                        <span class="keyword">int</span> a[] = {200,100,400,500,150};
-
-                        <span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i < a.length; i++) {
-                            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + 1; j < a.length;
-                                j++) { <span class="keyword">if</span> (a[i] >= a[j]) {
-                                a[i] = a[i] + a[j];
-                                a[j] = a[i] - a[j];
-                                a[i] = a[i] - a[j];
-                                }
-                                }
-                                }
-
-                                <span class="keyword">for</span> (<span class="keyword">int</span> k = 0; k < a.length;
-                                    k++) { System.out.print(a[k] + <span class="string">" "</span>);
-                                    }
-                                    System.out.println();
-
-                                    <span class="keyword">for</span> (<span class="keyword">int</span> k = a.length - 1;
-                                    k >= 0; k--) {
-                                    System.out.print(a[k] + <span class="string">" "</span>);
-                                    }
-                                    System.out.println();
-                                    }
-
-                                    <span class="keyword">public static void</span> <span
-                                        class="function">withUsingVariable</span>() {
-                                    <span class="keyword">int</span> a[] = {200,100,400,500,150};
-                                    <span class="keyword">int</span> x;
-
-                                    <span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i <
-                                        a.length; i++) { <span class="keyword">for</span> (<span
-                                            class="keyword">int</span> j = i + 1; j < a.length; j++) { <span
-                                            class="keyword">if</span> (a[i] >= a[j]) {
-                                            x = a[i];
-                                            a[i] = a[j];
-                                            a[j] = x;
-                                            }
-                                            }
-                                            }
-
-                                            <span class="keyword">for</span> (<span class="keyword">int</span> k = 0; k
-                                            < a.length; k++) { System.out.print(a[k] + <span class="string">" "</span>);
-                                                }
-                                                System.out.println();
-
-                                                <span class="keyword">for</span> (<span class="keyword">int</span> k =
-                                                a.length - 1; k >= 0; k--) {
-                                                System.out.print(a[k] + <span class="string">" "</span>);
-                                                }
-                                                System.out.println();
-                                                }
-                                                }
-                    </div>
-                </div>
-
-                <div id="array-output5" class="output-block">
-                    ==========================
-                    100 150 200 400 500
-                    500 400 200 150 100
-                    ==========================
-                    100 150 200 400 500
-                    500 400 200 150 100
-                    ==========================
-                </div>
-            </div>
-
-            <div id="array-program6" class="program-content">
-                <h3>Swap Elements in 2D Array</h3>
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>Swap2DArray.java</span>
-                        <button class="run-button" onclick="runCode('array-output6')">
-                            <i class="fas fa-play"></i> Run
-                        </button>
-                    </div>
-                    <div class="code-block">
-                        <span class="keyword">public class</span> <span class="type">Swap2DArray</span> {
-                        <span class="keyword">public static void</span> <span class="function">main</span>(String[]
-                        args) {
-                        <span class="keyword">int</span>[][] array = {
-                        {1, 2},
-                        {4, 5},
-                        {7, 8}
-                        };
-
-                        <span class="keyword">for</span> (<span class="keyword">int</span> arrayIndex = 0; arrayIndex <
-                            array.length; arrayIndex++) { <span class="keyword">int</span> startIndex = 0;
-                            <span class="keyword">int</span> endIndex = 1;
-
-                            <span class="comment">// Swap numbers in 2D array</span>
-                            <span class="keyword">int</span> x = array[arrayIndex][startIndex];
-                            array[arrayIndex][startIndex] = array[arrayIndex][endIndex];
-                            array[arrayIndex][endIndex] = x;
-                            }
-
-                            <span class="comment">// Print 2D after swapping</span>
-                            <span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i < array.length;
-                                i++) { <span class="keyword">for</span> (<span class="keyword">int</span> j = 0; j <
-                                    array[i].length; j++) { System.out.print(array[i][j] + <span class="string">"
-                                    "</span>);
-                                    }
-                                    System.out.println();
-                                    }
-                                    }
-                                    }
-                    </div>
-                </div>
-
-                <div id="array-output6" class="output-block">
-                    2 1
-                    5 4
-                    8 7
-                </div>
-            </div>
-        </section>
-
-    </div>
-    <footer>
-        <div style="text-align: center; margin: 40px 0;">
-            <a href="index.html" class="nav-button" style="
-            display: inline-block;
-            padding: 16px 40px;
-            background: linear-gradient(135deg, #f57c00, #1976d2);
-            color: #fff;
-            font-size: 1.18rem;
-            font-weight: 700;
-            border-radius: 36px;
-            text-decoration: none;
-            box-shadow: 0 6px 18px rgba(25,118,210,0.12);
-            letter-spacing: 1.2px;
-            transition: background 0.3s, box-shadow 0.3s;
-        ">
-                <i class="fab fa-java" style="margin-right:10px; font-size:1.3rem; vertical-align:middle;"></i>
-                Go To Index
-            </a>
-        </div>
-        <div style="
-        text-align: center;
-        margin-bottom: 18px;
-        color: #1976d2;
-        font-size: 1.08rem;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        background: linear-gradient(90deg, #e3f2fd 0%, #f3f3fd 100%);
-        border-radius: 24px;
-        padding: 12px 0;
-        box-shadow: 0 2px 8px rgba(25,118,210,0.07);
-        margin: 0 20px 18px 20px;
-    ">
-            <i class="fas fa-coffee" style="color:#f57c00; margin-right:6px;"></i>
-            If any query, call
-            <a href="tel:8625812214" style="color:#f57c00; text-decoration:underline; font-weight:600;">8625812214</a>
-            <span style="margin:0 10px;">|</span>
-            <i class="fas fa-envelope" style="color:#1976d2; margin-right:6px;"></i>
-            or mail
-            <a href="mailto:pratiknarute2@gmail.com"
-                style="color:#1976d2; text-decoration:underline; font-weight:600;">pratiknarute2@gmail.com</a>
-        </div>
-        <p style="text-align:center; color:#888; font-size:1rem; margin-bottom:0;">
-            <i class="fas fa-copyright" style="color:#1976d2; margin-right:4px;"></i>
-            2025 Java Programs Guide. All rights reserved.
-        </p>
-    </footer>
-
-    <script>
-        // Menu functionality
-        const menuToggle = document.querySelector('.menu-toggle');
-        const closeMenu = document.querySelector('.close-menu');
-        const menu = document.getElementById('mainMenu');
-        const menuLinks = document.querySelectorAll('.menu a');
-
-        // Toggle menu
-        menuToggle.addEventListener('click', () => {
-            menu.classList.add('active');
-        });
-
-        // Close menu
-        closeMenu.addEventListener('click', () => {
-            menu.classList.remove('active');
-        });
-
-        // Close menu when clicking on links
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.remove('active');
-            });
-        });
-
-        // Back to top button
-        const backToTopButton = document.querySelector('.back-to-top');
-
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
+            <div class="content">
+                <!-- Max Number Program -->
+                <div id="maxNumber" class="program active">
+                    <h2 class="program-title">Find Maximum Number</h2>
+                    <div class="code-container">
+                        <pre>package numbers;
+
+public class MaxNumber {
+    public static void main(String[] args) {
+        System.out.println("=========================================");
+        MaxNumber.Array(); 
+        System.out.println("=========================================");  
+        MaxNumber.logicalOperator();
+        System.out.println("=========================================");  
+        MaxNumber.from_3Variables_ByConditionStatement();
+        System.out.println("=========================================");  
+        MaxNumber.from_4Variables_ByConditionStatement();
+        System.out.println("=========================================");  
+        MaxNumber.from_5Variables_ByConditionStatement();
+        System.out.println("=========================================");
+        MaxNumber.from_6Variables_ByConditionStatement();
+        System.out.println("=========================================");	  
+    }
+
+    public static void Array() {
+        int a[] = {1000,15,25,500,20};
+        int max = 0;
+        
+        for (int i=0; i<a.length; i++) {
+            if (max < a[i]) {
+                max = a[i];
             }
-        });
-
-        backToTopButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 20,
-                        behavior: 'smooth'
-                    });
+        }
+        System.out.println(max);
+    }
+    
+    public static void logicalOperator() {
+        int a=25, b=30, c=40, d=10;
+        
+        if ((a>=b) && (a>=c) && (a>=d)) {
+            System.out.println(a);
+        } else if ((b>=a) && (b>=c) && (b>=d)) {
+            System.out.println(b);
+        } else if ((c>=a) && (c>=b) && (c>=d)) {
+            System.out.println(c);
+        } else if ((d>=a) && (d>=b) && (d>=c)) {
+            System.out.println(d);
+        }
+    }
+    
+    public static void from_3Variables_ByConditionStatement() {
+        int a=50, b=20, c=30;
+        
+        if (a>=b) {
+            if (a>=c) {
+                System.out.println(a);
+            }
+        } else if (b>=c) {
+            System.out.println(b);
+        } else {
+            System.out.println(c);
+        }
+    }
+    
+    public static void from_4Variables_ByConditionStatement() {
+        int a=10, b=100, c=500, d=70;
+        
+        if (a>=b) {
+            if(a>=c) {
+                if (a>=d) {
+                    System.out.println(a);
                 }
-            });
-        });
+            }
+        } else if (b>=c) {
+            if (b>=d) {
+                System.out.println(b);
+            }
+        } else if (c>=d) {
+            System.out.println(c);
+        } else {
+            System.out.println(d);
+        }  
+    }
+    
+    public static void from_5Variables_ByConditionStatement() {
+        int a=100, b=80, c=60, d=70;
+        
+        if (a>=b) {
+            if (a>=c) {
+                if (a>=d) {
+                    System.out.println(a);
+                }
+            }
+        } else if (b>=c) {
+            if (b>=d) {
+                System.out.println(b);
+            }
+        } else if (c>=d) {
+            System.out.println(c);
+        } else {
+            System.out.println(d);
+        }
+    }
+    
+    public static void from_6Variables_ByConditionStatement() {
+        int a=100, b=110, c=150, d=170, e=50;
+        
+        if (a>b) {
+            if (a>c) {
+                if (a>d) {
+                    if (a>e) {
+                        System.out.println(a);
+                    }
+                }
+            }
+        } else if (b>c) {
+            if (b>d) {
+                if (b>e) {
+                    System.out.println(b);
+                }
+            }
+        } else if (c>d) {
+            if (c>e) {
+                System.out.println(c);
+            }
+        } else if (d>e) {
+            System.out.println(d);
+        } else {
+            System.out.println(e);		  
+        }
+    }  
+}</pre>
+                    </div>
 
-        // Program tabs functionality
-        function showProgram(programId) {
-            // Hide all program contents
-            document.querySelectorAll('.program-content').forEach(content => {
-                content.classList.remove('active');
-            });
+                    <div class="output-container">
+                        <h3 class="output-title">Output</h3>
+                        <div class="output">=========================================
+                            1000
+                            =========================================
+                            40
+                            =========================================
+                            50
+                            =========================================
+                            500
+                            =========================================
+                            100
+                            =========================================
+                            170
+                            =========================================</div>
+                    </div>
+                </div>
 
-            // Show the selected program content
-            document.getElementById(programId).classList.add('active');
+                <!-- Min Number Program -->
+                <div id="minNumber" class="program">
+                    <h2 class="program-title">Find Minimum Number</h2>
+                    <div class="code-container">
+                        <pre>package numbers;
 
-            // Update active tab
-            const tabs = document.querySelectorAll('.program-tab');
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
+public class MinNumber {
+    public static void main(String[] args) {
+        System.out.println("======================");
+        MinNumber.array();
+        System.out.println("======================");
+        MinNumber.from_6Variables_ByConditionStatement();
+        System.out.println("======================");	
+    }
+    
+    public static void array() {
+        int a [] = {10,50,100,20,5};
+        int min = 10;
+        
+        for (int i=0; i<a.length; i++) {
+            if (min > a[i]) {
+                min = a[i];
+            }
+        }
+        System.out.println(min);
+    }
+    
+    public static void from_6Variables_ByConditionStatement() {
+        int a=10, b=20, c=30, d=40, e=50;
+        
+        if (a < b) {
+            if (a < c) {
+                if (a < d) {
+                    if (a < e) {
+                        System.out.println(a);
+                    }
+                }
+            }
+        } else if (b < c) {
+            if (b < d) {
+                if (b < e) {
+                    System.out.println(b);
+                }
+            }
+        } else if (c < d) {
+            if (c < e) {
+                System.out.println(c);
+            }
+        } else if (d < e) {
+            System.out.println(d);
+        } else {
+            System.out.println(e);
+        }
+    }
+}</pre>
+                    </div>
 
-            // Find the tab that was clicked and make it active
-            event.currentTarget.classList.add('active');
+                    <div class="output-container">
+                        <h3 class="output-title">Output</h3>
+                        <div class="output">======================
+                            5
+                            ======================
+                            10
+                            ======================</div>
+                    </div>
+                </div>
+
+                <!-- Armstrong Numbers Program -->
+                <div id="armstrong" class="program">
+                    <h2 class="program-title">Armstrong Numbers</h2>
+                    <div class="code-container">
+                        <pre>package numbers;
+
+import java.io.InputStream;
+import java.util.Scanner;
+
+public class ArmstrongNumber {
+    public static void main(String[] args) {
+        System.out.println("======================");
+        ArmstrongNumber.multipleNumber();
+        System.out.println("======================");
+        ArmstrongNumber.singleNumber();	
+        System.out.println("======================");
+    }
+    
+    public static void singleNumber() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter Number to check weather is Armstrong Number or Not");
+        
+        int a = scan.nextInt();
+        int n = a, count = 0, rem;
+        double sum = 0;
+        
+        while (n > 0) {
+            count++;
+            n = n / 10;
+        }
+        n = a;
+        while (n > 0) {
+            rem = n % 10;
+            sum = sum + Math.pow(rem, count);
+            n = n / 10;
+        }
+        
+        if (a == sum) {
+            System.out.println(a + " this is an Armstrong Number");
+        } else {
+            System.out.println(a + " this is not an Armstrong Number");
+        }	
+    }
+    
+    public static void multipleNumber() {
+        for (int i = 1; i <= 1000; i++) {
+            int n = i, count = 0, rem = 0;
+            double sum = 0;
+            
+            while (n > 0) {
+                count++;
+                n = n / 10;
+            }
+            n = i;
+            while (n > 0) {
+                rem = n % 10;
+                sum = sum + Math.pow(rem, count);
+                n = n / 10;	
+            }
+            if (i == sum) {
+                System.out.println(i + " it is an Armstrong Number");
+            }
+        }
+    }
+}</pre>
+                    </div>
+
+                    <div class="output-container">
+                        <h3 class="output-title">Output</h3>
+                        <div class="output">======================
+                            1 it is an Armstrong Number
+                            2 it is an Armstrong Number
+                            3 it is an Armstrong Number
+                            4 it is an Armstrong Number
+                            5 it is an Armstrong Number
+                            6 it is an Armstrong Number
+                            7 it is an Armstrong Number
+                            8 it is an Armstrong Number
+                            9 it is an Armstrong Number
+                            153 it is an Armstrong Number
+                            370 it is an Armstrong Number
+                            371 it is an Armstrong Number
+                            407 it is an Armstrong Number
+                            ======================
+                            Enter Number to check weather is Armstrong Number or Not
+                            500
+                            500 this is not an Armstrong Number
+                            ======================</div>
+                    </div>
+                </div>
+
+                <!-- Palindrome Number Program -->
+                <div id="palindrome" class="program">
+                    <h2 class="program-title">Palindrome Number</h2>
+                    <div class="code-container">
+                        <pre>package numbers;
+
+import java.util.Scanner;
+
+public class PalindromeNumber {
+    public static void main(String[] args) {
+        String expected = "142";
+        StringBuilder sb = new StringBuilder(expected);
+        sb.reverse();
+        System.out.println(sb);
+        
+        if (expected.contains(sb)) {
+            System.out.println("This is palindrom number");
+        } else {
+            System.out.println("This is not palindrom number");
+        }
+    }
+}</pre>
+                    </div>
+
+                    <div class="output-container">
+                        <h3 class="output-title">Output</h3>
+                        <div class="output">241
+                            This is not palindrom number</div>
+                    </div>
+
+                    <div class="note">
+                        <p><strong>Note:</strong> The provided code has an issue. The correct way to check for
+                            palindrome using StringBuilder is to compare the original string with the reversed string
+                            using equals().</p>
+                    </div>
+                </div>
+
+                <!-- Prime Number Program -->
+                <div id="prime" class="program">
+                    <h2 class="program-title">Prime Number</h2>
+                    <div class="code-container">
+                        <pre>package numbers;
+
+import java.util.Scanner;
+
+public class PrimeNumbers {
+    public static void main(String[] args) {
+        System.out.println("================");
+        PrimeNumbers.byForLoop();
+        System.out.println("=================");
+        PrimeNumbers.byWhileLoop();
+        System.out.println("=================");	
+    }
+    
+    public static void byForLoop() {
+        int c = 0;
+        for (int i = 1; i <= 50; i++) {
+            for (int j = 2; j < i; j++) {
+                if (i % j == 0) {
+                    c = 1;
+                }  
+            }
+            
+            if (c != 1) {
+                System.out.println(i + "  This is a Prime Number");
+            } else {
+                c = 0;
+            }
+        }	
+    }
+    
+    public static void byWhileLoop() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter Number to check weather is prime number or not");
+        
+        int a = scan.nextInt();
+        int n = a - 1;
+        int c = 0;
+        while (n > 1) {
+            if (a % n == 0) {
+                c = 1;
+            }
+            n--;
+        }
+        if (c == 0) {
+            System.out.println(a + " This is Prime Number");
+        } else {
+            System.out.println(a + "  This is a not Prime Number");
+        }	
+    }
+}</pre>
+                    </div>
+
+                    <div class="output-container">
+                        <h3 class="output-title">Output</h3>
+                        <div class="output">================
+                            1 This is a Prime Number
+                            2 This is a Prime Number
+                            3 This is a Prime Number
+                            5 This is a Prime Number
+                            7 This is a Prime Number
+                            11 This is a Prime Number
+                            13 This is a Prime Number
+                            17 This is a Prime Number
+                            19 This is a Prime Number
+                            23 This is a Prime Number
+                            29 This is a Prime Number
+                            31 This is a Prime Number
+                            37 This is a Prime Number
+                            41 This is a Prime Number
+                            43 This is a Prime Number
+                            47 This is a Prime Number
+                            =================
+                            Enter Number to check weather is prime number or not
+                            10
+                            10 This is a not Prime Number
+                            =================</div>
+                    </div>
+
+                    <div class="note">
+                        <p><strong>Note:</strong> The code incorrectly identifies 1 as a prime number. 1 is not a prime
+                            number.</p>
+                    </div>
+                </div>
+
+                <!-- Fibonacci Series Program -->
+                <div id="fibonacci" class="program">
+                    <h2 class="program-title">Fibonacci Series</h2>
+                    <div class="code-container">
+                        <pre>package numbers;
+
+public class FibonacciSeries {
+    public static void main(String[] args) {
+        System.out.println("========================");
+        FibonacciSeries.byForLoop();
+        System.out.println("========================");
+        FibonacciSeries.byWhileLoop();
+        System.out.println("========================");
+    }
+    
+    public static void byForLoop() {
+        int n1 = 1, n2 = 2, n3;
+        
+        System.out.println(n1);
+        System.out.println(n2);
+        
+        for (int i = 1; i <= 4; i++) {
+            n3 = n1 + n2;
+            System.out.println(n3);
+            
+            n1 = n2;
+            n2 = n3;
+        }	
+    }
+    
+    public static void byWhileLoop() {
+        int n1 = 1, n2 = 2, n3, n = 4;
+        
+        System.out.println(n1);
+        System.out.println(n2);
+        
+        while(n > 0) {
+            n3 = n1 + n2;
+            System.out.println(n3);
+            
+            n1 = n2;
+            n2 = n3;
+            n--;
+        }
+    }
+}</pre>
+                    </div>
+
+                    <div class="output-container">
+                        <h3 class="output-title">Output</h3>
+                        <div class="output">========================
+                            1
+                            2
+                            3
+                            5
+                            8
+                            13
+                            ========================
+                            1
+                            2
+                            3
+                            5
+                            8
+                            13
+                            ========================</div>
+                    </div>
+                </div>
+
+                <!-- String Operations Program -->
+                <div id="string" class="program">
+                    <h2 class="program-title">String Operations</h2>
+                    <div class="code-container">
+                        <pre>package string;
+
+public class ReverseString {
+    public static void main(String[] args) {
+        String a = "Pratik";
+        
+        for (int i = a.length()-1; i >= 0; i--) {
+            char b = a.charAt(i);
+            System.out.print(b + " ");
+        }
+    }
+}
+
+// Second approach to reverse string by StringBuilder
+package string;
+
+public class ReverseString {
+    public static void main(String[] args) {
+        String a = "Pratik";
+        StringBuilder sb = new StringBuilder();
+        sb.append(a);
+        sb.reverse();
+        System.out.println(sb);
+    }
+}
+
+// Reverse String At Same Word
+public class ReverseStringAtSameWord {
+    public static void main(String[] args) {
+        String str = "Pratik Pandurang Narute";
+        String [] ArrayString = str.split(" ");
+        
+        for(int a = ArrayString.length-1; a >= 0; a--) {
+            System.out.print(ArrayString[a] + " ");
+        }
+    }
+}
+
+// Sorting Of String
+package string;
+
+public class SortingOfString {
+    public static void main(String[] args) {
+        String a = "Pratik@Narute #^";
+        
+        for (int i = 0; i < a.length(); i++) {
+            char c = a.charAt(i); 
+            if((c >= 32 && c <= 47) || (c >= 58 && c <= 64) || 
+               (c >= 91 && c <= 96) || (c >= 123 && c <= 126)) {
+                System.out.println("Special char from given String: " + c);
+            }
+        }				
+    }
+}
+
+// Count Of String
+package string;
+
+public class CountOfString {
+    public static void main(String[] args) {
+        System.out.println("=========================================");
+        CountOfString.removingChar();
+        System.out.println("=========================================");
+        CountOfString.removingSpecialChar();
+        System.out.println("=========================================");
+        CountOfString.removingNumber();
+        System.out.println("=========================================");
+        CountOfString.removingSpecificChar();
+        System.out.println("=========================================");	
+    }
+    
+    public static void removingChar() {
+        String a = "pratiknarute1997@gmil.com";
+        int count = 0;
+        
+        for (int i = 0; i < a.length(); i++) {
+            char c = a.charAt(i);
+            
+            if ((c >= 32 && c <= 64) || (c >= 91 && c <= 96) || (c >= 123 && c <= 126)) {
+                count++;
+            }
+        }
+        System.out.println("String: " + a);
+        System.out.println("Total Count Of String: " + (a.length()));
+        System.out.println("Count Of String After Removing Characters: " + count);
+    }
+    
+    public static void removingSpecialChar() {
+        String a = "pratiknarute1997@gmil.com";
+        int count = 0;
+        
+        for (int i = 0; i < a.length(); i++) {
+            char c = a.charAt(i);
+            
+            if ((c >= 32 && c <= 47) || (c >= 58 && c <= 64) || 
+                (c >= 91 && c <= 96) || (c >= 123 && c <= 126)) {
+                count++;		
+            }	
+        }
+        
+        int totalCount = a.length();
+        System.out.println("Count Of String After Removing Special Characters: " + (totalCount - count));		
+    }
+    
+    public static void removingNumber() {
+        String a = "pratiknarute1997@gmil.com";
+        int count = 0;
+        
+        for (int i = 0; i < a.length(); i++) {
+            char c = a.charAt(i);
+            
+            if ((c >= 48 && c <= 57)) {
+                count++;
+            }
+        }	
+        int totalCount = a.length();
+        System.out.println("Count Of String After Removing Numbers: " + (totalCount - count));
+    }
+    
+    public static void removingSpecificChar() {
+        String a = "pratiknarute1997@gmil.com";
+        String b = a.replace("a", "");
+        
+        System.out.println("String After Removing a-Char: " + b);
+        System.out.println("Count Of String After Removing a-Char: " + (b.length()));
+    }
+}
+
+// Counts of duplicate word into string
+import java.util.HashMap;
+
+public class DuplicateWordCount {
+    public static void main(String[] args) {
+        String str = "Hello world hello hello";
+        
+        // Split the string into words
+        String[] strArray = str.split(" ");
+        
+        // Create a HashMap to store the unique element as a key and value pair
+        HashMap<String, Integer> map = new HashMap<>();
+        
+        // Add element of string into map
+        for (String word : strArray) { 
+            map.put(word, null); 
+        }
+        
+        for (String mapKey : map.keySet()) {
+            int count = 0;
+            for (int a = 0; a < strArray.length; a++) {
+                if ((strArray[a]).equals(mapKey)) {
+                    count++;
+                }
+            }
+            System.out.println("Count of key '" + mapKey + "' is: " + count);
+        }
+    }
+}
+
+// Count of duplicate char into string
+import java.util.HashMap;
+
+public class DuplicateCharCount {
+    public static void main(String[] args) {
+        String str = "Pratik Narute";	 
+        
+        // Create a HashMap to store the unique element as a key and value pair
+        HashMap<Character, Integer> map = new HashMap<>();
+        
+        // Add element of string into map
+        for (int a = 0; a < str.length(); a++) {
+            map.put(str.charAt(a), null);
+        }
+        
+        for (char mapKey : map.keySet()) {
+            int count = 0;
+            for (int a = 0; a < str.length(); a++) {
+                if (str.charAt(a) == mapKey) {
+                    count++;
+                }
+            }
+            System.out.println("Count of Char '" + mapKey + "' is: " + count);
+        }	
+    }
+}</pre>
+                    </div>
+
+                    <div class="output-container">
+                        <h3 class="output-title">Output</h3>
+                        <div class="output">k i t a r P
+                            kitarpP
+                            Narute Pandurang Pratik
+                            Special char from given String: @
+                            Special char from given String:
+                            Special char from given String: #
+                            Special char from given String: ^
+                            =========================================
+                            String: pratiknarute1997@gmil.com
+                            Total Count Of String: 25
+                            Count Of String After Removing Characters: 6
+                            =========================================
+                            Count Of String After Removing Special Characters: 23
+                            =========================================
+                            Count Of String After Removing Numbers: 21
+                            =========================================
+                            String After Removing a-Char: prtiknrute1997@gmil.com
+                            Count Of String After Removing a-Char: 23
+                            =========================================
+                            Count of key 'world' is: 1
+                            Count of key 'Hello' is: 1
+                            Count of key 'hello' is: 2
+                            Count of Char 'P' is: 1
+                            Count of Char ' ' is: 1
+                            Count of Char 'a' is: 2
+                            Count of Char 'r' is: 2
+                            Count of Char 't' is: 2
+                            Count of Char 'u' is: 1
+                            Count of Char 'e' is: 1
+                            Count of Char 'i' is: 1
+                            Count of Char 'k' is: 1
+                            Count of Char 'N' is: 1</div>
+                    </div>
+                </div>
+
+                <!-- Array Operations Program -->
+                <div id="arrays" class="program">
+                    <h2 class="program-title">Array Operations</h2>
+                    <div class="code-container">
+                        <pre>package arrays;
+
+import java.util.Arrays;
+
+public class SameNumbersFromTwoAraays {
+    public static void main(String[] args) {
+        System.out.println("===============================");
+        SameNumbersFromTwoAraays.byMethod();
+        System.out.println("===============================");
+        SameNumbersFromTwoAraays.byConditionStatement();
+        System.out.println("===============================");
+        SameNumbersFromTwoAraays.byForLoop();
+        System.out.println("===============================");
+    }
+    
+    public static void byMethod() {
+        int a [] = {1,2,3,4,5,6};
+        int b [] = {1,2,3,4,5,6};
+        
+        boolean status = Arrays.equals(a, b);
+        
+        if (status == true) {
+            System.out.println("Equal Arrays");
+        } else {
+            System.out.println("Not Equal Arrays");
+        }
+    }
+    
+    public static void byConditionStatement() {
+        int a [] = {1,2,3,4,5,6,7};
+        int b [] = {1,2,3,4,7,6};
+        
+        if (a.length == b.length) {
+            for (int i = 0; i < a.length; i++) {
+                if (a[i] == b[i]) {
+                    System.out.print(a[i]);
+                }
+            }
+        } else {
+            System.out.println("Not equal Arrays");
+        }
+    }
+    
+    public static void byForLoop() {
+        int a [] = {5,6,6,4,7,9,10};
+        int b [] = {1,2,3,4,7,6};
+        
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < b.length; j++) {
+                if (a[i] == b[j]) {
+                    System.out.print(a[i] + " ");
+                }
+            }
+        }
+        System.out.println();
+    }
+}
+
+// Count of elements from arrays
+package demo;
+import java.util.HashSet;
+import java.util.Set;
+
+public class Interview {
+    public static void main(String[] args) {
+        int array [] = {1,3,1,1,2,1,2,4};
+        
+        Set<Integer> set = new HashSet<>();
+        
+        for (int arrayValues : array) { 
+            set.add(arrayValues);
+        }
+        
+        for (int setvalue : set) {
+            int count = 0;
+            for (int arrayValues : array) {
+                if(setvalue == arrayValues) {
+                    count++;
+                }
+            }
+            System.out.println("Count of " + setvalue + " is: " + count);
+        }
+    }	
+}
+
+// Addition of Two Arrays
+package arrays;
+
+public class AdditionOfArrays {
+    public static void main(String[] args) {
+        System.out.println("===================");
+        AdditionOfArrays.byForLoop();
+        System.out.println("===================");
+        AdditionOfArrays.byWhileLoop();
+        System.out.println("===================");
+    }
+    
+    public static void byForLoop() {
+        int a[] = {3,7,10,20};
+        int b[] = {8,9,6,5};
+        int sum;
+        
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < b.length; j++) {
+                sum = a[i] + b[j];
+                System.out.print(sum + "  ");
+                i++;
+            }
+        }
+        System.out.println();	
+    }
+    
+    public static void byWhileLoop() {
+        int a[] = {3,7,10,20};
+        int b[] = {8,9,6,5};
+        int sum;
+        int n = 0;
+        
+        while(n < a.length) {
+            sum = a[n] + b[n];
+            System.out.print(sum + "  ");
+            n++;	
+        }	
+        System.out.println();
+    }
+}
+
+// Remove Duplicate Number from Arrays
+// By using set interface
+package demo;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class Interview {
+    public static void main(String[] args) {
+        int array [] = {1,3,1,1,2,1,2,4};
+        List list = new ArrayList();
+        
+        Set<Integer> set = new HashSet();
+        
+        // Add array element into set for remove duplicate values
+        for (int arrayValues : array) { 
+            set.add(arrayValues);
+        }
+        
+        // Add set object into list
+        list.add(set);	
+        System.out.println("Remove duplicate values from array: " + list);
+    }
+}
+
+// By using HashMap
+import java.util.HashMap;
+
+public class RemoveDuplicates {
+    public static void main(String[] args) {
+        int array [] = {1, 1, 1, 2, 3, 3, 6, 6, 7};
+        HashMap<Integer, String> mapData = new HashMap<>();
+        
+        for (int a = 0; a < array.length; a++) {
+            mapData.put(array[a], null);
+        }
+        
+        for (int data : mapData.keySet()) {
+            System.out.print(data + " ");
+        }
+    }
+}
+
+// By using ArrayList class
+package arrays;
+import java.util.ArrayList;
+import java.util.List;
+
+public class RemoveDuplicateNumbers { 
+    public static void main(String[] args) {
+        List list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+        list.add(3);
+        list.add(3);
+        list.add(4);
+        list.add(4);
+
+        System.out.println("Before removing: " + list);
+        for (int i = 0; i < list.size()-1; i++) {
+            for (int j = i+1; j < list.size(); j++) {
+                if (list.get(i) == list.get(j)) { 
+                    list.remove(list.get(j)); 
+                }
+            }
+        }
+        System.out.println("After removing: " + list);
+    }
+}
+
+// By using normal for loop
+public class RemoveDuplicates {
+    public static void main(String[] args) {
+        int array [] = {1, 1, 1, 2, 3, 3, 6, 6, 7};
+        int c = 0;
+        
+        for (int a = 0; a < array.length; a++) {
+            c = 0;
+            for (int b = a+1; b < array.length; b++) {
+                if (array[a] == array[b]) {
+                    c = 1;
+                    break;
+                }
+            }
+            if (c == 0) {
+                System.out.println(array[a]);
+            }
+        }
+    }
+}
+
+// Sorting of Array in Ascending and Descending order 
+package arrays;
+
+public class AscendingDescendingOrder {
+    public static void main(String[] args) {
+        System.out.println("==========================");
+        AscendingDescendingOrder.withoutUsingVariable();
+        System.out.println("==========================");
+        AscendingDescendingOrder.withUsingVariable();
+        System.out.println("==========================");   
+    }
+    
+    public static void withoutUsingVariable() {
+        int a[] = {200,100,400,500,150};
+        
+        for (int i = 0; i < a.length; i++) {
+            for (int j = i+1; j < a.length; j++) {
+                if (a[i] >= a[j]) {
+                    a[i] = a[i] + a[j];
+                    a[j] = a[i] - a[j];
+                    a[i] = a[i] - a[j]; 
+                }
+            }
+        }
+        
+        for (int k = 0; k < a.length; k++) {
+            System.out.print(a[k] + " ");
+        }
+        System.out.println();
+        for (int k = a.length-1; k >= 0; k--) {
+            System.out.print(a[k] + " ");
+        }
+        System.out.println();
+    }
+    
+    public static void withUsingVariable() {
+        int a[] = {200,100,400,500,150};
+        int x;
+        
+        for (int i = 0; i < a.length; i++) {
+            for (int j = i+1; j < a.length; j++) {
+                if (a[i] >= a[j]) {
+                    x = a[i];
+                    a[i] = a[j];
+                    a[j] = x;
+                }
+            }
+        }
+        
+        for (int k = 0; k < a.length; k++) {
+            System.out.print(a[k] + " ");
+        }
+        System.out.println();
+        for (int k = a.length-1; k >= 0; k--) {
+            System.out.print(a[k] + " ");
+        }
+        System.out.println();
+    }   
+}
+
+// Swap of elements into 2D array
+public class Swap2DArray {
+    public static void main(String[] args) {
+        int[][] array = {
+            {1, 2},
+            {4, 5},
+            {7, 8}
+        };
+        
+        for (int arrayIndex = 0; arrayIndex < array.length; arrayIndex++) {
+            int startIndex = 0; 
+            int endIndex = 1;
+            
+            //swap numbers in 2D array
+            int x = array[arrayIndex][startIndex];
+            array[arrayIndex][startIndex] = array[arrayIndex][endIndex];
+            array[arrayIndex][endIndex] = x;		
         }
 
-        // Run button functionality
-        function runCode(outputId) {
-            const outputBlock = document.getElementById(outputId);
+        //Print 2D after swapping
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                System.out.print(array[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}</pre>
+                    </div>
 
-            // Hide all output blocks first
-            document.querySelectorAll('.output-block').forEach(output => {
-                output.classList.remove('visible');
+                    <div class="output-container">
+                        <h3 class="output-title">Output</h3>
+                        <div class="output">===============================
+                            Equal Arrays
+                            ===============================
+                            Not equal Arrays
+                            ===============================
+                            6 6 4 7
+                            ===============================
+                            Count of 1 is: 4
+                            Count of 2 is: 2
+                            Count of 3 is: 1
+                            Count of 4 is: 1
+                            ===================
+                            11 16 16 25
+                            ===================
+                            11 16 16 25
+                            ===================
+                            Remove duplicate values from array: [[1, 2, 3, 4]]
+                            1 2 3 6 7
+                            Before removing: [1, 2, 3, 4, 5, 3, 3, 4, 4]
+                            After removing: [1, 2, 5, 3, 4]
+                            1
+                            2
+                            3
+                            6
+                            7
+                            ==========================
+                            100 150 200 400 500
+                            500 400 200 150 100
+                            ==========================
+                            100 150 200 400 500
+                            500 400 200 150 100
+                            ==========================
+                            2 1
+                            5 4
+                            8 7</div>
+                    </div>
+                </div>
+
+                <!-- Star Patterns Program -->
+                <div id="patterns" class="program">
+                    <h2 class="program-title">Star Patterns</h2>
+                    <div class="code-container">
+                        <pre>public class StarPatterns {
+    public static void main(String[] args) {
+        int size = 5;
+        
+        rightTriangle(size);
+        invertedRightTriangle(size);
+        pyramid(size);
+        diamond(size);
+        hollowSquare(size);
+        rightPascal(size);
+        sandglass(size);
+    }
+    
+    public static void rightTriangle(int n) {
+        System.out.println("Right-Angled Triangle (Size: " + n + "):");
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print("* ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
+    public static void invertedRightTriangle(int n) {
+        System.out.println("Inverted Right-Angled Triangle (Size: " + n + "):");
+        for (int i = n; i >= 1; i--) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print("* ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
+    public static void pyramid(int n) {
+        System.out.println("Pyramid Pattern (Size: " + n + "):");
+        for (int i = 1; i <= n; i++) {
+            // Print spaces
+            for (int j = i; j < n; j++) {
+                System.out.print(" ");
+            }
+            // Print stars
+            for (int k = 1; k <= (2*i-1); k++) {
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
+    public static void diamond(int n) {
+        System.out.println("Diamond Pattern (Size: " + n + "):");
+        // Upper pyramid
+        for (int i = 1; i <= n; i++) {
+            for (int j = i; j < n; j++) {
+                System.out.print(" ");
+            }
+            for (int k = 1; k <= (2*i-1); k++) {
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+        // Lower pyramid
+        for (int i = n-1; i >= 1; i--) {
+            for (int j = n; j > i; j--) {
+                System.out.print(" ");
+            }
+            for (int k = 1; k <= (2*i-1); k++) {
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
+    public static void hollowSquare(int n) {
+        System.out.println("Hollow Square Pattern (Size: " + n + "):");
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (i == 1 || i == n || j == 1 || j == n)
+                    System.out.print("* ");
+                else
+                    System.out.print("  ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
+    public static void rightPascal(int n) {
+        System.out.println("Right Pascal's Triangle (Size: " + n + "):");
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print("* ");
+            }
+            System.out.println();
+        }
+        for (int i = n-1; i >= 1; i--) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print("* ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
+    public static void sandglass(int n) {
+        System.out.println("Sandglass Pattern (Size: " + n + "):");
+        for (int i = n; i >= 1; i--) {
+            for (int j = i; j < n; j++) {
+                System.out.print(" ");
+            }
+            for (int k = 1; k <= (2*i-1); k++) {
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+        for (int i = 2; i <= n; i++) {
+            for (int j = i; j < n; j++) {
+                System.out.print(" ");
+            }
+            for (int k = 1; k <= (2*i-1); k++) {
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+}</pre>
+                    </div>
+
+                    <div class="output-container">
+                        <h3 class="output-title">Output</h3>
+                        <div class="output">Right-Angled Triangle (Size: 5):
+                            *
+                            * *
+                            * * *
+                            * * * *
+                            * * * * *
+
+                            Inverted Right-Angled Triangle (Size: 5):
+                            * * * * *
+                            * * * *
+                            * * *
+                            * *
+                            *
+
+                            Pyramid Pattern (Size: 5):
+                            *
+                            ***
+                            *****
+                            *******
+                            *********
+
+                            Diamond Pattern (Size: 5):
+                            *
+                            ***
+                            *****
+                            *******
+                            *********
+                            *******
+                            *****
+                            ***
+                            *
+
+                            Hollow Square Pattern (Size: 5):
+                            * * * * *
+                            * *
+                            * *
+                            * *
+                            * * * * *
+
+                            Right Pascal's Triangle (Size: 5):
+                            *
+                            * *
+                            * * *
+                            * * * *
+                            * * * * *
+                            * * * *
+                            * * *
+                            * *
+                            *
+
+                            Sandglass Pattern (Size: 5):
+                            *********
+                            *******
+                            *****
+                            ***
+                            *
+                            ***
+                            *****
+                            *******
+                            *********</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Java Programs Collection &copy; 2023 | All code examples are for educational purposes</p>
+        </footer>
+    </div>
+
+    <script>
+        function showProgram(programId) {
+            // Hide all programs
+            const programs = document.querySelectorAll('.program');
+            programs.forEach(program => {
+                program.classList.remove('active');
             });
 
-            // Show the selected output
-            outputBlock.classList.add('visible');
+            // Show the selected program
+            document.getElementById(programId).classList.add('active');
 
-            // Scroll to the output
-            outputBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Update active button
+            const buttons = document.querySelectorAll('.menu-btn');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            event.target.classList.add('active');
         }
     </script>
 </body>

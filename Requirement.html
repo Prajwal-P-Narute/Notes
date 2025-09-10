@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses Manager - All Sprint Requirements</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --success: #06d6a0;
+            --danger: #ef476f;
+            --warning: #ffd166;
+            --info: #118ab2;
+            --dark: #073b4c;
+            --light: #f8f9fa;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(17, 138, 178, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%234361ee" opacity="0.2"/><path d="M0 0L100 100" stroke="white" stroke-width="0.5" opacity="0.2"/><path d="M100 0L0 100" stroke="white" stroke-width="0.5" opacity="0.2"/></svg>');
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .feature-card {
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 2rem;
+            background: white;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .acceptance-criteria {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-left: 4px solid var(--info);
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .impact-section {
+            background-color: rgba(6, 214, 160, 0.1);
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--success);
+        }
+
+        .screenshot {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.5rem;
+            background: white;
+            margin: 1rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background: var(--info);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1.5em;
+            font-size: 1.2rem;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+            margin: 0.2rem;
+        }
+
+        .debit-category {
+            color: #fff;
+            background-color: var(--danger);
+        }
+
+        .credit-category {
+            color: #fff;
+            background-color: var(--success);
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        /* Animation for cards */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .feature-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .feature-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .feature-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .feature-card:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        /* Tab styling */
+        .nav-tabs .nav-link {
+            color: var(--dark);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            background: transparent;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 2rem;
+        }
+
+        .tab-content {
+            padding: 0 1rem;
+        }
+
+        .sprint-badge {
+            font-size: 0.7rem;
+            vertical-align: super;
+            margin-left: 0.3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-wallet me-2"></i>Finance Manager
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-tasks me-1"></i> Sprints</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-question-circle me-1"></i> About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Expenses Manager Requirements</h1>
+            <p class="lead">Complete overview of all sprint requirements with acceptance criteria</p>
+            <div class="mt-4">
+                <span class="badge bg-light text-dark me-2 p-2">Sprint 1</span>
+                <span class="badge bg-light text-dark me-2 p-2">Sprint 2</span>
+                <span class="badge bg-light text-dark me-2 p-2">Sprint 3</span>
+                <span class="badge bg-light text-dark me-2 p-2">Sprint 4</span>
+                <span class="badge bg-light text-dark p-2">Sprint 5</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs" id="sprintTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="sprint1-tab" data-bs-toggle="tab" data-bs-target="#sprint1"
+                    type="button" role="tab" aria-controls="sprint1" aria-selected="true">
+                    <i class="fas fa-flag me-1"></i>Sprint 1
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sprint2-tab" data-bs-toggle="tab" data-bs-target="#sprint2" type="button"
+                    role="tab" aria-controls="sprint2" aria-selected="false">
+                    <i class="fas fa-flag me-1"></i>Sprint 2
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sprint3-tab" data-bs-toggle="tab" data-bs-target="#sprint3" type="button"
+                    role="tab" aria-controls="sprint3" aria-selected="false">
+                    <i class="fas fa-flag me-1"></i>Sprint 3
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sprint4-tab" data-bs-toggle="tab" data-bs-target="#sprint4" type="button"
+                    role="tab" aria-controls="sprint4" aria-selected="false">
+                    <i class="fas fa-flag me-1"></i>Sprint 4
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sprint5-tab" data-bs-toggle="tab" data-bs-target="#sprint5" type="button"
+                    role="tab" aria-controls="sprint5" aria-selected="false">
+                    <i class="fas fa-flag me-1"></i>Sprint 5
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="sprintTabsContent">
+            <!-- Sprint 1 Content -->
+            <div class="tab-pane fade show active" id="sprint1" role="tabpanel" aria-labelledby="sprint1-tab">
+                <h2 class="mb-4">Sprint 1 Requirements</h2>
+
+                <!-- Default Reimbursable Option -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-toggle-on me-3"></i>
+                        <h3 class="mb-0">Default Reimbursable Option for Debit Transactions</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">When adding a debit transaction on the Add Transaction page, the "No"
+                            option for Reimbursable should be selected by default.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>The Reimbursable field should default to "No" when transaction type is Debit</li>
+                                <li>User can manually change the selection if needed</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sort Transactions -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-sort-amount-down me-3"></i>
+                        <h3 class="mb-0">Sort Transactions by Latest First</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">On the Expenses Tracker page, transactions should be listed from the most
+                            recent to the oldest (descending order by date).</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Default view shows latest transactions at the top</li>
+                                <li>Sorting logic should be applied automatically upon page load</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-copy me-3"></i>
+                        <h3 class="mb-0">Pagination (15-Entries)</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Implement pagination on the tracker page, grouping transactions in 15
+                            entries
+                            for every oage.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Each page should display 15 entries</li>
+                                <li>Navigation controls (Previous, Next) should be functional and intuitive</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Responsiveness -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-mobile-alt me-3"></i>
+                        <h3 class="mb-0">Mobile Responsiveness</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Ensure the Expenses Tracker page is fully responsive and optimised for
+                            mobile device usage.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Layout should adapt to different screen sizes without horizontal scrolling</li>
+                                <li>All features should remain accessible and usable on mobile devices</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prevent Duplicate Entries -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-clone me-3"></i>
+                        <h3 class="mb-0">Prevent Duplicate Entries</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Implement functionality to avoid duplicate transaction entries after
+                            submission by reloading or resetting the form.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>After successfully adding a transaction, the page should either refresh or the form
+                                    should reset automatically</li>
+                                <li>Display a success confirmation message to the user</li>
+                                <li>Duplicate data should not be stored in the database</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sprint 2 Content -->
+            <div class="tab-pane fade" id="sprint2" role="tabpanel" aria-labelledby="sprint2-tab">
+                <h2 class="mb-4">Sprint 2 Requirements</h2>
+
+                <!-- Number Formatting -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-calculator me-3"></i>
+                        <h3 class="mb-0">Number Formatting</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">All numerical values displayed on the UI should follow a consistent format
+                            (e.g., comma-separated thousands, two decimal places if required).</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Numbers should be human-readable (e.g., 1,000 instead of 1000)</li>
+                                <li>No loss of precision for decimal values</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Highlight Credit and Debit Text -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-bold me-3"></i>
+                        <h3 class="mb-0">Highlight Credit and Debit Text</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">The labels Credit and Debit on the Expense Tracker page should be displayed
+                            in bold for better visibility.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Font weight set to bold</li>
+                                <li>No impact on other labels' formatting</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Display Total Expense and Total Income -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-chart-pie me-3"></i>
+                        <h3 class="mb-0">Display Total Expense and Total Income</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Add two new fields to the Expense Tracker page to display Total Expense and
+                            Total Income.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Totals should update dynamically based on entries</li>
+                                <li>Formatting should be consistent with number formatting requirements</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Increase Table Height -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-arrows-alt-v me-3"></i>
+                        <h3 class="mb-0">Increase Table Height in Tracker Page</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Adjust the height of the table in the Tracker page to enhance data
+                            visibility and reduce scrolling.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Table height should accommodate more rows without breaking page layout</li>
+                                <li>Responsive design compatibility must be maintained</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account-wise Tracker -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-university me-3"></i>
+                        <h3 class="mb-0">Account-wise Tracker</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Implement functionality to view and filter transactions based on selected
+                            accounts.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>User can select an account and view only related transactions</li>
+                                <li>Totals should update according to the selected account</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Masked Data Storage -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-shield-alt me-3"></i>
+                        <h3 class="mb-0">Masked Data Storage in Database</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Sensitive data should be stored in the database in a masked or encrypted
+                            format for security.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Masking/encryption must follow security best practices</li>
+                                <li>Retrieval should display only allowed visible portions (e.g., XXXX1234)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sprint 3 Content -->
+            <div class="tab-pane fade" id="sprint3" role="tabpanel" aria-labelledby="sprint3-tab">
+                <h2 class="mb-4">Sprint 3 Requirements</h2>
+
+                <!-- Forgot Password -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-key me-3"></i>
+                        <h3 class="mb-0">Forgot Password Functionality</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Enable users to reset their password if they have forgotten it.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>User can request a password reset using registered email/phone</li>
+                                <li>Secure verification (OTP/email link) for identity confirmation</li>
+                                <li>New password stored in encrypted format</li>
+                                <li>User can log in with the new password</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opening Balance -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-wallet me-3"></i>
+                        <h3 class="mb-0">Opening Balance Input on First Registration</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Allow users to set an Opening Balance (OB) during registration.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>OB field available during first registration</li>
+                                <li>OB is optional</li>
+                                <li>Default OB is 0 if left blank</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category-wise Filter -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-filter me-3"></i>
+                        <h3 class="mb-0">Category-wise Filter</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Enable users to filter transactions by category.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>User can select category from dropdown/list</li>
+                                <li>Transactions filtered based on category</li>
+                                <li>Summary of transactions updates accordingly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date Range Filter -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-calendar-alt me-3"></i>
+                        <h3 class="mb-0">Date Range Filter</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Allow filtering of transactions by date range.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>User can select start and end dates</li>
+                                <li>Only transactions within date range are shown</li>
+                                <li>Summary of transactions updates accordingly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Color Coding -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-palette me-3"></i>
+                        <h3 class="mb-0">Summary of Transaction Color Coding</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Visually differentiate transaction summaries with colors and bold text.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Total: Blue, bold</li>
+                                <li>Income: Green, bold</li>
+                                <li>Expenses: Red, bold</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sprint 4 Content -->
+            <div class="tab-pane fade" id="sprint4" role="tabpanel" aria-labelledby="sprint4-tab">
+                <h2 class="mb-4">Sprint 4 Requirements</h2>
+
+                <!-- Export to PDF -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-file-pdf me-3"></i>
+                        <h3 class="mb-0">Export to PDF Functionality</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Implement an option to export transaction records to PDF.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>User applies filters → clicks 'Export PDF' → PDF contains only filtered data</li>
+                                <li>PDF shows transactions grouped/sorted by date</li>
+                                <li>PDF downloads successfully in .pdf format</li>
+                                <li>PDF includes metadata like date of export and filter criteria</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter UI -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-filter me-3"></i>
+                        <h3 class="mb-0">Filter UI</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Provide a filter section on the Expenses page.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Category: All, Food, Accommodation</li>
+                                <li>Date Range: Start Date, End Date</li>
+                                <li>Reimbursable: Yes, No</li>
+                                <li>Filters update results correctly</li>
+                                <li>Filters can be applied in combination</li>
+                                <li>Reset button clears all filters</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Persistent Login -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-user-clock me-3"></i>
+                        <h3 class="mb-0">Persistent Login</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Users should remain logged in until they explicitly log out.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Session remains active after browser close/refresh (within token validity)</li>
+                                <li>Manual logout required to end session</li>
+                                <li>No auto logout unless session/token expiry</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disable Button with Loader -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-spinner me-3"></i>
+                        <h3 class="mb-0">Disable Button with Loader</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Prevent multiple submissions by disabling button once clicked.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Button disabled immediately on click</li>
+                                <li>Loader + 'Please wait' shown until process completes</li>
+                                <li>Button re-enabled after completion</li>
+                                <li>No duplicate requests triggered</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cloud Server Migration -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-cloud me-3"></i>
+                        <h3 class="mb-0">Cloud Server Migration</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Migrate application hosting from Render to Koyeb.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Application deployed successfully on Koyeb</li>
+                                <li>APIs, DB, and integrations work without errors</li>
+                                <li>Performance equal or better than Render</li>
+                                <li>No downtime during/after migration</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sprint 5 Content -->
+            <div class="tab-pane fade" id="sprint5" role="tabpanel" aria-labelledby="sprint5-tab">
+                <h2 class="mb-4">Sprint 5 Requirements</h2>
+
+                <!-- Edit Transaction Feature -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-edit me-3"></i>
+                        <h3 class="mb-0">Edit Transaction</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">As a user, I should be able to edit an existing transaction so that I can
+                            correct
+                            mistakes or update details such as amount, category, label, or description.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>User should be able to select an existing transaction and edit its fields</li>
+                                <li>Updated values should reflect immediately in the transaction list</li>
+                                <li>Calculations should update automatically based on the new transaction details</li>
+                                <li>System should maintain data consistency and not duplicate records</li>
+                            </ul>
+                        </div>
+
+                        <div class="impact-section">
+                            <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                            <ul class="feature-list">
+                                <li>Current Balance, Total Expense, and Total Income will be recalculated after edit
+                                </li>
+                                <li>Data accuracy will improve by allowing correction of errors</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Transaction Feature -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-trash-alt me-3"></i>
+                        <h3 class="mb-0">Delete Transaction</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">As a user, I should be able to delete a transaction so that I can remove
+                            unwanted
+                            or incorrect entries.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>User should be able to select a transaction and delete it</li>
+                                <li>Deleted transaction should be removed from the transaction list</li>
+                                <li>Calculations should update correctly after deletion</li>
+                                <li>System should prevent accidental deletions by confirmation prompt</li>
+                            </ul>
+                        </div>
+
+                        <div class="impact-section">
+                            <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                            <ul class="feature-list">
+                                <li>Current Balance, Total Expense, and Total Income will be recalculated after deletion
+                                </li>
+                                <li>Database will maintain only valid transactions</li>
+                            </ul>
+                        </div>
+
+                        <div class="screenshot text-center mt-4">
+                            <p class="fst-italic text-muted">Delete Confirmation Dialog</p>
+                            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'><rect x='0' y='0' width='400' height='200' fill='%23f8f9fa'/><rect x='50' y='40' width='300' height='120' rx='10' fill='white' stroke='%23ef476f' stroke-width='2'/><text x='200' y='80' font-family='Arial' font-size='16' text-anchor='middle' fill='%23333'>Are you sure you want to delete?</text><rect x='120' y='120' width='80' height='30' rx='5' fill='%23ef476f'/><rect x='220' y='120' width='80' height='30' rx='5' fill='%23adb5bd'/></svg>"
+                                class="img-fluid" alt="Delete Confirmation Dialog">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Master Module for Category Feature -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-tags me-3"></i>
+                        <h3 class="mb-0">Master Module for Category</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">As a user, I should be able to manage (add, update, delete) expense and
+                            income
+                            categories so that I can personalize the classification of my transactions.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>User can add new categories under Debit or Credit type</li>
+                                <li>User can edit the name of an existing category (including default)</li>
+                                <li>User can delete any category unless it is currently linked to an existing
+                                    transaction</li>
+                                <li>UI should display updated category list in dropdowns</li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-3">
+                            <h5><i class="fas fa-list me-2"></i>Default Categories</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="mt-3">Debit Categories</h6>
+                                    <div>
+                                        <span class="category-badge debit-category">Food</span>
+                                        <span class="category-badge debit-category">Transport</span>
+                                        <span class="category-badge debit-category">Accommodation</span>
+                                        <span class="category-badge debit-category">Entertainment</span>
+                                        <span class="category-badge debit-category">Lending</span>
+                                        <span class="category-badge debit-category">Family Support</span>
+                                        <span class="category-badge debit-category">Donation</span>
+                                        <span class="category-badge debit-category">Grocery</span>
+                                        <span class="category-badge debit-category">Rent</span>
+                                        <span class="category-badge debit-category">Utilities</span>
+                                        <span class="category-badge debit-category">EMI</span>
+                                        <span class="category-badge debit-category">Others</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="mt-3">Credit Categories</h6>
+                                    <div>
+                                        <span class="category-badge credit-category">Salary</span>
+                                        <span class="category-badge credit-category">Refund</span>
+                                        <span class="category-badge credit-category">Investment</span>
+                                        <span class="category-badge credit-category">Gift</span>
+                                        <span class="category-badge credit-category">Other Income</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="impact-section">
+                            <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                            <ul class="feature-list">
+                                <li>Transactions will reflect user-defined categories</li>
+                                <li>Flexibility for personalization</li>
+                                <li>Possible re-mapping needed when deleting default categories</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remove Reimbursable Column Feature -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-eye-slash me-3"></i>
+                        <h3 class="mb-0">Remove Reimbursable (Y/N) Column from UI</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Remove the "Reimbursable (Y/N)" column from the UI since it is not needed,
+                            but keep
+                            backend functionality intact.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>Reimbursable column should no longer be visible on transaction listing screens</li>
+                                <li>Backend logic should continue to work</li>
+                                <li>Existing reports or calculations dependent on reimbursable should continue working
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="impact-section">
+                            <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                            <ul class="feature-list">
+                                <li>Cleaner UI</li>
+                                <li>No functional change in calculations, only visual removal</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Label Functionality Feature -->
+                <div class="feature-card card mb-5">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-tag me-3"></i>
+                        <h3 class="mb-0">Add Label Functionality for Transactions</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">As a user, I want to add labels to my transactions (like "Essential",
+                            "Luxury",
+                            "Recurring") so that I can analyze my necessary and unnecessary expenses in more detail.</p>
+
+                        <div class="acceptance-criteria">
+                            <h5><i class="fas fa-clipboard-check me-2"></i>Acceptance Criteria</h5>
+                            <ul class="feature-list">
+                                <li>User should be able to create, update, and delete labels as a master list</li>
+                                <li>While adding/editing a transaction, user should be able to assign one or more labels
+                                </li>
+                                <li>Labels are non-mandatory</li>
+                                <li>Labels should be displayed along with the transaction in listing screens</li>
+                                <li>User should be able to filter transactions by label</li>
+                            </ul>
+                        </div>
+
+                        <div class="impact-section">
+                            <h5><i class="fas fa-bolt me-2"></i>Impact</h5>
+                            <ul class="feature-list">
+                                <li>New labels field will be added to transaction table</li>
+                                <li>Users gain advanced categorization for analysis</li>
+                                <li>Filtering and reporting logic will be extended to include labels</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p>&copy; 2023 Finance Manager. All rights reserved.</p>
+            <div class="mt-3">
+                <button class="btn btn-outline-light me-2"><i class="fab fa-facebook-f"></i></button>
+                <button class="btn btn-outline-light me-2"><i class="fab fa-twitter"></i></button>
+                <button class="btn btn-outline-light me-2"><i class="fab fa-instagram"></i></button>
+                <button class="btn btn-outline-light"><i class="fab fa-linkedin-in"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple animation for feature cards when they come into view
+        document.addEventListener('DOMContentLoaded', function () {
+            const featureCards = document.querySelectorAll('.feature-card');
+
+            featureCards.forEach(card => {
+                card.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                featureCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                    }, 200 * index);
+                });
+            }, 500);
+
+            // Enable Bootstrap tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+</body>
+
+</html>
