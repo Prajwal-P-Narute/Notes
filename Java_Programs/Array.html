@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Arrays Programs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .tab:hover {
+            background: #3498db;
+        }
+
+        .tab.active {
+            background: #e74c3c;
+        }
+
+        .programs-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+        }
+
+        .program {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: none;
+        }
+
+        .program.active {
+            display: block;
+        }
+
+        .program:hover {
+            transform: translateY(-5px);
+        }
+
+        .program-header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .program-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .program-content {
+            padding: 20px;
+        }
+
+        .code-container {
+            background: #272822;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #f8f8f2;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #3e3d32;
+        }
+
+        .code-filename {
+            font-size: 0.9rem;
+            color: #a6e22e;
+        }
+
+        .code-language {
+            font-size: 0.8rem;
+            color: #66d9ef;
+            text-transform: uppercase;
+        }
+
+        .code {
+            color: #f8f8f2;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            tab-size: 4;
+        }
+
+        .output-container {
+            background: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 0 5px 5px 0;
+            margin-top: 15px;
+        }
+
+        .output-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .output {
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            color: #2c3e50;
+        }
+
+        .code-keyword {
+            color: #f92672;
+        }
+
+        .code-string {
+            color: #e6db74;
+        }
+
+        .code-comment {
+            color: #75715e;
+        }
+
+        .code-method {
+            color: #66d9ef;
+        }
+
+        .code-class {
+            color: #a6e22e;
+        }
+
+        .code-number {
+            color: #ae81ff;
+        }
+
+        .code-annotation {
+            color: #fd971f;
+        }
+
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .programs-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ide-window {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .ide-titlebar {
+            background: #353535;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .ide-buttons {
+            display: flex;
+            gap: 8px;
+            margin-right: 10px;
+        }
+
+        .ide-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .ide-button.close {
+            background: #ff5f56;
+        }
+
+        .ide-button.minimize {
+            background: #ffbd2e;
+        }
+
+        .ide-button.maximize {
+            background: #27c93f;
+        }
+
+        .ide-title {
+            color: #999;
+            font-size: 0.9rem;
+            flex: 1;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Java Arrays Programs</h1>
+            <p class="subtitle">A collection of array manipulation programs with outputs</p>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="same-numbers">Same Numbers</div>
+            <div class="tab" data-tab="count-elements">Count Elements</div>
+            <div class="tab" data-tab="addition">Addition of Arrays</div>
+            <div class="tab" data-tab="remove-duplicates">Remove Duplicates</div>
+            <div class="tab" data-tab="sorting">Sorting Arrays</div>
+            <div class="tab" data-tab="swap-2d">Swap 2D Array</div>
+        </div>
+
+        <div class="programs-container">
+            <!-- Program 1 -->
+            <div class="program active" id="same-numbers">
+                <div class="program-header">
+                    <div class="program-title">Same Numbers from Two Arrays</div>
+                </div>
+                <div class="program-content">
+                    <div class="ide-window">
+                        <div class="ide-titlebar">
+                            <div class="ide-buttons">
+                                <div class="ide-button close"></div>
+                                <div class="ide-button minimize"></div>
+                                <div class="ide-button maximize"></div>
+                            </div>
+                            <div class="ide-title">SameNumbersFromTwoArrays.java</div>
+                        </div>
+                        <div class="code-container">
+                            <pre class="code"><span class="code-keyword">package</span> arrays;
+
+<span class="code-keyword">import</span> java.util.Arrays;
+
+<span class="code-keyword">public class</span> <span class="code-class">SameNumbersFromTwoArrays</span> {
+    <span class="code-keyword">public static void</span> <span class="code-method">main</span>(String[] args) {
+        System.out.println(<span class="code-string">"==============================="</span>);
+        SameNumbersFromTwoArrays.<span class="code-method">byMethod</span>();
+        System.out.println(<span class="code-string">"==============================="</span>);
+        SameNumbersFromTwoArrays.<span class="code-method">byConditionStatement</span>();
+        System.out.println(<span class="code-string">"==============================="</span>);
+        SameNumbersFromTwoArrays.<span class="code-method">byForLoop</span>();
+        System.out.println(<span class="code-string">"==============================="</span>);
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">byMethod</span>() {
+        <span class="code-keyword">int</span> a[] = {<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">5</span>, <span class="code-number">6</span>};
+        <span class="code-keyword">int</span> b[] = {<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">5</span>, <span class="code-number">6</span>};
+        
+        <span class="code-keyword">boolean</span> status = Arrays.<span class="code-method">equals</span>(a, b);
+        
+        <span class="code-keyword">if</span> (status == <span class="code-keyword">true</span>) {
+            System.out.println(<span class="code-string">"Equal Arrays"</span>);
+        } <span class="code-keyword">else</span> {
+            System.out.println(<span class="code-string">"Not Equal Arrays"</span>);
+        }
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">byConditionStatement</span>() {
+        <span class="code-keyword">int</span> a[] = {<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>};
+        <span class="code-keyword">int</span> b[] = {<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">7</span>, <span class="code-number">6</span>};
+        
+        <span class="code-keyword">if</span> (a.length == b.length) {
+            <span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = <span class="code-number">0</span>; i < a.length; i++) {
+                <span class="code-keyword">if</span> (a[i] == b[i]) {
+                    System.out.<span class="code-method">print</span>(a[i]);
+                }
+            }
+        } <span class="code-keyword">else</span> {
+            System.out.println(<span class="code-string">"Not equal Arrays"</span>);
+        }
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">byForLoop</span>() {
+        <span class="code-keyword">int</span> a[] = {<span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">6</span>, <span class="code-number">4</span>, <span class="code-number">7</span>, <span class="code-number">9</span>, <span class="code-number">10</span>};
+        <span class="code-keyword">int</span> b[] = {<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">7</span>, <span class="code-number">6</span>};
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = <span class="code-number">0</span>; i < a.length; i++) {
+            <span class="code-keyword">for</span> (<span class="code-keyword">int</span> j = <span class="code-number">0</span>; j < b.length; j++) {
+                <span class="code-keyword">if</span> (a[i] == b[j]) {
+                    System.out.<span class="code-method">print</span>(a[i] + <span class="code-string">" "</span>);
+                }
+            }
+        }
+        System.out.<span class="code-method">println</span>();
+    }
+}</pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+                        </div>
+                    </div>
+                    <div class="output-container">
+                        <div class="output-title">Output</div>
+                        <div class="output">===============================
+                            Equal Arrays
+                            ===============================
+                            1234
+                            ===============================
+                            6 6 4 7
+                            ===============================</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program 2 -->
+            <div class="program" id="count-elements">
+                <div class="program-header">
+                    <div class="program-title">Count Elements from Array</div>
+                </div>
+                <div class="program-content">
+                    <div class="ide-window">
+                        <div class="ide-titlebar">
+                            <div class="ide-buttons">
+                                <div class="ide-button close"></div>
+                                <div class="ide-button minimize"></div>
+                                <div class="ide-button maximize"></div>
+                            </div>
+                            <div class="ide-title">Interview.java</div>
+                        </div>
+                        <div class="code-container">
+                            <pre class="code"><span class="code-keyword">package</span> demo;
+<span class="code-keyword">import</span> java.util.HashSet;
+<span class="code-keyword">import</span> java.util.Set;
+
+<span class="code-keyword">public class</span> <span class="code-class">Interview</span> {
+    <span class="code-keyword">public static void</span> <span class="code-method">main</span>(String[] args) {
+        <span class="code-keyword">int</span> array[] = {<span class="code-number">1</span>, <span class="code-number">3</span>, <span class="code-number">1</span>, <span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">4</span>};
+        
+        Set&lt;Integer&gt; set = <span class="code-keyword">new</span> HashSet&lt;&gt;();
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> arrayValues : array) { 
+            set.<span class="code-method">add</span>(arrayValues);
+        }
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> setvalue : set) {
+            <span class="code-keyword">int</span> count = <span class="code-number">0</span>;
+            <span class="code-keyword">for</span> (<span class="code-keyword">int</span> arrayValues : array) {
+                <span class="code-keyword">if</span> (setvalue == arrayValues) {
+                    count++;
+                }
+            }
+            System.out.println(<span class="code-string">"Count of "</span> + setvalue + <span class="code-string">" is: "</span> + count);
+        }
+    }    
+}</pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+                        </div>
+                    </div>
+                    <div class="output-container">
+                        <div class="output-title">Output</div>
+                        <div class="output">Count of 1 is: 4
+                            Count of 2 is: 2
+                            Count of 3 is: 1
+                            Count of 4 is: 1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program 3 -->
+            <div class="program" id="addition">
+                <div class="program-header">
+                    <div class="program-title">Addition of Two Arrays</div>
+                </div>
+                <div class="program-content">
+                    <div class="ide-window">
+                        <div class="ide-titlebar">
+                            <div class="ide-buttons">
+                                <div class="ide-button close"></div>
+                                <div class="ide-button minimize"></div>
+                                <div class="ide-button maximize"></div>
+                            </div>
+                            <div class="ide-title">AdditionOfArrays.java</div>
+                        </div>
+                        <div class="code-container">
+                            <pre class="code"><span class="code-keyword">package</span> arrays;
+
+<span class="code-keyword">public class</span> <span class="code-class">AdditionOfArrays</span> {
+    <span class="code-keyword">public static void</span> <span class="code-method">main</span>(String[] args) {
+        System.out.println(<span class="code-string">"==================="</span>);
+        AdditionOfArrays.<span class="code-method">byForLoop</span>();
+        System.out.println(<span class="code-string">"==================="</span>);
+        AdditionOfArrays.<span class="code-method">byWhileLoop</span>();
+        System.out.println(<span class="code-string">"==================="</span>);
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">byForLoop</span>() {
+        <span class="code-keyword">int</span> a[] = {<span class="code-number">3</span>, <span class="code-number">7</span>, <span class="code-number">10</span>, <span class="code-number">20</span>};
+        <span class="code-keyword">int</span> b[] = {<span class="code-number">8</span>, <span class="code-number">9</span>, <span class="code-number">6</span>, <span class="code-number">5</span>};
+        <span class="code-keyword">int</span> sum;
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = <span class="code-number">0</span>; i < a.length; i++) {
+            <span class="code-keyword">for</span> (<span class="code-keyword">int</span> j = <span class="code-number">0</span>; j < b.length; j++) {
+                sum = a[i] + b[j];
+                System.out.<span class="code-method">print</span>(sum + <span class="code-string">"  "</span>);
+                i++;
+            }
+        }
+        
+        System.out.<span class="code-method">println</span>();    
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">byWhileLoop</span>() {
+        <span class="code-keyword">int</span> a[] = {<span class="code-number">3</span>, <span class="code-number">7</span>, <span class="code-number">10</span>, <span class="code-number">20</span>};
+        <span class="code-keyword">int</span> b[] = {<span class="code-number">8</span>, <span class="code-number">9</span>, <span class="code-number">6</span>, <span class="code-number">5</span>};
+        <span class="code-keyword">int</span> sum;
+        <span class="code-keyword">int</span> n = <span class="code-number">0</span>;
+        
+        <span class="code-keyword">while</span> (n < a.length) {
+            sum = a[n] + b[n];
+            System.out.<span class="code-method">print</span>(sum + <span class="code-string">"  "</span>);
+            n++;    
+        }    
+        System.out.<span class="code-method">println</span>();
+    }
+}</pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+                        </div>
+                    </div>
+                    <div class="output-container">
+                        <div class="output-title">Output</div>
+                        <div class="output">===================
+                            11 16 16 25
+                            ===================
+                            11 16 16 25
+                            ===================</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program 4 -->
+            <div class="program" id="remove-duplicates">
+                <div class="program-header">
+                    <div class="program-title">Remove Duplicate Numbers</div>
+                </div>
+                <div class="program-content">
+                    <div class="ide-window">
+                        <div class="ide-titlebar">
+                            <div class="ide-buttons">
+                                <div class="ide-button close"></div>
+                                <div class="ide-button minimize"></div>
+                                <div class="ide-button maximize"></div>
+                            </div>
+                            <div class="ide-title">Interview.java</div>
+                        </div>
+                        <div class="code-container">
+                            <pre class="code"><span class="code-keyword">package</span> demo;
+
+<span class="code-keyword">import</span> java.util.ArrayList;
+<span class="code-keyword">import</span> java.util.HashSet;
+<span class="code-keyword">import</span> java.util.List;
+<span class="code-keyword">import</span> java.util.Set;
+
+<span class="code-keyword">public class</span> <span class="code-class">Interview</span> {
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">main</span>(String[] args) {
+        <span class="code-keyword">int</span> array[] = {<span class="code-number">1</span>, <span class="code-number">3</span>, <span class="code-number">1</span>, <span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">4</span>};
+        List list = <span class="code-keyword">new</span> ArrayList();
+        
+        Set&lt;Integer&gt; set = <span class="code-keyword">new</span> HashSet&lt;&gt;();
+        
+        <span class="code-comment">// Add array element into set for remove duplicate values</span>
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> arrayValues : array) { 
+            set.<span class="code-method">add</span>(arrayValues);
+        }
+        
+        <span class="code-comment">// Add set object into list</span>
+        list.<span class="code-method">add</span>(set);    
+        System.out.println(<span class="code-string">"Remove duplicate values from array: "</span> + list);
+    }
+    
+}</pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+                        </div>
+                    </div>
+                    <div class="output-container">
+                        <div class="output-title">Output</div>
+                        <div class="output">Remove duplicate values from array: [[1, 2, 3, 4]]</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program 5 -->
+            <div class="program" id="sorting">
+                <div class="program-header">
+                    <div class="program-title">Sorting Arrays</div>
+                </div>
+                <div class="program-content">
+                    <div class="ide-window">
+                        <div class="ide-titlebar">
+                            <div class="ide-buttons">
+                                <div class="ide-button close"></div>
+                                <div class="ide-button minimize"></div>
+                                <div class="ide-button maximize"></div>
+                            </div>
+                            <div class="ide-title">AscendingDescendingOrder.java</div>
+                        </div>
+                        <div class="code-container">
+                            <pre class="code"><span class="code-keyword">package</span> arrays;
+
+<span class="code-keyword">public class</span> <span class="code-class">AscendingDescendingOrder</span> {
+    <span class="code-keyword">public static void</span> <span class="code-method">main</span>(String[] args) {
+        System.out.println(<span class="code-string">"=========================="</span>);
+        AscendingDescendingOrder.<span class="code-method">withoutUsingVariable</span>();
+        System.out.println(<span class="code-string">"=========================="</span>);
+        AscendingDescendingOrder.<span class="code-method">withUsingVariable</span>();
+        System.out.println(<span class="code-string">"=========================="</span>);   
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">withoutUsingVariable</span>() {
+        <span class="code-keyword">int</span> a[] = {<span class="code-number">200</span>, <span class="code-number">100</span>, <span class="code-number">400</span>, <span class="code-number">500</span>, <span class="code-number">150</span>};
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = <span class="code-number">0</span>; i < a.length; i++) {
+            <span class="code-keyword">for</span> (<span class="code-keyword">int</span> j = i + <span class="code-number">1</span>; j < a.length; j++) {
+                <span class="code-keyword">if</span> (a[i] >= a[j]) {
+                    a[i] = a[i] + a[j];
+                    a[j] = a[i] - a[j];
+                    a[i] = a[i] - a[j]; 
+                }
+            }
+        }
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> k = <span class="code-number">0</span>; k < a.length; k++) {
+            System.out.<span class="code-method">print</span>(a[k] + <span class="code-string">" "</span>);
+        }
+        System.out.<span class="code-method">println</span>();
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> k = a.length - <span class="code-number">1</span>; k >= <span class="code-number">0</span>; k--) {
+            System.out.<span class="code-method">print</span>(a[k] + <span class="code-string">" "</span>);
+        }
+        System.out.<span class="code-method">println</span>();
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">withUsingVariable</span>() {
+        <span class="code-keyword">int</span> a[] = {<span class="code-number">200</span>, <span class="code-number">100</span>, <span class="code-number">400</span>, <span class="code-number">500</span>, <span class="code-number">150</span>};
+        <span class="code-keyword">int</span> x;
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = <span class="code-number">0</span>; i < a.length; i++) {
+            <span class="code-keyword">for</span> (<span class="code-keyword">int</span> j = i + <span class="code-number">1</span>; j < a.length; j++) {
+                <span class="code-keyword">if</span> (a[i] >= a[j]) {
+                    x = a[i];
+                    a[i] = a[j];
+                    a[j] = x;
+                }
+            }
+        }
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> k = <span class="code-number">0</span>; k < a.length; k++) {
+            System.out.<span class="code-method">print</span>(a[k] + <span class="code-string">" "</span>);
+        }
+        System.out.<span class="code-method">println</span>();
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> k = a.length - <span class="code-number">1</span>; k >= <span class="code-number">0</span>; k--) {
+            System.out.<span class="code-method">print</span>(a[k] + <span class="code-string">" "</span>);
+        }
+        System.out.<span class="code-method">println</span>();
+    }   
+}</pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+                        </div>
+                    </div>
+                    <div class="output-container">
+                        <div class="output-title">Output</div>
+                        <div class="output">==========================
+                            100 150 200 400 500
+                            500 400 200 150 100
+                            ==========================
+                            100 150 200 400 500
+                            500 400 200 150 100
+                            ==========================</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program 6 -->
+            <div class="program" id="swap-2d">
+                <div class="program-header">
+                    <div class="program-title">Swap Elements in 2D Array</div>
+                </div>
+                <div class="program-content">
+                    <div class="ide-window">
+                        <div class="ide-titlebar">
+                            <div class="ide-buttons">
+                                <div class="ide-button close"></div>
+                                <div class="ide-button minimize"></div>
+                                <div class="ide-button maximize"></div>
+                            </div>
+                            <div class="ide-title">Swap2DArray.java</div>
+                        </div>
+                        <div class="code-container">
+                            <pre class="code"><span class="code-keyword">public class</span> <span class="code-class">Swap2DArray</span> {
+    <span class="code-keyword">public static void</span> <span class="code-method">main</span>(String[] args) {
+        <span class="code-keyword">int</span>[][] array = {
+            {<span class="code-number">1</span>, <span class="code-number">2</span>},
+            {<span class="code-number">4</span>, <span class="code-number">5</span>},
+            {<span class="code-number">7</span>, <span class="code-number">8</span>}
+        };
+        
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> arrayIndex = <span class="code-number">0</span>; arrayIndex < array.length; arrayIndex++) {
+            <span class="code-keyword">int</span> startIndex = <span class="code-number">0</span>; 
+            <span class="code-keyword">int</span> endIndex = <span class="code-number">1</span>;
+            
+            <span class="code-comment">//swap numbers in 2D array</span>
+            <span class="code-keyword">int</span> x = array[arrayIndex][startIndex];
+            array[arrayIndex][startIndex] = array[arrayIndex][endIndex];
+            array[arrayIndex][endIndex] = x;        
+        }
+
+        <span class="code-comment">//Print 2D after swapping</span>
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = <span class="code-number">0</span>; i < array.length; i++) {
+            <span class="code-keyword">for</span> (<span class="code-keyword">int</span> j = <span class="code-number">0</span>; j < array[i].length; j++) {
+                System.out.<span class="code-method">print</span>(array[i][j] + <span class="code-string">" "</span>);
+            }
+            System.out.<span class="code-method">println</span>();
+        }
+    }
+}</pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+                        </div>
+                    </div>
+                    <div class="output-container">
+                        <div class="output-title">Output</div>
+                        <div class="output">2 1
+                            5 4
+                            8 7 </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Java Arrays Programs Showcase | Designed with colorful UI and IDE-like appearance</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab');
+        const programs = document.querySelectorAll('.program');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Show corresponding program
+                programs.forEach(program => {
+                    program.classList.remove('active');
+                    if (program.id === tabId) {
+                        program.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeContainer = button.parentElement;
+            const codeElement = codeContainer.querySelector('.code');
+            const textArea = document.createElement('textarea');
+            textArea.value = codeElement.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            // Visual feedback
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>

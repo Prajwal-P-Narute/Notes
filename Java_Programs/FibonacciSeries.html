@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibonacci Series Program</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        header {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .program-container {
+            padding: 30px;
+        }
+
+        .program-title {
+            font-size: 2rem;
+            color: #1a2980;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+
+        .program-title i {
+            margin-right: 15px;
+            font-size: 1.8rem;
+        }
+
+        .program-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #495057;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #26d0ce;
+        }
+
+        .ide-container {
+            background: #2d2d2d;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .ide-header {
+            background: #212121;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #3d3d3d;
+        }
+
+        .ide-buttons {
+            display: flex;
+            gap: 8px;
+            margin-right: 15px;
+        }
+
+        .ide-button {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .ide-button.close {
+            background: #ff5f56;
+        }
+
+        .ide-button.minimize {
+            background: #ffbd2e;
+        }
+
+        .ide-button.maximize {
+            background: #27c93f;
+        }
+
+        .ide-title {
+            color: #aaa;
+            font-size: 0.9rem;
+            flex: 1;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        .code-container {
+            padding: 25px;
+            overflow-x: auto;
+        }
+
+        pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 1rem;
+            line-height: 1.5;
+            tab-size: 4;
+            color: #f8f8f2;
+        }
+
+        .code-keyword {
+            color: #ff79c6;
+        }
+
+        .code-type {
+            color: #8be9fd;
+        }
+
+        .code-function {
+            color: #50fa7b;
+        }
+
+        .code-number {
+            color: #bd93f9;
+        }
+
+        .code-string {
+            color: #f1fa8c;
+        }
+
+        .code-comment {
+            color: #6272a4;
+        }
+
+        .output-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .output-title {
+            font-size: 1.5rem;
+            color: #495057;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .output-title i {
+            margin-right: 10px;
+            color: #1a2980;
+        }
+
+        .output {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            color: #212121;
+            font-size: 1.1rem;
+            border-left: 4px solid #26d0ce;
+        }
+
+        .explanation {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+        }
+
+        .explanation-title {
+            font-size: 1.5rem;
+            color: #1a2980;
+            margin-bottom: 15px;
+        }
+
+        .explanation-list {
+            padding-left: 20px;
+        }
+
+        .explanation-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .program-container {
+                padding: 20px;
+            }
+
+            .program-title {
+                font-size: 1.7rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-infinity"></i> Fibonacci Series Program</h1>
+            <p class="description">Generate Fibonacci series using both for loop and while loop in Java</p>
+        </header>
+
+        <div class="program-container">
+            <h2 class="program-title"><i class="fas fa-code"></i> Java Program</h2>
+
+            <p class="program-description">
+                The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones,
+                usually starting with 0 and 1. In this program, we start with 1 and 2, then generate the next 4 numbers
+                in the sequence using both for loop and while loop approaches.
+            </p>
+
+            <div class="ide-container">
+                <div class="ide-header">
+                    <div class="ide-buttons">
+                        <div class="ide-button close"></div>
+                        <div class="ide-button minimize"></div>
+                        <div class="ide-button maximize"></div>
+                    </div>
+                    <div class="ide-title">FibonacciSeries.java</div>
+                </div>
+
+                <div class="code-container">
+                    <pre><span class="code-keyword">package</span> numbers;
+
+<span class="code-keyword">public class</span> <span class="code-type">FibonacciSeries</span> {
+
+    <span class="code-keyword">public static void</span> <span class="code-function">main</span>(<span class="code-type">String</span>[] args) {
+        <span class="code-type">System</span>.out.println(<span class="code-string">"========================"</span>);
+        <span class="code-type">FibonacciSeries</span>.<span class="code-function">byForLoop</span>();
+        <span class="code-type">System</span>.out.println(<span class="code-string">"========================"</span>);
+        <span class="code-type">FibonacciSeries</span>.<span class="code-function">byWhileLoop</span>();
+        <span class="code-type">System</span>.out.println(<span class="code-string">"========================"</span>);
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-function">byForLoop</span>() {
+        <span class="code-type">int</span> n1 = <span class="code-number">1</span>, n2 = <span class="code-number">2</span>, n3;
+        
+        <span class="code-type">System</span>.out.println(n1);
+        <span class="code-type">System</span>.out.println(n2);
+        
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">1</span>; i <= <span class="code-number">4</span>; i++) {
+            n3 = n1 + n2;
+            <span class="code-type">System</span>.out.println(n3);
+            
+            n1 = n2;
+            n2 = n3;
+        }    
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-function">byWhileLoop</span>() {
+        <span class="code-type">int</span> n1 = <span class="code-number">1</span>, n2 = <span class="code-number">2</span>, n3, n = <span class="code-number">4</span>;
+        
+        <span class="code-type">System</span>.out.println(n1);
+        <span class="code-type">System</span>.out.println(n2);
+        
+        <span class="code-keyword">while</span>(n > <span class="code-number">0</span>) {
+            n3 = n1 + n2;
+            <span class="code-type">System</span>.out.println(n3);
+            
+            n1 = n2;
+            n2 = n3;
+            n--;
+        }
+    }
+}</pre>
+                </div>
+            </div>
+
+            <div class="output-container">
+                <h3 class="output-title"><i class="fas fa-terminal"></i> Program Output</h3>
+                <div class="output">========================
+                    1
+                    2
+                    3
+                    5
+                    8
+                    13
+                    ========================
+                    1
+                    2
+                    3
+                    5
+                    8
+                    13
+                    ========================</div>
+            </div>
+
+            <div class="explanation">
+                <h3 class="explanation-title">How the Program Works:</h3>
+                <ul class="explanation-list">
+                    <li>The program starts by printing a separator line "========================"</li>
+                    <li>The <code>byForLoop()</code> method is called which generates the Fibonacci series using a for
+                        loop</li>
+                    <li>It initializes <code>n1=1</code> and <code>n2=2</code> as the first two numbers</li>
+                    <li>The for loop runs 4 times, each time calculating the next number as the sum of the previous two
+                    </li>
+                    <li>After the for loop, another separator line is printed</li>
+                    <li>The <code>byWhileLoop()</code> method is called which generates the same series using a while
+                        loop</li>
+                    <li>It uses the same logic but implemented with a while loop that runs while <code>n > 0</code></li>
+                    <li>Finally, the last separator line is printed</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add slight animation to the output for a dynamic effect
+        document.addEventListener('DOMContentLoaded', function () {
+            const output = document.querySelector('.output');
+            output.style.opacity = 0;
+
+            setTimeout(() => {
+                output.style.transition = 'opacity 1s ease-in-out';
+                output.style.opacity = 1;
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>

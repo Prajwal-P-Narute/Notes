@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Number Checker - Java Program</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            background: linear-gradient(90deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .code-panel {
+            flex: 1;
+            min-width: 500px;
+            padding: 20px;
+            background: #272822;
+            color: #f8f8f2;
+        }
+
+        .output-panel {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ide-window {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .ide-titlebar {
+            background: #353535;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .ide-buttons {
+            display: flex;
+            gap: 8px;
+            margin-right: 10px;
+        }
+
+        .ide-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .ide-button.close {
+            background: #ff5f56;
+        }
+
+        .ide-button.minimize {
+            background: #ffbd2e;
+        }
+
+        .ide-button.maximize {
+            background: #27c93f;
+        }
+
+        .ide-title {
+            color: #999;
+            font-size: 0.9rem;
+            flex: 1;
+            text-align: center;
+        }
+
+        .code-container {
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        .code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            tab-size: 4;
+        }
+
+        .output-container {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            flex: 1;
+            overflow-y: auto;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .output-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .output {
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .code-keyword {
+            color: #f92672;
+        }
+
+        .code-string {
+            color: #e6db74;
+        }
+
+        .code-comment {
+            color: #75715e;
+        }
+
+        .code-method {
+            color: #66d9ef;
+        }
+
+        .code-class {
+            color: #a6e22e;
+        }
+
+        .code-number {
+            color: #ae81ff;
+        }
+
+        .code-annotation {
+            color: #fd971f;
+        }
+
+        .interactive-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .prime {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .not-prime {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .copy-btn {
+            background: #6c757d;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+
+        .copy-btn:hover {
+            background: #5a6268;
+        }
+
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+            }
+
+            .code-panel,
+            .output-panel {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Prime Number Checker</h1>
+            <p class="subtitle">Java Program with Interactive Demo</p>
+        </header>
+
+        <div class="content">
+            <div class="code-panel">
+                <div class="ide-window">
+                    <div class="ide-titlebar">
+                        <div class="ide-buttons">
+                            <div class="ide-button close"></div>
+                            <div class="ide-button minimize"></div>
+                            <div class="ide-button maximize"></div>
+                        </div>
+                        <div class="ide-title">PrimeNumbers.java</div>
+                    </div>
+                    <div class="code-container">
+                        <pre class="code"><span class="code-keyword">package</span> numbers;
+
+<span class="code-keyword">import</span> java.util.Scanner;
+
+<span class="code-keyword">public class</span> <span class="code-class">PrimeNumbers</span> {
+
+    <span class="code-keyword">public static void</span> <span class="code-method">main</span>(String[] args) {
+        System.out.println(<span class="code-string">"================"</span>);
+        PrimeNumbers.<span class="code-method">byForLoop</span>();
+        System.out.println(<span class="code-string">"================="</span>);
+        PrimeNumbers.<span class="code-method">byWhileLoop</span>();
+        System.out.println(<span class="code-string">"================="</span>);    
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">byForLoop</span>() {
+        <span class="code-keyword">int</span> c = <span class="code-number">0</span>;
+        <span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = <span class="code-number">1</span>; i <= <span class="code-number">50</span>; i++) {
+            <span class="code-keyword">for</span> (<span class="code-keyword">int</span> j = <span class="code-number">2</span>; j < i; j++) {
+                <span class="code-keyword">if</span> (i % j == <span class="code-number">0</span>) {
+                    c = <span class="code-number">1</span>;
+                }  
+            }
+            
+            <span class="code-keyword">if</span> (c != <span class="code-number">1</span>) {
+                System.out.println(i + <span class="code-string">"  This is a Prime Number"</span>);
+            } <span class="code-keyword">else</span> {
+                c = <span class="code-number">0</span>;
+            }
+        }    
+    }
+    
+    <span class="code-keyword">public static void</span> <span class="code-method">byWhileLoop</span>() {
+        Scanner scan = <span class="code-keyword">new</span> Scanner(System.in);
+        System.out.println(<span class="code-string">"Enter Number to check weather is prime number or not"</span>);
+        
+        <span class="code-keyword">int</span> a = scan.nextInt();
+        <span class="code-keyword">int</span> n = a - <span class="code-number">1</span>;
+        <span class="code-keyword">int</span> c = <span class="code-number">0</span>;
+        <span class="code-keyword">while</span> (n > <span class="code-number">1</span>) {
+            <span class="code-keyword">if</span> (a % n == <span class="code-number">0</span>) {
+                c = <span class="code-number">1</span>;
+            }
+            n--;
+        }
+        <span class="code-keyword">if</span> (c == <span class="code-number">0</span>) {
+            System.out.println(a + <span class="code-string">" This is Prime Number"</span>);
+        } <span class="code-keyword">else</span> {
+            System.out.println(a + <span class="code-string">"  This is a not Prime Number"</span>);
+        }    
+    }
+}</pre>
+                    </div>
+                </div>
+                <button class="copy-btn" onclick="copyCode()">
+                    <i class="fas fa-copy"></i> Copy Code
+                </button>
+            </div>
+
+            <div class="output-panel">
+                <h2>Program Output</h2>
+                <div class="output-container">
+                    <div class="output-title">Console Output</div>
+                    <div class="output">================
+                        1 This is a Prime Number
+                        2 This is a Prime Number
+                        3 This is a Prime Number
+                        5 This is a Prime Number
+                        7 This is a Prime Number
+                        11 This is a Prime Number
+                        13 This is a Prime Number
+                        17 This is a Prime Number
+                        19 This is a Prime Number
+                        23 This is a Prime Number
+                        29 This is a Prime Number
+                        31 This is a Prime Number
+                        37 This is a Prime Number
+                        41 This is a Prime Number
+                        43 This is a Prime Number
+                        47 This is a Prime Number
+                        =================
+                        Enter Number to check weather is prime number or not
+                        10
+                        10 This is a not Prime Number
+                        =================</div>
+                </div>
+
+                <div class="interactive-section">
+                    <h3>Try It Yourself</h3>
+                    <p>Enter a number to check if it's prime:</p>
+                    <div class="input-group">
+                        <input type="number" id="primeInput" min="1" placeholder="Enter a number">
+                        <button onclick="checkPrime()">Check</button>
+                    </div>
+                    <div id="primeResult" class="result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyCode() {
+            const codeElement = document.querySelector('.code');
+            const textArea = document.createElement('textarea');
+            textArea.value = codeElement.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            // Visual feedback
+            const copyButton = document.querySelector('.copy-btn');
+            const originalText = copyButton.innerHTML;
+            copyButton.innerHTML = '<i class="fas fa-check"></i> Code Copied!';
+            setTimeout(() => {
+                copyButton.innerHTML = originalText;
+            }, 2000);
+        }
+
+        function checkPrime() {
+            const input = document.getElementById('primeInput');
+            const resultDiv = document.getElementById('primeResult');
+            const num = parseInt(input.value);
+
+            if (isNaN(num) || num < 1) {
+                resultDiv.textContent = 'Please enter a valid number greater than 0';
+                resultDiv.className = 'result not-prime';
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            if (num === 1) {
+                resultDiv.textContent = '1 is not a prime number';
+                resultDiv.className = 'result not-prime';
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            let isPrime = true;
+            for (let i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i === 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+
+            if (isPrime) {
+                resultDiv.textContent = `${num} is a prime number!`;
+                resultDiv.className = 'result prime';
+            } else {
+                resultDiv.textContent = `${num} is not a prime number`;
+                resultDiv.className = 'result not-prime';
+            }
+
+            resultDiv.style.display = 'block';
+        }
+
+        // Allow pressing Enter to check the number
+        document.getElementById('primeInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPrime();
+            }
+        });
+    </script>
+</body>
+
+</html>

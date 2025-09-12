@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Min/Max Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .methods-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .method-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
+            font-size: 1.5rem;
+        }
+
+        .complexity {
+            background: #e74c3c;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .description {
+            margin-bottom: 15px;
+            line-height: 1.5;
+            color: #444;
+        }
+
+        .code-container {
+            background: #272822;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .code-header {
+            background: #1e1f1c;
+            color: #f8f8f2;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: #ffd700;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .copy-btn:hover {
+            color: white;
+        }
+
+        pre {
+            margin: 0;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #f8f8f2;
+        }
+
+        .keyword {
+            color: #f92672;
+        }
+
+        .type {
+            color: #66d9ef;
+        }
+
+        .string {
+            color: #a6e22e;
+        }
+
+        .comment {
+            color: #75715e;
+        }
+
+        .method {
+            color: #fd971f;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .methods-container {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Java Min/Max Finder</h1>
+            <p class="subtitle">Multiple approaches to find minimum and maximum values in Java</p>
+        </header>
+
+        <div class="methods-container">
+            <!-- Method 1 -->
+            <div class="method-card">
+                <div class="card-header">
+                    <h3>Iterative Approach</h3>
+                    <span class="complexity">O(n) Time</span>
+                </div>
+                <div class="card-content">
+                    <p class="description">Traverse through the array while tracking the current min and max values.
+                        Most efficient approach with linear time complexity.</p>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>MinMaxIterative.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                        </div>
+                        <pre><code><span class="keyword">public class</span> <span class="type">MinMaxIterative</span> {
+    <span class="keyword">public static</span> <span class="type">void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">int</span>[] arr = {<span class="number">5</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">6</span>};
+        <span class="type">int</span> min = arr[<span class="number">0</span>];
+        <span class="type">int</span> max = arr[<span class="number">0</span>];
+        
+        <span class="keyword">for</span> (<span class="type">int</span> num : arr) {
+            <span class="keyword">if</span> (num < min) min = num;
+            <span class="keyword">if</span> (num > max) max = num;
+        }
+        
+        <span class="type">System</span>.out.println(<span class="string">"Min: "</span> + min + <span class="string">", Max: "</span> + max);
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 2 -->
+            <div class="method-card">
+                <div class="card-header">
+                    <h3>Using Arrays.sort()</h3>
+                    <span class="complexity">O(n log n) Time</span>
+                </div>
+                <div class="card-content">
+                    <p class="description">Sort the array and pick the first (min) and last (max) elements. Simple but
+                        less efficient due to sorting overhead.</p>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>MinMaxSort.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                        </div>
+                        <pre><code><span class="keyword">import</span> <span class="type">java.util.Arrays</span>;
+
+<span class="keyword">public class</span> <span class="type">MinMaxSort</span> {
+    <span class="keyword">public static</span> <span class="type">void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">int</span>[] arr = {<span class="number">5</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">6</span>};
+        <span class="type">Arrays</span>.sort(arr);
+        <span class="type">int</span> min = arr[<span class="number">0</span>];
+        <span class="type">int</span> max = arr[arr.length - <span class="number">1</span>];
+        <span class="type">System</span>.out.println(<span class="string">"Min: "</span> + min + <span class="string">", Max: "</span> + max);
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 3 -->
+            <div class="method-card">
+                <div class="card-header">
+                    <h3>Using Java Streams</h3>
+                    <span class="complexity">O(n) Time</span>
+                </div>
+                <div class="card-content">
+                    <p class="description">Use Stream API's min() and max() methods (Java 8+). Clean and functional
+                        approach with linear time complexity.</p>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>MinMaxStream.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                        </div>
+                        <pre><code><span class="keyword">import</span> <span class="type">java.util.Arrays</span>;
+
+<span class="keyword">public class</span> <span class="type">MinMaxStream</span> {
+    <span class="keyword">public static</span> <span class="type">void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">int</span>[] arr = {<span class="number">5</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">6</span>};
+        <span class="type">int</span> min = <span class="type">Arrays</span>.stream(arr).min().getAsInt();
+        <span class="type">int</span> max = <span class="type">Arrays</span>.stream(arr).max().getAsInt();
+        <span class="type">System</span>.out.println(<span class="string">"Min: "</span> + min + <span class="string">", Max: "</span> + max);
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 4 -->
+            <div class="method-card">
+                <div class="card-header">
+                    <h3>Using Collections</h3>
+                    <span class="complexity">O(n) Time</span>
+                </div>
+                <div class="card-content">
+                    <p class="description">Convert the array to a list and use Collections.min() and Collections.max().
+                        Convenient for List objects.</p>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>MinMaxCollections.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                        </div>
+                        <pre><code><span class="keyword">import</span> <span class="type">java.util.Arrays</span>;
+<span class="keyword">import</span> <span class="type">java.util.Collections</span>;
+<span class="keyword">import</span> <span class="type">java.util.List</span>;
+
+<span class="keyword">public class</span> <span class="type">MinMaxCollections</span> {
+    <span class="keyword">public static</span> <span class="type">void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">Integer</span>[] arr = {<span class="number">5</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">6</span>};
+        <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; list = <span class="type">Arrays</span>.asList(arr);
+        <span class="type">int</span> min = <span class="type">Collections</span>.min(list);
+        <span class="type">int</span> max = <span class="type">Collections</span>.max(list);
+        <span class="type">System</span>.out.println(<span class="string">"Min: "</span> + min + <span class="string">", Max: "</span> + max);
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 5 -->
+            <div class="method-card">
+                <div class="card-header">
+                    <h3>Divide and Conquer</h3>
+                    <span class="complexity">O(n) Time</span>
+                </div>
+                <div class="card-content">
+                    <p class="description">Recursively split the array and compare min/max of halves. Educational
+                        approach with linear time complexity.</p>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>MinMaxRecursive.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                        </div>
+                        <pre><code><span class="keyword">public class</span> <span class="type">MinMaxRecursive</span> {
+    <span class="keyword">static</span> <span class="keyword">class</span> <span class="type">Pair</span> {
+        <span class="type">int</span> min;
+        <span class="type">int</span> max;
+    }
+    
+    <span class="keyword">static</span> <span class="type">Pair</span> <span class="method">getMinMax</span>(<span class="type">int</span>[] arr, <span class="type">int</span> low, <span class="type">int</span> high) {
+        <span class="type">Pair</span> result = <span class="keyword">new</span> <span class="type">Pair</span>();
+        <span class="keyword">if</span> (low == high) {
+            result.min = arr[low];
+            result.max = arr[low];
+            <span class="keyword">return</span> result;
+        }
+        
+        <span class="type">int</span> mid = (low + high) / <span class="number">2</span>;
+        <span class="type">Pair</span> left = getMinMax(arr, low, mid);
+        <span class="type">Pair</span> right = getMinMax(arr, mid + <span class="number">1</span>, high);
+        
+        result.min = <span class="type">Math</span>.min(left.min, right.min);
+        result.max = <span class="type">Math</span>.max(left.max, right.max);
+        <span class="keyword">return</span> result;
+    }
+    
+    <span class="keyword">public static</span> <span class="type">void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">int</span>[] arr = {<span class="number">5</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">6</span>};
+        <span class="type">Pair</span> result = getMinMax(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>);
+        <span class="type">System</span>.out.println(<span class="string">"Min: "</span> + result.min + <span class="string">", Max: "</span> + result.max);
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 6 -->
+            <div class="method-card">
+                <div class="card-header">
+                    <h3>Using IntSummaryStatistics</h3>
+                    <span class="complexity">O(n) Time</span>
+                </div>
+                <div class="card-content">
+                    <p class="description">Use IntStream summaryStatistics() to get min, max, count, sum and average all
+                        at once.</p>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>MinMaxStatistics.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                        </div>
+                        <pre><code><span class="keyword">import</span> <span class="type">java.util.Arrays</span>;
+<span class="keyword">import</span> <span class="type">java.util.IntSummaryStatistics</span>;
+
+<span class="keyword">public class</span> <span class="type">MinMaxStatistics</span> {
+    <span class="keyword">public static</span> <span class="type">void</span> <span class="method">main</span>(<span class="type">String</span>[] args) {
+        <span class="type">int</span>[] arr = {<span class="number">5</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">6</span>};
+        
+        <span class="type">IntSummaryStatistics</span> stats = <span class="type">Arrays</span>.stream(arr).summaryStatistics();
+        <span class="type">int</span> min = stats.getMin();
+        <span class="type">int</span> max = stats.getMax();
+        
+        <span class="type">System</span>.out.println(<span class="string">"Min: "</span> + min + <span class="string">", Max: "</span> + max);
+        <span class="type">System</span>.out.println(<span class="string">"Sum: "</span> + stats.getSum());
+        <span class="type">System</span>.out.println(<span class="string">"Average: "</span> + stats.getAverage());
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Created with ❤️ for Java Developers | Min/Max Finding Techniques</p>
+        </div>
+    </div>
+
+    <script>
+        function copyCode(button) {
+            const codeContainer = button.parentElement.nextElementSibling;
+            const code = codeContainer.querySelector('code').innerText;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+
+</html>

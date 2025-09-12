@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Number Checker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            background: #f9f9f9;
+        }
+        
+        .code-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            background: #272822;
+            color: #f8f8f2;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow: auto;
+            max-height: 400px;
+        }
+        
+        .input-container {
+            margin: 20px 0;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            border-color: #6a11cb;
+            box-shadow: 0 0 10px rgba(106, 17, 203, 0.3);
+        }
+        
+        .button-container {
+            margin: 25px 0;
+        }
+        
+        button {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s;
+            text-align: center;
+        }
+        
+        .palindrome {
+            background: rgba(76, 175, 80, 0.2);
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+        
+        .not-palindrome {
+            background: rgba(244, 67, 54, 0.2);
+            color: #d32f2f;
+            border: 2px solid #f44336;
+        }
+        
+        .default-result {
+            background: rgba(33, 150, 243, 0.2);
+            color: #1565c0;
+            border: 2px solid #2196f3;
+        }
+        
+        .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .code-line {
+            line-height: 1.5;
+            margin: 5px 0;
+        }
+        
+        .comment {
+            color: #75715e;
+        }
+        
+        .keyword {
+            color: #f92672;
+        }
+        
+        .method {
+            color: #66d9ef;
+        }
+        
+        .string {
+            color: #a6e22e;
+        }
+        
+        .number {
+            color: #ae81ff;
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 1rem;
+            color: #555;
+        }
+        
+        .explanation h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .examples {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .example {
+            background: #e0e0e0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Palindrome Number Checker</h1>
+            <p>Enter a number to check if it reads the same forwards and backwards</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="input-container">
+                    <input type="number" id="numberInput" placeholder="Enter a number (e.g., 141)">
+                </div>
+                
+                <div class="button-container">
+                    <button id="checkButton">
+                        <i class="fas fa-check-circle"></i> Check Palindrome
+                    </button>
+                </div>
+                
+                <div class="result default-result" id="result">
+                    <i class="fas fa-arrow-circle-down icon"></i>
+                    <p>Your result will appear here</p>
+                </div>
+                
+                <div class="explanation">
+                    <h3>What is a Palindrome Number?</h3>
+                    <p>A palindrome number is a number that remains the same when its digits are reversed. For example, 121, 3443, and 1221 are palindrome numbers.</p>
+                    
+                    <div class="examples">
+                        <div class="example">121 ✓</div>
+                        <div class="example">1331 ✓</div>
+                        <div class="example">123 ✗</div>
+                        <div class="example">3443 ✓</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-section">
+                <div class="code-line"><span class="comment">// PalindromeNumber.java</span></div>
+                <div class="code-line"><span class="keyword">package</span> numbers;</div>
+                <div class="code-line"></div>
+                <div class="code-line"><span class="keyword">import</span> java.util.Scanner;</div>
+                <div class="code-line"></div>
+                <div class="code-line"><span class="keyword">public class</span> PalindromeNumber {</div>
+                <div class="code-line">    <span class="keyword">public static void</span> main(String[] args) {</div>
+                <div class="code-line">        Scanner scanner = <span class="keyword">new</span> Scanner(System.in);</div>
+                <div class="code-line">        System.out.println(<span class="string">"Enter Number to check if it is Palindrome or not"</span>);</div>
+                <div class="code-line">        String number = scanner.nextLine();</div>
+                <div class="code-line">        </div>
+                <div class="code-line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder(number);</div>
+                <div class="code-line">        String reversed = sb.reverse().toString();</div>
+                <div class="code-line">        </div>
+                <div class="code-line">        <span class="keyword">if</span> (number.equals(reversed)) {</div>
+                <div class="code-line">            System.out.println(number + <span class="string">" This is a Palindrome Number"</span>);</div>
+                <div class="code-line">        } <span class="keyword">else</span> {</div>
+                <div class="code-line">            System.out.println(number + <span class="string">" This is not a Palindrome Number"</span>);</div>
+                <div class="code-line">        }</div>
+                <div class="code-line">        </div>
+                <div class="code-line">        scanner.close();</div>
+                <div class="code-line">    }</div>
+                <div class="code-line">}</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const numberInput = document.getElementById('numberInput');
+            const checkButton = document.getElementById('checkButton');
+            const resultDiv = document.getElementById('result');
+            
+            checkButton.addEventListener('click', function() {
+                const inputValue = numberInput.value.trim();
+                
+                if (inputValue === '') {
+                    resultDiv.innerHTML = '<i class="fas fa-exclamation-circle icon"></i><p>Please enter a number</p>';
+                    resultDiv.className = 'result default-result';
+                    return;
+                }
+                
+                if (inputValue.includes('-')) {
+                    resultDiv.innerHTML = '<i class="fas fa-times-circle icon"></i><p>Please enter a positive number</p>';
+                    resultDiv.className = 'result not-palindrome';
+                    return;
+                }
+                
+                const number = inputValue;
+                const reversed = number.split('').reverse().join('');
+                
+                if (number === reversed) {
+                    resultDiv.innerHTML = `<i class="fas fa-check-circle icon"></i><p>${number} is a Palindrome Number</p>`;
+                    resultDiv.className = 'result palindrome';
+                } else {
+                    resultDiv.innerHTML = `<i class="fas fa-times-circle icon"></i><p>${number} is not a Palindrome Number</p>`;
+                    resultDiv.className = 'result not-palindrome';
+                }
+            });
+            
+            // Allow user to press Enter to check
+            numberInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    checkButton.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

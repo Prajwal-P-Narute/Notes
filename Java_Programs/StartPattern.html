@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Pattern Programs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        header {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .menu-container {
+            background: white;
+        }
+
+        .menu {
+            display: flex;
+            flex-wrap: wrap;
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .menu-btn {
+            padding: 12px 20px;
+            margin: 5px;
+            background: linear-gradient(to bottom, #6c757d, #5a6268);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-btn:hover {
+            background: linear-gradient(to bottom, #5a6268, #4a5056);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .menu-btn.active {
+            background: linear-gradient(to bottom, #007bff, #0069d9);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+        }
+
+        .program {
+            display: none;
+            padding: 30px;
+        }
+
+        .program.active {
+            display: block;
+        }
+
+        .program-title {
+            font-size: 2rem;
+            color: #007bff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+
+        .program-title i {
+            margin-right: 15px;
+            font-size: 1.8rem;
+        }
+
+        .program-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #495057;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #6a11cb;
+        }
+
+        .ide-container {
+            background: #2d2d2d;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .ide-header {
+            background: #212121;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #3d3d3d;
+        }
+
+        .ide-buttons {
+            display: flex;
+            gap: 8px;
+            margin-right: 15px;
+        }
+
+        .ide-button {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .ide-button.close {
+            background: #ff5f56;
+        }
+
+        .ide-button.minimize {
+            background: #ffbd2e;
+        }
+
+        .ide-button.maximize {
+            background: #27c93f;
+        }
+
+        .ide-title {
+            color: #aaa;
+            font-size: 0.9rem;
+            flex: 1;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        .code-container {
+            padding: 25px;
+            overflow-x: auto;
+        }
+
+        pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 1rem;
+            line-height: 1.5;
+            tab-size: 4;
+            color: #f8f8f2;
+        }
+
+        .code-keyword {
+            color: #ff79c6;
+        }
+
+        .code-type {
+            color: #8be9fd;
+        }
+
+        .code-function {
+            color: #50fa7b;
+        }
+
+        .code-number {
+            color: #bd93f9;
+        }
+
+        .code-string {
+            color: #f1fa8c;
+        }
+
+        .code-comment {
+            color: #6272a4;
+        }
+
+        .output-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .output-title {
+            font-size: 1.5rem;
+            color: #495057;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .output-title i {
+            margin-right: 10px;
+            color: #6a11cb;
+        }
+
+        .output {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            color: #212121;
+            font-size: 1.1rem;
+            border-left: 4px solid #2575fc;
+        }
+
+        .pattern-output {
+            font-family: monospace;
+            line-height: 1.2;
+            letter-spacing: 2px;
+        }
+
+        .explanation {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+        }
+
+        .explanation-title {
+            font-size: 1.5rem;
+            color: #2575fc;
+            margin-bottom: 15px;
+        }
+
+        .explanation-list {
+            padding-left: 20px;
+        }
+
+        .explanation-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                flex-direction: column;
+            }
+
+            .menu-btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .program {
+                padding: 20px;
+            }
+
+            .program-title {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-star"></i> Star Pattern Programs</h1>
+            <p class="description">Explore various star patterns implemented in Java</p>
+        </header>
+
+        <div class="menu-container">
+            <div class="menu">
+                <button class="menu-btn active" onclick="showProgram('main')">Main Program</button>
+                <button class="menu-btn" onclick="showProgram('rightTriangle')">Right Triangle</button>
+                <button class="menu-btn" onclick="showProgram('invertedRightTriangle')">Inverted Right Triangle</button>
+                <button class="menu-btn" onclick="showProgram('pyramid')">Pyramid</button>
+                <button class="menu-btn" onclick="showProgram('diamond')">Diamond</button>
+                <button class="menu-btn" onclick="showProgram('hollowSquare')">Hollow Square</button>
+                <button class="menu-btn" onclick="showProgram('rightPascal')">Right Pascal</button>
+                <button class="menu-btn" onclick="showProgram('sandglass')">Sandglass</button>
+            </div>
+
+            <!-- Main Program -->
+            <div id="main" class="program active">
+                <h2 class="program-title"><i class="fas fa-code"></i> Main Program</h2>
+
+                <p class="program-description">
+                    This is the main program that calls all the different star pattern methods with a size of 5.
+                </p>
+
+                <div class="ide-container">
+                    <div class="ide-header">
+                        <div class="ide-buttons">
+                            <div class="ide-button close"></div>
+                            <div class="ide-button minimize"></div>
+                            <div class="ide-button maximize"></div>
+                        </div>
+                        <div class="ide-title">StarPatterns.java</div>
+                    </div>
+
+                    <div class="code-container">
+                        <pre><span class="code-keyword">public class</span> <span class="code-type">StarPatterns</span> {
+    <span class="code-keyword">public static void</span> <span class="code-function">main</span>(<span class="code-type">String</span>[] args) {
+        <span class="code-type">int</span> size = <span class="code-number">5</span>;
+        
+        <span class="code-function">rightTriangle</span>(size);
+        <span class="code-function">invertedRightTriangle</span>(size);
+        <span class="code-function">pyramid</span>(size);
+        <span class="code-function">diamond</span>(size);
+        <span class="code-function">hollowSquare</span>(size);
+        <span class="code-function">rightPascal</span>(size);
+        <span class="code-function">sandglass</span>(size);
+    }
+    
+    <span class="code-comment">// All the pattern methods would be placed here</span>
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <h3 class="output-title"><i class="fas fa-terminal"></i> Program Output</h3>
+                    <div class="output pattern-output">Right-Angled Triangle (Size: 5):
+                        *
+                        * *
+                        * * *
+                        * * * *
+                        * * * * *
+
+                        Inverted Right-Angled Triangle (Size: 5):
+                        * * * * *
+                        * * * *
+                        * * *
+                        * *
+                        *
+
+                        Pyramid Pattern (Size: 5):
+                        *
+                        ***
+                        *****
+                        *******
+                        *********
+
+                        Diamond Pattern (Size: 5):
+                        *
+                        ***
+                        *****
+                        *******
+                        *********
+                        *******
+                        *****
+                        ***
+                        *
+
+                        Hollow Square Pattern (Size: 5):
+                        * * * * *
+                        * *
+                        * *
+                        * *
+                        * * * * *
+
+                        Right Pascal's Triangle (Size: 5):
+                        *
+                        * *
+                        * * *
+                        * * * *
+                        * * * * *
+                        * * * *
+                        * * *
+                        * *
+                        *
+
+                        Sandglass Pattern (Size: 5):
+                        *********
+                        *******
+                        *****
+                        ***
+                        *
+                        ***
+                        *****
+                        *******
+                        *********</div>
+                </div>
+            </div>
+
+            <!-- Right Triangle Program -->
+            <div id="rightTriangle" class="program">
+                <h2 class="program-title"><i class="fas fa-play"></i> Right Triangle Pattern</h2>
+
+                <p class="program-description">
+                    This method prints a right-angled triangle pattern with the given size.
+                </p>
+
+                <div class="ide-container">
+                    <div class="ide-header">
+                        <div class="ide-buttons">
+                            <div class="ide-button close"></div>
+                            <div class="ide-button minimize"></div>
+                            <div class="ide-button maximize"></div>
+                        </div>
+                        <div class="ide-title">StarPatterns.java</div>
+                    </div>
+
+                    <div class="code-container">
+                        <pre><span class="code-keyword">public static void</span> <span class="code-function">rightTriangle</span>(<span class="code-type">int</span> n) {
+    <span class="code-type">System</span>.out.println(<span class="code-string">"Right-Angled Triangle (Size: "</span> + n + <span class="code-string">"):"</span>);
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">1</span>; i <= n; i++) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = <span class="code-number">1</span>; j <= i; j++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">"* "</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-type">System</span>.out.println();
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <h3 class="output-title"><i class="fas fa-terminal"></i> Pattern Output</h3>
+                    <div class="output pattern-output">Right-Angled Triangle (Size: 5):
+                        *
+                        * *
+                        * * *
+                        * * * *
+                        * * * * *</div>
+                </div>
+            </div>
+
+            <!-- Inverted Right Triangle Program -->
+            <div id="invertedRightTriangle" class="program">
+                <h2 class="program-title"><i class="fas fa-caret-down"></i> Inverted Right Triangle Pattern</h2>
+
+                <p class="program-description">
+                    This method prints an inverted right-angled triangle pattern with the given size.
+                </p>
+
+                <div class="ide-container">
+                    <div class="ide-header">
+                        <div class="ide-buttons">
+                            <div class="ide-button close"></div>
+                            <div class="ide-button minimize"></div>
+                            <div class="ide-button maximize"></div>
+                        </div>
+                        <div class="ide-title">StarPatterns.java</div>
+                    </div>
+
+                    <div class="code-container">
+                        <pre><span class="code-keyword">public static void</span> <span class="code-function">invertedRightTriangle</span>(<span class="code-type">int</span> n) {
+    <span class="code-type">System</span>.out.println(<span class="code-string">"Inverted Right-Angled Triangle (Size: "</span> + n + <span class="code-string">"):"</span>);
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = n; i >= <span class="code-number">1</span>; i--) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = <span class="code-number">1</span>; j <= i; j++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">"* "</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-type">System</span>.out.println();
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <h3 class="output-title"><i class="fas fa-terminal"></i> Pattern Output</h3>
+                    <div class="output pattern-output">Inverted Right-Angled Triangle (Size: 5):
+                        * * * * *
+                        * * * *
+                        * * *
+                        * *
+                        *</div>
+                </div>
+            </div>
+
+            <!-- Pyramid Program -->
+            <div id="pyramid" class="program">
+                <h2 class="program-title"><i class="fas fa-gem"></i> Pyramid Pattern</h2>
+
+                <p class="program-description">
+                    This method prints a pyramid pattern with the given size.
+                </p>
+
+                <div class="ide-container">
+                    <div class="ide-header">
+                        <div class="ide-buttons">
+                            <div class="ide-button close"></div>
+                            <div class="ide-button minimize"></div>
+                            <div class="ide-button maximize"></div>
+                        </div>
+                        <div class="ide-title">StarPatterns.java</div>
+                    </div>
+
+                    <div class="code-container">
+                        <pre><span class="code-keyword">public static void</span> <span class="code-function">pyramid</span>(<span class="code-type">int</span> n) {
+    <span class="code-type">System</span>.out.println(<span class="code-string">"Pyramid Pattern (Size: "</span> + n + <span class="code-string">"):"</span>);
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">1</span>; i <= n; i++) {
+        <span class="code-comment">// Print spaces</span>
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = i; j < n; j++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">" "</span>);
+        }
+        <span class="code-comment">// Print stars</span>
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> k = <span class="code-number">1</span>; k <= (<span class="code-number">2</span>*i-<span class="code-number">1</span>); k++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">"*"</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-type">System</span>.out.println();
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <h3 class="output-title"><i class="fas fa-terminal"></i> Pattern Output</h3>
+                    <div class="output pattern-output">Pyramid Pattern (Size: 5):
+                        *
+                        ***
+                        *****
+                        *******
+                        *********</div>
+                </div>
+            </div>
+
+            <!-- Diamond Program -->
+            <div id="diamond" class="program">
+                <h2 class="program-title"><i class="fas fa-gem"></i> Diamond Pattern</h2>
+
+                <p class="program-description">
+                    This method prints a diamond pattern with the given size.
+                </p>
+
+                <div class="ide-container">
+                    <div class="ide-header">
+                        <div class="ide-buttons">
+                            <div class="ide-button close"></div>
+                            <div class="ide-button minimize"></div>
+                            <div class="ide-button maximize"></div>
+                        </div>
+                        <div class="ide-title">StarPatterns.java</div>
+                    </div>
+
+                    <div class="code-container">
+                        <pre><span class="code-keyword">public static void</span> <span class="code-function">diamond</span>(<span class="code-type">int</span> n) {
+    <span class="code-type">System</span>.out.println(<span class="code-string">"Diamond Pattern (Size: "</span> + n + <span class="code-string">"):"</span>);
+    <span class="code-comment">// Upper pyramid</span>
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">1</span>; i <= n; i++) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = i; j < n; j++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">" "</span>);
+        }
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> k = <span class="code-number">1</span>; k <= (<span class="code-number">2</span>*i-<span class="code-number">1</span>); k++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">"*"</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-comment">// Lower pyramid</span>
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = n-<span class="code-number">1</span>; i >= <span class="code-number">1</span>; i--) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = n; j > i; j--) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">" "</span>);
+        }
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> k = <span class="code-number">1</span>; k <= (<span class="code-number">2</span>*i-<span class="code-number">1</span>); k++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">"*"</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-type">System</span>.out.println();
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <h3 class="output-title"><i class="fas fa-terminal"></i> Pattern Output</h3>
+                    <div class="output pattern-output">Diamond Pattern (Size: 5):
+                        *
+                        ***
+                        *****
+                        *******
+                        *********
+                        *******
+                        *****
+                        ***
+                        *</div>
+                </div>
+            </div>
+
+            <!-- Hollow Square Program -->
+            <div id="hollowSquare" class="program">
+                <h2 class="program-title"><i class="fas fa-square"></i> Hollow Square Pattern</h2>
+
+                <p class="program-description">
+                    This method prints a hollow square pattern with the given size.
+                </p>
+
+                <div class="ide-container">
+                    <div class="ide-header">
+                        <div class="ide-buttons">
+                            <div class="ide-button close"></div>
+                            <div class="ide-button minimize"></div>
+                            <div class="ide-button maximize"></div>
+                        </div>
+                        <div class="ide-title">StarPatterns.java</div>
+                    </div>
+
+                    <div class="code-container">
+                        <pre><span class="code-keyword">public static void</span> <span class="code-function">hollowSquare</span>(<span class="code-type">int</span> n) {
+    <span class="code-type">System</span>.out.println(<span class="code-string">"Hollow Square Pattern (Size: "</span> + n + <span class="code-string">"):"</span>);
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">1</span>; i <= n; i++) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = <span class="code-number">1</span>; j <= n; j++) {
+            <span class="code-keyword">if</span> (i == <span class="code-number">1</span> || i == n || j == <span class="code-number">1</span> || j == n)
+                <span class="code-type">System</span>.out.print(<span class="code-string">"* "</span>);
+            <span class="code-keyword">else</span>
+                <span class="code-type">System</span>.out.print(<span class="code-string">"  "</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-type">System</span>.out.println();
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <h3 class="output-title"><i class="fas fa-terminal"></i> Pattern Output</h3>
+                    <div class="output pattern-output">Hollow Square Pattern (Size: 5):
+                        * * * * *
+                        * *
+                        * *
+                        * *
+                        * * * * *</div>
+                </div>
+            </div>
+
+            <!-- Right Pascal Program -->
+            <div id="rightPascal" class="program">
+                <h2 class="program-title"><i class="fas fa-arrows-alt-h"></i> Right Pascal Pattern</h2>
+
+                <p class="program-description">
+                    This method prints a right Pascal's triangle pattern with the given size.
+                </p>
+
+                <div class="ide-container">
+                    <div class="ide-header">
+                        <div class="ide-buttons">
+                            <div class="ide-button close"></div>
+                            <div class="ide-button minimize"></div>
+                            <div class="ide-button maximize"></div>
+                        </div>
+                        <div class="ide-title">StarPatterns.java</div>
+                    </div>
+
+                    <div class="code-container">
+                        <pre><span class="code-keyword">public static void</span> <span class="code-function">rightPascal</span>(<span class="code-type">int</span> n) {
+    <span class="code-type">System</span>.out.println(<span class="code-string">"Right Pascal's Triangle (Size: "</span> + n + <span class="code-string">"):"</span>);
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">1</span>; i <= n; i++) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = <span class="code-number">1</span>; j <= i; j++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">"* "</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = n-<span class="code-number">1</span>; i >= <span class="code-number">1</span>; i--) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = <span class="code-number">1</span>; j <= i; j++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">"* "</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-type">System</span>.out.println();
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <h3 class="output-title"><i class="fas fa-terminal"></i> Pattern Output</h3>
+                    <div class="output pattern-output">Right Pascal's Triangle (Size: 5):
+                        *
+                        * *
+                        * * *
+                        * * * *
+                        * * * * *
+                        * * * *
+                        * * *
+                        * *
+                        *</div>
+                </div>
+            </div>
+
+            <!-- Sandglass Program -->
+            <div id="sandglass" class="program">
+                <h2 class="program-title"><i class="fas fa-hourglass-half"></i> Sandglass Pattern</h2>
+
+                <p class="program-description">
+                    This method prints a sandglass pattern with the given size.
+                </p>
+
+                <div class="ide-container">
+                    <div class="ide-header">
+                        <div class="ide-buttons">
+                            <div class="ide-button close"></div>
+                            <div class="ide-button minimize"></div>
+                            <div class="ide-button maximize"></div>
+                        </div>
+                        <div class="ide-title">StarPatterns.java</div>
+                    </div>
+
+                    <div class="code-container">
+                        <pre><span class="code-keyword">public static void</span> <span class="code-function">sandglass</span>(<span class="code-type">int</span> n) {
+    <span class="code-type">System</span>.out.println(<span class="code-string">"Sandglass Pattern (Size: "</span> + n + <span class="code-string">"):"</span>);
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = n; i >= <span class="code-number">1</span>; i--) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = i; j < n; j++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">" "</span>);
+        }
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> k = <span class="code-number">1</span>; k <= (<span class="code-number">2</span>*i-<span class="code-number">1</span>); k++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">"*"</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">2</span>; i <= n; i++) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = i; j < n; j++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">" "</span>);
+        }
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> k = <span class="code-number">1</span>; k <= (<span class="code-number">2</span>*i-<span class="code-number">1</span>); k++) {
+            <span class="code-type">System</span>.out.print(<span class="code-string">"*"</span>);
+        }
+        <span class="code-type">System</span>.out.println();
+    }
+    <span class="code-type">System</span>.out.println();
+}</pre>
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <h3 class="output-title"><i class="fas fa-terminal"></i> Pattern Output</h3>
+                    <div class="output pattern-output">Sandglass Pattern (Size: 5):
+                        *********
+                        *******
+                        *****
+                        ***
+                        *
+                        ***
+                        *****
+                        *******
+                        *********</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Function to show the selected program and hide others
+        function showProgram(programId) {
+            // Hide all programs
+            document.querySelectorAll('.program').forEach(program => {
+                program.classList.remove('active');
+            });
+
+            // Show the selected program
+            document.getElementById(programId).classList.add('active');
+
+            // Update active button
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            event.target.classList.add('active');
+        }
+
+        // Add slight animation to the output for a dynamic effect
+        document.addEventListener('DOMContentLoaded', function () {
+            const outputs = document.querySelectorAll('.output');
+            outputs.forEach(output => {
+                output.style.opacity = 0;
+
+                setTimeout(() => {
+                    output.style.transition = 'opacity 1s ease-in-out';
+                    output.style.opacity = 1;
+                }, 500);
+            });
+        });
+    </script>
+</body>
+
+</html>

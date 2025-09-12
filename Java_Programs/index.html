@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Programs Index</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #ff6b6b;
+            --accent: #4ecdc4;
+            --dark: #2d3436;
+            --light: #f7f7f7;
+            --gradient-start: #6a11cb;
+            --gradient-end: #2575fc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .programs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .program-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .program-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+
+        .card-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--primary);
+        }
+
+        .card-description {
+            color: var(--dark);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .card-button {
+            background: linear-gradient(45deg, var(--secondary), #ff8e8e);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .card-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .decoration {
+            position: absolute;
+            z-index: -1;
+        }
+
+        .decoration-1 {
+            top: 10%;
+            left: 10%;
+            font-size: 5rem;
+            opacity: 0.1;
+            color: white;
+        }
+
+        .decoration-2 {
+            bottom: 10%;
+            right: 10%;
+            font-size: 5rem;
+            opacity: 0.1;
+            color: white;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .programs-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .program-card {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="decoration decoration-1">
+        <i class="fas fa-code"></i>
+    </div>
+
+    <div class="decoration decoration-2">
+        <i class="fas fa-laptop-code"></i>
+    </div>
+
+    <div class="notification" id="notification">
+        Notification message
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Java Programs</h1>
+            <p class="subtitle">Explore these interactive Java programming examples with colorful and engaging
+                interfaces</p>
+        </header>
+
+        <div class="programs-container">
+            <!-- Factorial Program Card -->
+            <div class="program-card">
+                <div class="card-header">
+                    Factorial Calculator
+                </div>
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <p class="card-description">
+                        Calculate the factorial of any non-negative integer. See the step-by-step computation and learn
+                        how factorials work.
+                    </p>
+                    <a href="Factorial.html" class="card-button"
+                        onclick="showNotification('Opening Factorial Program...')">
+                        <i class="fas fa-external-link-alt"></i> Open Factorial Program
+                    </a>
+                </div>
+            </div>
+
+            <!-- Star Pattern Program Card -->
+            <div class="program-card">
+                <div class="card-header">
+                    Star Pattern Generator
+                </div>
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="card-description">
+                        Create beautiful star patterns with customizable rows. Perfect for understanding nested loops in
+                        Java.
+                    </p>
+                    <a href="StartPattern.html" class="card-button"
+                        onclick="showNotification('Opening Star Pattern Program...')">
+                        <i class="fas fa-external-link-alt"></i> Open Star Pattern Program
+                    </a>
+                </div>
+            </div>
+
+            <!-- Fibonacci series-->
+            <div class="program-card">
+                <div class="card-header">
+                    Fibonacci Series
+                </div>
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <p class="card-description">
+                        Generate Fibonacci sequences up to any number of terms. Visualize the famous mathematical
+                        sequence.
+                    </p>
+                    <a href="FibonacciSeries.html" class="card-button"
+                        onclick="showNotification('Opening Fibonacci Program...')">
+                        <i class="fas fa-external-link-alt"></i> Open Fibonacci Program
+                    </a>
+                </div>
+            </div>
+
+            <!-- Array -->
+            <div class="program-card">
+                <div class="card-header">
+                    Array Programs
+                </div>
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <p class="card-description">
+                        Work with array operations including sorting, searching, and other common array manipulations.
+                    </p>
+                    <a href="Array.html" class="card-button" onclick="showNotification('Opening Array Programs...')">
+                        <i class="fas fa-external-link-alt"></i> Open Array Programs
+                    </a>
+                </div>
+            </div>
+
+            <!-- String -->
+            <div class="program-card">
+                <div class="card-header">
+                    String Programs
+                </div>
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-font"></i>
+                    </div>
+                    <p class="card-description">
+                        Explore string manipulation programs including reversal, palindrome check, and other operations.
+                    </p>
+                    <a href="String.html" class="card-button" onclick="showNotification('Opening String Programs...')">
+                        <i class="fas fa-external-link-alt"></i> Open String Programs
+                    </a>
+                </div>
+            </div>
+
+            <!-- Prime Number -->
+            <div class="program-card">
+                <div class="card-header">
+                    Prime Number Checker
+                </div>
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <p class="card-description">
+                        Check if a number is prime and learn about prime numbers with detailed explanations.
+                    </p>
+                    <a href="PrimeNumber.html" class="card-button"
+                        onclick="showNotification('Opening Prime Number Program...')">
+                        <i class="fas fa-external-link-alt"></i> Open Prime Checker
+                    </a>
+                </div>
+            </div>
+
+            <!-- Palindrome Number -->
+            <div class="program-card">
+                <div class="card-header">
+                    Palindrome Number Checker
+                </div>
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <p class="card-description">
+                        Check if a number reads the same forwards and backwards. Understand palindrome numbers.
+                    </p>
+                    <a href="PalindromNumber.html" class="card-button"
+                        onclick="showNotification('Opening Palindrome Number Program...')">
+                        <i class="fas fa-external-link-alt"></i> Open Palindrome Checker
+                    </a>
+                </div>
+            </div>
+
+            <!-- Armstrong number -->
+            <div class="program-card">
+                <div class="card-header">
+                    Armstrong Number Checker
+                </div>
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <p class="card-description">
+                        Check if a number is an Armstrong number (sum of its own digits each raised to the power of the
+                        number of digits).
+                    </p>
+                    <a href="Armstrong.html" class="card-button"
+                        onclick="showNotification('Opening Armstrong Number Program...')">
+                        <i class="fas fa-external-link-alt"></i> Open Armstrong Checker
+                    </a>
+                </div>
+            </div>
+
+            <!-- Max Min  number -->
+            <div class="program-card">
+                <div class="card-header">
+                    Max & Min Number Finder
+                </div>
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-sort-amount-down-alt"></i>
+                    </div>
+                    <p class="card-description">
+                        Find the maximum and minimum numbers from a set of values. Useful for data analysis tasks.
+                    </p>
+                    <a href="MaxMinNumber.html" class="card-button"
+                        onclick="showNotification('Opening Max & Min Number Program...')">
+                        <i class="fas fa-external-link-alt"></i> Open Max/Min Finder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Created with ❤️ for Java Programming Examples | <i class="fas fa-code"></i> by Developer</p>
+        </footer>
+    </div>
+
+    <script>
+        // Add subtle animation to cards when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.program-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 200 * index);
+            });
+        });
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+
+            setTimeout(function () {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>
