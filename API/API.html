@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Testing Notes - Comprehensive Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 50px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(120deg, #2c3e50, #4a69bd);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .emoji {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .menu-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .menu.active {
+            left: 0;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .menu h3 {
+            margin: 30px 0 15px;
+            color: #4a69bd;
+            border-bottom: 2px solid #4a69bd;
+            padding-bottom: 10px;
+        }
+
+        .menu ul {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 10px;
+        }
+
+        .menu a {
+            color: #555;
+            text-decoration: none;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .menu a:hover {
+            background: #f0f5ff;
+            color: #4a69bd;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: #4a69bd;
+            color: white;
+            padding: 18px 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .card-body ul {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+
+        .card-body li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .card-body li:before {
+            content: "•";
+            color: #4a69bd;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .status-codes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .status-code {
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .status-2xx {
+            background: #2ecc71;
+        }
+
+        .status-3xx {
+            background: #f39c12;
+        }
+
+        .status-4xx {
+            background: #e74c3c;
+        }
+
+        .status-5xx {
+            background: #9b59b6;
+        }
+
+        .interview-qa {
+            background: #fff8e1;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .question {
+            font-weight: 700;
+            color: #d35400;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .question-badge {
+            background: #ffa000;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+            margin-top: 2px;
+        }
+
+        .methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .method {
+            padding: 8px 15px;
+            background: #4a69bd;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .tool {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            border: 1px solid #e9ecef;
+        }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+
+        .example {
+            background: #f5f5f5;
+            padding: 12px;
+            border-left: 4px solid #4a69bd;
+            margin: 10px 0;
+            border-radius: 0 4px 4px 0;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #d32f2f, #ffa000);
+            color: #fff;
+            font-size: 1.18rem;
+            font-weight: 700;
+            border-radius: 36px;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(211, 47, 47, 0.12);
+            letter-spacing: 1.2px;
+            transition: background 0.3s, box-shadow 0.3s;
+            margin: 20px 0;
+        }
+
+        .nav-button:hover {
+            background: linear-gradient(135deg, #b71c1c, #f57c00);
+            box-shadow: 0 8px 22px rgba(211, 47, 47, 0.18);
+        }
+
+        .contact-info {
+            text-align: center;
+            margin-bottom: 18px;
+            color: #d32f2f;
+            font-size: 1.08rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            background: linear-gradient(90deg, #fff3e0 0%, #f3f3fd 100%);
+            border-radius: 24px;
+            padding: 12px 0;
+            box-shadow: 0 2px 8px rgba(211, 47, 47, 0.07);
+            margin: 0 20px 18px 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .card-header {
+                font-size: 1.2rem;
+                padding: 14px 16px;
+            }
+
+            .nav-button {
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+
+            .contact-info {
+                font-size: 0.9rem;
+                margin: 0 10px 18px 10px;
+            }
+
+            .status-codes {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            .menu {
+                width: 250px;
+                left: -250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .card-body {
+                padding: 16px;
+            }
+
+            .interview-qa {
+                padding: 12px;
+            }
+
+            .question {
+                font-size: 0.9rem;
+            }
+
+            .menu-toggle {
+                top: 15px;
+                left: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu -->
+    <div class="menu" id="mainMenu">
+        <button class="close-menu">&times;</button>
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#what-is-api">What is API Testing?</a></li>
+            <li><a href="#why-api">Why API Testing?</a></li>
+            <li><a href="#types-of-api">Types of API</a></li>
+            <li><a href="#http-methods">HTTP Methods</a></li>
+            <li><a href="#checklist">API Testing Checklist</a></li>
+            <li><a href="#techniques">API Testing Techniques</a></li>
+            <li><a href="#tools">Tools for API Testing</a></li>
+            <li><a href="#automation">API Testing in Automation</a></li>
+            <li><a href="#status-codes">Status Codes</a></li>
+            <li><a href="#best-practices">Best Practices</a></li>
+            <li><a href="#test-cases">Sample Test Cases</a></li>
+            <li><a href="#interview">Interview Questions</a></li>
+            <li><a href="#api-concepts">API Concepts</a></li>
+            <li><a href="#soap-rest">SOAP vs REST</a></li>
+            <li><a href="#authorization">Authorization Types</a></li>
+            <li><a href="#environment">Test Environment</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <header>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="emoji">📘</div>
+            <h1>API Testing Notes</h1>
+            <p class="subtitle">A comprehensive guide to API testing concepts, tools, best practices, and interview
+                preparation</p>
+        </header>
+
+        <div class="grid">
+            <div class="card" id="what-is-api">
+                <div class="card-header">
+                    <i class="fas fa-question-circle"></i> What is API Testing?
+                </div>
+                <div class="card-body">
+                    <p>API (Application Programming Interface) testing is a type of software testing that validates:</p>
+                    <ul>
+                        <li>Endpoints, request/response</li>
+                        <li>Business logic and data handling</li>
+                        <li>Security and performance aspects</li>
+                        <li>Focuses on backend testing (without UI)</li>
+                    </ul>
+                    <p>API is used to communicate between two systems. It is simply known as sending the request from
+                        one system to another system and getting the required response.</p>
+                    <div class="example">
+                        <strong>Example:</strong> Communication between IRCTC and OTP. Here we send request from IRCTC
+                        App to get the response as OTP.
+                    </div>
+                    <p>Typically done using tools like Postman, REST Assured, Pytest, SoapUI, Karate, JMeter, etc.</p>
+                </div>
+            </div>
+
+            <div class="card" id="why-api">
+                <div class="card-header">
+                    <i class="fas fa-check-circle"></i> Why API Testing?
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Early defect detection (before UI is ready)</li>
+                        <li>Ensures functionality, reliability, performance, and security</li>
+                        <li>Saves time in regression compared to UI automation</li>
+                        <li>Validates integration between services</li>
+                        <li>Language-agnostic testing approach</li>
+                        <li>More stable than UI tests (less prone to changes)</li>
+                    </ul>
+                    <p><strong>Advantages of API:</strong></p>
+                    <ul>
+                        <li>API provides security through an API layer between systems</li>
+                        <li>Helps avoid data breaching and hacking</li>
+                        <li>Increases performance and balances load using microservices replicas</li>
+                        <li>Helps in data hiding</li>
+                        <li>Ensures proper communication between systems</li>
+                        <li>Checks and authenticates the data being passed</li>
+                        <li>Tests core functionality</li>
+                        <li>Time effective - can hit many APIs in less time</li>
+                        <li>Language independent (XML, JSON, HTML, TEXT, etc.)</li>
+                        <li>Easy interaction with GUI</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="types-of-api">
+                <div class="card-header">
+                    <i class="fas fa-plug"></i> Types of API
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li><strong>REST API</strong> (JSON/XML, HTTP methods) - Most common</li>
+                        <li><strong>SOAP API</strong> (XML, WSDL-based) - More structured</li>
+                        <li><strong>GraphQL API</strong> (query-based) - Efficient data retrieval</li>
+                        <li><strong>gRPC API</strong> (high-performance, protocol buffers) - Microservices</li>
+                        <li>WebSocket APIs - Real-time communication</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="http-methods">
+                <div class="card-header">
+                    <i class="fas fa-exchange-alt"></i> Common HTTP Methods
+                </div>
+                <div class="card-body">
+                    <div class="methods">
+                        <span class="method">GET → Fetch data</span>
+                        <span class="method">POST → Create data</span>
+                        <span class="method">PUT → Update entire resource</span>
+                        <span class="method">PATCH → Update partial resource</span>
+                        <span class="method">DELETE → Remove resource</span>
+                        <span class="method">HEAD → Headers only</span>
+                        <span class="method">OPTIONS → Communication options</span>
+                    </div>
+                    <p><strong>CRUD Operations:</strong></p>
+                    <ul>
+                        <li>C - Create the Data → POST</li>
+                        <li>R - Retrieve/Fetch the Data → GET</li>
+                        <li>U - Update the data → PUT</li>
+                        <li>D - Delete the data → DELETE</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="checklist">
+                <div class="card-header">
+                    <i class="fas fa-tasks"></i> API Testing Checklist
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Verify status codes (200, 201, 400, 401, 403, 404, 500, etc.)</li>
+                        <li>Validate response body (correct fields, values, data types)</li>
+                        <li>Check headers (Content-Type, Authorization, CORS, etc.)</li>
+                        <li>Authentication (Basic Auth, OAuth, JWT, API Keys)</li>
+                        <li>Error handling (invalid input, missing params)</li>
+                        <li>Data integrity (response matches DB / expected schema)</li>
+                        <li>Performance (response time, load testing)</li>
+                        <li>Security (SQL injection, XSS, token expiration)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="techniques">
+                <div class="card-header">
+                    <i class="fas fa-flask"></i> API Testing Techniques
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li><strong>Functional Testing</strong> → Verify endpoints work as expected</li>
+                        <li><strong>Positive Testing</strong> → Valid input → valid response</li>
+                        <li><strong>Negative Testing</strong> → Invalid input → proper error</li>
+                        <li><strong>Boundary Testing</strong> → Max/min values, limits</li>
+                        <li><strong>Schema Validation</strong> → JSON/XML schema validation</li>
+                        <li><strong>Load & Stress Testing</strong> → High volume requests</li>
+                        <li><strong>Security Testing</strong> → Auth, encryption, penetration tests</li>
+                        <li><strong>Fuzz Testing</strong> → Random data inputs</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="tools">
+                <div class="card-header">
+                    <i class="fas fa-tools"></i> Tools for API Testing
+                </div>
+                <div class="card-body">
+                    <div class="tools">
+                        <span class="tool"><i class="fas fa-cloud"></i> Postman</span>
+                        <span class="tool"><i class="fab fa-java"></i> REST Assured</span>
+                        <span class="tool"><i class="fab fa-python"></i> Pytest + Requests</span>
+                        <span class="tool"><i class="fas fa-code"></i> Karate DSL</span>
+                        <span class="tool"><i class="fas fa-tachometer-alt"></i> JMeter</span>
+                        <span class="tool"><i class="fas fa-soap"></i> SoapUI</span>
+                        <span class="tool"><i class="fas fa-bolt"></i> Katalon Studio</span>
+                        <span class="tool"><i class="fas fa-server"></i> Apache HttpClient</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="automation">
+                <div class="card-header">
+                    <i class="fas fa-cogs"></i> API Testing in Automation Framework
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Integrate API tests in CI/CD pipelines (Jenkins, GitHub Actions)</li>
+                        <li>Reporting → Extent Reports, Allure, HTML reports</li>
+                        <li>Combine with UI + DB tests for E2E validation</li>
+                        <li>Use environment variables for different configurations</li>
+                        <li>Implement retry mechanisms for flaky tests</li>
+                        <li>Parallel execution for faster feedback</li>
+                        <li>Version control for API test scripts</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="status-codes">
+                <div class="card-header">
+                    <i class="fas fa-code"></i> Common Status Codes
+                </div>
+                <div class="card-body">
+                    <div class="status-codes">
+                        <div class="status-code status-2xx">200 OK</div>
+                        <div class="status-code status-2xx">201 Created</div>
+                        <div class="status-code status-2xx">204 No Content</div>
+
+                        <div class="status-code status-3xx">301 Moved Permanently</div>
+                        <div class="status-code status-3xx">302 Found</div>
+                        <div class="status-code status-3xx">304 Not Modified</div>
+
+                        <div class="status-code status-4xx">400 Bad Request</div>
+                        <div class="status-code status-4xx">401 Unauthorized</div>
+                        <div class="status-code status-4xx">403 Forbidden</div>
+                        <div class="status-code status-4xx">404 Not Found</div>
+
+                        <div class="status-code status-5xx">500 Internal Server Error</div>
+                        <div class="status-code status-5xx">502 Bad Gateway</div>
+                        <div class="status-code status-5xx">503 Service Unavailable</div>
+                    </div>
+                    <p><strong>Common Error Code Examples:</strong></p>
+                    <ul>
+                        <li>200 - When we get successful data</li>
+                        <li>201 - When we create data into database</li>
+                        <li>400 - URL wrong or endpoint missing</li>
+                        <li>401 - Session expired, invalid token/username/password</li>
+                        <li>404 - URL not present</li>
+                        <li>500 - Server down or network issue</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="best-practices">
+                <div class="card-header">
+                    <i class="fas fa-star"></i> Best Practices
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Always test with valid and invalid inputs</li>
+                        <li>Use environment variables (dev, QA, prod)</li>
+                        <li>Implement data-driven testing</li>
+                        <li>Mock APIs if backend is not ready</li>
+                        <li>Validate both request and response payloads</li>
+                        <li>Automate regression cases</li>
+                        <li>Maintain API documentation</li>
+                        <li>Test for edge cases and boundary values</li>
+                        <li>Include performance testing in test strategy</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="test-cases">
+                <div class="card-header">
+                    <i class="fas fa-check-square"></i> Sample API Test Cases
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Verify GET /users returns 200 OK with correct data</li>
+                        <li>Verify POST /login with valid creds returns token</li>
+                        <li>Verify POST /login with invalid creds returns 401 Unauthorized</li>
+                        <li>Verify PUT /user/{id} updates user details</li>
+                        <li>Verify DELETE /user/{id} removes user and returns 204</li>
+                        <li>Verify response schema matches API documentation</li>
+                        <li>Verify API response time &lt; 2 seconds</li>
+                        <li>Verify pagination, sorting, filtering</li>
+                        <li>Verify rate limiting works correctly</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="api-concepts">
+                <div class="card-header">
+                    <i class="fas fa-lightbulb"></i> API Concepts
+                </div>
+                <div class="card-body">
+                    <p><strong>REST Concepts:</strong></p>
+                    <ul>
+                        <li><strong>REST</strong> - Architecture used to create REST API</li>
+                        <li><strong>REST Assured</strong> - Libraries to automate REST API</li>
+                        <li><strong>RESTful</strong> - When we automate REST API successfully</li>
+                    </ul>
+
+                    <p><strong>Web Services:</strong></p>
+                    <ul>
+                        <li>API call over HTTP (internet) protocol is called a Web Service</li>
+                        <li>Web service facilitates interaction between two machines over a network</li>
+                    </ul>
+
+                    <p><strong>WSDL (Web Service Description Language):</strong></p>
+                    <ul>
+                        <li>XML document containing all details about web services and API requests</li>
+                    </ul>
+
+                    <p><strong>UDDI (Universal Description Discovery Integration):</strong></p>
+                    <ul>
+                        <li>XML-based standard for describing, publishing, and finding web services</li>
+                    </ul>
+
+                    <p><strong>SOAP Elements:</strong></p>
+                    <ul>
+                        <li>Envelope - Beginning and end of message</li>
+                        <li>Header - Header information</li>
+                        <li>Body - Call and response information</li>
+                        <li>Fault - Error and status information</li>
+                    </ul>
+
+                    <p><strong>WSDL Elements:</strong></p>
+                    <ul>
+                        <li>Type - Data types used by web services</li>
+                        <li>Message - Data elements for each operation</li>
+                        <li>Port Type - Operations that can be performed</li>
+                        <li>Binding - Protocol and data format for each port type</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="soap-rest">
+                <div class="card-header">
+                    <i class="fas fa-balance-scale"></i> SOAP vs REST Differences
+                </div>
+                <div class="card-body">
+                    <p><strong>REST:</strong></p>
+                    <ul>
+                        <li>Uses HTTP methods (GET, POST, PUT, DELETE)</li>
+                        <li>Lightweight, usually JSON</li>
+                        <li>Faster, more flexible</li>
+                        <li>Example: GET /users/1</li>
+                    </ul>
+
+                    <p><strong>SOAP:</strong></p>
+                    <ul>
+                        <li>Uses XML with strict standards (WSDL)</li>
+                        <li>Heavier, requires more bandwidth</li>
+                        <li>Built-in security and ACID compliance</li>
+                        <li>Example: &lt;soap:Envelope&gt; ... &lt;/soap:Envelope&gt;</li>
+                    </ul>
+
+                    <p><strong>Key Differences:</strong></p>
+                    <ul>
+                        <li>API calls can be internal or over the internet, while web services call over the internet
+                        </li>
+                        <li>Web service facilitates interaction between two machines over a network</li>
+                        <li>API acts as an interface between two different applications</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" id="authorization">
+                <div class="card-header">
+                    <i class="fas fa-key"></i> Authorization Types
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li><strong>Basic Auth</strong> - Username and password only</li>
+                        <li><strong>Digest Auth</strong> - More secure than Basic (username/password converted to hash)
+                        </li>
+                        <li><strong>Token Auth</strong> - Pass token value with Bearer keyword (most commonly used)</li>
+                        <li><strong>OAuth 1.0</strong> - Consumer Key, Consumer Secret, Access Token, Token Secret</li>
+                        <li><strong>OAuth 2.0</strong> - Grant Type, Client ID, Client Secret</li>
+                        <li><strong>No Auth</strong> - No authentication required</li>
+                        <li><strong>AWS Signature</strong> - Amazon Web Services signature</li>
+                    </ul>
+
+                    <p><strong>OAuth Usage:</strong></p>
+                    <ul>
+                        <li>OAuth 1.0 - Used for third-party logins</li>
+                        <li>OAuth 2.0 - Used with single URL and different endpoints</li>
+                    </ul>
+
+                    <p>Token authorization is mostly used in organizations because it can be easily regenerated when
+                        expired and provides good security.</p>
+                </div>
+            </div>
+
+            <div class="card" id="environment">
+                <div class="card-header">
+                    <i class="fas fa-server"></i> Test Environment
+                </div>
+                <div class="card-body">
+                    <p><strong>Test Environments:</strong></p>
+                    <ul>
+                        <li><strong>DEV</strong> - Where developers work</li>
+                        <li><strong>SIT/QA</strong> - Where testers work</li>
+                        <li><strong>UAT</strong> - Where testers and clients work</li>
+                        <li><strong>PROD</strong> - Live environment</li>
+                    </ul>
+
+                    <p><strong>API Test Environments:</strong></p>
+                    <ul>
+                        <li><strong>Global</strong> - Large scope (variables between different collections)</li>
+                        <li><strong>Local</strong> - Small scope (variables from one request to another)</li>
+                    </ul>
+
+                    <p>In QA/UAT environments, we use both Global and Local environments for API methods.</p>
+                </div>
+            </div>
+
+            <div class="card" id="interview">
+                <div class="card-header">
+                    <i class="fas fa-user-graduate"></i> Interview Tips & Questions
+                </div>
+                <div class="card-body">
+                    <div class="interview-qa">
+                        <div class="question">
+                            <span class="question-badge">Q1</span>
+                            Difference between API Testing and UI Testing?
+                        </div>
+                        <p><strong>Answer:</strong> API Testing focuses on backend validation — request/response, status
+                            codes, business logic, DB validation, and performance. It does not require a user interface.
+                        </p>
+                        <p>UI Testing focuses on frontend functionality, visual elements, user interactions, and
+                            end-to-end workflows.</p>
+                        <div class="example">
+                            <strong>Example:</strong> In API testing, I validate a POST /login returns a token. In UI
+                            testing, I check if the login button works and user is redirected to the dashboard.
+                        </div>
+                    </div>
+
+                    <div class="interview-qa">
+                        <div class="question">
+                            <span class="question-badge">Q2</span>
+                            REST vs SOAP differences?
+                        </div>
+                        <p><strong>Answer:</strong></p>
+                        <p><strong>REST:</strong></p>
+                        <ul>
+                            <li>Uses HTTP methods (GET, POST, PUT, DELETE)</li>
+                            <li>Lightweight, usually JSON</li>
+                            <li>Faster, more flexible</li>
+                            <li>Example: GET /users/1</li>
+                        </ul>
+                        <p><strong>SOAP:</strong></p>
+                        <ul>
+                            <li>Uses XML with strict standards (WSDL)</li>
+                            <li>Heavier, requires more bandwidth</li>
+                            <li>Built-in security and ACID compliance</li>
+                            <li>Example: &lt;soap:Envelope&gt; ... &lt;/soap:Envelope&gt;</li>
+                        </ul>
+                    </div>
+
+                    <div class="interview-qa">
+                        <div class="question">
+                            <span class="question-badge">Q3</span>
+                            Tools you've used?
+                        </div>
+                        <p><strong>Answer:</strong></p>
+                        <ul>
+                            <li>Postman for manual API validation and creating collections</li>
+                            <li>REST Assured (Java) for automation integrated with TestNG and Cucumber BDD</li>
+                            <li>Pytest + Requests (Python) for lightweight automation and validations</li>
+                            <li>Integrated API tests in Jenkins pipeline with reporting (Extent, Allure)</li>
+                        </ul>
+                    </div>
+
+                    <div class="interview-qa">
+                        <div class="question">
+                            <span class="question-badge">Q4</span>
+                            Authentication mechanisms (OAuth, JWT)?
+                        </div>
+                        <p><strong>Answer:</strong></p>
+                        <p><strong>OAuth 2.0:</strong> Provides secure delegated access. Commonly used with 3rd-party
+                            logins (e.g., "Login with Google").</p>
+                        <p><strong>JWT (JSON Web Token):</strong> Compact token containing claims (user info + expiry).
+                            Passed in headers for each request (Authorization: Bearer &lt;token&gt;).</p>
+                        <div class="example">
+                            <strong>Example:</strong> In my projects, I handled JWT-based authentication, where I first
+                            hit the /login API, extracted the token, and used it in subsequent requests automatically.
+                        </div>
+                    </div>
+
+                    <div class="interview-qa">
+                        <div class="question">
+                            <span class="question-badge">Q5</span>
+                            How did you validate API responses with DB?
+                        </div>
+                        <p><strong>Answer:</strong> After API execution, I connect to the database using JDBC (Java) or
+                            PyODBC (Python). I run a SQL query to fetch the same data. I compare API response JSON
+                            fields with DB values to ensure data integrity.</p>
+                        <div class="example">
+                            <strong>Example:</strong> If /getUser/101 returns name=Pratik, I validate the same name in
+                            the Users table in DB.
+                        </div>
+                    </div>
+
+                    <div class="interview-qa">
+                        <div class="question">
+                            <span class="question-badge">Q6</span>
+                            How do you handle token expiry?
+                        </div>
+                        <p><strong>Answer:</strong> I check if the API returns 401 Unauthorized due to an expired token.
+                            My framework is designed to re-generate the token by calling /login or refresh token API
+                            automatically. Then, I retry the request with the new token.</p>
+                        <div class="example">
+                            This ensures my automation runs smoothly without manual intervention.
+                        </div>
+                    </div>
+
+                    <div class="interview-qa">
+                        <div class="question">
+                            <span class="question-badge">Q7</span>
+                            How do you integrate API tests in CI/CD?
+                        </div>
+                        <p><strong>Answer:</strong> API automation scripts are integrated into the CI/CD pipeline
+                            (Jenkins, GitHub Actions). Tests run automatically on every build/deployment. Reports
+                            (Extent/Allure/HTML) are published in Jenkins. I also set up environment variables (Dev, QA,
+                            Prod) in Jenkins to run tests in multiple environments.</p>
+                        <div class="example">
+                            This ensures continuous validation of APIs after every code change.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <a href="index.html" class="nav-button">
+                <i class="fas fa-arrow-circle-left"
+                    style="margin-right:10px; font-size:1.3rem; vertical-align:middle;"></i>
+                Go To Index
+            </a>
+
+            <div class="contact-info">
+                <i class="fas fa-tachometer-alt" style="color:#ffa000; margin-right:6px;"></i>
+                If any query, call
+                <a href="tel:8625812214"
+                    style="color:#ffa000; text-decoration:underline; font-weight:600;">8625812214</a>
+                <span style="margin:0 10px;">|</span>
+                <i class="fas fa-envelope" style="color:#d32f2f; margin-right:6px;"></i>
+                or mail
+                <a href="mailto:pratiknarute2@gmail.com"
+                    style="color:#d32f2f; text-decoration:underline; font-weight:600;">pratiknarute2@gmail.com</a>
+            </div>
+
+            <p style="text-align:center; color:#888; font-size:1rem; margin-bottom:0;">
+                <i class="fas fa-copyright" style="color:#d32f2f; margin-right:4px;"></i>
+                2025 API Guide. All rights reserved.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Menu toggle functionality
+        const menuToggle = document.getElementById('menuToggle');
+        const mainMenu = document.getElementById('mainMenu');
+        const closeMenu = document.querySelector('.close-menu');
+
+        menuToggle.addEventListener('click', () => {
+            mainMenu.classList.add('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mainMenu.classList.remove('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mainMenu.contains(e.target) && e.target !== menuToggle) {
+                mainMenu.classList.remove('active');
+            }
+        });
+
+        // Smooth scroll for menu links
+        document.querySelectorAll('.menu a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+
+                    // Close menu after clicking on mobile
+                    if (window.innerWidth < 768) {
+                        mainMenu.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Simple animation for cards when they come into view
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.card');
+
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            });
+
+            setTimeout(() => {
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100 + index * 100);
+                });
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>

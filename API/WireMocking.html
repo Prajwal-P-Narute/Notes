@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wire Mocking Notes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-body ul {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+
+        .card-body li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .card-body li:before {
+            content: "•";
+            color: #3498db;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .what-is .card-header {
+            background: #3498db;
+        }
+
+        .benefits .card-header {
+            background: #2ecc71;
+        }
+
+        .how-it-works .card-header {
+            background: #e74c3c;
+        }
+
+        .tools .card-header {
+            background: #9b59b6;
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .code-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .window-controls {
+            display: flex;
+        }
+
+        .window-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .control-close {
+            background: #ff5f56;
+        }
+
+        .control-minimize {
+            background: #ffbd2e;
+        }
+
+        .control-maximize {
+            background: #27c93f;
+        }
+
+        .code-content {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            overflow-x: auto;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .comment {
+            color: #75715e;
+        }
+
+        .function {
+            color: #66d9ef;
+        }
+
+        .method {
+            color: #a6e22e;
+        }
+
+        .string {
+            color: #e6db74;
+        }
+
+        .number {
+            color: #ae81ff;
+        }
+
+        .keyword {
+            color: #f92672;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Wire Mocking Notes</h1>
+            <p class="subtitle">A simple guide to understanding wire mocking in software testing</p>
+        </header>
+
+        <div class="content">
+            <div class="card what-is">
+                <div class="card-header">
+                    <i class="fas fa-question-circle"></i> What is Wire Mocking?
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Faking a conversation between your software and an external website/service</li>
+                        <li>Intercepts outgoing requests and returns fake, pre-written responses</li>
+                        <li>Think of it as a "stunt double" for the internet</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card benefits">
+                <div class="card-header">
+                    <i class="fas fa-check-circle"></i> Why Use It?
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>🚀 Speed: Fake responses are instant</li>
+                        <li>💰 Cost: Avoids fees from paid APIs</li>
+                        <li>🧪 Control: Test any scenario easily</li>
+                        <li>🧱 Isolation: Tests only your code</li>
+                        <li>🔒 Reliability: Tests won't break if real service is down</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card how-it-works">
+                <div class="card-header">
+                    <i class="fas fa-cogs"></i> How It Works
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Setup a "mock server" on your computer</li>
+                        <li>Program it with specific responses to requests</li>
+                        <li>Redirect your app to the mock server</li>
+                        <li>Test your app with the fake responses</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card tools">
+                <div class="card-header">
+                    <i class="fas fa-tools"></i> Popular Tools
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>WireMock: The most popular standalone tool</li>
+                        <li>Nock: For JavaScript/Node.js apps</li>
+                        <li>MockServer: Another powerful alternative</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-container">
+            <div class="code-header">
+                <div class="code-title">Example: WireMock Setup</div>
+                <div class="window-controls">
+                    <div class="window-control control-close"></div>
+                    <div class="window-control control-minimize"></div>
+                    <div class="window-control control-maximize"></div>
+                </div>
+            </div>
+            <div class="code-content">
+                <span class="comment">// Example of setting up a WireMock stub</span><br>
+                <span class="keyword">curl</span> -X POST <span
+                    class="string">http://localhost:8080/__admin/mappings/new</span> \<br>
+                -d <span class="string">'{<br>
+                    &nbsp;&nbsp;"request": {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"method": "GET",<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"url": "/user/1"<br>
+                    &nbsp;&nbsp;},<br>
+                    &nbsp;&nbsp;"response": {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"status": 200,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"jsonBody": {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id": 1,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "Walter White",<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"occupation": "Chemist"<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"headers": {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Content-Type": "application/json"<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;}<br>
+                    }'</span>
+            </div>
+        </div>
+
+        <div class="code-container">
+            <div class="code-header">
+                <div class="code-title">Example: Nock Implementation</div>
+                <div class="window-controls">
+                    <div class="window-control control-close"></div>
+                    <div class="window-control control-minimize"></div>
+                    <div class="window-control control-maximize"></div>
+                </div>
+            </div>
+            <div class="code-content">
+                <span class="comment">// Example using Nock for API mocking in JavaScript</span><br>
+                <span class="keyword">const</span> nock = <span class="function">require</span>(<span
+                    class="string">'nock'</span>);<br><br>
+
+                <span class="comment">// Mock a GET request to a user endpoint</span><br>
+                nock(<span class="string">'https://api.example.com'</span>)<br>
+                &nbsp;&nbsp;.get(<span class="string">'/user/123'</span>)<br>
+                &nbsp;&nbsp;.reply(<span class="number">200</span>, {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;id: <span class="number">123</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;username: <span class="string">'john_doe'</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;email: <span class="string">'john@example.com'</span><br>
+                &nbsp;&nbsp;});<br><br>
+
+                <span class="comment">// Now any request to https://api.example.com/user/123</span><br>
+                <span class="comment">// will return this mock response</span>
+            </div>
+        </div>
+
+        <footer>
+            <p>Wire Mocking Notes | Created with ❤️ for developers</p>
+            <p>Ideal for testing applications that depend on external HTTP services</p>
+        </footer>
+    </div>
+</body>
+
+</html>
