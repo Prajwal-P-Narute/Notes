@@ -33,6 +33,7 @@
             background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
         }
 
         h1 {
@@ -44,6 +45,28 @@
         .subtitle {
             font-size: 1.2rem;
             color: #7f8c8d;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
         }
 
         .content {
@@ -70,6 +93,9 @@
             font-size: 1.4rem;
             font-weight: 600;
             color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .card-body {
@@ -192,6 +218,42 @@
             color: #f92672;
         }
 
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #d32f2f, #ffa000);
+            color: #fff;
+            font-size: 1.18rem;
+            font-weight: 700;
+            border-radius: 36px;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(211, 47, 47, 0.12);
+            letter-spacing: 1.2px;
+            transition: background 0.3s, box-shadow 0.3s;
+            margin: 20px 0;
+        }
+
+        .nav-button:hover {
+            background: linear-gradient(135deg, #b71c1c, #f57c00);
+            box-shadow: 0 8px 22px rgba(211, 47, 47, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .contact-info {
+            text-align: center;
+            margin-bottom: 18px;
+            color: #d32f2f;
+            font-size: 1.08rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            background: linear-gradient(90deg, #fff3e0 0%, #f3f3fd 100%);
+            border-radius: 24px;
+            padding: 12px 0;
+            box-shadow: 0 2px 8px rgba(211, 47, 47, 0.07);
+            margin: 0 20px 18px 20px;
+        }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -207,6 +269,18 @@
             h1 {
                 font-size: 2.2rem;
             }
+            
+            .back-button {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 15px;
+                justify-content: center;
+            }
+            
+            header {
+                padding-top: 40px;
+            }
         }
     </style>
 </head>
@@ -214,8 +288,11 @@
 <body>
     <div class="container">
         <header>
+            <button class="back-button" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
             <h1>Wire Mocking Notes</h1>
-            <p class="subtitle">A simple guide to understanding wire mocking in software testing</p>
+            <p class="subtitle">A comprehensive guide to understanding wire mocking in software testing</p>
         </header>
 
         <div class="content">
@@ -228,6 +305,8 @@
                         <li>Faking a conversation between your software and an external website/service</li>
                         <li>Intercepts outgoing requests and returns fake, pre-written responses</li>
                         <li>Think of it as a "stunt double" for the internet</li>
+                        <li>Allows testing without depending on real external services</li>
+                        <li>Essential for testing edge cases and error scenarios</li>
                     </ul>
                 </div>
             </div>
@@ -243,6 +322,8 @@
                         <li>🧪 Control: Test any scenario easily</li>
                         <li>🧱 Isolation: Tests only your code</li>
                         <li>🔒 Reliability: Tests won't break if real service is down</li>
+                        <li>📊 Predictability: Consistent responses for testing</li>
+                        <li>⚡ Performance: No network latency during testing</li>
                     </ul>
                 </div>
             </div>
@@ -257,6 +338,9 @@
                         <li>Program it with specific responses to requests</li>
                         <li>Redirect your app to the mock server</li>
                         <li>Test your app with the fake responses</li>
+                        <li>Simulate different HTTP status codes</li>
+                        <li>Test timeout scenarios by delaying responses</li>
+                        <li>Verify that your app makes correct requests</li>
                     </ul>
                 </div>
             </div>
@@ -270,6 +354,10 @@
                         <li>WireMock: The most popular standalone tool</li>
                         <li>Nock: For JavaScript/Node.js apps</li>
                         <li>MockServer: Another powerful alternative</li>
+                        <li>Postman Mock Server: Easy setup with Postman</li>
+                        <li>Jest: For JavaScript testing with mocking capabilities</li>
+                        <li>Mockito: Popular for Java applications</li>
+                        <li>Pytest: For Python with mocking libraries</li>
                     </ul>
                 </div>
             </div>
@@ -336,11 +424,65 @@
             </div>
         </div>
 
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="index.html" class="nav-button">
+                <i class="fas fa-arrow-circle-left" style="margin-right:10px; font-size:1.3rem; vertical-align:middle;"></i>
+                Go To Index
+            </a>
+        </div>
+
+        <div class="contact-info">
+            <i class="fas fa-tachometer-alt" style="color:#ffa000; margin-right:6px;"></i>
+            If any query, call
+            <a href="tel:8625812214" style="color:#ffa000; text-decoration:underline; font-weight:600;">8625812214</a>
+            <span style="margin:0 10px;">|</span>
+            <i class="fas fa-envelope" style="color:#d32f2f; margin-right:6px;"></i>
+            or mail
+            <a href="mailto:pratiknarute2@gmail.com" style="color:#d32f2f; text-decoration:underline; font-weight:600;">pratiknarute2@gmail.com</a>
+        </div>
+
         <footer>
-            <p>Wire Mocking Notes | Created with ❤️ for developers</p>
-            <p>Ideal for testing applications that depend on external HTTP services</p>
+            <p style="text-align:center; color:#fff; font-size:1rem; margin-bottom:0;">
+                <i class="fas fa-copyright" style="color:#fff; margin-right:4px;"></i>
+                2025 Wire Mocking Guide. All rights reserved.
+            </p>
         </footer>
     </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        
+        // Add copy functionality to code blocks
+        document.querySelectorAll('.code-content').forEach(codeBlock => {
+            codeBlock.addEventListener('click', function() {
+                const text = this.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalBorder = this.style.border;
+                    this.style.border = '2px solid #2ecc71';
+                    setTimeout(() => {
+                        this.style.border = originalBorder;
+                    }, 1000);
+                });
+            });
+        });
+        
+        // Add animation to cards on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 + index * 100);
+            });
+        });
+    </script>
 </body>
 
 </html>
