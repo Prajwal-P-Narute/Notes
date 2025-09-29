@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,19 +13,20 @@
             --accent: #7209b7;
             --success: #4cc9f0;
             --warning: #f72585;
+            --morgan: #1a6d38;
             --light: #f8f9fa;
             --dark: #212529;
             --card-bg: #ffffff;
             --shadow: rgba(0, 0, 0, 0.1);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: var(--dark);
@@ -32,12 +34,12 @@
             padding: 20px;
             min-height: 100vh;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
         header {
             text-align: center;
             margin-bottom: 40px;
@@ -47,23 +49,23 @@
             border-radius: 15px;
             box-shadow: 0 10px 20px var(--shadow);
         }
-        
+
         h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
         }
-        
+
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
         }
-        
+
         .main-content {
             display: grid;
             grid-template-columns: 1fr;
             gap: 30px;
         }
-        
+
         .company-card {
             background-color: var(--card-bg);
             border-radius: 15px;
@@ -72,24 +74,28 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-top: 5px solid;
         }
-        
+
         .company-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px var(--shadow);
         }
-        
+
+        .morgan {
+            border-top-color: var(--morgan);
+        }
+
         .lyca {
             border-top-color: var(--primary);
         }
-        
+
         .kolonizer {
             border-top-color: var(--accent);
         }
-        
+
         .universal {
             border-top-color: var(--success);
         }
-        
+
         .company-header {
             display: flex;
             align-items: center;
@@ -97,7 +103,7 @@
             padding-bottom: 15px;
             border-bottom: 2px solid #f0f0f0;
         }
-        
+
         .company-icon {
             width: 60px;
             height: 60px;
@@ -109,47 +115,61 @@
             font-size: 1.5rem;
             color: white;
         }
-        
+
+        .morgan .company-icon {
+            background: linear-gradient(135deg, var(--morgan), #2a9d8f);
+        }
+
         .lyca .company-icon {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
         }
-        
+
         .kolonizer .company-icon {
             background: linear-gradient(135deg, var(--accent), var(--warning));
         }
-        
+
         .universal .company-icon {
             background: linear-gradient(135deg, var(--success), #2a9d8f);
         }
-        
+
         .company-title {
             font-size: 1.8rem;
             color: var(--dark);
         }
-        
+
+        .company-subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
         .responsibility-list {
             list-style-type: none;
         }
-        
+
         .responsibility-item {
             margin-bottom: 20px;
             padding-left: 20px;
             border-left: 3px solid;
             position: relative;
         }
-        
+
+        .morgan .responsibility-item {
+            border-left-color: var(--morgan);
+        }
+
         .lyca .responsibility-item {
             border-left-color: var(--primary);
         }
-        
+
         .kolonizer .responsibility-item {
             border-left-color: var(--accent);
         }
-        
+
         .universal .responsibility-item {
             border-left-color: var(--success);
         }
-        
+
         .responsibility-item::before {
             content: '';
             position: absolute;
@@ -160,19 +180,23 @@
             border-radius: 50%;
             background: inherit;
         }
-        
+
+        .morgan .responsibility-item::before {
+            background: var(--morgan);
+        }
+
         .lyca .responsibility-item::before {
             background: var(--primary);
         }
-        
+
         .kolonizer .responsibility-item::before {
             background: var(--accent);
         }
-        
+
         .universal .responsibility-item::before {
             background: var(--success);
         }
-        
+
         .responsibility-title {
             font-weight: 600;
             color: var(--secondary);
@@ -181,11 +205,11 @@
             display: flex;
             align-items: center;
         }
-        
+
         .responsibility-title i {
             margin-right: 10px;
         }
-        
+
         .highlight {
             background-color: rgba(67, 97, 238, 0.1);
             padding: 15px;
@@ -193,14 +217,14 @@
             margin: 15px 0;
             border-left: 4px solid var(--accent);
         }
-        
+
         .tools-container {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 15px;
         }
-        
+
         .tool-tag {
             display: inline-block;
             background: linear-gradient(to right, var(--accent), var(--warning));
@@ -209,13 +233,17 @@
             border-radius: 20px;
             font-size: 0.8rem;
         }
-        
+
+        .morgan-tag {
+            background: linear-gradient(to right, var(--morgan), #2a9d8f);
+        }
+
         .timeline {
             position: relative;
             padding-left: 30px;
             margin: 20px 0;
         }
-        
+
         .timeline::before {
             content: '';
             position: absolute;
@@ -225,12 +253,12 @@
             width: 3px;
             background: var(--primary);
         }
-        
+
         .timeline-item {
             position: relative;
             margin-bottom: 30px;
         }
-        
+
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -241,13 +269,13 @@
             border-radius: 50%;
             background: var(--accent);
         }
-        
+
         .timeline-date {
             font-weight: bold;
             color: var(--secondary);
             margin-bottom: 5px;
         }
-        
+
         .footer {
             text-align: center;
             margin-top: 50px;
@@ -256,40 +284,114 @@
             opacity: 0.7;
             font-size: 0.9rem;
         }
-        
+
         @media (min-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr 1fr;
             }
-            
+
             .company-card {
                 grid-column: span 1;
             }
-            
+
+            .morgan,
             .lyca {
-                grid-column: span 2;
+                grid-column: span 1;
             }
         }
-        
+
         @media (min-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr 1fr 1fr;
             }
-            
+
             .company-card {
                 grid-column: span 1;
+            }
+
+            .morgan {
+                grid-column: span 2;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
             <h1>QA Automation Engineer</h1>
             <p class="subtitle">Professional Experience & Responsibilities</p>
         </header>
-        
+
         <div class="main-content">
+            <div class="company-card morgan">
+                <div class="company-header">
+                    <div class="company-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h2 class="company-title">Morgan Stanley</h2>
+                        <p class="company-subtitle">Payroll: Ampcus Inc.</p>
+                    </div>
+                </div>
+
+                <ul class="responsibility-list">
+                    <li class="responsibility-item">
+                        <div class="responsibility-title">
+                            <i class="fas fa-tasks"></i> Sprint Delivery & Regression Testing
+                        </div>
+                        <p>My primary responsibility is to deliver sprint tasks and perform regression testing through
+                            the automation suite.</p>
+                    </li>
+
+                    <li class="responsibility-item">
+                        <div class="responsibility-title">
+                            <i class="fas fa-robot"></i> AI-Powered Test Generation
+                        </div>
+                        <p>I write test cases using the TestGen AI tool and generate dynamic test scripts to enhance
+                            test coverage and efficiency.</p>
+                        <div class="tools-container">
+                            <span class="tool-tag morgan-tag">TestGen AI</span>
+                            <span class="tool-tag morgan-tag">Dynamic Test Scripts</span>
+                        </div>
+                    </li>
+
+                    <li class="responsibility-item">
+                        <div class="responsibility-title">
+                            <i class="fas fa-desktop"></i> Web Automation with Cypress
+                        </div>
+                        <p>I work with the Cypress end-to-end testing tool using the Cucumber BDD framework for
+                            comprehensive web automation.</p>
+                        <div class="tools-container">
+                            <span class="tool-tag morgan-tag">Cypress</span>
+                            <span class="tool-tag morgan-tag">Cucumber BDD</span>
+                            <span class="tool-tag morgan-tag">Web Automation</span>
+                        </div>
+                    </li>
+
+                    <li class="responsibility-item">
+                        <div class="responsibility-title">
+                            <i class="fas fa-server"></i> Services Automation with JMeter
+                        </div>
+                        <p>I utilize JMeter for services automation, ensuring backend services meet performance and
+                            functionality requirements.</p>
+                        <div class="tools-container">
+                            <span class="tool-tag morgan-tag">JMeter</span>
+                            <span class="tool-tag morgan-tag">Services Automation</span>
+                            <span class="tool-tag morgan-tag">Performance Testing</span>
+                        </div>
+                    </li>
+
+                    <li class="responsibility-item">
+                        <div class="responsibility-title">
+                            <i class="fas fa-sync-alt"></i> CI/CD Integration
+                        </div>
+                        <p>I execute automation suites with CI/CD tools and store all past report audits in the QEEX
+                            platform to ensure continuous testing and track historical reports.</p>
+                    </li>
+                </ul>
+            </div>
+
             <div class="company-card lyca">
                 <div class="company-header">
                     <div class="company-icon">
@@ -297,13 +399,15 @@
                     </div>
                     <h2 class="company-title">Lyca Digital</h2>
                 </div>
-                
+
                 <ul class="responsibility-list">
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-cogs"></i> Automation Framework Development
                         </div>
-                        <p>My primary responsibility is to design, develop, and maintain end-to-end test automation frameworks for web, mobile, and APIs using tools like Selenium, Appium with Java and REST Assured.</p>
+                        <p>My primary responsibility is to design, develop, and maintain end-to-end test automation
+                            frameworks for web, mobile, and APIs using tools like Selenium, Appium with Java and REST
+                            Assured.</p>
                         <div class="tools-container">
                             <span class="tool-tag">Selenium</span>
                             <span class="tool-tag">Appium</span>
@@ -311,27 +415,33 @@
                             <span class="tool-tag">REST Assured</span>
                         </div>
                     </li>
-                    
+
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-layer-group"></i> Hybrid Framework Implementation
                         </div>
-                        <p>I have experience working with hybrid framework which is a combination of POM (Page Object Model), Cucumber BDD and data-driven TestNG.</p>
+                        <p>I have experience working with hybrid frameworks, which combine POM (Page Object Model),
+                            Cucumber BDD, and data-driven TestNG for web automation.</p>
+                        <p>For API automation, I work with REST Assured.</p>
                         <div class="tools-container">
                             <span class="tool-tag">POM</span>
                             <span class="tool-tag">Cucumber BDD</span>
                             <span class="tool-tag">TestNG</span>
                             <span class="tool-tag">Data-Driven</span>
+                            <span class="tool-tag">REST Assured</span>
                         </div>
                     </li>
-                    
+
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-sync-alt"></i> CI/CD Integration
                         </div>
-                        <p>I integrate these automation suites with CI/CD tools such as Jenkins where we perform regression testing. My responsibility is to ensure that code is triggered on scheduled time and to review and analyze failed test cases.</p>
+                        <p>I integrate these automation suites with CI/CD tools such as Jenkins for regression testing.
+                            My responsibility includes ensuring code is triggered on schedule and reviewing and
+                            analyzing failed test cases.</p>
                         <div class="highlight">
-                            <p>This helps to quickly report critical issues to developers so they have sufficient time to fix them as soon as possible.</p>
+                            <p>This helps quickly report critical issues to developers, giving them sufficient time to
+                                fix problems as soon as possible.</p>
                         </div>
                         <div class="tools-container">
                             <span class="tool-tag">Jenkins</span>
@@ -339,26 +449,22 @@
                             <span class="tool-tag">Regression Testing</span>
                         </div>
                     </li>
-                    
+
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-hands"></i> Manual Testing
                         </div>
-                        <p>Beyond automation, I'm responsible for manual testing on new features or enhancement functionality where I perform several types of testing like smoke, sanity, detailed level testing, usability testing etc.</p>
+                        <p>Beyond automation, I'm responsible for manual testing on new features or enhancements,
+                            performing various types of testing including smoke, sanity, detailed level testing, and
+                            usability testing.</p>
                     </li>
-                    
-                    <li class="responsibility-item">
-                        <div class="responsibility-title">
-                            <i class="fas fa-users"></i> Agile Collaboration
-                        </div>
-                        <p>I work with agile teams and collaborate with developers and product owners to define test strategies and refine acceptance criteria. This approach focuses on reducing bugs rather than just finding them, which helps reduce the SDLC cycle.</p>
-                    </li>
-                    
+
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-tools"></i> Tool Implementation
                         </div>
-                        <p>I take responsibility for implementing new tools or libraries in the framework. For example, to reduce execution time, I implemented LambdaTest tool for mobile automation.</p>
+                        <p>I take responsibility for implementing new tools or libraries in the framework. For example,
+                            to reduce execution time, I implemented the LambdaTest tool for mobile automation.</p>
                         <div class="tools-container">
                             <span class="tool-tag">LambdaTest</span>
                             <span class="tool-tag">Mobile Automation</span>
@@ -366,7 +472,7 @@
                     </li>
                 </ul>
             </div>
-            
+
             <div class="company-card kolonizer">
                 <div class="company-header">
                     <div class="company-icon">
@@ -374,31 +480,56 @@
                     </div>
                     <h2 class="company-title">Kolonizer</h2>
                 </div>
-                
+
                 <ul class="responsibility-list">
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-flag"></i> Automation Framework Introduction
                         </div>
-                        <p>I successfully introduced web and mobile automation framework for the first time at Kolonizer. Before I joined, the company relied completely on manual testing.</p>
+                        <p>I successfully introduced web and mobile automation frameworks for the first time at
+                            Kolonizer. Before I joined, the company relied completely on manual testing.</p>
                     </li>
-                    
+
+                    <li class="responsibility-item">
+                        <div class="responsibility-title">
+                            <i class="fas fa-layer-group"></i> Hybrid Framework Implementation
+                        </div>
+                        <p>I implemented hybrid frameworks combining POM (Page Object Model) and data-driven TestNG for
+                            both web and mobile automation.</p>
+                        <div class="tools-container">
+                            <span class="tool-tag">POM</span>
+                            <span class="tool-tag">TestNG</span>
+                            <span class="tool-tag">Data-Driven</span>
+                        </div>
+                    </li>
+
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-tasks"></i> Parallel Testing
                         </div>
-                        <p>While implementing automation, I continued performing manual testing in parallel and provided support to the product owner.</p>
+                        <p>While implementing automation, I continued performing manual testing in parallel and provided
+                            support to the product owner.</p>
                     </li>
-                    
+
+                    <li class="responsibility-item">
+                        <div class="responsibility-title">
+                            <i class="fas fa-users"></i> Agile Collaboration
+                        </div>
+                        <p>I worked with agile teams and collaborated with developers and product owners to define test
+                            strategies and refine acceptance criteria. This approach focused on reducing bugs rather
+                            than just finding them, which helped streamline the SDLC cycle.</p>
+                    </li>
+
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-file-alt"></i> Documentation Support
                         </div>
-                        <p>I helped create refined documents with acceptance criteria, entry and exit points, and analysis of the impact of new changes on existing functionality.</p>
+                        <p>I helped create refined documents with acceptance criteria, entry and exit points, and
+                            analysis of the impact of new changes on existing functionality.</p>
                     </li>
                 </ul>
             </div>
-            
+
             <div class="company-card universal">
                 <div class="company-header">
                     <div class="company-icon">
@@ -406,7 +537,7 @@
                     </div>
                     <h2 class="company-title">Universal Nine</h2>
                 </div>
-                
+
                 <ul class="responsibility-list">
                     <li class="responsibility-item">
                         <div class="responsibility-title">
@@ -414,28 +545,30 @@
                         </div>
                         <p>I started my career as a QA Engineer with manual testing at Universal Nine.</p>
                     </li>
-                    
+
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-chart-line"></i> Skill Development
                         </div>
                         <p>I later began learning about automation testing and started implementing it in projects.</p>
                     </li>
-                    
+
                     <li class="responsibility-item">
                         <div class="responsibility-title">
                             <i class="fas fa-truck-loading"></i> Sprint Delivery
                         </div>
-                        <p>I worked on delivering sprint tasks, gaining experience in Agile methodologies and timely project delivery.</p>
+                        <p>I worked on delivering sprint tasks, gaining experience in Agile methodologies and timely
+                            project delivery.</p>
                     </li>
                 </ul>
             </div>
         </div>
-        
+
         <div class="footer">
             <p>Pratik Pandurang Narute | Bangalore, Karnataka | +91 8625812214 | pratiknarute2@gmail.com</p>
             <p>QA Automation Engineer - Professional Experience Notes</p>
         </div>
     </div>
 </body>
+
 </html>
