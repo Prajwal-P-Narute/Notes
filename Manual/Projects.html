@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Portfolio | Software Testing Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --banking: #4361ee;
+            --telecom: #f72585;
+            --real-estate: #f77f00;
+            --insurance: #2a9d8f;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2.5rem;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--banking), var(--telecom), var(--real-estate), var(--insurance));
+        }
+
+        h1 {
+            color: var(--dark);
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--banking), var(--telecom));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            font-size: 1.1rem;
+        }
+
+        .what-i-did {
+            line-height: 1.6;
+        }
+
+        .testing-list {
+            list-style: none;
+        }
+
+        .testing-list li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkmark {
+            color: #2a9d8f;
+            font-weight: bold;
+        }
+
+        /* Domain-specific colors */
+        .banking {
+            border-top: 5px solid var(--banking);
+        }
+
+        .banking .card-header {
+            background: var(--banking);
+        }
+
+        .telecom {
+            border-top: 5px solid var(--telecom);
+        }
+
+        .telecom .card-header {
+            background: var(--telecom);
+        }
+
+        .real-estate {
+            border-top: 5px solid var(--real-estate);
+        }
+
+        .real-estate .card-header {
+            background: var(--real-estate);
+        }
+
+        .insurance {
+            border-top: 5px solid var(--insurance);
+        }
+
+        .insurance .card-header {
+            background: var(--insurance);
+        }
+
+        /* Interview Section */
+        .interview-section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+
+        .talking-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .talking-card {
+            background: #f8f9fa;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border-left: 4px solid;
+        }
+
+        .talking-card.banking {
+            border-left-color: var(--banking);
+        }
+
+        .talking-card.telecom {
+            border-left-color: var(--telecom);
+        }
+
+        .talking-card.real-estate {
+            border-left-color: var(--real-estate);
+        }
+
+        .talking-card.insurance {
+            border-left-color: var(--insurance);
+        }
+
+        .talking-card p {
+            font-style: italic;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .domain-tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+
+        .banking-tag {
+            background: var(--banking);
+        }
+
+        .telecom-tag {
+            background: var(--telecom);
+        }
+
+        .real-estate-tag {
+            background: var(--real-estate);
+        }
+
+        .insurance-tag {
+            background: var(--insurance);
+        }
+
+        .why-matters {
+            background: #f0f8ff;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .why-matters h3 {
+            margin-bottom: 1rem;
+            color: var(--banking);
+        }
+
+        .why-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .why-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .why-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .why-icon.banking {
+            background: var(--banking);
+        }
+
+        .why-icon.telecom {
+            background: var(--telecom);
+        }
+
+        .why-icon.real-estate {
+            background: var(--real-estate);
+        }
+
+        .why-icon.insurance {
+            background: var(--insurance);
+        }
+
+        .answer-format {
+            background: #fff9e6;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .answer-format h3 {
+            margin-bottom: 1rem;
+            color: #e6a700;
+        }
+
+        .format-example {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid #e6a700;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Project Portfolio</h1>
+            <p class="subtitle">Software Testing Experience Across Multiple Domains</p>
+        </header>
+
+        <div class="projects-grid">
+            <!-- Morgan Stanley Project -->
+            <div class="project-card banking">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <h2 class="card-title">Morgan Stanley - Banking</h2>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <h3 class="section-title"><i class="fas fa-tasks"></i> What I Did</h3>
+                        <p class="what-i-did">Tested a trading platform where people buy/sell stocks. Made sure all
+                            money calculations were 100% accurate. Tested a system that approves or rejects bank
+                            payments.</p>
+                    </div>
+                    <div>
+                        <h3 class="section-title"><i class="fas fa-check-circle"></i> Key Testing</h3>
+                        <ul class="testing-list">
+                            <li><span class="checkmark">✅</span> Buy/sell order calculations</li>
+                            <li><span class="checkmark">✅</span> Profit/loss computations</li>
+                            <li><span class="checkmark">✅</span> Payment approval logic</li>
+                            <li><span class="checkmark">✅</span> Fake transaction testing (since real bank data wasn't
+                                available)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lyca Mobile Project -->
+            <div class="project-card telecom">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h2 class="card-title">Lyca Mobile - Telecom</h2>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <h3 class="section-title"><i class="fas fa-tasks"></i> What I Did</h3>
+                        <p class="what-i-did">Tested a mobile app where customers can order free SIM cards, add money to
+                            their account (TOP UP), buy data/call plans, and do both TOP UP + Plan together.</p>
+                    </div>
+                    <div>
+                        <h3 class="section-title"><i class="fas fa-check-circle"></i> Key Testing</h3>
+                        <ul class="testing-list">
+                            <li><span class="checkmark">✅</span> All payment methods work</li>
+                            <li><span class="checkmark">✅</span> Plans activate immediately</li>
+                            <li><span class="checkmark">✅</span> App doesn't crash during purchases</li>
+                            <li><span class="checkmark">✅</span> Quick checks after every update</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolonizer Project -->
+            <div class="project-card real-estate">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h2 class="card-title">Kolonizer - Real Estate</h2>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <h3 class="section-title"><i class="fas fa-tasks"></i> What I Did</h3>
+                        <p class="what-i-did">Tested software for construction companies to manage properties and land
+                            plots, customer leads and sales, money tracking (income, expenses, payments), and business
+                            reports.</p>
+                    </div>
+                    <div>
+                        <h3 class="section-title"><i class="fas fa-check-circle"></i> Key Testing</h3>
+                        <ul class="testing-list">
+                            <li><span class="checkmark">✅</span> Property data accuracy</li>
+                            <li><span class="checkmark">✅</span> Customer information correct</li>
+                            <li><span class="checkmark">✅</span> Money calculations right</li>
+                            <li><span class="checkmark">✅</span> Reports show correct numbers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Universal Nine Project -->
+            <div class="project-card insurance">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h2 class="card-title">Universal Nine - Insurance</h2>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <h3 class="section-title"><i class="fas fa-tasks"></i> What I Did</h3>
+                        <p class="what-i-did">Tested insurance app where people can buy policies completely online, file
+                            claims digitally, with no office visits needed.</p>
+                    </div>
+                    <div>
+                        <h3 class="section-title"><i class="fas fa-check-circle"></i> Key Testing</h3>
+                        <ul class="testing-list">
+                            <li><span class="checkmark">✅</span> Policy filters work (by price, coverage)</li>
+                            <li><span class="checkmark">✅</span> Online forms submit properly</li>
+                            <li><span class="checkmark">✅</span> Agents get automatic notifications</li>
+                            <li><span class="checkmark">✅</span> Entire process works without human help</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Section -->
+        <div class="interview-section">
+            <h2 class="section-heading">Interview Talking Points</h2>
+
+            <div class="talking-points">
+                <div class="talking-card banking">
+                    <span class="domain-tag banking-tag">Banking</span>
+                    <p>"I made sure that when people trade stocks, the money calculations are always correct."</p>
+                </div>
+
+                <div class="talking-card telecom">
+                    <span class="domain-tag telecom-tag">Telecom</span>
+                    <p>"I tested that customers can easily recharge their phones and buy data plans without any
+                        problems."</p>
+                </div>
+
+                <div class="talking-card real-estate">
+                    <span class="domain-tag real-estate-tag">Real Estate</span>
+                    <p>"I verified that construction companies can track their properties and money accurately."</p>
+                </div>
+
+                <div class="talking-card insurance">
+                    <span class="domain-tag insurance-tag">Insurance</span>
+                    <p>"I ensured people can buy insurance completely online without visiting any office."</p>
+                </div>
+            </div>
+
+            <div class="why-matters">
+                <h3>Why This Matters</h3>
+                <div class="why-list">
+                    <div class="why-item">
+                        <div class="why-icon banking">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div>
+                            <strong>Banking:</strong> Money calculations must be perfect
+                        </div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-icon telecom">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Telecom:</strong> Customers get angry if payments fail
+                        </div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-icon real-estate">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <strong>Real Estate:</strong> Companies lose money if data is wrong
+                        </div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-icon insurance">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Insurance:</strong> People need quick, digital service
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="answer-format">
+                <h3>Simple Answer Format</h3>
+                <p>"This was a <strong>[type]</strong> app where users could <strong>[main action]</strong>. I tested
+                    that <strong>[key feature]</strong> worked properly so that <strong>[business benefit]</strong>."
+                </p>
+
+                <div class="format-example">
+                    <p><strong>Example:</strong> "This was a banking app where users could trade stocks. I tested that
+                        all money calculations worked properly so that customers never lost money due to calculation
+                        errors."</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Project Portfolio | Software Testing Experience</p>
+            <p>Demonstrating expertise across banking, telecom, real estate, and insurance domains</p>
+        </footer>
+    </div>
+
+    <script>
+        // Add subtle animations to cards when they come into view
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.project-card, .talking-card');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            cards.forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+
+</html>
