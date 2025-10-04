@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Quality Assurance (SQA)</title>
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), #27ae60);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            background: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .content-card h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 0.8rem 0;
+        }
+        
+        .content-card p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-box {
+            background: #e8f6ef;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .definition-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .factors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .factor-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .factor-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #27ae60;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                margin: 0.2rem 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .factors-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Software Quality Assurance (SQA)</h1>
+        <p>Ensuring product quality through systematic processes</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="introduction.html">Introduction</a>
+        <a href="sdlc.html">SDLC</a>
+        <a href="testing-types.html">Testing Types</a>
+        <a href="agile.html">Agile</a>
+        <a href="black-box.html">Black Box Testing</a>
+        <a href="performance.html">Performance Testing</a>
+        <a href="security.html">Security Testing</a>
+        <a href="uat.html">UAT</a>
+        <a href="defect-management.html">Defect Management</a>
+    </div>
+    
+    <div class="container">
+        <div class="content-card">
+            <h2>What is Software Quality Assurance?</h2>
+            <p>SQA is communication between customer & BA. It ensures the product quality by considering several factors.</p>
+            
+            <div class="definition-box">
+                <h4>Definition</h4>
+                <p>Software Quality Assurance (SQA) is a process that ensures the developed software meets and complies with the defined or standardized quality specifications. SQA is an ongoing process within the software development life cycle (SDLC) that routinely checks the developed software to ensure it meets desired quality measures.</p>
+            </div>
+            
+            <h2>Key SQA Factors</h2>
+            
+            <div class="factors-grid">
+                <div class="factor-item">
+                    <h4>Meeting Requirements</h4>
+                    <p>Identify type of application (banking, telecom, healthcare, finance, etc.) and ensure it meets all specified requirements.</p>
+                </div>
+                
+                <div class="factor-item">
+                    <h4>Meeting Expectations</h4>
+                    <p>Ensure privacy and security of the application, and verify performance under heavy load conditions.</p>
+                </div>
+                
+                <div class="factor-item">
+                    <h4>Cost Management</h4>
+                    <p>Manage project costs as per customer requirements and available resources.</p>
+                </div>
+                
+                <div class="factor-item">
+                    <h4>Timely Delivery</h4>
+                    <p>Deliver the project within the agreed timeframe to avoid penalties (escalation).</p>
+                </div>
+                
+                <div class="factor-item">
+                    <h4>Maintenance</h4>
+                    <p>Provide service after delivery and fix any post-delivery issues free of cost.</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>SQA Focus Areas</h3>
+                <p>• <strong>Privacy</strong> → includes security of application</p>
+                <p>• <strong>Performance</strong> → application should be stable under heavy load</p>
+                <p>• <strong>Cost of project</strong> → Decided as per customer requirements & resources</p>
+                <p>• <strong>Timing of delivery</strong> → Discussed during requirement gathering. Delay may cause penalty (escalation)</p>
+                <p>• <strong>Maintenance</strong> → Service provided after delivery. Any post-delivery issues must be fixed free of cost</p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <a href="introduction.html" class="btn btn-secondary">← Previous: Introduction</a>
+                <a href="sdlc.html" class="btn">Next: SDLC →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Roles and Responsibilities of Pratik | <a href="index.html">Go To Index</a></p>
+        <p>If any query, call <a href="tel:8625812214">8625812214</a> or mail <a href="mailto:pratiknarute2@gmail.com">pratiknarute2@gmail.com</a></p>
+        <p>2025 Software Testing Manual. All rights reserved.</p>
+    </div>
+</body>
+</html>

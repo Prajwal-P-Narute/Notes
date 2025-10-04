@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Acceptance Testing (UAT)</title>
+    <style>
+        :root {
+            --primary: #16a085;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), #1abc9c);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            background: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .content-card h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 0.8rem 0;
+        }
+        
+        .content-card p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-box {
+            background: #e8f6f3;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .definition-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .testing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .testing-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .testing-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #1abc9c;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                margin: 0.2rem 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .testing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .process-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>User Acceptance Testing (UAT)</h1>
+        <p>Final validation by real users before production deployment</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="introduction.html">Introduction</a>
+        <a href="sqa.html">SQA</a>
+        <a href="sdlc.html">SDLC</a>
+        <a href="testing-types.html">Testing Types</a>
+        <a href="agile.html">Agile</a>
+        <a href="black-box.html">Black Box Testing</a>
+        <a href="performance.html">Performance Testing</a>
+        <a href="security.html">Security Testing</a>
+        <a href="defect-management.html">Defect Management</a>
+    </div>
+    
+    <div class="container">
+        <div class="content-card">
+            <h2>What is User Acceptance Testing?</h2>
+            <p>User Acceptance Testing (UAT) is the final phase of software testing where real users validate whether the application meets business requirements before production deployment.</p>
+            
+            <div class="definition-box">
+                <h4>Key Points</h4>
+                <ul>
+                    <li>Conducted by business users, stakeholders, or end-users</li>
+                    <li>Focuses on business workflows and real-world usage</li>
+                    <li>Ensures the software is ready for production</li>
+                    <li>Performed in a UAT or pre-production environment</li>
+                    <li>Sign-off from stakeholders is required before release</li>
+                </ul>
+            </div>
+            
+            <h2>UAT Process</h2>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h4>Requirements Analysis</h4>
+                        <p>Understand business requirements and create test scenarios</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h4>Test Planning</h4>
+                        <p>Define scope, objectives, and approach for UAT</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h4>Test Case Creation</h4>
+                        <p>Develop test cases based on real-world scenarios</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h4>Test Execution</h4>
+                        <p>End-users execute test cases in UAT environment</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h4>Feedback & Sign-off</h4>
+                        <p>Collect feedback and obtain formal approval for release</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h2>Types of User Acceptance Testing</h2>
+            
+            <div class="testing-grid">
+                <div class="testing-item">
+                    <h4>Alpha Testing</h4>
+                    <p>Alpha testing is conducted in a controlled environment, where testing is done in front of testers, developers, and customers.</p>
+                    
+                    <p><strong>Environment:</strong> Controlled environment (developer's site)</p>
+                    <p><strong>Participants:</strong> Developers, testers, and internal stakeholders</p>
+                    <p><strong>Focus:</strong> Identifying bugs before releasing to real users</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Beta Testing</h4>
+                    <p>Beta testing is conducted in an uncontrolled environment with minimal involvement of developers and testers. Customers test the functionality from their own perspective.</p>
+                    
+                    <p><strong>Environment:</strong> Uncontrolled environment (user's site)</p>
+                    <p><strong>Participants:</strong> Real users and customers</p>
+                    <p><strong>Focus:</strong> Gathering feedback on user experience and satisfaction</p>
+                </div>
+            </div>
+            
+            <h2>Alpha vs Beta Testing Comparison</h2>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Aspect</th>
+                    <th>Alpha Testing</th>
+                    <th>Beta Testing</th>
+                </tr>
+                <tr>
+                    <td>Environment</td>
+                    <td>Controlled (developer's site)</td>
+                    <td>Uncontrolled (user's site)</td>
+                </tr>
+                <tr>
+                    <td>Participants</td>
+                    <td>Internal testers, developers</td>
+                    <td>Real users, customers</td>
+                </tr>
+                <tr>
+                    <td>Testing Focus</td>
+                    <td>Functionality, bugs, and issues</td>
+                    <td>User experience, satisfaction</td>
+                </tr>
+                <tr>
+                    <td>Duration</td>
+                    <td>Several weeks</td>
+                    <td>Several weeks to months</td>
+                </tr>
+                <tr>
+                    <td>Feedback</td>
+                    <td>Technical issues and bugs</td>
+                    <td>User feedback and suggestions</td>
+                </tr>
+                <tr>
+                    <td>Cost</td>
+                    <td>Higher (requires dedicated resources)</td>
+                    <td>Lower (users test in their environment)</td>
+                </tr>
+            </table>
+            
+            <h2>Re-Testing</h2>
+            
+            <div class="highlight-box">
+                <h3>What is Re-Testing?</h3>
+                <p>Re-testing is the process of testing a specific fixed defect or bug from a developer to ensure that the issue is resolved.</p>
+                
+                <h4>Key Points of Re-Testing</h4>
+                <p><strong>Purpose:</strong> To confirm that the defect has been fixed.</p>
+                <p><strong>When?</strong> Before logging the defect and after a bug fix or code change.</p>
+                <p><strong>How?</strong> Re-execute the failed test cases.</p>
+                <p><strong>Scope:</strong> Focuses only on the specific defect and its related functionality.</p>
+                
+                <h4>Best Practices for Re-Testing</h4>
+                <ul>
+                    <li>Always validate the defect before logging to avoid invalid or duplicate bug reports.</li>
+                    <li>Test with multiple test data to ensure the defect is fully resolved and not limited to specific cases.</li>
+                    <li>Helps prevent confusion between developers and testers by confirming the validity of the defect before escalation.</li>
+                </ul>
+                
+                <h4>Example Scenario</h4>
+                <ol>
+                    <li><strong>Bug Identification:</strong> A tester finds a bug in the login functionality, where entering the correct credentials does not log in the user.</li>
+                    <li><strong>Bug Reporting:</strong> The bug is reported to the developer, who fixes the issue.</li>
+                    <li><strong>Re-Testing:</strong> The tester retests the same login test case to ensure it works correctly after the fix.</li>
+                </ol>
+            </div>
+            
+            <h2>Regression Testing</h2>
+            
+            <div class="highlight-box">
+                <h3>What is Regression Testing?</h3>
+                <p>In Regression testing, we must check that newly added or newly corrected functionality is working properly, and there is no negative impact on other working modules.</p>
+                <p>The primary goal of regression testing is to ensure that new changes and fixed bugs do not break the existing functionality.</p>
+                
+                <h4>About Regression Testing</h4>
+                <p><strong>Purpose:</strong> Ensure that new changes don't break existing functionality</p>
+                <p><strong>When to Perform:</strong> After major code changes, new feature additions, or bug fixes</p>
+                <p><strong>Scope:</strong> All impacted areas of the application</p>
+                <p><strong>Test Cases:</strong> All relevant test cases, not just the failed ones</p>
+            </div>
+            
+            <h3>Retesting vs. Regression Testing</h3>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Feature</th>
+                    <th>Retesting</th>
+                    <th>Regression Testing</th>
+                </tr>
+                <tr>
+                    <td>Objective</td>
+                    <td>Verify the fixed bug</td>
+                    <td>Ensure no new bugs due to changes</td>
+                </tr>
+                <tr>
+                    <td>Test Cases</td>
+                    <td>Only failed test cases</td>
+                    <td>All impacted test cases</td>
+                </tr>
+                <tr>
+                    <td>Execution</td>
+                    <td>Performed multiple times if needed</td>
+                    <td>Performed after major code changes</td>
+                </tr>
+                <tr>
+                    <td>Focus</td>
+                    <td>Specific defect</td>
+                    <td>Overall system stability</td>
+                </tr>
+            </table>
+            
+            <h3>Regression Testing Process</h3>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h4>Identify Changes</h4>
+                        <p>Determine what code changes have been made</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h4>Select Test Cases</h4>
+                        <p>Choose test cases that cover affected areas</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h4>Execute Tests</h4>
+                        <p>Run the selected test cases</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h4>Analyze Results</h4>
+                        <p>Check for any failures or unexpected behavior</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h4>Report Issues</h4>
+                        <p>Log any new defects found during testing</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h2>Reviews and Types of Reviews</h2>
+            
+            <div class="highlight-box">
+                <p>Reviews are a systematic examination of software work products by the author's peers to identify defects and improvements. They are a crucial part of the software development process, helping to improve quality and reduce defects early in the lifecycle.</p>
+                
+                <h3>Types of Reviews</h3>
+                
+                <div class="testing-grid">
+                    <div class="testing-item">
+                        <h4>Code Review</h4>
+                        <p>Systematic examination of source code to find and fix errors overlooked in the initial development phase.</p>
+                        <ul>
+                            <li>Improves code quality</li>
+                            <li>Shares knowledge among team members</li>
+                            <li>Finds vulnerabilities and bugs early</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="testing-item">
+                        <h4>Document Review</h4>
+                        <p>Evaluation of documentation to ensure accuracy, completeness, and quality.</p>
+                        <ul>
+                            <li>Requirements documents</li>
+                            <li>Design specifications</li>
+                            <li>User manuals</li>
+                            <li>Test plans and cases</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="testing-item">
+                        <h4>Walkthrough</h4>
+                        <p>A meeting where the author of the work product explains the product to peers for feedback.</p>
+                        <ul>
+                            <li>Informal review process</li>
+                            <li>Led by the author</li>
+                            <li>Focus on understanding and education</li>
+                            <li>Minimal preparation required</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="testing-item">
+                        <h4>Inspection</h4>
+                        <p>Formal, rigorous review process led by a trained moderator to identify defects.</p>
+                        <ul>
+                            <li>Formal process with defined roles</li>
+                            <li>Uses checklists</li>
+                            <li>Formal follow-up process</li>
+                            <li>Metrics are collected</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="testing-item">
+                        <h4>Technical Review</h4>
+                        <p>Peer discussion focused on achieving consensus on the technical approach.</p>
+                        <ul>
+                            <li>Evaluates technical concepts</li>
+                            <li>Focuses on alternatives and correctness</li>
+                            <li>Performed by technical experts</li>
+                            <li>Less formal than inspections</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="testing-item">
+                        <h4>Peer Review</h4>
+                        <p>Evaluation of work product by colleagues of similar competence.</p>
+                        <ul>
+                            <li>Improves quality through collective ownership</li>
+                            <li>Promotes knowledge sharing</li>
+                            <li>Helps in identifying defects early</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Benefits of Reviews</h3>
+                <ul>
+                    <li><strong>Early Defect Detection:</strong> Find and fix issues early in the development process</li>
+                    <li><strong>Cost Reduction:</strong> Reduce cost of fixing defects found later in the lifecycle</li>
+                    <li><strong>Knowledge Transfer:</strong> Share knowledge and best practices among team members</li>
+                    <li><strong>Quality Improvement:</strong> Consistently improve the quality of software products</li>
+                </ul>
+                
+                <h3>Review Process</h3>
+                <ol>
+                    <li><strong>Planning:</strong> Define scope, objectives, and select participants</li>
+                    <li><strong>Preparation:</strong> Review materials are distributed and studied by participants</li>
+                    <li><strong>Examination:</strong> Review meeting where defects are identified and discussed</li>
+                    <li><strong>Rework:</strong> Author addresses the identified issues</li>
+                    <li><strong>Follow-up:</strong> Moderator verifies that all issues have been addressed</li>
+                </ol>
+            </div>
+            
+            <div class="navigation-buttons">
+                <a href="security.html" class="btn btn-secondary">← Previous: Security Testing</a>
+                <a href="defect-management.html" class="btn">Next: Defect Management →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Roles and Responsibilities of Pratik | <a href="index.html">Go To Index</a></p>
+        <p>If any query, call <a href="tel:8625812214">8625812214</a> or mail <a href="mailto:pratiknarute2@gmail.com">pratiknarute2@gmail.com</a></p>
+        <p>2025 Software Testing Manual. All rights reserved.</p>
+    </div>
+</body>
+</html>

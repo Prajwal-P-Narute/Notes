@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agile Methodology</title>
+    <style>
+        :root {
+            --primary: #9b59b6;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), #8e44ad);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            background: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .content-card h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 0.8rem 0;
+        }
+        
+        .content-card p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-box {
+            background: #f4ecf7;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .definition-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .principle-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .principle-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .process-flow {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .process-step {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 150px;
+            position: relative;
+        }
+        
+        .process-step:after {
+            content: "→";
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+        }
+        
+        .process-step:last-child:after {
+            display: none;
+        }
+        
+        .automation-chart {
+            display: flex;
+            height: 40px;
+            margin: 1.5rem 0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .manual-part {
+            background: #3498db;
+            width: 70%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .auto-part {
+            background: #2ecc71;
+            width: 30%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #8e44ad;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                margin: 0.2rem 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .principles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .process-flow {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .process-step:after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -20px;
+                transform: translateX(50%);
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Agile Methodology</h1>
+        <p>Iterative approach to software development with focus on customer value</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="introduction.html">Introduction</a>
+        <a href="sqa.html">SQA</a>
+        <a href="sdlc.html">SDLC</a>
+        <a href="testing-types.html">Testing Types</a>
+        <a href="black-box.html">Black Box Testing</a>
+        <a href="performance.html">Performance Testing</a>
+        <a href="security.html">Security Testing</a>
+        <a href="uat.html">UAT</a>
+        <a href="defect-management.html">Defect Management</a>
+    </div>
+    
+    <div class="container">
+        <div class="content-card">
+            <h2>What is Agile Methodology?</h2>
+            <p>Agile Methodology is an iterative approach to software development that focuses on delivering value to customers through incremental releases, collaboration, and adaptability to change.</p>
+            
+            <div class="definition-box">
+                <h4>Definition</h4>
+                <p>Agile is a time-boxed, iterative approach to software delivery that builds software incrementally from the start of the project, instead of trying to deliver it all at once near the end. It works by breaking projects down into little bits of user functionality called user stories, prioritizing them, and then continuously delivering them in short two-week cycles called iterations.</p>
+            </div>
+            
+            <h2>Key Principles of Agile</h2>
+            
+            <div class="principles-grid">
+                <div class="principle-item">
+                    <h4>Work in Sprints</h4>
+                    <p>Projects are divided into smaller iterations (sprints) for regular delivery</p>
+                </div>
+                
+                <div class="principle-item">
+                    <h4>Customer Involvement</h4>
+                    <p>Continuous customer feedback ensures product meets expectations</p>
+                </div>
+                
+                <div class="principle-item">
+                    <h4>Adaptability</h4>
+                    <p>Easy accommodation of changing requirements</p>
+                </div>
+                
+                <div class="principle-item">
+                    <h4>Team Collaboration</h4>
+                    <p>Cross-functional teams working together</p>
+                </div>
+                
+                <div class="principle-item">
+                    <h4>Continuous Improvement</h4>
+                    <p>Regular retrospectives for process refinement</p>
+                </div>
+            </div>
+            
+            <h2>Popular Agile Frameworks</h2>
+            
+            <div class="highlight-box">
+                <h3>Scrum</h3>
+                <p>Teams work in time-boxed sprints with roles like Scrum Master and Product Owner</p>
+                
+                <h3>Kanban</h3>
+                <p>Visual workflow management using boards to limit work in progress</p>
+                
+                <h3>XP (Extreme Programming)</h3>
+                <p>Emphasizes technical excellence with practices like pair programming and TDD</p>
+            </div>
+            
+            <h2>Agile Process Flow</h2>
+            
+            <div class="process-flow">
+                <div class="process-step">
+                    <strong>1</strong><br>Stakeholder
+                    <small>Provides business requirements and priorities</small>
+                </div>
+                <div class="process-step">
+                    <strong>2</strong><br>Product Owner
+                    <small>Translates requirements into Product Backlog</small>
+                </div>
+                <div class="process-step">
+                    <strong>3</strong><br>Product Backlog
+                    <small>Prioritized list of all desired work on the project</small>
+                </div>
+                <div class="process-step">
+                    <strong>4</strong><br>Sprint Planning
+                    <small>Team selects items for the upcoming sprint</small>
+                </div>
+                <div class="process-step">
+                    <strong>5</strong><br>Sprint Execution
+                    <small>Development, testing, and delivery of increment</small>
+                </div>
+                <div class="process-step">
+                    <strong>6</strong><br>Review & Retrospective
+                    <small>Demo to stakeholders and process improvement</small>
+                </div>
+            </div>
+            
+            <h2>V-Model vs Agile Methodology</h2>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>V-Model</th>
+                    <th>Agile Methodology</th>
+                </tr>
+                <tr>
+                    <td>Customers</td>
+                    <td>Stakeholder</td>
+                </tr>
+                <tr>
+                    <td>Business Analyst (BA)</td>
+                    <td>Product Owner</td>
+                </tr>
+                <tr>
+                    <td>BRS (Business Requirements Specification)</td>
+                    <td>Product Backlog</td>
+                </tr>
+                <tr>
+                    <td>SRS (System Requirements Specification)</td>
+                    <td>Sprint Backlog</td>
+                </tr>
+                <tr>
+                    <td>Functional Requirements</td>
+                    <td>User Stories</td>
+                </tr>
+                <tr>
+                    <td>Release</td>
+                    <td>Sprint</td>
+                </tr>
+                <tr>
+                    <td>Project Manager</td>
+                    <td>Scrum Master</td>
+                </tr>
+                <tr>
+                    <td>Sequential Development</td>
+                    <td>Iterative Development</td>
+                </tr>
+                <tr>
+                    <td>Fixed Requirements</td>
+                    <td>Adaptive Requirements</td>
+                </tr>
+                <tr>
+                    <td>Documentation Focused</td>
+                    <td>Working Software Focused</td>
+                </tr>
+            </table>
+            
+            <h2>Agile Roles & Responsibilities</h2>
+            
+            <div class="highlight-box">
+                <h3>Stakeholder</h3>
+                <p>Customer or representative from the top management. Provides business requirements and priorities. Can change requirements at any phase. Provides a bundle of requirements to the Product Owner.</p>
+                
+                <h3>Product Owner</h3>
+                <p>Similar to Business Analyst in traditional models. Gathers all requirements from stakeholders. Creates and maintains the Product Backlog. Participates in grooming and sprint planning meetings. Prioritizes user stories for development.</p>
+                
+                <h3>Scrum Master</h3>
+                <p>Facilitates the Scrum process. Removes impediments for the team. Ensures adherence to Agile principles. Conducts sprint planning and retrospective meetings. Protects the team from external distractions.</p>
+            </div>
+            
+            <h2>Agile Artifacts</h2>
+            
+            <div class="highlight-box">
+                <h3>Product Backlog</h3>
+                <p>Similar to Business Requirements Specification (BRS). Contains all requirements for the entire project. Prioritized by the Product Owner. Continuously refined and updated.</p>
+                
+                <h3>Sprint Backlog</h3>
+                <p>Similar to System Requirements Specification (SRS). Contains user stories selected for the current sprint. Provides detailed information for module development. Owned by the Development Team.</p>
+                
+                <h3>User Stories</h3>
+                <p>Functional requirements for module development. Written in format: "As a [user], I want [feature] so that [benefit]". Include acceptance criteria for testing. Estimated using story points or ideal days.</p>
+            </div>
+            
+            <h2>Agile Meetings & Ceremonies</h2>
+            
+            <div class="highlight-box">
+                <h3>Sprint Planning</h3>
+                <p><strong>Duration:</strong> 1-2 hours</p>
+                <p><strong>Attendees:</strong> Scrum Master, Development Team, Testing Team, Product Owner</p>
+                <p><strong>Purpose:</strong> Job allocation, resource allocation, and estimation</p>
+                
+                <h3>Backlog Grooming</h3>
+                <p><strong>Duration:</strong> 1-2 hours (weekly or bi-weekly)</p>
+                <p><strong>Attendees:</strong> Scrum Master, Development Team, Testing Team, Product Owner</p>
+                <p><strong>Purpose:</strong> Review, refine, and prioritize the product backlog</p>
+                <p><strong>Activities:</strong></p>
+                <ul>
+                    <li>Break down large user stories</li>
+                    <li>Write and estimate user stories</li>
+                    <li>Prioritize backlog items</li>
+                    <li>Clarify requirements and acceptance criteria</li>
+                </ul>
+                
+                <h3>Daily Stand-up</h3>
+                <p><strong>Duration:</strong> 15-30 minutes daily</p>
+                <p><strong>Attendees:</strong> Scrum Master, Development Team, Testing Team, Product Owner</p>
+                <p><strong>Purpose:</strong> Progress tracking and impediment identification</p>
+                <p><strong>Three questions:</strong></p>
+                <ul>
+                    <li>What did I do yesterday?</li>
+                    <li>What will I do today?</li>
+                    <li>What obstacles are in my way?</li>
+                </ul>
+                
+                <h3>Sprint Review</h3>
+                <p><strong>Duration:</strong> 1-2 hours</p>
+                <p><strong>Attendees:</strong> Scrum Master, Development Team, Testing Team, Product Owner, Stakeholders</p>
+                <p><strong>Purpose:</strong> Demo of completed work to stakeholders for feedback</p>
+                
+                <h3>Sprint Retrospective</h3>
+                <p><strong>Duration:</strong> 30-45 minutes</p>
+                <p><strong>Attendees:</strong> Scrum Master, Development Team, Testing Team</p>
+                <p><strong>Purpose:</strong> Process improvement discussion</p>
+                <p><strong>Three questions:</strong></p>
+                <ul>
+                    <li>What went well?</li>
+                    <li>What could be improved?</li>
+                    <li>What actions will we implement?</li>
+                </ul>
+            </div>
+            
+            <h2>Estimation in Agile</h2>
+            
+            <p>Estimation is the process of prioritizing and sizing user stories for specific modules. It considers:</p>
+            
+            <div class="highlight-box">
+                <p><strong>Knowledge</strong> - Team members' understanding of the project domain</p>
+                <p><strong>Effort</strong> - Resources and manpower required to complete the work</p>
+                <p><strong>Complexity</strong> - Time, cost, and resource requirements based on work complexity</p>
+            </div>
+            
+            <p><strong>Estimation Techniques:</strong></p>
+            <ul>
+                <li><strong>Planning Poker:</strong> Team members use numbered cards to estimate effort</li>
+                <li><strong>T-Shirt Sizing:</strong> XS, S, M, L, XL to categorize story size</li>
+                <li><strong>Story Points:</strong> Relative measurement of effort (Fibonacci sequence)</li>
+                <li><strong>Ideal Days:</strong> Estimating based on uninterrupted work days</li>
+            </ul>
+            
+            <h2>Automation in Agile</h2>
+            
+            <p>In Agile methodology, automation plays a crucial role in maintaining velocity and quality:</p>
+            
+            <div class="automation-chart">
+                <div class="manual-part">70% Manual Testing</div>
+                <div class="auto-part">30% Automation Testing</div>
+            </div>
+            
+            <p><strong>Benefits of Automation:</strong></p>
+            <ul>
+                <li>Fewer resources required</li>
+                <li>Reduced costs</li>
+                <li>Minimized human error</li>
+                <li>Higher accuracy</li>
+                <li>Faster execution</li>
+                <li>Early bug detection</li>
+                <li>Continuous feedback</li>
+            </ul>
+            
+            <p><strong>Common Automation Tools:</strong></p>
+            <ul>
+                <li>Selenium for web application testing</li>
+                <li>Appium for mobile application testing</li>
+                <li>JUnit/TestNG for unit testing</li>
+                <li>Cucumber for behavior-driven development</li>
+                <li>Jenkins for continuous integration</li>
+            </ul>
+            
+            <h2>Agile Advantages & Disadvantages</h2>
+            
+            <div class="highlight-box">
+                <h3>Advantages</h3>
+                <ul>
+                    <li>Faster delivery of features</li>
+                    <li>Higher customer satisfaction through regular updates</li>
+                    <li>Improved teamwork and communication</li>
+                    <li>Fewer defects due to frequent testing</li>
+                    <li>Flexibility to accommodate changing requirements</li>
+                    <li>Early and predictable delivery</li>
+                    <li>Better risk management</li>
+                    <li>Continuous improvement</li>
+                </ul>
+                
+                <h3>Disadvantages</h3>
+                <ul>
+                    <li>Requires deep understanding of software flows and dependencies</li>
+                    <li>Limited time for knowledge transfer due to short sprints</li>
+                    <li>Can be difficult to measure progress without clear milestones</li>
+                    <li>May require significant cultural change in organizations</li>
+                    <li>Can be challenging with distributed teams</li>
+                    <li>Risk of scope creep if not properly managed</li>
+                    <li>Documentation may be less comprehensive</li>
+                </ul>
+            </div>
+            
+            <h2>Check Points in Agile</h2>
+            
+            <p>Check points are systematic processes for defect detection and prevention:</p>
+            
+            <div class="highlight-box">
+                <p><strong>1. Defect Identification</strong> - When a defect is found in production</p>
+                <p><strong>2. Check Point Analysis</strong> - Tester examines check points between development phases</p>
+                <p><strong>3. Defect Localization</strong> - Using tools like AVAS to highlight defective code</p>
+                <p><strong>4. Rapid Resolution</strong> - Developer fixes the highlighted code immediately</p>
+            </div>
+            
+            <p><strong>Benefits of Check Points:</strong></p>
+            <ul>
+                <li>Eliminates need for post-mortem testing</li>
+                <li>Speeds up defect resolution</li>
+                <li>Provides clear visibility into code issues</li>
+                <li>Reduces debugging time</li>
+            </ul>
+            
+            <h2>Sanity & Smoke Testing in Agile</h2>
+            
+            <p>Sanity and Smoke testing are both types of preliminary testing performed to ensure that the basic functionalities of an application work correctly before proceeding with more comprehensive testing.</p>
+            
+            <div class="highlight-box">
+                <h3>Sanity Testing</h3>
+                <p>Also known as zero level testing or build verification testing</p>
+                
+                <h4>Purpose</h4>
+                <p>The aim of sanity testing is to check basic or core functionality of the application to determine if it's stable enough for more detailed testing.</p>
+                
+                <h4>When Performed</h4>
+                <p>Sanity testing is performed after integration testing ends and before more comprehensive testing begins.</p>
+                
+                <h4>Process</h4>
+                <p>Database analyst team creates a test environment with a URL to run the build. Testers verify if the build generates desired output. Testing focuses on basic functionality without deep validation.</p>
+                
+                <h4>Test Focus Areas</h4>
+                <ul>
+                    <li><strong>Basic Core Functionality:</strong> Testing buttons, icons, and forms that allow users to proceed to next stages. Example: Testing the submit button on Facebook's sign-up page</li>
+                    <li><strong>Input Field Validation:</strong> Testing input fields to ensure they accept values correctly. Example: Verifying that text fields in Facebook accept characters, symbols, and numbers from both physical and on-screen keyboards</li>
+                    <li><strong>Link Validation:</strong> Checking that interlinked pages work in the correct sequence. Example: Verifying payment process links in Amazon work correctly with UPI or third-party applications</li>
+                    <li><strong>Page Validation:</strong> Testing navigation between pages using next and back buttons. Example: Verifying page navigation in WPS PDF reader works correctly</li>
+                    <li><strong>GUI Validation:</strong> Checking the visual interface where users interact directly. Example: Verifying pages display correctly, images are clear, and no blurring occurs</li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>Smoke Testing</h3>
+                <p>Advanced version of sanity testing with additional validation</p>
+                
+                <h4>Purpose</h4>
+                <p>To verify that basic and critical (high priority) functionality works properly at the initial stage of a build.</p>
+                
+                <h4>Participants</h4>
+                <p>Both back-end developers and testers are involved in smoke testing.</p>
+                
+                <h4>Formula</h4>
+                <p>Smoke Test = Sanity Test + Troubleshooting + Package Validation</p>
+                
+                <h4>Package Validation</h4>
+                <p>Package is a collection of objects downloaded to the system when installing a build. Smoke testing validates that all required packages are correctly installed and functional.</p>
+                
+                <h4>Primary Goal</h4>
+                <p>To ensure the software build is stable enough for further testing.</p>
+            </div>
+            
+            <h3>Difference Between Smoke and Sanity Testing</h3>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Criteria</th>
+                    <th>Smoke Testing</th>
+                    <th>Sanity Testing</th>
+                </tr>
+                <tr>
+                    <td>Definition</td>
+                    <td>Build verification testing conducted to verify basic and critical functionality</td>
+                    <td>Zero level testing conducted to verify basic and core functionality</td>
+                </tr>
+                <tr>
+                    <td>When Performed</td>
+                    <td>Initial stage of the build</td>
+                    <td>After build passes smoke testing</td>
+                </tr>
+                <tr>
+                    <td>Scope</td>
+                    <td>Combination of sanity testing, troubleshooting, and package validation</td>
+                    <td>Done on enhancement features; kind of regression testing</td>
+                </tr>
+                <tr>
+                    <td>Primary Goal</td>
+                    <td>Ensure software build is stable for further testing</td>
+                    <td>Ensure build is ready for detailed level testing</td>
+                </tr>
+                <tr>
+                    <td>Performed By</td>
+                    <td>Developers and testers</td>
+                    <td>QA team</td>
+                </tr>
+                <tr>
+                    <td>Depth of Testing</td>
+                    <td>More comprehensive, includes package validation</td>
+                    <td>Surface level, checks only basic functionality</td>
+                </tr>
+                <tr>
+                    <td>Documentation</td>
+                    <td>Usually documented with test cases</td>
+                    <td>Often undocumented, exploratory in nature</td>
+                </tr>
+            </table>
+            
+            <h3>Benefits of Early Stage Testing</h3>
+            <ul>
+                <li><strong>Early Defect Detection:</strong> Identify critical issues before detailed testing begins</li>
+                <li><strong>Cost Efficiency:</strong> Reduce cost by finding issues early in the development cycle</li>
+                <li><strong>Time Savings:</strong> Avoid wasting time on detailed testing of unstable builds</li>
+                <li><strong>Better Resource Allocation:</strong> Focus testing efforts on builds that pass initial verification</li>
+            </ul>
+            
+            <h3>Best Practices for Sanity and Smoke Testing</h3>
+            <ol>
+                <li><strong>Create a Checklist:</strong> Develop a standardized checklist of critical functionalities to verify in each build</li>
+                <li><strong>Automate When Possible:</strong> Automate repetitive smoke tests to save time and ensure consistency</li>
+                <li><strong>Prioritize Critical Paths:</strong> Focus on the most critical user journeys that would block further testing if broken</li>
+                <li><strong>Maintain Documentation:</strong> Keep records of test results to identify patterns of recurring issues</li>
+            </ol>
+            
+            <div class="navigation-buttons">
+                <a href="testing-types.html" class="btn btn-secondary">← Previous: Testing Types</a>
+                <a href="black-box.html" class="btn">Next: Black Box Testing →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Roles and Responsibilities of Pratik | <a href="index.html">Go To Index</a></p>
+        <p>If any query, call <a href="tel:8625812214">8625812214</a> or mail <a href="mailto:pratiknarute2@gmail.com">pratiknarute2@gmail.com</a></p>
+        <p>2025 Software Testing Manual. All rights reserved.</p>
+    </div>
+</body>
+</html>

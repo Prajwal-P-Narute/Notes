@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Testing</title>
+    <style>
+        :root {
+            --primary: #c0392b;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), #e74c3c);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            background: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .content-card h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 0.8rem 0;
+        }
+        
+        .content-card p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-box {
+            background: #fdedec;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .definition-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .testing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .testing-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .testing-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .security-types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .security-type-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tool-item {
+            background: #f0f8ff;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .example-scenario {
+            background: #e8f4fc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--info);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #e74c3c;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                margin: 0.2rem 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .testing-grid, .security-types-grid, .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Security Testing</h1>
+        <p>Finding and fixing weaknesses to protect from unauthorized access</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="introduction.html">Introduction</a>
+        <a href="sqa.html">SQA</a>
+        <a href="sdlc.html">SDLC</a>
+        <a href="testing-types.html">Testing Types</a>
+        <a href="agile.html">Agile</a>
+        <a href="black-box.html">Black Box Testing</a>
+        <a href="performance.html">Performance Testing</a>
+        <a href="uat.html">UAT</a>
+        <a href="defect-management.html">Defect Management</a>
+    </div>
+    
+    <div class="container">
+        <div class="content-card">
+            <h2>What is Security Testing?</h2>
+            <p>Security Testing is the process of finding and fixing weaknesses in a system or application to ensure it is safe from hackers and unauthorized access.</p>
+            
+            <div class="definition-box">
+                <h4>Purpose of Security Testing</h4>
+                <p>To ensure the application is secure from threats like hacking, data theft, or unauthorized access.</p>
+                <p>Security testing checks:</p>
+                <ul>
+                    <li>If only authorized people can access the system</li>
+                    <li>If sensitive data is safe</li>
+                    <li>If the system can handle attacks without breaking</li>
+                </ul>
+            </div>
+            
+            <h2>Security Testing Techniques</h2>
+            
+            <div class="highlight-box">
+                <p><strong>Vulnerability Scanning:</strong> Checking for weak spots in the system</p>
+                <p><strong>Penetration Testing:</strong> Simulating real-world attacks to find risks</p>
+                <p><strong>Security Auditing:</strong> Reviewing logs and code for security issues</p>
+            </div>
+            
+            <h2>Security Testing Tools</h2>
+            
+            <div class="tools-grid">
+                <div class="tool-item">
+                    <h4>Burp Suite</h4>
+                    <p>An integrated platform for performing security testing of web applications</p>
+                </div>
+            </div>
+            
+            <h2>Security Testing Terminologies</h2>
+            
+            <h3>Authentication vs Authorization</h3>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Sr no</th>
+                    <th>Authentication</th>
+                    <th>Authorization</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Verifies if the user's identity is valid or invalid to grant access</td>
+                    <td>Verifies if the user has the necessary permissions to access specific resources</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>
+                        <strong>How it works:</strong><br>
+                        - Username and password: Basic login method<br>
+                        - Biometrics: Fingerprint, face recognition<br>
+                        - Two-factor authentication (2FA): Password + one-time password (OTP)
+                    </td>
+                    <td>
+                        <strong>How it works:</strong><br>
+                        Based on roles (e.g., admin, user) and permissions (e.g., read, write)<br>
+                        Example: Only an admin can delete records
+                    </td>
+                </tr>
+            </table>
+            
+            <h3>Encryption vs Decryption</h3>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Sr no</th>
+                    <th>Encryption</th>
+                    <th>Decryption</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Changes readable data into an unreadable format to keep it safe from unauthorized access</td>
+                    <td>Converts encrypted data back into original readable data for authorized users</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Protects sensitive data like passwords, credit card info, or personal details when it's stored or transmitted</td>
+                    <td>Allows only authorized users to access the original data after encryption</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>
+                        <strong>Common methods:</strong><br>
+                        - Symmetric encryption (same key to encrypt and decrypt)<br>
+                        - Asymmetric encryption (public key to encrypt, private key to decrypt)
+                    </td>
+                    <td>
+                        <strong>Common methods:</strong><br>
+                        - AES for symmetric encryption<br>
+                        - RSA for asymmetric encryption
+                    </td>
+                </tr>
+            </table>
+            
+            <h2>Security Testing Types</h2>
+            
+            <div class="security-types-grid">
+                <div class="security-type-item">
+                    <h4>Penetration Testing</h4>
+                    <p><strong>Purpose:</strong> Simulates real cyberattacks to find weaknesses</p>
+                    <p><strong>Example Scenario:</strong> Hacking into a system using SQL Injection to test security</p>
+                </div>
+                
+                <div class="security-type-item">
+                    <h4>Vulnerability Scanning</h4>
+                    <p><strong>Purpose:</strong> Identifies security loopholes automatically</p>
+                    <p><strong>Example Scenario:</strong> Detecting outdated software with known security flaws</p>
+                </div>
+                
+                <div class="security-type-item">
+                    <h4>Authentication & Authorization Testing</h4>
+                    <p><strong>Purpose:</strong> Ensures proper user access controls</p>
+                    <p><strong>Example Scenario:</strong> Attempting to bypass login or access unauthorized pages</p>
+                </div>
+            </div>
+            
+            <h2>Real-World Examples</h2>
+            
+            <div class="example-scenario">
+                <h4>Authentication & Authorization</h4>
+                <p>When you log into a website (authentication), and then you can only access certain pages based on your membership level (authorization).</p>
+            </div>
+            
+            <div class="example-scenario">
+                <h4>Encryption & Decryption</h4>
+                <p>When you send an email with sensitive information, it's encrypted to protect it while traveling over the internet. The recipient uses a key to decrypt it and read it.</p>
+            </div>
+            
+            <h2>Hot Fix</h2>
+            
+            <div class="highlight-box">
+                <p>A Hot Fix is an urgent patch deployed directly to production to resolve a critical issue (like downtime, payment failure, or security flaw) that cannot wait for the next scheduled release.</p>
+                
+                <h4>Key Points</h4>
+                <p><strong>Purpose:</strong> Fix critical business-blocking issues immediately.</p>
+                <p><strong>Priority:</strong> Very high, deployed in hours (not days/weeks).</p>
+                <p><strong>Code Change:</strong> Minimal, focused only on the defect.</p>
+                <p><strong>Process:</strong> Bypasses normal release cycle, directly moved to production.</p>
+                <p><strong>Testing:</strong> Smoke testing + focused regression on impacted areas, followed by full regression later.</p>
+                <p><strong>Outcome:</strong> Ensures business continuity and reduces downtime.</p>
+                
+                <h4>Example Scenario</h4>
+                <p>"Suppose the payment gateway stops working in production. This impacts revenue, so the team raises a hot fix. Developers apply a minimal code change, and as QA, I perform quick impact analysis, run smoke tests on payment and checkout flows, validate the fix in production, and later ensure it is covered in the next regression cycle."</p>
+                
+                <h4>Hot Fix Process Flow:</h4>
+                <ol>
+                    <li><strong>Critical Issue Identified:</strong> Payment gateway failure in production</li>
+                    <li><strong>Hot Fix Initiated:</strong> Bypasses normal release cycle</li>
+                    <li><strong>Minimal Code Change:</strong> Focused only on the defect</li>
+                    <li><strong>Targeted Testing:</strong> Smoke + focused regression testing</li>
+                    <li><strong>Production Deployment:</strong> Fix validated in live environment</li>
+                    <li><strong>Full Regression Later:</strong> Included in next regular release cycle</li>
+                </ol>
+                
+                <h4>Quick Summary</h4>
+                <p>"A hot fix is an urgent production patch to resolve critical issues like downtime or payment failure. It bypasses the normal release cycle, involves minimal code changes, and requires immediate testing—smoke and focused regression—followed by validation in production and later full regression."</p>
+                
+                <h4>When to Use a Hot Fix:</h4>
+                <ul>
+                    <li>Critical production issues affecting business operations</li>
+                    <li>Security vulnerabilities that need immediate attention</li>
+                    <li>System downtime or major functionality failure</li>
+                    <li>Issues that cannot wait for the next scheduled release</li>
+                </ul>
+            </div>
+            
+            <div class="navigation-buttons">
+                <a href="performance.html" class="btn btn-secondary">← Previous: Performance Testing</a>
+                <a href="uat.html" class="btn">Next: User Acceptance Testing →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Roles and Responsibilities of Pratik | <a href="index.html">Go To Index</a></p>
+        <p>If any query, call <a href="tel:8625812214">8625812214</a> or mail <a href="mailto:pratiknarute2@gmail.com">pratiknarute2@gmail.com</a></p>
+        <p>2025 Software Testing Manual. All rights reserved.</p>
+    </div>
+</body>
+</html>

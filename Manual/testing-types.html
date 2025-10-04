@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Types of Software Testing</title>
+    <style>
+        :root {
+            --primary: #f39c12;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), #e67e22);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            background: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .content-card h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 0.8rem 0;
+        }
+        
+        .content-card p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-box {
+            background: #fef9e7;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .definition-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .testing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .testing-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .testing-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #e67e22;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                margin: 0.2rem 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .testing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Types of Software Testing</h1>
+        <p>Different approaches to software testing</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="introduction.html">Introduction</a>
+        <a href="sqa.html">SQA</a>
+        <a href="sdlc.html">SDLC</a>
+        <a href="agile.html">Agile</a>
+        <a href="black-box.html">Black Box Testing</a>
+        <a href="performance.html">Performance Testing</a>
+        <a href="security.html">Security Testing</a>
+        <a href="uat.html">UAT</a>
+        <a href="defect-management.html">Defect Management</a>
+    </div>
+    
+    <div class="container">
+        <div class="content-card">
+            <h2>Testing Methodology Overview</h2>
+            <p>Testing Methodology refers to the strategies and approaches used to ensure that software or a system meets the defined quality standards and requirements. It defines how testing is conducted, the objectives, and the methods used.</p>
+            
+            <div class="testing-grid">
+                <div class="testing-item">
+                    <h4>Black Box Testing</h4>
+                    <p><strong>Focus:</strong> Functional testing without knowledge of internal code.</p>
+                    <p><strong>Key Techniques:</strong></p>
+                    <ul>
+                        <li>Equivalence Partitioning</li>
+                        <li>Boundary Value Analysis</li>
+                        <li>Decision Table Testing</li>
+                    </ul>
+                    <p><strong>Examples:</strong> User interface testing, functional testing.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>White Box Testing</h4>
+                    <p><strong>Focus:</strong> Testing internal logic and structure of code.</p>
+                    <p><strong>Key Techniques:</strong></p>
+                    <ul>
+                        <li>Statement Coverage</li>
+                        <li>Branch Coverage</li>
+                        <li>Path Coverage</li>
+                    </ul>
+                    <p><strong>Examples:</strong> Unit tests, code reviews.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Gray Box Testing</h4>
+                    <p><strong>Focus:</strong> Combination of Black Box and White Box techniques.</p>
+                    <p><strong>Purpose:</strong> Testing with partial knowledge of the system.</p>
+                    <p><strong>Use Case:</strong> Security testing or integration testing.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Static Testing</h4>
+                    <p><strong>Focus:</strong> Testing without executing the code.</p>
+                    <p><strong>Activities:</strong></p>
+                    <ul>
+                        <li>Code reviews</li>
+                        <li>Walkthroughs</li>
+                        <li>Inspections</li>
+                        <li>Static analysis tools</li>
+                    </ul>
+                    <p><strong>Purpose:</strong> Catch defects early in the development lifecycle.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Dynamic Testing</h4>
+                    <p><strong>Focus:</strong> Testing by executing the application.</p>
+                    <p><strong>Types:</strong></p>
+                    <ul>
+                        <li>Functional Testing: Validating functionality against requirements</li>
+                        <li>Non-functional Testing: Validating performance, usability, and security</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Manual Testing</h4>
+                    <p><strong>Focus:</strong> Testing without automation tools.</p>
+                    <p><strong>Types:</strong></p>
+                    <ul>
+                        <li>Exploratory Testing</li>
+                        <li>Ad-hoc Testing</li>
+                        <li>Regression Testing</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Automated Testing</h4>
+                    <p><strong>Focus:</strong> Using tools and scripts for repeated test execution.</p>
+                    <p><strong>Tools:</strong> Selenium, JUnit, TestNG, Pytest, REST Assured.</p>
+                    <p><strong>Advantages:</strong> Speed, accuracy, and efficiency for regression testing and large-scale projects.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Agile Testing</h4>
+                    <p><strong>Focus:</strong> Continuous testing during iterative development.</p>
+                    <p><strong>Principles:</strong></p>
+                    <ul>
+                        <li>Collaboration between developers, testers, and business stakeholders</li>
+                        <li>Test-driven development (TDD) or Behavior-driven development (BDD)</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Test-Driven Development (TDD)</h4>
+                    <p><strong>Focus:</strong> Writing tests before code.</p>
+                    <p><strong>Process:</strong></p>
+                    <ol>
+                        <li>Write a failing test</li>
+                        <li>Develop code to pass the test</li>
+                        <li>Refactor the code and ensure tests still pass</li>
+                    </ol>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Behavior-Driven Development (BDD)</h4>
+                    <p><strong>Focus:</strong> Testing based on expected user behaviors.</p>
+                    <p><strong>Tools:</strong> Cucumber, SpecFlow.</p>
+                    <p><strong>Purpose:</strong> Align business goals with technical implementation.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Acceptance Testing</h4>
+                    <p><strong>Focus:</strong> Validating the system meets business needs.</p>
+                    <p><strong>Types:</strong></p>
+                    <ul>
+                        <li>Alpha Testing: Performed by internal testers or users</li>
+                        <li>Beta Testing: Performed by external users in a real environment</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Performance Testing</h4>
+                    <p><strong>Focus:</strong> Testing system performance under different loads.</p>
+                    <p><strong>Types:</strong></p>
+                    <ul>
+                        <li>Load Testing</li>
+                        <li>Stress Testing</li>
+                        <li>Scalability Testing</li>
+                        <li>Soak Testing</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Security Testing</h4>
+                    <p><strong>Focus:</strong> Ensuring the application is secure from vulnerabilities.</p>
+                    <p><strong>Activities:</strong></p>
+                    <ul>
+                        <li>Penetration Testing</li>
+                        <li>Vulnerability Scanning</li>
+                        <li>Security Audits</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Regression Testing</h4>
+                    <p><strong>Focus:</strong> Ensuring new code changes do not break existing functionality.</p>
+                    <p>Typically performed after bug fixes, enhancements, or new features are added to the system.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Exploratory Testing</h4>
+                    <p><strong>Focus:</strong> Testing without predefined test cases.</p>
+                    <p><strong>Goal:</strong> Discover defects through creative exploration.</p>
+                    <p>Relies on tester's experience, intuition, and knowledge of the system to find defects that scripted testing might miss.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Shakedown Testing</h4>
+                    <p><strong>Focus:</strong> Testing the system in a live environment, but typically in a controlled manner.</p>
+                    <p><strong>When Performed:</strong> After integration testing, when the system is considered stable.</p>
+                    <p><strong>Environment:</strong> Live environment with controlled access and monitoring.</p>
+                    <p><strong>Key Benefits:</strong></p>
+                    <ul>
+                        <li>Identifies environment-specific issues</li>
+                        <li>Validates system performance under real conditions</li>
+                        <li>Reduces risk of post-deployment failures</li>
+                        <li>Confirms integration of all system components</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Component Testing</h4>
+                    <p><strong>Focus:</strong> Testing performed on each individual component separately without integrating with other components.</p>
+                    <p><strong>Alternative Names:</strong> Unit Testing, Module Testing, Program Testing.</p>
+                    <p><strong>Key Characteristics:</strong></p>
+                    <ul>
+                        <li>Performed in isolation from other components</li>
+                        <li>Usually performed by developers</li>
+                        <li>Helps identify defects early in SDLC</li>
+                        <li>Can be performed without GUI</li>
+                        <li>Uses stubs and drivers for simulation</li>
+                        <li>Focuses on functional and non-functional aspects</li>
+                    </ul>
+                    <p><strong>Benefits of Component Testing:</strong></p>
+                    <ul>
+                        <li>Early detection of defects</li>
+                        <li>Reduces integration issues</li>
+                        <li>Simplifies debugging process</li>
+                        <li>Improves code quality</li>
+                        <li>Facilitates code maintenance</li>
+                        <li>Supports refactoring efforts</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>Testing Terminology</h3>
+                <p>Testing terminology refers to the different approaches used for testing software applications, especially when formal test cases are not predefined. These methods help identify defects when documentation is limited.</p>
+                
+                <h4>Monkey Testing 🐵 (Speed Testing)</h4>
+                <p><strong>Definition:</strong> A testing approach used when there are many test cases to execute but limited time. Focuses on executing high-priority test cases first. If time permits, medium and low-priority test cases are executed.</p>
+                <p><strong>Purpose:</strong> Ensures critical functionality is tested quickly. Helps when test execution time is limited.</p>
+                <p><strong>Example:</strong> A tester quickly validates login, checkout, and payment features in an e-commerce app before a release deadline.</p>
+                
+                <h4>Exploratory Testing 🔍</h4>
+                <p><strong>Definition:</strong> A testing approach where testers explore the application without predefined test cases. Selected when testers have domain knowledge and experience.</p>
+                <p><strong>Purpose:</strong> Helps find hidden defects that scripted tests may miss. Encourages creative and critical thinking.</p>
+                <p><strong>Example:</strong> A tester navigates through a banking app without a test plan, trying different transactions to check for unexpected errors.</p>
+                
+                <h4>Ad-hoc Testing 🎯</h4>
+                <p><strong>Definition:</strong> A quick, informal testing approach performed without documentation or planning. Selected when the tester is already familiar with the application.</p>
+                <p><strong>Purpose:</strong> Helps find quick bugs in a short time.</p>
+                <p><strong>Example:</strong> A tester randomly checks different features of a social media app before release to ensure there are no major issues.</p>
+                
+                <h4>When to Use Each Type?</h4>
+                <ul>
+                    <li><strong>Monkey Testing:</strong> When time is limited, and only high-priority test cases need to be executed.</li>
+                    <li><strong>Exploratory Testing:</strong> When testers have domain experience and want to explore functionality dynamically.</li>
+                    <li><strong>Ad-hoc Testing:</strong> When testers already know the application and need to perform quick, informal validation.</li>
+                </ul>
+            </div>
+            
+            <div class="navigation-buttons">
+                <a href="sdlc.html" class="btn btn-secondary">← Previous: SDLC</a>
+                <a href="agile.html" class="btn">Next: Agile Methodology →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Roles and Responsibilities of Pratik | <a href="index.html">Go To Index</a></p>
+        <p>If any query, call <a href="tel:8625812214">8625812214</a> or mail <a href="mailto:pratiknarute2@gmail.com">pratiknarute2@gmail.com</a></p>
+        <p>2025 Software Testing Manual. All rights reserved.</p>
+    </div>
+</body>
+</html>

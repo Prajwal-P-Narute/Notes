@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Box Testing</title>
+    <style>
+        :root {
+            --primary: #1abc9c;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), #16a085);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            background: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .content-card h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 0.8rem 0;
+        }
+        
+        .content-card p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-box {
+            background: #e8f6f3;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .definition-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .testing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .testing-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .testing-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .ecp-bva-visual {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .visual-container {
+            text-align: center;
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .visual-bar {
+            height: 30px;
+            background: #e74c3c;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .visual-bar.valid {
+            background: #2ecc71;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #16a085;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                margin: 0.2rem 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .testing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .ecp-bva-visual {
+                flex-direction: column;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Black Box Testing</h1>
+        <p>Testing software without knowledge of internal code structure</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="introduction.html">Introduction</a>
+        <a href="sqa.html">SQA</a>
+        <a href="sdlc.html">SDLC</a>
+        <a href="testing-types.html">Testing Types</a>
+        <a href="agile.html">Agile</a>
+        <a href="performance.html">Performance Testing</a>
+        <a href="security.html">Security Testing</a>
+        <a href="uat.html">UAT</a>
+        <a href="defect-management.html">Defect Management</a>
+    </div>
+    
+    <div class="container">
+        <div class="content-card">
+            <h2>What is Black Box Testing?</h2>
+            <p>Black box testing, also known as system integration testing, functional testing, or detail level testing, is a software testing method where the internal structure/design/implementation of the item being tested is not known to the tester. The tester only focuses on the input and output of the software system without knowing how the system processes the input to produce the output.</p>
+            
+            <div class="definition-box">
+                <h4>Key Characteristics</h4>
+                <p><strong>Tester Involvement:</strong> Testers are primarily involved in this testing approach, focusing on the external behavior of the system.</p>
+                <p><strong>Testing Scope:</strong> Involves checking the overall functionality including both internal and external aspects of the application.</p>
+                <p><strong>System & Function Testing:</strong> Includes functionality testing (high involvement), usability testing (high involvement), security testing (less involvement), and performance testing (less involvement).</p>
+            </div>
+            
+            <h2>Functionality Testing</h2>
+            <p>Functionality testing is the process of checking correctness and completeness of functionality. It ensures that the software application functions according to the specified requirements.</p>
+            
+            <div class="testing-grid">
+                <div class="testing-item">
+                    <h4>Functional Testing</h4>
+                    <p>Focuses on the internal functionality of the application including:</p>
+                    <ul>
+                        <li>Behavioral coverage</li>
+                        <li>Input domain coverage</li>
+                        <li>Error handling coverage</li>
+                        <li>Back-end coverage</li>
+                        <li>Service level coverage</li>
+                        <li>Calculation base coverage</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Non-functional Testing</h4>
+                    <p>Focuses on the external functionality and quality attributes of the application including:</p>
+                    <ul>
+                        <li>Recovery testing</li>
+                        <li>Compatibility testing</li>
+                        <li>Configuration testing</li>
+                        <li>Inter system testing</li>
+                        <li>Installation testing</li>
+                        <li>Globalization testing</li>
+                        <li>Gold Plating</li>
+                        <li>Parallel testing</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h2>Functional Testing Coverage Details</h2>
+            
+            <div class="highlight-box">
+                <h3>1. Behavioral Coverage</h3>
+                <p>In behavioral coverage, testers check the property and behavior of objects within the application.</p>
+                <p><strong>Example:</strong> In a bus booking application, when a user hovers over a seat radio button, it gets highlighted with a bright color (behavior). After clicking, the seat gets booked (property).</p>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>2. Input Domain Coverage</h3>
+                <p>This coverage focuses on validating the size and data type of inputs using techniques like Boundary Value Analysis (BVA) and Equivalence Class Partitioning (ECP).</p>
+                
+                <h4>Boundary Value Analysis (BVA) and Equivalence Class Partitioning (ECP)</h4>
+                <p>Boundary Value Analysis (BVA) and Equivalence Class Partitioning (ECP) are two widely used techniques in software testing to identify test cases efficiently.</p>
+                
+                <h4>Equivalence Class Partitioning (ECP)</h4>
+                <p><strong>What it does:</strong> It divides input data into groups or "partitions" where all inputs in the same group are expected to behave similarly.</p>
+                <p><strong>Why use it:</strong> To reduce the total number of test cases while still covering maximum functionality.</p>
+                <p><strong>How it works:</strong></p>
+                <ol>
+                    <li>Identify all possible inputs for a feature or function</li>
+                    <li>Group these inputs into "valid" and "invalid" partitions</li>
+                    <li>Pick one representative value from each partition to test</li>
+                </ol>
+                <p><strong>Example:</strong> For a login form requiring a password of 8 to 12 characters:</p>
+                <ul>
+                    <li><strong>Valid Partition:</strong> Inputs with 8 to 12 characters (e.g., "password123")</li>
+                    <li><strong>Invalid Partitions:</strong>
+                        <ul>
+                            <li>Less than 8 characters (e.g., "pass")</li>
+                            <li>More than 12 characters (e.g., "passwordislonger")</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h4>Boundary Value Analysis (BVA)</h4>
+                <p><strong>What it does:</strong> Focuses on testing values at the "edges" of input ranges because errors are more likely there.</p>
+                <p><strong>Why use it:</strong> To catch boundary-related defects.</p>
+                <p><strong>How it works:</strong></p>
+                <ol>
+                    <li>Identify the boundaries of input ranges (minimum, maximum, and just outside these limits)</li>
+                    <li>Test values on, just below, and just above these boundaries</li>
+                </ol>
+                <p><strong>Example:</strong> Using the same password example (8 to 12 characters):</p>
+                <ul>
+                    <li><strong>Boundaries:</strong>
+                        <ul>
+                            <li>Minimum: 8 characters</li>
+                            <li>Maximum: 12 characters</li>
+                        </ul>
+                    </li>
+                    <li><strong>Test cases:</strong>
+                        <ul>
+                            <li>On the boundary: 8, 12 characters (e.g., "password", "pass123456")</li>
+                            <li>Just outside: 7, 13 characters (e.g., "pass123", "passwordplus")</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="ecp-bva-visual">
+                <div class="visual-container">
+                    <h4>ECP Approach</h4>
+                    <div class="visual-bar">Invalid (&lt;8)</div>
+                    <div class="visual-bar valid">Valid (8-12)</div>
+                    <div class="visual-bar">Invalid (&gt;12)</div>
+                    <p>7 | 8 9 10 11 12 | 13</p>
+                </div>
+                
+                <div class="visual-container">
+                    <h4>BVA Approach</h4>
+                    <div class="visual-bar">7 (Invalid)</div>
+                    <div class="visual-bar valid">8 (Valid)</div>
+                    <div class="visual-bar valid">9-11 (Valid)</div>
+                    <div class="visual-bar valid">12 (Valid)</div>
+                    <div class="visual-bar">13 (Invalid)</div>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h4>Summary</h4>
+                <p><strong>ECP:</strong> Reduces test cases by grouping similar inputs into partitions and testing one representative value.</p>
+                <p><strong>BVA:</strong> Focuses on edge cases at the boundaries of input ranges for more robust testing.</p>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>3. Error Handling Coverage</h3>
+                <p>This coverage ensures the system displays appropriate error messages when invalid inputs or actions occur.</p>
+                <p><strong>Example:</strong> When a user enters only 2 digits in a 10-digit mobile number field, the system should display an error message like "Please enter a 10-digit mobile number" and highlight the field in red.</p>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>4. Back-end Coverage</h3>
+                <p>This coverage verifies that data is correctly stored in and retrieved from the database.</p>
+                <p><strong>Example:</strong> In a financial app, all personal information provided during account opening (name, mobile number, PAN, etc.) should be correctly stored in the database.</p>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>5. Service Level Coverage</h3>
+                <p>This coverage ensures the system works according to the function flow diagram created by business analysts.</p>
+                <p><strong>Example:</strong> In a cloud storage app, the sequence of pages (home page → folders → saved data) should follow the predefined flow without deviations.</p>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>6. Calculation Base Coverage</h3>
+                <p>This coverage validates that arithmetic operations within the application work correctly.</p>
+                <p><strong>Example:</strong> In an e-commerce app, purchasing 2 items priced at ₹1500 each should correctly calculate the total as ₹3000. Adding 2 more items should update the total to ₹6000.</p>
+            </div>
+            
+            <h2>Non-functional Testing Types</h2>
+            
+            <div class="testing-grid">
+                <div class="testing-item">
+                    <h4>1. Recovery Testing / Reliability Testing</h4>
+                    <p>Process of checking whether an application can recover from abnormal situations to normal operation.</p>
+                    <p><strong>Example:</strong> A result website that becomes unresponsive under heavy load should return to normal operation when the load decreases.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>2. Compatibility Testing</h4>
+                    <p>Ensures that a software application works correctly across different environments, including browsers, operating systems, devices, networks, and hardware configurations.</p>
+                    
+                    <h5>Forward vs. Backward Compatibility</h5>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Criteria</th>
+                            <th>Forward Compatibility</th>
+                            <th>Backward Compatibility</th>
+                        </tr>
+                        <tr>
+                            <td>Definition</td>
+                            <td>Tests software on newer versions</td>
+                            <td>Tests software on older versions</td>
+                        </tr>
+                        <tr>
+                            <td>Purpose</td>
+                            <td>Ensures app works with future updates</td>
+                            <td>Ensures app works with legacy systems</td>
+                        </tr>
+                        <tr>
+                            <td>Example</td>
+                            <td>Checking an Android 12 app on Android 14</td>
+                            <td>Checking a Word 2024 file in Word 2016</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>3. Configuration Testing</h4>
+                    <p>Focuses on how the software performs with different system configurations (hardware, OS, network settings).</p>
+                    <p><strong>Example:</strong> Testing an application on Windows with different RAM configurations (4GB, 8GB, 16GB) to ensure proper functionality across all setups.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>4. Inter System Testing</h4>
+                    <p>Validates the interaction and data flow between multiple integrated systems to ensure they communicate correctly.</p>
+                    <p><strong>Example:</strong> Testing how a CRM system integrates with an email marketing platform to ensure customer data syncs correctly between both systems.</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>5. Installation Testing</h4>
+                    <p>Verifies if the application installs correctly on the target platform and uninstalls without leaving residual files.</p>
+                    <p><strong>Key Checks:</strong></p>
+                    <ul>
+                        <li>Application creates desktop shortcuts after installation</li>
+                        <li>All required files, packages, and drivers are present</li>
+                        <li>User interface is intuitive and easy to navigate</li>
+                        <li>Sufficient disk space validation before installation</li>
+                        <li>Proper uninstallation without residual files</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>6. Globalization Testing</h4>
+                    <p>Verifies whether an application supports different languages, regions, and cultural conventions without requiring code changes.</p>
+                    <p><strong>Example:</strong> A news app should correctly display content in different languages, maintain proper formatting for numbers, dates, and currency symbols, and support right-to-left text for languages like Arabic.</p>
+                    <p><strong>Key Aspects:</strong></p>
+                    <ul>
+                        <li>Text translation while keeping numbers in English format</li>
+                        <li>Correct date, time, currency, and number formats for different regions</li>
+                        <li>Text expansion handling when translated to different languages</li>
+                        <li>UI adaptability including alignment, font support, and RTL text handling</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>7. Gold Plating</h4>
+                    <p>Testing of extra features not mentioned in customer requirements.</p>
+                    <p><strong>Important:</strong> If developers add extra features with customer permission (and potential additional payment), testers do not log defects. If added without permission, testers should log these as defects.</p>
+                </div>
+            </div>
+            
+            <h2>Benefits of Black Box Testing</h2>
+            
+            <div class="highlight-box">
+                <p><strong>Independent Testing:</strong> Testers don't need knowledge of internal code, preventing developer bias</p>
+                <p><strong>User Perspective:</strong> Tests from the end-user's viewpoint, ensuring real-world usability</p>
+                <p><strong>Early Detection:</strong> Helps identify specification gaps and ambiguities early in the cycle</p>
+                <p><strong>Efficient for Changes:</strong> Code changes don't affect test cases, making maintenance easier</p>
+            </div>
+            
+            <h2>Integration Testing</h2>
+            
+            <p>Integration is the process of mapping new modules with existing modules. Integration Testing is the process of verifying the interaction and data flow between interconnected modules/components of an application.</p>
+            
+            <div class="highlight-box">
+                <h3>Main Purpose of Integration Testing</h3>
+                <p>Focus on validating data flow, error handling, and module interactions.</p>
+                
+                <p><strong>Data Flow Validation:</strong> Ensure data passes correctly between modules</p>
+                <p><strong>Error Handling:</strong> Verify proper error handling across module boundaries</p>
+                <p><strong>Module Interactions:</strong> Test interfaces and interactions between modules</p>
+            </div>
+            
+            <h3>Types of Integration Testing</h3>
+            
+            <div class="testing-grid">
+                <div class="testing-item">
+                    <h4>Big Bang Approach</h4>
+                    <p>All modules are integrated and tested together.</p>
+                    <p><strong>Pros:</strong> Simple, Suitable for small systems</p>
+                    <p><strong>Cons:</strong> Difficult to catch defects, Debugging is challenging</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Incremental Approach</h4>
+                    <p>Modules are integrated and tested step by step.</p>
+                    <p><strong>Top-Down:</strong> Starts with high-level modules and moves to lower-level ones</p>
+                    <p><strong>Bottom-Up:</strong> Starts with lower-level modules and progresses upward</p>
+                    <p><strong>Hybrid/Sandwich:</strong> Combines both top-down and bottom-up approaches</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Stub and Driver-Based</h4>
+                    <p>Used when modules are dependent but incomplete.</p>
+                    <p><strong>Stub:</strong> A dummy implementation for lower-level module that provides responses to the higher-level module</p>
+                    <p><strong>Driver:</strong> A dummy implementation for higher-level module that supplies inputs to the lower-level module</p>
+                </div>
+            </div>
+            
+            <h3>Tools Used in Integration Testing</h3>
+            <ul>
+                <li><strong>Postman / SoapUI:</strong> For API-level testing during integration</li>
+                <li><strong>JUnit / TestNG:</strong> For testing Java-based integrations</li>
+                <li><strong>Selenium:</strong> For UI-level integration testing</li>
+                <li><strong>REST Assured:</strong> For API integration testing in Java</li>
+            </ul>
+            
+            <h3>Integration Testing Process</h3>
+            <ol>
+                <li><strong>Identify Modules:</strong> Determine which modules need to be integrated</li>
+                <li><strong>Plan Integration:</strong> Decide on integration approach and strategy</li>
+                <li><strong>Create Test Cases:</strong> Develop test cases focusing on interfaces</li>
+                <li><strong>Execute Tests:</strong> Run integration tests and monitor interactions</li>
+                <li><strong>Report & Fix:</strong> Document issues and work with developers to fix them</li>
+            </ol>
+            
+            <div class="highlight-box">
+                <h3>Example Scenario</h3>
+                <p><strong>1. E-commerce Application:</strong> An online store has separate modules for user authentication, product catalog, shopping cart, and payment processing</p>
+                <p><strong>2. Integration Testing:</strong> Testing how the shopping cart module interacts with the product catalog and payment processing modules</p>
+                <p><strong>3. Test Cases:</strong> Verify that adding a product to cart updates the total correctly, and that checkout process communicates properly with payment gateway</p>
+                <p><strong>4. Issues Found:</strong> Payment module doesn't handle failed transactions correctly, causing cart to not reset properly</p>
+                <p><strong>5. Resolution:</strong> Developers fix the error handling logic and integration testing verifies the fix</p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <a href="agile.html" class="btn btn-secondary">← Previous: Agile</a>
+                <a href="performance.html" class="btn">Next: Performance Testing →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Roles and Responsibilities of Pratik | <a href="index.html">Go To Index</a></p>
+        <p>If any query, call <a href="tel:8625812214">8625812214</a> or mail <a href="mailto:pratiknarute2@gmail.com">pratiknarute2@gmail.com</a></p>
+        <p>2025 Software Testing Manual. All rights reserved.</p>
+    </div>
+</body>
+</html>

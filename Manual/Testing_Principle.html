@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seven Principles of Software Testing</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent1: #f72585;
+            --accent2: #4cc9f0;
+            --accent3: #7209b7;
+            --accent4: #3a0ca3;
+            --accent5: #4895ef;
+            --accent6: #560bad;
+            --accent7: #f77f00;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent3));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 200px;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-front {
+            padding: 1.5rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .card-summary {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 1.5rem;
+            background: white;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            z-index: 1;
+            overflow-y: auto;
+        }
+
+        .card.active .card-back {
+            transform: translateY(0);
+        }
+
+        .card.active .card-front {
+            opacity: 0;
+        }
+
+        .card-back p {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .card-1 {
+            border-top: 5px solid var(--accent1);
+        }
+
+        .card-2 {
+            border-top: 5px solid var(--accent2);
+        }
+
+        .card-3 {
+            border-top: 5px solid var(--accent3);
+        }
+
+        .card-4 {
+            border-top: 5px solid var(--accent4);
+        }
+
+        .card-5 {
+            border-top: 5px solid var(--accent5);
+        }
+
+        .card-6 {
+            border-top: 5px solid var(--accent6);
+        }
+
+        .card-7 {
+            border-top: 5px solid var(--accent7);
+        }
+
+        .card-1 .card-number {
+            color: var(--accent1);
+        }
+
+        .card-2 .card-number {
+            color: var(--accent2);
+        }
+
+        .card-3 .card-number {
+            color: var(--accent3);
+        }
+
+        .card-4 .card-number {
+            color: var(--accent4);
+        }
+
+        .card-5 .card-number {
+            color: var(--accent5);
+        }
+
+        .card-6 .card-number {
+            color: var(--accent6);
+        }
+
+        .card-7 .card-number {
+            color: var(--accent7);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .principles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Seven Principles of Software Testing</h1>
+            <p class="subtitle">Understanding these fundamental principles helps improve testing effectiveness and
+                efficiency in software development.</p>
+        </header>
+
+        <div class="principles-grid">
+            <!-- Principle 1 -->
+            <div class="card card-1">
+                <div class="card-front">
+                    <div class="card-number">1</div>
+                    <h3 class="card-title">Testing shows presence of defects</h3>
+                    <p class="card-summary">Testing can prove that bugs exist, but it cannot guarantee that the software
+                        is completely bug-free.</p>
+                </div>
+                <div class="card-back">
+                    <button class="close-btn">×</button>
+                    <h3>Testing shows presence of defects, not their absence</h3>
+                    <p>Testing can prove that bugs exist, but it cannot guarantee that the software is completely
+                        bug-free. No matter how much testing you perform, you can never be 100% certain that there are
+                        no defects remaining. Testing reduces the probability of undiscovered defects but doesn't
+                        eliminate the possibility entirely.</p>
+                </div>
+            </div>
+
+            <!-- Principle 2 -->
+            <div class="card card-2">
+                <div class="card-front">
+                    <div class="card-number">2</div>
+                    <h3 class="card-title">Exhaustive testing is impossible</h3>
+                    <p class="card-summary">You cannot test all inputs, paths, and scenarios. Instead, focus on
+                        risk-based and prioritized testing.</p>
+                </div>
+                <div class="card-back">
+                    <button class="close-btn">×</button>
+                    <h3>Exhaustive testing is impossible</h3>
+                    <p>You cannot test all inputs, paths, and scenarios. Instead, focus on risk-based and prioritized
+                        testing. With complex software systems, the number of possible test scenarios is virtually
+                        infinite. Smart testing involves analyzing risks, prioritizing test cases based on impact and
+                        likelihood, and using techniques like equivalence partitioning and boundary value analysis to
+                        maximize test coverage efficiently.</p>
+                </div>
+            </div>
+
+            <!-- Principle 3 -->
+            <div class="card card-3">
+                <div class="card-front">
+                    <div class="card-number">3</div>
+                    <h3 class="card-title">Early testing saves time and money</h3>
+                    <p class="card-summary">The earlier you start testing, the cheaper it is to fix defects.</p>
+                </div>
+                <div class="card-back">
+                    <button class="close-btn">×</button>
+                    <h3>Early testing saves time and money</h3>
+                    <p>The earlier you start testing (e.g., requirement/design phase), the cheaper it is to fix defects.
+                        Defects found and fixed early in the development lifecycle are significantly less expensive to
+                        resolve than those discovered later. Early testing activities include reviewing requirements,
+                        design documents, and code, which can identify issues before they become embedded in the
+                        software.</p>
+                </div>
+            </div>
+
+            <!-- Principle 4 -->
+            <div class="card card-4">
+                <div class="card-front">
+                    <div class="card-number">4</div>
+                    <h3 class="card-title">Defects cluster together</h3>
+                    <p class="card-summary">A small number of modules contain most of the defects (Pareto principle:
+                        80/20 rule).</p>
+                </div>
+                <div class="card-back">
+                    <button class="close-btn">×</button>
+                    <h3>Defects cluster together</h3>
+                    <p>A small number of modules contain most of the defects (Pareto principle: 80/20 rule). This
+                        principle suggests that defects are not evenly distributed throughout the software but tend to
+                        cluster in specific components or modules. Identifying these high-risk areas through defect
+                        analysis and metrics allows testers to focus their efforts where they're most needed.</p>
+                </div>
+            </div>
+
+            <!-- Principle 5 -->
+            <div class="card card-5">
+                <div class="card-front">
+                    <div class="card-number">5</div>
+                    <h3 class="card-title">Pesticide paradox</h3>
+                    <p class="card-summary">Repeating the same tests will no longer find new defects. Tests need to be
+                        reviewed and updated regularly.</p>
+                </div>
+                <div class="card-back">
+                    <button class="close-btn">×</button>
+                    <h3>Pesticide paradox</h3>
+                    <p>Repeating the same tests again and again will no longer find new defects. Tests need to be
+                        reviewed and updated regularly. Just as insects develop resistance to pesticides, software
+                        becomes "immune" to repeated test cases. To combat this, test suites must be regularly reviewed,
+                        updated, and expanded with new test cases and techniques to uncover different types of defects.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Principle 6 -->
+            <div class="card card-6">
+                <div class="card-front">
+                    <div class="card-number">6</div>
+                    <h3 class="card-title">Testing is context dependent</h3>
+                    <p class="card-summary">Testing approach varies depending on the domain and application type.</p>
+                </div>
+                <div class="card-back">
+                    <button class="close-btn">×</button>
+                    <h3>Testing is context dependent</h3>
+                    <p>Testing approach varies depending on the domain (e.g., banking requires security testing,
+                        e-commerce requires usability & performance testing). There is no one-size-fits-all testing
+                        approach. The testing strategy, techniques, and focus areas should be tailored to the specific
+                        context, including the technology, business domain, risk profile, and regulatory requirements of
+                        the software.</p>
+                </div>
+            </div>
+
+            <!-- Principle 7 -->
+            <div class="card card-7">
+                <div class="card-front">
+                    <div class="card-number">7</div>
+                    <h3 class="card-title">Absence-of-errors fallacy</h3>
+                    <p class="card-summary">Just because software is bug-free doesn't mean it's useful or meets business
+                        needs.</p>
+                </div>
+                <div class="card-back">
+                    <button class="close-btn">×</button>
+                    <h3>Absence-of-errors fallacy</h3>
+                    <p>Just because software is bug-free doesn't mean it's useful. The software must meet business needs
+                        and requirements. Finding and fixing defects is important, but it's not the ultimate goal. The
+                        real measure of software quality is whether it satisfies user needs and provides value. A
+                        defect-free application that doesn't solve the right problem or meet user expectations is still
+                        a failure.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Software Testing Principles | Interactive Learning Tool</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.card');
+
+            cards.forEach(card => {
+                card.addEventListener('click', function () {
+                    // Close any other open cards
+                    cards.forEach(otherCard => {
+                        if (otherCard !== card && otherCard.classList.contains('active')) {
+                            otherCard.classList.remove('active');
+                        }
+                    });
+
+                    // Toggle the clicked card
+                    card.classList.toggle('active');
+                });
+
+                // Close button functionality
+                const closeBtn = card.querySelector('.close-btn');
+                closeBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    card.classList.remove('active');
+                });
+            });
+
+            // Close card when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.card')) {
+                    cards.forEach(card => {
+                        card.classList.remove('active');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

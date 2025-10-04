@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Testing</title>
+    <style>
+        :root {
+            --primary: #d35400;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), #e67e22);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            background: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .content-card h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 0.8rem 0;
+        }
+        
+        .content-card p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-box {
+            background: #fbeee6;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .definition-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .testing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .testing-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .testing-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .metric-item {
+            background: #e8f4fc;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid var(--info);
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tool-item {
+            background: #f0f8ff;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #e67e22;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                margin: 0.2rem 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .testing-grid, .metrics-grid, .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .process-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Performance Testing</h1>
+        <p>Ensuring software applications perform well under expected workload</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="introduction.html">Introduction</a>
+        <a href="sqa.html">SQA</a>
+        <a href="sdlc.html">SDLC</a>
+        <a href="testing-types.html">Testing Types</a>
+        <a href="agile.html">Agile</a>
+        <a href="black-box.html">Black Box Testing</a>
+        <a href="security.html">Security Testing</a>
+        <a href="uat.html">UAT</a>
+        <a href="defect-management.html">Defect Management</a>
+    </div>
+    
+    <div class="container">
+        <div class="content-card">
+            <h2>What is Performance Testing?</h2>
+            <p>Performance Testing is a type of software testing that ensures software applications perform well under their expected workload. It focuses on measuring a system's quality attributes like responsiveness, stability, scalability, and resource usage.</p>
+            
+            <div class="definition-box">
+                <h4>Definition</h4>
+                <p>Performance testing is the process of determining the speed, responsiveness, and stability of a computer, network, software program or device under a workload. Performance testing can involve quantitative tests done in a lab, or occur in the production environment in limited scenarios.</p>
+            </div>
+            
+            <h2>Purpose of Performance Testing</h2>
+            
+            <div class="highlight-box">
+                <ul>
+                    <li>Evaluate system performance under various load conditions</li>
+                    <li>Identify and eliminate performance bottlenecks</li>
+                    <li>Ensure application meets performance requirements</li>
+                    <li>Validate system reliability and stability</li>
+                    <li>Measure system capacity and scalability</li>
+                </ul>
+            </div>
+            
+            <h2>Key Performance Metrics</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <h4>Response Time</h4>
+                    <p>Time taken for the system to respond to a user request</p>
+                </div>
+                
+                <div class="metric-item">
+                    <h4>Throughput</h4>
+                    <p>Number of transactions processed per unit of time</p>
+                </div>
+                
+                <div class="metric-item">
+                    <h4>Concurrent Users</h4>
+                    <p>Number of users accessing the system simultaneously</p>
+                </div>
+                
+                <div class="metric-item">
+                    <h4>Resource Utilization</h4>
+                    <p>CPU, memory, disk I/O, and network usage</p>
+                </div>
+            </div>
+            
+            <h2>Types of Performance Testing</h2>
+            
+            <div class="testing-grid">
+                <div class="testing-item">
+                    <h4>Load Testing</h4>
+                    <p>Testing application behavior under expected user loads to identify performance bottlenecks.</p>
+                    <p><strong>Purpose:</strong> Measure performance under expected load conditions</p>
+                    <p><strong>Metrics:</strong> Response time, throughput, resource utilization</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Stress Testing</h4>
+                    <p>Testing application behavior beyond normal operational capacity to determine breaking point.</p>
+                    <p><strong>Purpose:</strong> Determine system's breaking point and recovery</p>
+                    <p><strong>Metrics:</strong> System stability, error handling, recovery time</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Scalability Testing</h4>
+                    <p>Testing application's ability to scale up or down based on user load and resource allocation.</p>
+                    <p><strong>Purpose:</strong> Determine system's capacity to grow</p>
+                    <p><strong>Metrics:</strong> Performance at different capacity levels</p>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Endurance Testing</h4>
+                    <p>Testing application behavior under sustained load over an extended period to identify memory leaks or degradation.</p>
+                    <p><strong>Purpose:</strong> Identify performance degradation over time</p>
+                    <p><strong>Metrics:</strong> Memory usage, response time consistency</p>
+                </div>
+            </div>
+            
+            <h2>Performance Testing Tools</h2>
+            
+            <div class="tools-grid">
+                <div class="tool-item">
+                    <h4>JMeter</h4>
+                    <p>Open-source Java application designed for load testing and measuring performance</p>
+                </div>
+                
+                <div class="tool-item">
+                    <h4>LoadRunner</h4>
+                    <p>Enterprise performance testing tool for predicting system behavior under load</p>
+                </div>
+                
+                <div class="tool-item">
+                    <h4>Gatling</h4>
+                    <p>High-performance load testing tool built using Scala, Akka, and Netty</p>
+                </div>
+                
+                <div class="tool-item">
+                    <h4>NeoLoad</h4>
+                    <p>Automated performance testing platform for enterprise applications</p>
+                </div>
+            </div>
+            
+            <h2>Performance Testing Process</h2>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h4>Requirement Analysis</h4>
+                        <p>Identify performance criteria and SLAs</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h4>Test Planning</h4>
+                        <p>Define test strategy, environment, and metrics</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h4>Test Design</h4>
+                        <p>Create test scripts and scenarios</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h4>Test Execution</h4>
+                        <p>Run performance tests and monitor results</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h4>Analysis & Reporting</h4>
+                        <p>Analyze results and create performance reports</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>Example Scenario</h3>
+                <p><strong>1. E-commerce Website:</strong> An online shopping site needs to handle 10,000 concurrent users during a sale event</p>
+                <p><strong>2. Performance Testing:</strong> Load testing is performed to simulate 10,000 users browsing products, adding items to cart, and checking out</p>
+                <p><strong>3. Results:</strong> Response time increases beyond acceptable limits when concurrent users exceed 8,000</p>
+                <p><strong>4. Optimization:</strong> Database queries are optimized and additional servers are provisioned to handle the expected load</p>
+            </div>
+            
+            <h2>Usability Testing</h2>
+            
+            <div class="highlight-box">
+                <h3>What is Usability Testing?</h3>
+                <p>Usability testing is a type of testing where real users are asked to interact with the application to check how easy, efficient, and user-friendly it is. The main goal is to identify any problems in navigation, design, or interaction so that the product delivers a smooth user experience.</p>
+                
+                <h4>📌 Detailed Notes on Usability Testing</h4>
+                
+                <h5>🔹 Objectives</h5>
+                <ul>
+                    <li>Verify ease of use of the application</li>
+                    <li>Measure user satisfaction</li>
+                    <li>Identify navigation/design issues before release</li>
+                </ul>
+                
+                <h5>🔹 When to Perform</h5>
+                <ul>
+                    <li>During the design stage (prototypes/wireframes)</li>
+                    <li>Before releasing a new feature</li>
+                    <li>Before the final product launch</li>
+                </ul>
+                
+                <h5>🔹 Steps</h5>
+                <ol>
+                    <li><strong>Plan</strong> → Define goals, tasks, and user scenarios</li>
+                    <li><strong>Recruit Users</strong> → Select real or representative users</li>
+                    <li><strong>Execute Test</strong> → Ask users to perform tasks while being observed</li>
+                    <li><strong>Collect Data</strong> → Record time taken, errors, feedback</li>
+                    <li><strong>Analyze & Report</strong> → Suggest improvements</li>
+                </ol>
+                
+                <h5>🔹 Types of Usability Testing</h5>
+                <ul>
+                    <li><strong>Remote vs. In-person</strong> – Testing done online or face-to-face</li>
+                    <li><strong>Moderated vs. Unmoderated</strong> – With or without a facilitator guiding the user</li>
+                    <li><strong>Explorative</strong> – Early-stage testing for ideas</li>
+                    <li><strong>Comparative</strong> – Comparing two designs/versions</li>
+                </ul>
+                
+                <h5>🔹 Example</h5>
+                <p>In a food delivery app, if users take too long to find the "Order History" button, it's a usability issue.</p>
+                
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: center;">
+                    <h4>Food Delivery App</h4>
+                    <div style="background: white; padding: 1rem; border-radius: 6px; margin: 0.5rem 0;">
+                        <input type="text" placeholder="Search for food..." style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 0.5rem;">
+                        <div style="display: flex; justify-content: space-around;">
+                            <button style="padding: 0.5rem; border: none; background: #3498db; color: white; border-radius: 4px;">Home</button>
+                            <button style="padding: 0.5rem; border: none; background: #3498db; color: white; border-radius: 4px;">Categories</button>
+                            <button style="padding: 0.5rem; border: none; background: #3498db; color: white; border-radius: 4px;">Cart</button>
+                            <button style="padding: 0.5rem; border: none; background: #3498db; color: white; border-radius: 4px;">Account</button>
+                        </div>
+                        <button style="margin-top: 0.5rem; padding: 0.5rem; border: none; background: #2ecc71; color: white; border-radius: 4px; width: 100%;">Order History</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <a href="black-box.html" class="btn btn-secondary">← Previous: Black Box Testing</a>
+                <a href="security.html" class="btn">Next: Security Testing →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Roles and Responsibilities of Pratik | <a href="index.html">Go To Index</a></p>
+        <p>If any query, call <a href="tel:8625812214">8625812214</a> or mail <a href="mailto:pratiknarute2@gmail.com">pratiknarute2@gmail.com</a></p>
+        <p>2025 Software Testing Manual. All rights reserved.</p>
+    </div>
+</body>
+</html>

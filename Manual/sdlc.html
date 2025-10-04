@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Development Life Cycle (SDLC)</title>
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), #c0392b);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            background: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .content-card h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 0.8rem 0;
+        }
+        
+        .content-card p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-box {
+            background: #fdedec;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .definition-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stage-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .stage-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .stage-number {
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #c0392b;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                margin: 0.2rem 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .stages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Software Development Life Cycle (SDLC)</h1>
+        <p>Stages from information gathering to product maintenance</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="introduction.html">Introduction</a>
+        <a href="sqa.html">SQA</a>
+        <a href="testing-types.html">Testing Types</a>
+        <a href="agile.html">Agile</a>
+        <a href="black-box.html">Black Box Testing</a>
+        <a href="performance.html">Performance Testing</a>
+        <a href="security.html">Security Testing</a>
+        <a href="uat.html">UAT</a>
+        <a href="defect-management.html">Defect Management</a>
+    </div>
+    
+    <div class="container">
+        <div class="content-card">
+            <h2>What is SDLC?</h2>
+            <p>Software development life cycle consists of set of particular stages which start from information gathering to the maintenance of product.</p>
+            
+            <div class="definition-box">
+                <h4>Definition</h4>
+                <p>The Software Development Life Cycle (SDLC) is a structured process that enables the production of high-quality, low-cost software, in the shortest possible production time. The goal of the SDLC is to produce superior software that meets and exceeds all customer expectations and demands.</p>
+            </div>
+            
+            <h2>Stages in SDLC</h2>
+            
+            <div class="stages-grid">
+                <div class="stage-item">
+                    <h4><span class="stage-number">1</span>Information Gathering</h4>
+                    <p>BA is responsible for gathering the information from customers. Information gathering is nothing but collecting requirement from customers. Information gathering involves business requirements specification (BRS). BRS is bridge between client to developers & testers. BRS is a document that contains all (overall) requirements related to the application. BA is responsible for preparing BRS documents.</p>
+                </div>
+                
+                <div class="stage-item">
+                    <h4><span class="stage-number">2</span>Analysis</h4>
+                    <p>Here also BA is responsible person. In this phase BA will prepare software requirement specification (SRS). SRS is detail level documents. SRS document is also known as functional requirement specification.</p>
+                    <p><strong>SRS Components:</strong></p>
+                    <ul>
+                        <li>Functional flow diagram</li>
+                        <li>Functional requirements</li>
+                        <li>Use cases</li>
+                        <li>Snapshots</li>
+                    </ul>
+                </div>
+                
+                <div class="stage-item">
+                    <h4><span class="stage-number">3</span>Design</h4>
+                    <p><strong>High Level Design:</strong> Contains the working of main module. It includes relation and dependency of main module. It includes what and how any module works. High level design is created by design Architecture.</p>
+                    <p><strong>Low Level Design:</strong> Contains the working of sub modules. Low level design is created by Front end developer. Ex. If any sign-up page is main module, then name, password, mobile no etc. are the sub functionality of main module.</p>
+                </div>
+                
+                <div class="stage-item">
+                    <h4><span class="stage-number">4</span>Coding</h4>
+                    <p>It means developing the codes. One line is code. Multiple line of code is program. Set of programs written by developer creates the software.</p>
+                    <p><strong>Code is written by three types of developer:</strong></p>
+                    <ul>
+                        <li><strong>Front end developer:</strong> UI functionality, function flows, process are developed by the front-end developer</li>
+                        <li><strong>Back-end developer:</strong> Data management, Data gathering, Data security, Algorithm selection is done by back-end developer</li>
+                        <li><strong>Full stack developer:</strong> Person/developer who can work as front end as well as back-end developer known as full stack developer</li>
+                    </ul>
+                </div>
+                
+                <div class="stage-item">
+                    <h4><span class="stage-number">5</span>Testing</h4>
+                    <p>Testing is the process checking a completeness and correctness of the software.</p>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>White Box Testing</th>
+                            <th>Black Box Testing</th>
+                        </tr>
+                        <tr>
+                            <td>It is also called as Unit code level testing, and clear box testing</td>
+                            <td>Black box testing is also known system and function testing</td>
+                        </tr>
+                        <tr>
+                            <td>Developer is responsible for white box testing</td>
+                            <td>Tester is responsible for black box testing</td>
+                        </tr>
+                        <tr>
+                            <td>Developer will debug or compile the code and check the code if any error is there</td>
+                            <td>Tester has to check overall functionality (internal and external) of the application</td>
+                        </tr>
+                        <tr>
+                            <td>Developer will test only positive scenario</td>
+                            <td>Tester has to test app in positive as well as negative way</td>
+                        </tr>
+                        <tr>
+                            <td>Aim of white box testing completeness and correctness of code and program</td>
+                            <td>Positive testing: providing correct input to the application<br>Negative testing: providing negative inputs</td>
+                        </tr>
+                    </table>
+                    
+                    <p><strong>Gray Box Testing:</strong> It is combination of white and black box testing. To do gray box testing tester should have some programming knowledge.</p>
+                </div>
+                
+                <div class="stage-item">
+                    <h4><span class="stage-number">6</span>Maintenance</h4>
+                    <p>Maintenance means provide service after delivery of product/software in free of cost. Maintenance involves non-technical support as well as technical support. Non-technical support called as BPO (Business process outsource). Technical support is called as KPO (Knowledge process outsource).</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>SDLC Process Models</h3>
+                <p><strong>Fish Model:</strong> The Fish Model is an advanced version of the SDLC that consists of verification and validation processes working together to ensure software quality.</p>
+                
+                <table class="comparison-table">
+                    <tr>
+                        <th>Verification</th>
+                        <th>Validation</th>
+                    </tr>
+                    <tr>
+                        <td>Verification is the process of checking whether the developed product fulfills the customer's requirements or not</td>
+                        <td>Validation is the process of checking whether the developed product is free from bugs or not</td>
+                    </tr>
+                    <tr>
+                        <td>Verification is done in different stages of SDLC</td>
+                        <td>Validation is done after complete development and at the testing stage</td>
+                    </tr>
+                    <tr>
+                        <td>It is also known as static testing</td>
+                        <td>It is also known as Quality control or dynamic testing</td>
+                    </tr>
+                    <tr>
+                        <td>The focus of verification is on methods/process like reviews, inspection and walk through etc.</td>
+                        <td>The focus of validation is on Quality of software, so we can deliver software free from bugs</td>
+                    </tr>
+                    <tr>
+                        <td>It helps to find the bug in early stage</td>
+                        <td>It helps to increase the quality of software</td>
+                    </tr>
+                    <tr>
+                        <td>Quality assurance team does the verification</td>
+                        <td>Quality analyst team does the validation</td>
+                    </tr>
+                    <tr>
+                        <td>Budget required less for verification as compared to validation</td>
+                        <td>Budget required for validation is more than verification</td>
+                    </tr>
+                </table>
+                
+                <p><strong>Waterfall Model:</strong> Waterfall model is step by step implementation of SDLC. In waterfall model requirements are fixed. If first stage is complete and process goes to next phase, then we cannot revert back to the first phase. Generally, waterfall model is used in small scale company or small application. The general time duration of waterfall model is 3 months. In waterfall model, when tester finds any bug then they do not send that back to the developer, instead they log the bug, make report & those bugs get fixed in next version of software.</p>
+                
+                <p><strong>V-Model:</strong> V stands for verification and validation. V model has working in which verification and validation phases run parallel. In V model development stages are mapped with testing stages. In V model, if one stage gets completed and 2nd is running but changes occurred in 1st phase then we can revert back to 1st phase but customer have to pay some amount to company. The duration of V model is 3 months. It is used for large application. Generally, this method is not used nowadays.</p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <a href="sqa.html" class="btn btn-secondary">← Previous: SQA</a>
+                <a href="testing-types.html" class="btn">Next: Testing Types →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Roles and Responsibilities of Pratik | <a href="index.html">Go To Index</a></p>
+        <p>If any query, call <a href="tel:8625812214">8625812214</a> or mail <a href="mailto:pratiknarute2@gmail.com">pratiknarute2@gmail.com</a></p>
+        <p>2025 Software Testing Manual. All rights reserved.</p>
+    </div>
+</body>
+</html>

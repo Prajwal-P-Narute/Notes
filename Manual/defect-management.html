@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defect Management</title>
+    <style>
+        :root {
+            --primary: #8e44ad;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), #9b59b6);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            background: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .content-card h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 0.8rem 0;
+        }
+        
+        .content-card p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-box {
+            background: #f4ecf7;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .definition-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .testing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .testing-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .testing-item h4 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .lifecycle-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .status-box {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .matrix-example {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #9b59b6;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                margin: 0.2rem 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .testing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .process-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .lifecycle-flow {
+                grid-template-columns: 1fr;
+            }
+            
+            .arrow {
+                transform: rotate(90deg);
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Defect Management</h1>
+        <p>Tracking, prioritizing, and resolving software issues</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="introduction.html">Introduction</a>
+        <a href="sqa.html">SQA</a>
+        <a href="sdlc.html">SDLC</a>
+        <a href="testing-types.html">Testing Types</a>
+        <a href="agile.html">Agile</a>
+        <a href="black-box.html">Black Box Testing</a>
+        <a href="performance.html">Performance Testing</a>
+        <a href="security.html">Security Testing</a>
+        <a href="uat.html">UAT</a>
+    </div>
+    
+    <div class="container">
+        <div class="content-card">
+            <h2>Priority and Severity in Defect Management</h2>
+            <p>At the time of logging a defect, we must decide the priority and severity of it. Priority and Severity are key attributes in defect management that help teams determine the order and impact of resolving defects.</p>
+            
+            <div class="definition-box">
+                <h4>What is Severity?</h4>
+                <p><strong>Definition:</strong> Severity defines the impact of a defect on the functionality of the application.</p>
+                <p><strong>Categories:</strong> Critical, High, Medium, Low.</p>
+                <p><strong>Focus:</strong> It is about the technical impact and is usually assigned by the QA/Test team.</p>
+                
+                <h4>What is Priority?</h4>
+                <p><strong>Definition:</strong> Priority indicates the urgency with which the defect should be fixed.</p>
+                <p><strong>Categories:</strong> High, Medium, Low.</p>
+                <p><strong>Focus:</strong> It is about business impact and is usually assigned by the project manager or product owner.</p>
+            </div>
+            
+            <h3>Combinations of Priority and Severity</h3>
+            <p>Here are the four combinations with examples:</p>
+            
+            <div class="testing-grid">
+                <div class="testing-item">
+                    <h4>High Severity & High Priority</h4>
+                    <p><strong>Description:</strong> Critical defect that breaks core functionality, making the application unusable. Needs immediate attention.</p>
+                    <p><strong>Examples:</strong></p>
+                    <ul>
+                        <li>Login button not working on a live e-commerce website</li>
+                        <li>Payment gateway crashes during checkout</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>High Severity & Low Priority</h4>
+                    <p><strong>Description:</strong> Major defect, but it occurs in a less frequently used module or functionality. Can be fixed later.</p>
+                    <p><strong>Examples:</strong></p>
+                    <ul>
+                        <li>A crash happens in the admin panel of a rarely used reporting feature</li>
+                        <li>"Forgot Password" feature is not working in a staging environment</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Low Severity & High Priority</h4>
+                    <p><strong>Description:</strong> Minor defect, but it affects an important area of the application and needs to be fixed quickly.</p>
+                    <p><strong>Examples:</strong></p>
+                    <ul>
+                        <li>Typo in the company name or important heading on the homepage of a live website</li>
+                        <li>Incorrect logo displayed on the landing page</li>
+                        <li>The "Place Order" button on the checkout page is misspelled as "Plce Order"</li>
+                        <li>A product page in an e-commerce app displays a price of ₹0 for a popular item due to a data input error</li>
+                    </ul>
+                </div>
+                
+                <div class="testing-item">
+                    <h4>Low Severity & Low Priority</h4>
+                    <p><strong>Description:</strong> Minor defect in a less critical module or functionality. Can be fixed later without significant impact.</p>
+                    <p><strong>Examples:</strong></p>
+                    <ul>
+                        <li>Misalignment of text on a non-critical page</li>
+                        <li>Background color inconsistency in a rarely accessed settings page</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Summary of Priority and Severity</h3>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Severity / Priority</th>
+                    <th>High Priority</th>
+                    <th>Low Priority</th>
+                </tr>
+                <tr>
+                    <td>High Severity</td>
+                    <td>Critical defect impacting core functionality (Login not working)</td>
+                    <td>"Forgot Password" feature not working in staging environment</td>
+                </tr>
+                <tr>
+                    <td>Low Severity</td>
+                    <td>
+                        Minor issue with high visibility (Homepage typo or logo)<br>
+                        The "Place Order" button is misspelled as "Plce Order"<br>
+                        Product page displays price of ₹0 for a popular item
+                    </td>
+                    <td>Minor issue with low visibility (Text misalignment)</td>
+                </tr>
+            </table>
+            
+            <h2>Defect Tracking and Reporting Process</h2>
+            
+            <p>Defect tracking and reporting is a crucial part of the software testing lifecycle, ensuring that issues are identified, logged, managed, and resolved systematically.</p>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h4>Step 1: Identify and Log the Defect</h4>
+                        <p>When QA execute test cases and find a mismatch between the actual and expected results, we log the issue in a Defect Tracking Tool (e.g., Jira, Bugzilla).</p>
+                        <p><strong>Defect details include:</strong></p>
+                        <ul>
+                            <li>Summary</li>
+                            <li>Steps to reproduce</li>
+                            <li>Test steps</li>
+                            <li>Test data</li>
+                            <li>Actual result</li>
+                            <li>Expected result</li>
+                            <li>Screenshot/Attachment</li>
+                            <li>Priority</li>
+                            <li>Module tag</li>
+                            <li>Environment</li>
+                            <li>Assigned developer</li>
+                        </ul>
+                        <p>The initial status of the defect is set to <strong>New</strong>.</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h4>Step 2: Assigning the Defect</h4>
+                        <p>Once logged, the defect is assigned to the respective developer or team for investigation.</p>
+                        <p>The status changes to <strong>Open</strong> or <strong>Assigned</strong>.</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h4>Step 3: Developer Investigation</h4>
+                        <p>The developer reviews the defect and there are three possibilities:</p>
+                        <ul>
+                            <li><strong>Valid Defect:</strong> They start working on fixing it, and the status is updated to <strong>In Progress</strong></li>
+                            <li><strong>Invalid Defect:</strong> If the defect is not valid (e.g., works as designed or cannot be reproduced), they may reject it, and the status is changed to <strong>Rejected</strong> or <strong>Not a Bug</strong></li>
+                            <li><strong>Deferred Defect:</strong> If the defect is deferred for a future release due to low priority or other reasons, the status changes to <strong>Deferred</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h4>Step 4: Fixing the Defect</h4>
+                        <p>The developer fixes the defect and updates the status to <strong>Fixed</strong> or <strong>Resolved</strong>.</p>
+                        <p>The fix is deployed to the testing environment for verification.</p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h4>Step 5: Retesting by QA</h4>
+                        <p>The QA team retests the defect and there are two possibilities:</p>
+                        <ul>
+                            <li><strong>Fixed Successfully:</strong> If the defect is successfully fixed, the status is updated to <strong>Closed</strong></li>
+                            <li><strong>Not Fixed:</strong> If the defect is not resolved or the issue persists, the status is updated to <strong>Reopened</strong>, and it is assigned back to the developer</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">6</div>
+                    <div>
+                        <h4>Step 6: Regression Testing</h4>
+                        <p>After closing the defect, QA performs regression testing to ensure the fix hasn't impacted other functionalities.</p>
+                        <p><strong>Note:</strong> This step is especially important for high severity defects.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Defect Status Lifecycle</h3>
+            
+            <p>Here's a summarized flow of defect statuses throughout the defect lifecycle:</p>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Status</th>
+                    <th>Description</th>
+                    <th>Action By</th>
+                </tr>
+                <tr>
+                    <td>New/Open</td>
+                    <td>When the defect is first logged by QA</td>
+                    <td>QA Engineer</td>
+                </tr>
+                <tr>
+                    <td>Assigned</td>
+                    <td>When the defect is assigned to a developer</td>
+                    <td>Test Lead/Manager</td>
+                </tr>
+                <tr>
+                    <td>In Progress</td>
+                    <td>When the developer is actively working on the defect</td>
+                    <td>Developer</td>
+                </tr>
+                <tr>
+                    <td>Deferred</td>
+                    <td>When the defect is postponed for later releases</td>
+                    <td>Developer/Manager</td>
+                </tr>
+                <tr>
+                    <td>Rejected/Not a Bug</td>
+                    <td>When the defect is invalid or not reproducible</td>
+                    <td>Developer</td>
+                </tr>
+                <tr>
+                    <td>Fixed/Resolved</td>
+                    <td>When the developer has implemented the fix</td>
+                    <td>Developer</td>
+                </tr>
+                <tr>
+                    <td>Reopened</td>
+                    <td>If the defect is not resolved during retesting</td>
+                    <td>QA Engineer</td>
+                </tr>
+                <tr>
+                    <td>Closed</td>
+                    <td>When the defect is verified as fixed and no further action is required</td>
+                    <td>QA Engineer</td>
+                </tr>
+            </table>
+            
+            <h3>Defect Lifecycle Flow</h3>
+            
+            <p>The following diagram illustrates the complete defect lifecycle:</p>
+            
+            <div class="lifecycle-flow">
+                <div class="status-box">New</div>
+                <div class="arrow">↓</div>
+                <div class="status-box">Assigned</div>
+                <div class="arrow">↓</div>
+                <div class="status-box">In Progress</div>
+                <div class="arrow">↓</div>
+                <div class="status-box">Fixed</div>
+                <div class="arrow">↓</div>
+                <div class="status-box">Closed</div>
+            </div>
+            
+            <div style="text-align: center; margin: 1rem 0;">
+                <div style="display: inline-block; margin: 0 1rem;">
+                    <div class="status-box" style="background: #e74c3c;">Rejected</div>
+                </div>
+                <div style="display: inline-block; margin: 0 1rem;">
+                    <div class="status-box" style="background: #f39c12;">Deferred</div>
+                </div>
+                <div style="display: inline-block; margin: 0 1rem;">
+                    <div class="status-box" style="background: #3498db;">Reopened</div>
+                </div>
+            </div>
+            
+            <p style="text-align: center; font-style: italic;">Visual representation of the defect management process from identification to closure</p>
+            
+            <h2>Traceability Matrix</h2>
+            
+            <div class="highlight-box">
+                <p>A Traceability Matrix is a document that maps and traces user requirements with test cases. It ensures that all requirements are covered by test cases and helps in tracking the requirements throughout the testing process.</p>
+                
+                <h3>Purpose of Traceability Matrix</h3>
+                <ul>
+                    <li>Ensures all requirements are covered by test cases</li>
+                    <li>Helps in identifying missing test cases</li>
+                    <li>Tracks requirements changes throughout the project lifecycle</li>
+                    <li>Facilitates impact analysis when requirements change</li>
+                    <li>Provides evidence of testing completeness to stakeholders</li>
+                </ul>
+                
+                <h3>Benefits</h3>
+                <p><strong>Complete Test Coverage:</strong> Ensures all requirements have corresponding test cases</p>
+                <p><strong>Easy Auditing:</strong> Simplifies audit processes with clear requirement-test case mapping</p>
+                <p><strong>Change Management:</strong> Helps assess impact of requirement changes on testing</p>
+                <p><strong>Progress Tracking:</strong> Allows tracking of testing progress against requirements</p>
+                
+                <h3>Types of Traceability Matrix</h3>
+                
+                <div class="testing-grid">
+                    <div class="testing-item">
+                        <h4>Forward Traceability</h4>
+                        <p>Mapping requirements to test cases to ensure that each requirement is covered by at least one test case.</p>
+                        <p><strong>Requirements → Test Cases</strong></p>
+                    </div>
+                    
+                    <div class="testing-item">
+                        <h4>Backward Traceability</h4>
+                        <p>Mapping test cases to requirements to ensure that no unnecessary test cases are created.</p>
+                        <p><strong>Test Cases → Requirements</strong></p>
+                    </div>
+                    
+                    <div class="testing-item">
+                        <h4>Bi-Directional Traceability</h4>
+                        <p>Combining both forward and backward traceability to ensure complete coverage and eliminate redundancy.</p>
+                        <p><strong>Requirements ↔ Test Cases</strong></p>
+                    </div>
+                </div>
+                
+                <h3>Example Traceability Matrix</h3>
+                
+                <table class="comparison-table">
+                    <tr>
+                        <th>Requirement ID</th>
+                        <th>Requirement Description</th>
+                        <th>Test Case ID</th>
+                        <th>Test Case Description</th>
+                        <th>Status</th>
+                    </tr>
+                    <tr>
+                        <td>REQ-001</td>
+                        <td>User should be able to login with valid credentials</td>
+                        <td>TC-001</td>
+                        <td>Verify login with valid username and password</td>
+                        <td style="color: #2ecc71;">Pass</td>
+                    </tr>
+                    <tr>
+                        <td>REQ-001</td>
+                        <td>User should be able to login with valid credentials</td>
+                        <td>TC-002</td>
+                        <td>Verify login with invalid username</td>
+                        <td style="color: #2ecc71;">Pass</td>
+                    </tr>
+                    <tr>
+                        <td>REQ-002</td>
+                        <td>User should be able to reset password</td>
+                        <td>TC-003</td>
+                        <td>Verify password reset functionality</td>
+                        <td style="color: #e74c3c;">Fail</td>
+                    </tr>
+                    <tr>
+                        <td>REQ-003</td>
+                        <td>User should be able to view profile</td>
+                        <td>TC-004</td>
+                        <td>Verify profile page displays correctly</td>
+                        <td style="color: #7f8c8d;">Not Tested</td>
+                    </tr>
+                    <tr>
+                        <td>REQ-004</td>
+                        <td>User should be able to update profile</td>
+                        <td>TC-005</td>
+                        <td>Verify profile update functionality</td>
+                        <td style="color: #f39c12;">In Progress</td>
+                    </tr>
+                </table>
+                
+                <h3>Best Practices</h3>
+                <ul>
+                    <li><strong>Maintain Updated Matrix:</strong> Keep the traceability matrix updated throughout the project lifecycle to reflect changes in requirements and test cases</li>
+                    <li><strong>Use Unique Identifiers:</strong> Use unique IDs for requirements and test cases to ensure accurate tracing</li>
+                    <li><strong>Leverage Tools:</strong> Use specialized tools like JIRA, QTest, or TestRail to automate traceability matrix creation and maintenance</li>
+                    <li><strong>Collaborate with Stakeholders:</strong> Involve business analysts, developers, and testers in maintaining the traceability matrix</li>
+                </ul>
+            </div>
+            
+            <h2>Difference between Error, Defect, Bugs, Issues</h2>
+            
+            <div class="highlight-box">
+                <h3>Definitions</h3>
+                <p><strong>Error:</strong> Mistakes found in program by programmers</p>
+                <p><strong>Defect:</strong> Mistakes found by testers</p>
+                <p><strong>Bugs:</strong> Actual defects accepted by developers</p>
+                <p><strong>Issues:</strong> Difficulties in solving bugs by developers</p>
+                
+                <h3>Relationship Analysis</h3>
+                <ol>
+                    <li><strong>If every error can be defect?</strong> No, not all errors become defects</li>
+                    <li><strong>If every error can be a bug?</strong> No, only some errors become bugs</li>
+                    <li><strong>If every error can be issues?</strong> No, not necessarily</li>
+                    <li><strong>If every defect can be a error?</strong> No, defects are found by testers, errors by programmers</li>
+                    <li><strong>If every defect can be bug?</strong> No, only when developers accept it</li>
+                    <li><strong>If every defect can be issues?</strong> No, only if it's difficult to solve</li>
+                    <li><strong>If every bug can be a error?</strong> Yes, bugs originate from errors</li>
+                    <li><strong>If every bug can be a defect?</strong> Yes, bugs are accepted defects</li>
+                    <li><strong>If every bug can be issue?</strong> No, only if it's difficult to solve</li>
+                    <li><strong>If every issue can be error?</strong> No, issues are problem resolutions</li>
+                    <li><strong>If every issue can be a defect?</strong> No, issues are broader than defects</li>
+                    <li><strong>If every issue can be a bug?</strong> No, issues can be unrelated to bugs</li>
+                </ol>
+                
+                <h3>Key Summary</h3>
+                <p>Errors are mistakes made by programmers during development. When testers find these mistakes, they become defects. When developers accept these defects, they become bugs. Issues arise when developers face difficulties in solving these bugs.</p>
+                <p>Not all errors become defects, and not all defects become bugs. Similarly, not all bugs become issues. The relationship between these terms is hierarchical but not always sequential.</p>
+            </div>
+            
+            <h2>Manual Testing Framework and STLC</h2>
+            
+            <div class="highlight-box">
+                <p>A structured manual testing framework ensures comprehensive test coverage, efficiency, and consistency in the testing process. Below are the key steps involved in the Software Testing Life Cycle (STLC):</p>
+                
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h4>Define Objectives & Scope and Requirement Analysis</h4>
+                            <ul>
+                                <li>Understand business requirements and the functional scope and out scope of the application</li>
+                                <li>Identify stakeholders and their expectations</li>
+                                <li>Document requirements with clear acceptance criteria</li>
+                                <li>Identify potential risks and constraints</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h4>Establish Test Strategy & Planning</h4>
+                            <p><strong>Test Strategy (High-Level Approach)</strong></p>
+                            <ul>
+                                <li>Define test levels (Unit, Integration, System, UAT)</li>
+                                <li>Identify test methodologies (Functional, Non-functional, Regression, Exploratory)</li>
+                                <li>Outline the automation strategy (if applicable)</li>
+                                <li>Perform risk analysis and define coverage criteria</li>
+                                <li>Define entry and exit criteria for testing phases</li>
+                            </ul>
+                            <p><strong>Test Planning (Execution-Level Details)</strong></p>
+                            <ul>
+                                <li>Allocate resources and responsibilities</li>
+                                <li>Identify test environments, tools, and infrastructure</li>
+                                <li>Establish a defect management process (e.g., logging, tracking, triaging defects)</li>
+                                <li>Define the test execution schedule and deliverables documentation</li>
+                                <li>Estimate testing effort and create timeline</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h4>Design Test Scenarios & Test Cases</h4>
+                            <ul>
+                                <li>Identify test scenarios from requirements and user stories</li>
+                                <li>Write detailed test cases covering:
+                                    <ul>
+                                        <li>Positive & negative scenarios</li>
+                                        <li>Preconditions, test steps, expected results, and postconditions</li>
+                                        <li>Test data requirements</li>
+                                        <li>Priority and severity classifications</li>
+                                    </ul>
+                                </li>
+                                <li>Implement a traceability matrix to map test cases with requirements</li>
+                                <li>Review test cases with stakeholders for completeness</li>
+                                <li>Create test data and prepare test environment</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h4>Execute & Track Testing</h4>
+                            <ul>
+                                <li>Perform test execution and log results</li>
+                                <li>Conduct different types of testing:
+                                    <ul>
+                                        <li>Sanity Testing (basic verification)</li>
+                                        <li>Smoke Testing (critical functionality check)</li>
+                                        <li>Regression Testing (ensure new changes don't break existing functionality)</li>
+                                        <li>Ad-hoc and Exploratory Testing</li>
+                                    </ul>
+                                </li>
+                                <li>Track defects using tools like JIRA, Bugzilla, or TestRail</li>
+                                <li>Generate test execution reports for review and analysis</li>
+                                <li>Conduct defect triage meetings with stakeholders</li>
+                                <li>Perform retesting and regression testing after fixes</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="step-number">5</div>
+                        <div>
+                            <h4>Review & Continuous Improvement</h4>
+                            <ul>
+                                <li>Conduct peer reviews for test cases</li>
+                                <li>Identify gaps and areas for improvement, for that we conduct the retrospective meeting</li>
+                                <li>Update test artifacts based on requirement changes</li>
+                                <li>Maintain a knowledge repository for reusable test cases and best practices</li>
+                                <li>Measure testing effectiveness through metrics (defect density, test coverage, etc.)</li>
+                                <li>Document lessons learned and process improvements</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Benefits of Following STLC</h3>
+                <ul>
+                    <li><strong>Improved Quality:</strong> Systematic approach leads to higher quality software</li>
+                    <li><strong>Cost Efficiency:</strong> Early defect detection reduces cost of fixes</li>
+                    <li><strong>Time Savings:</strong> Structured process minimizes rework and delays</li>
+                    <li><strong>Better Coverage:</strong> Comprehensive test planning ensures all requirements are tested</li>
+                </ul>
+                
+                <h3>STLC Best Practices</h3>
+                <ul>
+                    <li>Involve testing team early in the development lifecycle</li>
+                    <li>Maintain clear documentation throughout the process</li>
+                    <li>Implement requirement traceability to ensure test coverage</li>
+                    <li>Regularly update test cases to reflect changing requirements</li>
+                    <li>Leverage automation where appropriate to increase efficiency</li>
+                    <li>Continuously monitor and improve testing processes</li>
+                </ul>
+            </div>
+            
+            <div class="navigation-buttons">
+                <a href="uat.html" class="btn btn-secondary">← Previous: UAT</a>
+                <a href="index.html" class="btn">Back to Home →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Roles and Responsibilities of Pratik | <a href="index.html">Go To Index</a></p>
+        <p>If any query, call <a href="tel:8625812214">8625812214</a> or mail <a href="mailto:pratiknarute2@gmail.com">pratiknarute2@gmail.com</a></p>
+        <p>2025 Software Testing Manual. All rights reserved.</p>
+    </div>
+</body>
+</html>
