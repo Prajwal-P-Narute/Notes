@@ -28,7 +28,8 @@
             --selenium: #43B02A;
             --testing-manual: #9C27B0;
             --api: #FF6B35;
-            /* New color for API testing */
+            --jenkins: #D24939;
+            /* Jenkins red color */
         }
 
         * {
@@ -178,6 +179,10 @@
             background: linear-gradient(135deg, var(--api), #FF9E6D);
         }
 
+        .jenkins-header {
+            background: linear-gradient(135deg, var(--jenkins), #e67c7c);
+        }
+
         .card-icon {
             font-size: 3rem;
             margin-bottom: 15px;
@@ -282,6 +287,10 @@
 
         .api-button {
             background: linear-gradient(135deg, var(--api), #FF9E6D);
+        }
+
+        .jenkins-button {
+            background: linear-gradient(135deg, var(--jenkins), #e67c7c);
         }
 
         .card-button:hover {
@@ -576,6 +585,26 @@
                         <li><i class="fas fa-check feature-icon"></i> Shell Scripting</li>
                     </ul>
                     <a href="Linux.html" class="card-button linux-button">Open Linux Guide</a>
+                </div>
+            </div>
+
+            <!-- Jenkins Card (New Addition) -->
+            <div class="card">
+                <div class="card-header jenkins-header">
+                    <div class="card-icon">
+                        <i class="fab fa-jenkins"></i>
+                    </div>
+                    <h2 class="card-title">Jenkins</h2>
+                    <p>CI/CD Automation Tool</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Installation & Setup (macOS)</li>
+                        <li><i class="fas fa-check feature-icon"></i> Pipeline Creation</li>
+                        <li><i class="fas fa-check feature-icon"></i> Plugin Management</li>
+                        <li><i class="fas fa-check feature-icon"></i> CI/CD Automation</li>
+                    </ul>
+                    <a href="Jenkins.html" class="card-button jenkins-button">Open Jenkins Guide</a>
                 </div>
             </div>
         </div>

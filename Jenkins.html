@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenkins Guide for macOS</title>
+    <style>
+        /* IDE-like styling */
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header styling */
+        header {
+            background: linear-gradient(135deg, #2d5a91, #1e3c72);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            color: #a8d1ff;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        /* Container styling */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* Sidebar navigation */
+        .sidebar {
+            flex: 0 0 250px;
+            background-color: #252526;
+            border-radius: 8px;
+            padding: 20px;
+            margin-right: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar h3 {
+            color: #569cd6;
+            margin-top: 0;
+            border-bottom: 2px solid #569cd6;
+            padding-bottom: 10px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 12px;
+        }
+
+        .sidebar a {
+            color: #d4d4d4;
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .sidebar a:hover {
+            background-color: #2a2d2e;
+            color: #569cd6;
+        }
+
+        /* Main content styling */
+        .main-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .section {
+            background-color: #252526;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid;
+        }
+
+        .install {
+            border-left-color: #4CAF50;
+        }
+
+        .uninstall {
+            border-left-color: #f44336;
+        }
+
+        .password {
+            border-left-color: #FFC107;
+        }
+
+        .setup {
+            border-left-color: #2196F3;
+        }
+
+        .commands {
+            border-left-color: #9C27B0;
+        }
+
+        h2 {
+            color: #569cd6;
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: #ce9178;
+            margin-top: 25px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        /* Code block styling */
+        .code-block {
+            background-color: #1e1e1e;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid #3e3e42;
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: inherit;
+        }
+
+        .comment {
+            color: #6A9955;
+        }
+
+        .command {
+            color: #d4d4d4;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #0e639c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8rem;
+            transition: background-color 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: #1177bb;
+        }
+
+        /* Note styling */
+        .note {
+            background-color: rgba(86, 156, 214, 0.1);
+            border-left: 4px solid #569cd6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning {
+            background-color: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        /* Footer styling */
+        footer {
+            background-color: #252526;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+            color: #858585;
+            border-top: 1px solid #3e3e42;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                margin-right: 0;
+                margin-bottom: 20px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Jenkins Guide</h1>
+        <div class="subtitle">Install • Uninstall • Find Password • Setup (macOS)</div>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <h3>Quick Navigation</h3>
+            <ul>
+                <li><a href="#install">Install Jenkins</a></li>
+                <li><a href="#uninstall">Uninstall Jenkins</a></li>
+                <li><a href="#password">Find Admin Password</a></li>
+                <li><a href="#setup">Basic Setup Steps</a></li>
+                <li><a href="#commands">Useful Commands</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <section id="intro">
+                <p>Quick, copyable commands and short explanations so you can reinstall Jenkins cleanly on a MacBook.
+                </p>
+            </section>
+
+            <section id="install" class="section install">
+                <h2>Install Jenkins (recommended: Homebrew)</h2>
+                <p>Steps using Homebrew (fast, integrates with macOS services):</p>
+
+                <h3>Install Homebrew (if needed):</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># Install Homebrew</code>
+<code class="command">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code>
+
+<code class="comment"># Verify brew</code>
+<code class="command">brew --version</code></pre>
+                </div>
+
+                <h3>Install Jenkins LTS and start as a service:</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># Install Jenkins LTS</code>
+<code class="command">brew install jenkins-lts</code>
+
+<code class="comment"># Start Jenkins as user service (starts at login)</code>
+<code class="command">brew services start jenkins-lts</code>
+
+<code class="comment"># Stop when needed</code>
+<code class="command">brew services stop jenkins-lts</code></pre>
+                </div>
+
+                <h3>Alternative: run Jenkins from the jenkins.war file (Java required):</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># Download jenkins.war from https://www.jenkins.io/download/</code>
+<code class="comment"># Run it (requires Java 11+)</code>
+<code class="command">java -jar ~/Downloads/jenkins.war</code></pre>
+                </div>
+
+                <div class="note">
+                    Open <code>http://localhost:8080</code> in your browser after starting Jenkins.
+                </div>
+            </section>
+
+            <section id="uninstall" class="section uninstall">
+                <h2>Uninstall Jenkins (clean removal)</h2>
+                <p>Remove Jenkins depending on how it was installed.</p>
+
+                <h3>Homebrew installation</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># Stop the service</code>
+<code class="command">brew services stop jenkins-lts</code>
+
+<code class="comment"># Uninstall package</code>
+<code class="command">brew uninstall jenkins-lts</code>
+
+<code class="comment"># Optional: clean up Homebrew</code>
+<code class="command">brew cleanup</code></pre>
+                </div>
+
+                <h3>Remove Jenkins Home (this deletes jobs, plugins, users — irreversible)</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># Remove Jenkins home directory</code>
+<code class="command">rm -rf /Users/$(whoami)/.jenkins</code></pre>
+                </div>
+
+                <h3>.war-based installation</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># If you ran a jenkins.war manually, delete the war file and the Jenkins home</code>
+<code class="command">rm -f ~/Downloads/jenkins.war</code>
+<code class="command">rm -rf /Users/$(whoami)/.jenkins</code></pre>
+                </div>
+
+                <h3>Backup configurations before deleting</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># Backup before deleting</code>
+<code class="command">cp -r /Users/$(whoami)/.jenkins ~/jenkins-backup-$(date +%F)</code></pre>
+                </div>
+            </section>
+
+            <section id="password" class="section password">
+                <h2>Find the initial admin password</h2>
+                <p>After a fresh install, Jenkins creates an initial admin password used to unlock the setup wizard.</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># Read the initial admin password</code>
+<code class="command">cat /Users/$(whoami)/.jenkins/secrets/initialAdminPassword</code></pre>
+                </div>
+
+                <div class="note">
+                    If the file is missing, either Jenkins didn't finish setup or the home directory is different. Some
+                    points to check:
+                </div>
+
+                <ul>
+                    <li>If you ran <code>java -jar jenkins.war</code>, Jenkins home defaults to <code>~/.jenkins</code>
+                        unless overridden by the JENKINS_HOME environment variable.</li>
+                    <li>To find where Jenkins is using as home (when running as a service), check the brew service plist
+                        or the process command line.</li>
+                </ul>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># See JENKINS_HOME in running process (example)</code>
+<code class="command">ps aux | grep jenkins</code>
+<code class="comment"># or inspect the plist used by brew services</code>
+<code class="command">cat ~/Library/LaunchAgents/homebrew.mxcl.jenkins-lts.plist</code></pre>
+                </div>
+            </section>
+
+            <section id="setup" class="section setup">
+                <h2>Basic setup steps after installation</h2>
+                <ol>
+                    <li>Open <code>http://localhost:8080</code> and paste the initial admin password to unlock.</li>
+                    <li>Choose <strong>Install suggested plugins</strong> for a typical setup.</li>
+                    <li>Create the first admin user (or skip and use the initial password).</li>
+                    <li>Configure system settings: <strong>Manage Jenkins</strong> → <strong>Configure System</strong>
+                        (set email, JDK locations, build tools).</li>
+                    <li>Set up credentials: <strong>Credentials</strong> → <strong>System</strong> → <strong>Global
+                            credentials</strong> (add SSH keys, tokens, etc.).</li>
+                    <li>Create your first job: <strong>New Item</strong> → <strong>Freestyle project /
+                            Pipeline</strong>.</li>
+                    <li>Install common plugins (if not already): Pipeline, Git, GitHub, GitLab, Matrix Authorization
+                        Strategy, Blue Ocean (optional).</li>
+                </ol>
+            </section>
+
+            <section id="commands" class="section commands">
+                <h2>Useful commands & notes</h2>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># Check Jenkins logs (Homebrew service)</code>
+<code class="comment"># Logs typically in ~/Library/Logs/Homebrew/jenkins-lts</code>
+<code class="command">ls -la ~/Library/Logs/Homebrew/jenkins-lts</code>
+
+<code class="comment"># Check running service</code>
+<code class="command">brew services list</code>
+
+<code class="comment"># If using jenkins.war – logs appear in console where you started it</code></pre>
+                </div>
+
+                <div class="note">
+                    If you want Jenkins to run on a different port, set the <code>--httpPort</code> flag when running
+                    the war, or configure the launch plist for the brew service.
+                </div>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="comment"># Example: start war on port 9090</code>
+<code class="command">java -jar ~/Downloads/jenkins.war --httpPort=9090</code></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>Jenkins Guide for macOS &copy; 2023</p>
+    </footer>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.parentElement;
+            const codeText = codeBlock.querySelector('pre').textContent;
+
+            navigator.clipboard.writeText(codeText).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                window.scrollTo({
+                    top: targetElement.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
