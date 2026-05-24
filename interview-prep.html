@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Interview — Study Sheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --white: #ffffff;
+      --border: #e2e5ea;
+      --text: #1a1d23;
+      --muted: #6b7280;
+      --q-bg: #1e2433;
+      --q-text: #ffffff;
+      --a-bg: #f0fdf4;
+      --a-border: #16a34a;
+      --key-bg: #fffbeb;
+      --key-border: #f59e0b;
+      --key-text: #92400e;
+      --sql-bg: #1e2433;
+      --bullet: #16a34a;
+      --num-bg: #e8f5e9;
+      --num-text: #166534;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .page {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      background: var(--q-bg);
+      color: white;
+      border-radius: 12px;
+      padding: 32px 36px;
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+
+    .page-header p {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 20px;
+    }
+
+    .pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 100px;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .total-count {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .btn-expand {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: white;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .btn-expand:hover { background: var(--q-bg); color: white; border-color: var(--q-bg); }
+
+    /* ── QA CARD ── */
+    .qa-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .qa-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.15s;
+    }
+    .qa-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+    /* Question row */
+    .q-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      user-select: none;
+      background: var(--white);
+    }
+
+    .q-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--num-bg);
+      color: var(--num-text);
+      border-radius: 6px;
+      padding: 4px 8px;
+      min-width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .q-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+
+    .q-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .q-chevron {
+      font-size: 18px;
+      color: #cbd5e1;
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+    .qa-card.open .q-chevron { transform: rotate(180deg); color: var(--a-border); }
+
+    /* Answer panel */
+    .a-panel {
+      display: none;
+      border-top: 1.5px solid var(--border);
+    }
+    .qa-card.open .a-panel { display: block; }
+
+    /* Short answer — always visible inside panel */
+    .short-ans {
+      background: var(--a-bg);
+      border-left: 4px solid var(--a-border);
+      padding: 16px 20px 16px 20px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #14532d;
+      line-height: 1.6;
+    }
+
+    .short-ans .label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--a-border);
+      margin-bottom: 6px;
+    }
+
+    /* Full answer */
+    .full-ans {
+      padding: 18px 20px;
+      font-size: 14.5px;
+      color: #374151;
+      line-height: 1.75;
+    }
+
+    .full-ans .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    /* Bullet points */
+    .points {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .point {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 14px;
+      color: #374151;
+      line-height: 1.6;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--bullet);
+      flex-shrink: 0;
+      margin-top: 8px;
+    }
+
+    /* Key phrase */
+    .key-phrase {
+      margin-top: 14px;
+      background: var(--key-bg);
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--key-text);
+      line-height: 1.55;
+    }
+
+    .key-phrase .kp-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #b45309;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* SQL */
+    .sql-wrap {
+      margin-top: 14px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .sql-title {
+      background: #2d3748;
+      color: #a0aec0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 8px 14px;
+      letter-spacing: 0.05em;
+    }
+
+    .sql-code {
+      background: var(--sql-bg);
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 16px 18px;
+      line-height: 1.9;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .kw  { color: #93c5fd; }
+    .fn  { color: #fbbf24; }
+    .num { color: #6ee7b7; }
+
+    /* divider between short/full */
+    .divider { height: 1px; background: var(--border); }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    @media (max-width: 560px) {
+      .q-label { display: none; }
+      .page-header { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <h1>📋 QA / SDET Interview — Study Sheet</h1>
+    <p>Click each question to see the full answer. Read the green box aloud — that's your spoken answer.</p>
+    <div class="pills">
+      <span class="pill">Testing Strategy</span>
+      <span class="pill">CI/CD</span>
+      <span class="pill">Playwright</span>
+      <span class="pill">SQL</span>
+      <span class="pill">AI in QA</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <span class="total-count">10 questions</span>
+    <button class="btn-expand" onclick="expandAll()">Expand All</button>
+  </div>
+
+  <div class="qa-list">
+
+    <!-- Q1 -->
+    <div class="qa-card" id="q1">
+      <div class="q-row" onclick="toggle('q1')">
+        <span class="q-num">Q1</span>
+        <span class="q-label">Triage</span>
+        <span class="q-text">How do you triage flaky and slow tests?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "I look for patterns first — not fixes. I check CI artifacts like logs, traces, and video, then cross-reference with recent changes. I prioritise by failure rate again user impact, and fix root causes: smart waits, isolated test data, stable infra."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">How to think about it</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>Check CI artifacts:</strong> logs, screenshots, traces, video — find where it breaks</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Look for patterns:</strong> specific browser? time of day? environment only?</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Recent changes:</strong> cross-reference failures with last few commits</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Prioritise:</strong> failure rate × user impact = urgency</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Fix root causes:</strong> hardcoded waits → smart waits, shared data → isolated data, environment drift → stable infra</span></div>
+          </div>
+          <div class="key-phrase">
+            <span class="kp-label">💡 Key phrase to use</span>
+            "I triage by pattern, not symptom" — this shows systematic thinking.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="qa-card" id="q2">
+      <div class="q-row" onclick="toggle('q2')">
+        <span class="q-num">Q2</span>
+        <span class="q-label">Performance</span>
+        <span class="q-text">How do you prove slowness improvements?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "Before touching anything I capture baseline timings from CI. Then I optimise — more parallelism, less setup/teardown, replace slow dependencies. After that I compare before and after. Numbers prove it, not opinions."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">Steps</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>Step 1 — Baseline first:</strong> record current CI run times before any change</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Step 2 — Optimise:</strong> increase parallelism, cut setup/teardown, replace slow APIs/DBs</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Step 3 — Measure again:</strong> compare both numbers side by side</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Step 4 — Report:</strong> "reduced suite from 18 min to 7 min" — concrete wins</span></div>
+          </div>
+          <div class="key-phrase">
+            <span class="kp-label">💡 Key phrase to use</span>
+            "Numbers, not feelings, prove the win."
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="qa-card" id="q3">
+      <div class="q-row" onclick="toggle('q3')">
+        <span class="q-num">Q3</span>
+        <span class="q-label">Strategy</span>
+        <span class="q-text">When do you choose API over UI testing?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "API for fast business logic coverage — I use it heavily. UI only for critical user journeys and integrations where browser interaction itself matters. I aim for a healthy test pyramid, not a top-heavy UI suite."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">Simple rule</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>Use API when:</strong> testing business rules, validations, data logic — fast and stable</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Use UI when:</strong> critical user journeys, form flows, cross-browser rendering matters</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Test Pyramid:</strong> many unit + API tests at the base, few UI tests at the top</span></div>
+          </div>
+          <div class="key-phrase">
+            <span class="kp-label">💡 Key phrase to use</span>
+            "Test pyramid, not test ice-cream cone." — this phrase signals architectural maturity.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="qa-card" id="q4">
+      <div class="q-row" onclick="toggle('q4')">
+        <span class="q-num">Q4</span>
+        <span class="q-label">Security</span>
+        <span class="q-text">How do you handle CI secrets?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "Secrets go in the CI secret manager — GitHub Actions secrets, Vault, or similar. I use short-lived tokens, mask them in logs, and never hardcode credentials. Hardcoding is an automatic no-go."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">Rules</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>Store:</strong> CI secret manager (GitHub Secrets, HashiCorp Vault, AWS Secrets Manager)</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Token type:</strong> short-lived / expiring tokens wherever possible</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Logs:</strong> always mask secrets so they never appear in CI output</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Never:</strong> hardcode in code, .env files committed to git, or plain text configs</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="qa-card" id="q5">
+      <div class="q-row" onclick="toggle('q5')">
+        <span class="q-num">Q5</span>
+        <span class="q-label">Migration</span>
+        <span class="q-text">When to migrate Selenium to Playwright?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "I migrate flows with chronic flakiness or slow runs — Playwright's auto-waiting and modern API fix those. Stable, low-value Selenium tests stay until migration cost is justified. Always incremental, never big-bang."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">Decision guide</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>Migrate when:</strong> flaky due to timing, slow due to waits, needs parallel runs — Playwright wins here</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Keep Selenium when:</strong> test is stable, low business value, migration cost > benefit</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Strategy:</strong> incremental migration, not rewriting everything at once</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Playwright benefits:</strong> auto-waiting, async API, built-in parallelism, better debugging</span></div>
+          </div>
+          <div class="key-phrase">
+            <span class="kp-label">💡 Key phrase to use</span>
+            "I think in cost-benefit, not technology trends."
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="qa-card" id="q6">
+      <div class="q-row" onclick="toggle('q6')">
+        <span class="q-num">Q6</span>
+        <span class="q-label">Data</span>
+        <span class="q-text">How do you isolate test data in LambdaTest?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "I use unique IDs per test run, per-test accounts, idempotent setup scripts, and cleanup hooks after each test. Shared mutable data is the root cause of most data-related flakiness — I eliminate it."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">Techniques</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>Unique IDs:</strong> generate per test run — no two tests share the same data record</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Per-test accounts:</strong> each test owns its user/account, not a shared one</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Idempotent setup:</strong> setup can run multiple times without side effects</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Cleanup hooks:</strong> always run after-test cleanup, even on failure</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Never:</strong> share mutable state between parallel tests</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="qa-card" id="q7">
+      <div class="q-row" onclick="toggle('q7')">
+        <span class="q-num">Q7</span>
+        <span class="q-label">SQL</span>
+        <span class="q-text">How to get the second highest salary with ties?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "Use DENSE_RANK() ordered by salary descending, then filter where rank equals 2. DENSE_RANK handles ties correctly — LIMIT/OFFSET breaks when multiple people share the top salary."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">Why DENSE_RANK and not others?</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>DENSE_RANK:</strong> ties get the same rank, next rank is consecutive — correct result ✓</span></div>
+            <div class="point"><div class="dot"></div><span><strong>RANK:</strong> ties skip numbers (1,1,3) — would miss data</span></div>
+            <div class="point"><div class="dot"></div><span><strong>LIMIT 1 OFFSET 1:</strong> breaks if two people tie for #1 — wrong result ✗</span></div>
+          </div>
+          <div class="sql-wrap">
+            <div class="sql-title">solution.sql</div>
+            <div class="sql-code"><span class="kw">SELECT</span> salary
+              <span class="kw">FROM</span> (
+              <span class="kw">SELECT</span> salary,
+              <span class="fn">DENSE_RANK</span>() <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> rnk
+              <span class="kw">FROM</span> employees
+              ) ranked
+              <span class="kw">WHERE</span> rnk = <span class="num">2</span>;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="qa-card" id="q8">
+      <div class="q-row" onclick="toggle('q8')">
+        <span class="q-num">Q8</span>
+        <span class="q-label">Release</span>
+        <span class="q-text">How do you decide on release with red automation?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "Hard block on high-severity, user-impacting failures — no exceptions. For known flaky tests, I quarantine them with a tagged owner and a fix-by date. I never silently ignore red — every decision is explicit and documented."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">Decision framework</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>Red = high severity + user impact:</strong> BLOCK the release, no exceptions</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Red = known flaky test:</strong> quarantine it — tag, assign owner, set fix-by date, then release</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Never:</strong> silently ignore red or merge without a documented decision</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Always:</strong> make the go/no-go call visible in the release doc or ticket</span></div>
+          </div>
+          <div class="key-phrase">
+            <span class="kp-label">💡 Key phrase to use</span>
+            "Every red test has an owner and a fix-by date before we ship."
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="qa-card" id="q9">
+      <div class="q-row" onclick="toggle('q9')">
+        <span class="q-num">Q9</span>
+        <span class="q-label">AI</span>
+        <span class="q-text">How should AI be used in testing?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "AI is a suggestion engine, not a decision maker. I use it to speed up test generation and find coverage gaps, but every AI-written test goes through code review, deterministic assertion checks, and security scans. The human owns the quality bar."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">How to use AI in QA</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>Good uses:</strong> test case suggestions, coverage gap analysis, data generation, boilerplate</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Not a replacement for:</strong> human judgement on what matters to test</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Every AI test must pass:</strong> code review + deterministic assertions + security scan before merge</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Risk:</strong> AI is non-deterministic — never let it write assertions that check AI output vs AI output</span></div>
+          </div>
+          <div class="key-phrase">
+            <span class="kp-label">💡 Key phrase to use</span>
+            "AI accelerates; the engineer decides." — shows you're in control.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="qa-card" id="q10">
+      <div class="q-row" onclick="toggle('q10')">
+        <span class="q-num">Q10</span>
+        <span class="q-label">Playwright</span>
+        <span class="q-text">What is the architecture of a Playwright framework?</span>
+        <span class="q-chevron">⌄</span>
+      </div>
+      <div class="a-panel">
+        <div class="short-ans">
+          <span class="label">🗣 Say this in the interview</span>
+          "Playwright runs on a client-server model — your test code is the client, and Playwright spins up a browser server per worker over a WebSocket connection using the Chrome DevTools Protocol. Each worker gets its own isolated browser context, so tests run in parallel without sharing state. On top of that I layer a Page Object Model, centralised fixtures for setup and teardown, and a config file that controls environments, parallelism, and retries."
+        </div>
+        <div class="divider"></div>
+        <div class="full-ans">
+          <span class="section-label">Layer by layer</span>
+          <div class="points">
+            <div class="point"><div class="dot"></div><span><strong>Protocol layer — CDP / WebSocket:</strong> Playwright communicates with Chromium, Firefox, and WebKit over the Chrome DevTools Protocol via a persistent WebSocket connection — no HTTP round-trips per action, so commands are fast and synchronised</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Browser → Context → Page:</strong> one Browser process can hold multiple BrowserContexts (each is a fresh incognito-like session with its own cookies, storage, and network state), and each Context can have multiple Pages — this is how parallel tests stay fully isolated</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Test runner — @playwright/test:</strong> built-in runner handles worker spawning, sharding, retries, fixtures, and reporters; no need for a separate Jest/Mocha layer</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Fixture system:</strong> fixtures replace beforeEach/afterEach hooks — they're composable, scoped (test/worker/project), and automatically torn down; use them for auth state, API clients, and test data setup</span></div>
+            <div class="point"><div class="dot"></div><span><strong>Page Object Model on top:</strong> POM wraps page interactions into reusable classes — keeps tests readable and insulates them from UI changes; combined with fixtures, setup code stays out of test bodies</span></div>
+          </div>
+          <div class="key-phrase">
+            <span class="kp-label">💡 Key phrase to use</span>
+            "Browser context is the isolation unit — one per test, zero shared state, full parallelism."
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /qa-list -->
+
+  <div class="page-footer">
+    QA / SDET Interview Prep &nbsp;·&nbsp; 10 Questions &nbsp;·&nbsp; Read the green boxes aloud
+  </div>
+
+</div>
+
+<script>
+  function toggle(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  function expandAll() {
+    const cards = document.querySelectorAll('.qa-card');
+    const btn = document.querySelector('.btn-expand');
+    const allOpen = [...cards].every(c => c.classList.contains('open'));
+    cards.forEach(c => allOpen ? c.classList.remove('open') : c.classList.add('open'));
+    btn.textContent = allOpen ? 'Expand All' : 'Collapse All';
+  }
+</script>
+</body>
+</html>

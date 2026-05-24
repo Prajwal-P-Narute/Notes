@@ -30,6 +30,7 @@
             --api: #FF6B35;
             --jenkins: #D24939;
             /* Jenkins red color */
+            --interview: #0f766e;
         }
 
         * {
@@ -291,6 +292,14 @@
 
         .jenkins-button {
             background: linear-gradient(135deg, var(--jenkins), #e67c7c);
+        }
+
+        .interview-header {
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+        }
+
+        .interview-button {
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
         }
 
         .card-button:hover {
@@ -671,6 +680,31 @@
                         <li><i class="fas fa-check feature-icon"></i> Database Design</li>
                     </ul>
                     <a href="Database.html" class="card-button database-button">Open Database Guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2 class="category-title"><i class="fas fa-user-tie"></i> Career & Interview</h2>
+        <div class="framework-cards">
+            <!-- Interview Prep -->
+            <div class="card">
+                <div class="card-header interview-header">
+                    <div class="card-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h2 class="card-title">Interview Prep</h2>
+                    <p>QA Interview Study Sheet</p>
+                </div>
+                <div class="card-body">
+                    <ul class="card-features">
+                        <li><i class="fas fa-check feature-icon"></i> Common QA Interview Questions</li>
+                        <li><i class="fas fa-check feature-icon"></i> Testing Concepts & Scenarios</li>
+                        <li><i class="fas fa-check feature-icon"></i> SQL & API Interview Prep</li>
+                        <li><i class="fas fa-check feature-icon"></i> Answers & Key Takeaways</li>
+                    </ul>
+                    <a href="interview-prep.html" class="card-button interview-button">Open Interview Prep</a>
                 </div>
             </div>
         </div>
