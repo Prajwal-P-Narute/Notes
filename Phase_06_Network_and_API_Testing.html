@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Phase 6 — Network & API Testing | Playwright Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --page-w:794px;
+  --page-h:1123px;
+  --ink:#1a1a2e;
+  --ink-blue:#1a3fa0;
+  --sub-blue:#2255c4;
+  --line-gap:32px;
+  --margin-left:54px;
+}
+body{background:#d0d0d0;font-family:'Kalam',cursive;padding:0;}
+.pages-container{width:100%;background:#c8c8c8;padding-bottom:60px;}
+.page-wrapper{display:flex;justify-content:center;align-items:flex-start;padding:32px 12px;}
+@media(min-width:860px){.page-wrapper{padding:48px 24px;}}
+
+/* ── NOTEBOOK PAGE ── */
+.page{
+  width:100%;max-width:var(--page-w);
+  min-height:var(--page-h);
+  position:relative;
+  background-color:#fffdf8;
+  background-image:repeating-linear-gradient(#fffdf8 0,#fffdf8 31px,#cfe3f7 32px);
+  background-size:100% var(--line-gap);
+  border-left:3px solid #e8e4d0;
+  box-shadow:0 8px 32px rgba(0,0,0,0.18),0 2px 6px rgba(0,0,0,0.10);
+  border-radius:2px;
+  padding:80px 40px 80px calc(var(--margin-left) + 16px);
+}
+.page::before{
+  content:'';position:absolute;left:calc(var(--margin-left));top:0;bottom:0;
+  width:2px;background:#e85d5d;opacity:0.7;
+}
+.page-num{
+  position:absolute;bottom:28px;right:36px;
+  font-family:'Patrick Hand',cursive;font-size:13px;color:#999;
+}
+/* ── PAGE HEADER ── */
+.page-header{
+  background:linear-gradient(135deg,#1a3fa0 0%,#234ebf 60%,#3a65d4 100%);
+  margin:-80px -40px 28px calc(-1*(var(--margin-left)+16px));
+  padding:18px 32px 18px calc(var(--margin-left)+20px);
+  border-radius:0;
+  display:flex;justify-content:space-between;align-items:center;
+  position:relative;
+}
+.page-header h1{font-family:'Kalam',cursive;font-size:22px;color:#fff;font-weight:700;letter-spacing:0.3px;}
+.page-header .phase-tag{font-family:'Patrick Hand',cursive;font-size:13px;color:rgba(255,255,255,0.85);background:rgba(0,0,0,0.2);padding:3px 10px;border-radius:12px;}
+
+/* ── HEADINGS ── */
+h2.section-title{
+  font-family:'Kalam',cursive;font-size:20px;color:#1a1a2e;font-weight:700;
+  border-bottom:2.5px solid #1a3fa0;padding-bottom:4px;margin:20px 0 10px;
+  display:inline-block;
+}
+h3.sub-title{
+  font-family:'Kalam',cursive;font-size:17px;color:#2255c4;font-weight:700;
+  margin:14px 0 6px;
+}
+h4.mini-title{
+  font-family:'Caveat',cursive;font-size:15px;color:#2255c4;font-weight:700;margin:10px 0 4px;
+}
+
+/* ── BODY TEXT ── */
+p,li{
+  font-family:'Patrick Hand',cursive;font-size:16px;color:#1a3fa0;
+  line-height:32px;
+}
+ul{list-style:none;padding-left:6px;}
+ul li::before{content:"→ ";color:#e85d5d;font-weight:700;}
+ol{padding-left:22px;}
+ol li{font-family:'Patrick Hand',cursive;font-size:16px;color:#1a3fa0;line-height:32px;}
+
+/* ── HIGHLIGHTS ── */
+.hl-yellow{background:linear-gradient(180deg,transparent 60%,#fff176 60%);padding:0 2px;}
+.hl-green{background:linear-gradient(180deg,transparent 60%,#b9f6ca 60%);padding:0 2px;}
+.hl-pink{background:linear-gradient(180deg,transparent 60%,#ffc1e3 60%);padding:0 2px;}
+.hl-orange{background:linear-gradient(180deg,transparent 60%,#ffccbc 60%);padding:0 2px;}
+
+/* ── INLINE CODE ── */
+code{font-family:'Courier New',monospace;font-size:13px;background:#e8eef8;border:1px solid #c5d0e6;border-radius:4px;padding:1px 5px;color:#1a1a2e;}
+
+/* ── CODE BOX ── */
+.codebox{
+  background:#1e2235;color:#e0e6f5;
+  font-family:'Courier New',monospace;font-size:13px;
+  border-radius:8px;padding:14px 16px;margin:10px 0;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  white-space:pre;word-break:normal;
+  border:1px solid #344;line-height:22px;
+}
+.tok-kw{color:#ff7b72;font-weight:700;}
+.tok-fn{color:#d2a8ff;}
+.tok-var{color:#79c0ff;}
+.tok-str{color:#a8e6a3;}
+.tok-prop{color:#56d364;}
+.tok-num{color:#f0883e;}
+.tok-com{color:#8b949e;font-style:italic;}
+.tok-cls{color:#ffa657;}
+.tok-def{color:#e2c08d;}
+
+/* ── TABLES ── */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;margin:10px 0;}
+.nb-table{width:100%;border-collapse:collapse;font-family:'Patrick Hand',cursive;font-size:14px;}
+.nb-table th{background:#1a3fa0;color:#fff;padding:8px 12px;text-align:left;font-family:'Kalam',cursive;font-size:14px;}
+.nb-table td{padding:7px 12px;border-bottom:1px dashed #cfe3f7;color:#1a1a2e;line-height:1.5;}
+.nb-table tr:nth-child(even) td{background:rgba(207,227,247,0.25);}
+.nb-table tr:hover td{background:rgba(207,227,247,0.5);}
+
+/* ── CALLOUT BOXES ── */
+.callout{border-radius:8px;padding:12px 16px;margin:12px 0;font-family:'Patrick Hand',cursive;font-size:15px;line-height:1.6;}
+.callout-tip{background:#e8f5e9;border-left:4px solid #43a047;color:#1b5e20;}
+.callout-warn{background:#fff3e0;border-left:4px solid #fb8c00;color:#e65100;}
+.callout-note{background:#e3f2fd;border-left:4px solid #1e88e5;color:#0d47a1;}
+.callout-def{background:#f3e5f5;border-left:4px solid #8e24aa;color:#4a148c;}
+
+/* ── STICKY NOTE ── */
+.sticky{
+  background:#fffde7;border:1px solid #f9a825;
+  border-radius:4px;padding:12px 16px;margin:12px 0;
+  box-shadow:3px 3px 8px rgba(0,0,0,0.15);
+  transform:rotate(-1.2deg);
+  font-family:'Caveat',cursive;font-size:16px;color:#4e342e;
+  line-height:1.6;
+}
+.sticky.rotate-pos{transform:rotate(1deg);}
+.sticky-title{font-family:'Kalam',cursive;font-size:15px;font-weight:700;color:#bf360c;margin-bottom:4px;}
+
+/* ── FLOWCHART ── */
+.flow-wrap{display:flex;flex-direction:column;align-items:center;gap:0;margin:14px 0;}
+.flow-box{
+  background:#e8f0fe;border:2px solid #1a3fa0;border-radius:8px;
+  padding:8px 20px;font-family:'Patrick Hand',cursive;font-size:14px;color:#1a1a2e;
+  text-align:center;min-width:200px;max-width:90%;
+}
+.flow-box.green{background:#e8f5e9;border-color:#2e7d32;}
+.flow-box.orange{background:#fff3e0;border-color:#e65100;}
+.flow-box.purple{background:#f3e5f5;border-color:#6a1b9a;}
+.flow-arr{font-size:22px;color:#1a3fa0;line-height:1.2;text-align:center;}
+
+/* ── DIAMOND ── */
+.diamond-wrap{display:flex;justify-content:center;margin:10px 0;}
+.diamond-outer{width:120px;height:120px;background:#fff9c4;border:2.5px solid #f9a825;transform:rotate(45deg);display:flex;align-items:center;justify-content:center;}
+.diamond-inner{transform:rotate(-45deg);font-family:'Patrick Hand',cursive;font-size:12px;color:#4e342e;text-align:center;}
+
+/* ── SPEECH BOX ── */
+.speech-wrap{margin:18px 0 24px;}
+.speech-box{
+  background:linear-gradient(135deg,#1565c0 0%,#283593 50%,#4527a0 100%);
+  border:3px solid #42a5f5;
+  outline:2px dashed rgba(255,255,255,0.35);
+  outline-offset:-6px;
+  border-radius:16px;padding:16px 18px 14px;
+  box-shadow:4px 4px 0 #0d47a1,0 8px 24px rgba(0,0,0,0.25);
+  position:relative;transform:rotate(-0.5deg);
+  max-width:100%;word-break:break-word;overflow-wrap:anywhere;
+}
+.speech-box::after{
+  content:'';position:absolute;bottom:-14px;left:28px;
+  border-left:12px solid transparent;border-right:12px solid transparent;
+  border-top:14px solid #283593;
+}
+.speech-icon{
+  position:absolute;top:-14px;right:16px;
+  width:30px;height:30px;border-radius:50%;
+  background:radial-gradient(circle,#ffd54f,#ff8f00);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;box-shadow:0 2px 6px rgba(0,0,0,0.3);
+}
+.speech-title{font-family:'Patrick Hand',cursive;font-size:12px;color:#90caf9;margin-bottom:8px;letter-spacing:0.5px;}
+.speech-panel{background:rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;margin-bottom:8px;}
+.speech-text{font-family:'Patrick Hand',cursive;font-size:17px;color:#e3f2fd;line-height:1.7;}
+.speech-alt{background:rgba(255,255,255,0.07);border-radius:6px;padding:6px 12px;font-family:'Patrick Hand',cursive;font-size:13px;color:#b3e5fc;}
+
+/* ── TWO COLUMN ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:10px 0;}
+@media(max-width:600px){.two-col{grid-template-columns:1fr;}}
+.col-card{background:#f0f4ff;border:1px solid #c5cfe8;border-radius:8px;padding:12px 14px;}
+.col-card h4{font-family:'Kalam',cursive;font-size:15px;color:#1a3fa0;margin-bottom:6px;border-bottom:1px solid #c5cfe8;padding-bottom:3px;}
+
+/* ── MIND MAP SVG ── */
+.mindmap-wrap{margin:12px 0;overflow:hidden;}
+
+/* ── MNEMONIC ── */
+.mnemonic{
+  border:2px dashed #43a047;background:#f1f8e9;
+  border-radius:8px;padding:10px 14px;margin:10px 0;
+  font-family:'Caveat',cursive;font-size:16px;color:#1b5e20;
+}
+.mnemonic-title{font-family:'Kalam',cursive;font-size:14px;font-weight:700;color:#2e7d32;margin-bottom:4px;}
+
+/* ── REVISION SHEET STYLES ── */
+.rev-header{
+  background:linear-gradient(135deg,#00695c 0%,#004d40 60%,#006064 100%);
+  margin:-80px -40px 20px calc(-1*(var(--margin-left)+16px));
+  padding:18px 32px 18px calc(var(--margin-left)+20px);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.rev-header h1{font-family:'Kalam',cursive;font-size:22px;color:#fff;font-weight:700;}
+.rev-header .rev-tag{font-family:'Patrick Hand',cursive;font-size:13px;color:#b2dfdb;background:rgba(0,0,0,0.2);padding:3px 10px;border-radius:12px;}
+.how-to-box{background:#e0f2f1;border:1px solid #26a69a;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-family:'Patrick Hand',cursive;font-size:13px;color:#004d40;line-height:1.7;}
+.how-to-box strong{font-family:'Kalam',cursive;font-size:14px;color:#00695c;}
+.tier-label{display:inline-block;font-family:'Patrick Hand',cursive;font-size:10px;color:#fff;background:#26a69a;border-radius:4px;padding:1px 6px;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;}
+.tier-label.t2{background:#1565c0;}
+.tier-label.t3{background:#6a1b9a;}
+.tier-label.lookup{background:#37474f;}
+.rev-section-title{font-family:'Kalam',cursive;font-size:17px;color:#1a1a2e;font-weight:700;border-bottom:2px solid currentColor;padding-bottom:3px;margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+.always-read-badge{font-family:'Patrick Hand',cursive;font-size:10px;background:#c62828;color:#fff;border-radius:4px;padding:2px 7px;letter-spacing:0.5px;animation:none;}
+.lookup-badge{font-family:'Patrick Hand',cursive;font-size:10px;background:#37474f;color:#fff;border-radius:4px;padding:2px 7px;}
+/* must-know grid */
+.must-know-grid{display:grid;grid-template-columns:1fr;gap:0;border:1px solid #cfe3f7;border-radius:6px;overflow:hidden;margin-bottom:4px;}
+.mk-row{display:grid;grid-template-columns:220px 1fr;border-bottom:1px solid #e0ecf8;font-family:'Patrick Hand',cursive;font-size:13px;}
+@media(max-width:500px){.mk-row{grid-template-columns:1fr;}}
+.mk-row:last-child{border-bottom:none;}
+.mk-key{padding:6px 10px;font-weight:700;color:#1a1a2e;border-right:1px solid #e0ecf8;border-left:4px solid #1a3fa0;}
+.mk-key.bl-green{border-left-color:#2e7d32;}
+.mk-key.bl-orange{border-left-color:#e65100;}
+.mk-key.bl-purple{border-left-color:#6a1b9a;}
+.mk-key.bl-teal{border-left-color:#00695c;}
+.mk-key.bl-red{border-left-color:#c62828;}
+.mk-val{padding:6px 10px;color:#333;line-height:1.5;}
+/* rapid fire */
+.rf-table{width:100%;border-collapse:collapse;font-family:'Patrick Hand',cursive;font-size:13px;margin:6px 0;}
+.rf-table th{background:#1565c0;color:#fff;padding:6px 10px;text-align:left;font-family:'Kalam',cursive;font-size:13px;}
+.rf-table td{padding:6px 10px;border-bottom:1px dashed #cfe3f7;vertical-align:top;line-height:1.5;}
+.rf-table tr:nth-child(even) td{background:rgba(207,227,247,0.2);}
+/* mistakes */
+.mistake-list{list-style:none;padding:0;margin:6px 0;}
+.mistake-list li{font-family:'Patrick Hand',cursive;font-size:13px;color:#1a1a2e;padding:4px 0;border-bottom:1px solid #fce4ec;line-height:1.5;}
+/* codebox compact */
+.codebox-sm{font-size:11.5px;padding:10px 14px;margin:6px 0;}
+/* memory tricks */
+.trick-box{border:2px dashed #7b1fa2;background:#fce4ec;border-radius:8px;padding:8px 12px;margin:6px 0;font-family:'Caveat',cursive;font-size:15px;color:#4a148c;}
+.trick-title{font-family:'Kalam',cursive;font-size:13px;font-weight:700;color:#7b1fa2;margin-bottom:2px;}
+.tip-bullets{list-style:none;padding:0;margin:6px 0;}
+.tip-bullets li{font-family:'Patrick Hand',cursive;font-size:13px;color:#1a1a2e;padding:3px 0;line-height:1.5;}
+.tip-bullets li::before{content:"💡 ";} 
+
+/* ── RESPONSIVENESS ── */
+@media(max-width:600px){
+  .page{padding:60px 16px 60px 48px;}
+  .page::before{left:34px;}
+  .page-header{padding:14px 16px 14px 48px;}
+  .page-header h1{font-size:16px;}
+  .rev-header{padding:14px 16px 14px 48px;}
+  .rev-header h1{font-size:16px;}
+  p,li,ol li{font-size:14px;}
+  h2.section-title{font-size:17px;}
+  h3.sub-title{font-size:15px;}
+  .speech-text{font-size:15px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .page{rotate:0deg!important;}
+  .speech-box,.sticky{transform:none!important;}
+  *{transition:none!important;animation:none!important;}
+}
+@media print{
+  .page-wrapper{display:flex!important;page-break-after:always;}
+  .pages-container{background:white;}
+  .page{box-shadow:none;rotate:0deg!important;margin:0;border:none;}
+}
+
+/* Interview speech-card additions: question-first, line-by-line answers */
+.speech-q{
+  background:rgba(255,255,255,0.95);color:#0d2060;border-left:5px solid #ffd54f;
+  border-radius:10px;padding:8px 12px;margin:0 0 10px;font-family:'Kalam',cursive;
+  font-size:15.5px;font-weight:700;line-height:1.45;
+}
+.speech-q .qlabel{display:block;font-family:'Caveat',cursive;font-size:14px;font-weight:700;color:#e65100;letter-spacing:.03em;}
+.speech-q code{background:#1e2235;border:1px solid #344;color:#79c0ff;font-size:13px;}
+.speech-inner{background:rgba(30,34,53,0.92);color:#f4f6ff;border-radius:10px;padding:11px 14px;margin-bottom:9px;font-family:'Patrick Hand',cursive;font-size:18px;line-height:1.5;}
+.speech-inner p.sl{margin:0 0 7px;padding-left:2px;color:inherit;font-family:inherit;font-size:inherit;line-height:1.5;}
+.speech-inner p.sl:last-child{margin-bottom:0;}
+.speech-inner p.sl .anchor{font-weight:700;color:#ffd54f;margin-right:4px;}
+.speech-inner p.sl code{background:rgba(255,255,255,0.15);border:none;color:#a8e6a3;font-size:13px;padding:1px 4px;border-radius:4px;}
+.speech-inner p.sl.closer{margin-top:10px;padding:7px 10px;background:rgba(255,213,79,0.16);border-left:4px solid #ffd54f;border-radius:6px;color:#fffde7;}
+.speech-inner p.sl.closer .anchor{color:#ffeb3b;}
+.speech-alt{margin-top:8px;background:rgba(255,255,255,0.82);border-radius:10px;padding:8px 12px;font-family:'Patrick Hand',cursive;font-size:15.5px;color:#5a2a1c;line-height:1.45;}
+.speech-follow,.speech-followup,.followup{margin-top:6px;font-family:'Patrick Hand',cursive;font-size:15px;line-height:1.45;color:inherit;}
+
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+<!-- ═══════════════════ PAGE 1 ═══════════════════ -->
+<div class="page-wrapper"><div class="page">
+<div class="page-header">
+  <h1>📡 Phase 6 — Network &amp; API Testing</h1>
+  <span class="phase-tag">Topic 22 — HTTP Basics</span>
+</div>
+
+<h2 class="section-title">🌐 HTTP Fundamentals</h2>
+
+<!-- HTTP Methods Comparison Table -->
+<h3 class="sub-title">HTTP Methods — Quick Reference</h3>
+<div class="table-scroll">
+<table class="nb-table" aria-label="HTTP Methods comparison">
+<caption style="display:none">HTTP Methods</caption>
+<thead><tr><th>Method</th><th>Purpose</th><th>Has Body?</th><th>Idempotent?</th><th>Use Case</th></tr></thead>
+<tbody>
+<tr><td><span class="hl-green"><strong>GET</strong></span></td><td>Fetch resource</td><td>❌ No</td><td>✅ Yes</td><td>Retrieve user list, search</td></tr>
+<tr><td><span class="hl-yellow"><strong>POST</strong></span></td><td>Create resource</td><td>✅ Yes</td><td>❌ No</td><td>Create user, login, submit form</td></tr>
+<tr><td><span class="hl-orange"><strong>PUT</strong></span></td><td>Replace resource (full)</td><td>✅ Yes</td><td>✅ Yes</td><td>Update entire user record</td></tr>
+<tr><td><span class="hl-pink"><strong>PATCH</strong></span></td><td>Update resource (partial)</td><td>✅ Yes</td><td>❌ No*</td><td>Update only email field</td></tr>
+<tr><td><span class="hl-orange"><strong>DELETE</strong></span></td><td>Remove resource</td><td>Optional</td><td>✅ Yes</td><td>Delete user by ID</td></tr>
+</tbody>
+</table>
+</div>
+<p style="font-size:12px;color:#999;font-family:'Patrick Hand',cursive;">* PATCH is not always idempotent — depends on implementation</p>
+
+<!-- Request/Response Structure -->
+<h3 class="sub-title">📨 HTTP Request → Response Flow</h3>
+<div class="flow-wrap">
+  <div class="flow-box">🧑 <strong>Client</strong> sends: Method + URL + Headers + (Body)</div>
+  <div class="flow-arr">↓</div>
+  <div class="flow-box orange">🌐 <strong>Server</strong> processes request</div>
+  <div class="flow-arr">↓</div>
+  <div class="flow-box green">✅ <strong>Response</strong>: Status Code + Headers + Body</div>
+</div>
+
+<!-- Headers & Cookies side-by-side -->
+<div class="two-col">
+<div class="col-card">
+<h4>📋 Headers</h4>
+<ul>
+  <li><strong>Content-Type</strong>: format of body (<code>application/json</code>)</li>
+  <li><strong>Authorization</strong>: Bearer token / API key</li>
+  <li><strong>Accept</strong>: expected response format</li>
+  <li><strong>X-Custom-Header</strong>: app-specific data</li>
+  <li><strong>Cache-Control</strong>: caching directives</li>
+</ul>
+</div>
+<div class="col-card">
+<h4>🍪 Cookies</h4>
+<ul>
+  <li>Sent in <strong>Cookie</strong> header by client</li>
+  <li>Set via <strong>Set-Cookie</strong> in response</li>
+  <li>Used for: sessions, auth tokens, preferences</li>
+  <li>Attributes: <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite</code></li>
+  <li>Playwright auto-manages cookies in context</li>
+</ul>
+</div>
+</div>
+
+<!-- Status Codes -->
+<h3 class="sub-title">🔢 HTTP Status Codes</h3>
+<div class="table-scroll">
+<table class="nb-table" aria-label="HTTP status codes">
+<caption style="display:none">HTTP Status Codes</caption>
+<thead><tr><th>Range</th><th>Category</th><th>Common Codes</th></tr></thead>
+<tbody>
+<tr><td><span class="hl-green"><strong>1xx</strong></span></td><td>Informational</td><td>100 Continue, 101 Switching Protocols</td></tr>
+<tr><td><span class="hl-green"><strong>2xx</strong></span></td><td>Success ✅</td><td>200 OK, 201 Created, 204 No Content</td></tr>
+<tr><td><span class="hl-yellow"><strong>3xx</strong></span></td><td>Redirection</td><td>301 Moved Permanently, 302 Found, 304 Not Modified</td></tr>
+<tr><td><span class="hl-orange"><strong>4xx</strong></span></td><td>Client Error ❌</td><td>400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable</td></tr>
+<tr><td><span class="hl-pink"><strong>5xx</strong></span></td><td>Server Error 🔥</td><td>500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout callout-tip">
+  💡 <strong>Tip:</strong> In Playwright, <code>response.status()</code> gives the code. Always assert status before parsing body — a 500 with JSON body can mislead you into thinking the call succeeded!
+</div>
+
+<!-- Speech Box -->
+<div class="speech-wrap">
+<div class="speech-box" class="speech-box">
+<div class="speech-icon">🎤</div>
+<div class="speech-title">🗣️ How I’d say it in an interview</div>
+<div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span> “What are the main HTTP methods, and how do you use them in API testing?”</div>
+<div class="speech-inner">
+<p class="sl"><span class="anchor">HTTP methods describe</span> the action a client wants to perform on a resource.</p>
+<p class="sl"><span class="anchor">GET is used</span> to retrieve data, while POST commonly creates a new resource.</p>
+<p class="sl"><span class="anchor">PUT usually replaces</span> the full resource, while PATCH updates only selected fields.</p>
+<p class="sl"><span class="anchor">DELETE is used</span> to remove a resource when the API supports that operation.</p>
+<p class="sl"><span class="anchor">In API tests, I</span> check that the response status and body match the method's expected behavior.</p>
+<p class="sl"><span class="anchor">For example, I</span> usually expect a successful create to return a suitable status such as 201.</p>
+<p class="sl closer"><span class="anchor">So, in short,</span> I validate both the method's purpose and the response, so API tests check real behavior rather than status codes alone.</p>
+</div>
+<div class="speech-alt">🔄 Also asked as: "Explain REST methods" / "What's the difference between PUT and PATCH?"</div>
+</div>
+</div>
+
+<div class="page-num">Page 1 of 6</div>
+</div></div><!-- end page 1 -->
+
+<!-- ═══════════════════ PAGE 2 ═══════════════════ -->
+<div class="page-wrapper"><div class="page">
+<div class="page-header">
+  <h1>🧪 Playwright API Testing</h1>
+  <span class="phase-tag">Topic 23 — APIRequestContext</span>
+</div>
+
+<h2 class="section-title">🔌 API Testing in Playwright</h2>
+
+<div class="two-col">
+<div class="col-card">
+  <h4>What is <code>request</code>?</h4>
+  <p style="font-size:14px;line-height:1.6;">The built-in <strong>APIRequestContext</strong> fixture in Playwright that lets you make HTTP calls directly — no browser needed. Shares cookies/auth state with the browser context.</p>
+</div>
+<div class="col-card">
+  <h4>Why use it?</h4>
+  <ul style="font-size:14px;">
+    <li>Faster than UI — no rendering</li>
+    <li>Set up test data via API before UI test</li>
+    <li>Tear down after test</li>
+    <li>Validate API contracts independently</li>
+  </ul>
+</div>
+</div>
+
+<!-- Setup -->
+<h3 class="sub-title">⚙️ Setup: <code>APIRequestContext</code></h3>
+<div class="codebox"><span class="tok-com">// Method 1: Use 'request' fixture (auto-provided by Playwright)</span>
+<span class="tok-kw">import</span> { test, expect } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/test'</span>;
+
+<span class="tok-fn">test</span>(<span class="tok-str">'API test using request fixture'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">request</span> }) => {
+  <span class="tok-kw">const</span> <span class="tok-var">response</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">get</span>(<span class="tok-str">'https://api.example.com/users'</span>);
+  <span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">response</span>).<span class="tok-fn">toBeOK</span>(); <span class="tok-com">// status 200-299</span>
+});
+
+<span class="tok-com">// Method 2: Standalone context (useful outside test fixtures)</span>
+<span class="tok-kw">const</span> <span class="tok-var">context</span> = <span class="tok-kw">await</span> <span class="tok-var">playwright</span>.<span class="tok-fn">request</span>.<span class="tok-fn">newContext</span>({
+  <span class="tok-prop">baseURL</span>: <span class="tok-str">'https://api.example.com'</span>,
+  <span class="tok-prop">extraHTTPHeaders</span>: { <span class="tok-prop">'Authorization'</span>: <span class="tok-str">'Bearer TOKEN'</span> }
+});</div>
+
+<!-- GET -->
+<h3 class="sub-title">📥 GET Request</h3>
+<div class="codebox"><span class="tok-kw">const</span> <span class="tok-var">response</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">get</span>(<span class="tok-str">'/users/1'</span>);
+<span class="tok-fn">expect</span>(<span class="tok-var">response</span>.<span class="tok-fn">status</span>()).<span class="tok-fn">toBe</span>(<span class="tok-num">200</span>);
+<span class="tok-kw">const</span> <span class="tok-var">body</span> = <span class="tok-kw">await</span> <span class="tok-var">response</span>.<span class="tok-fn">json</span>();  <span class="tok-com">// parse JSON body</span>
+<span class="tok-fn">expect</span>(<span class="tok-var">body</span>.<span class="tok-prop">name</span>).<span class="tok-fn">toBe</span>(<span class="tok-str">'John'</span>);</div>
+
+<!-- POST -->
+<h3 class="sub-title">📤 POST Request</h3>
+<div class="codebox"><span class="tok-kw">const</span> <span class="tok-var">response</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">post</span>(<span class="tok-str">'/users'</span>, {
+  <span class="tok-prop">data</span>: { <span class="tok-prop">name</span>: <span class="tok-str">'Jane'</span>, <span class="tok-prop">email</span>: <span class="tok-str">'jane@test.com'</span> },  <span class="tok-com">// auto JSON-serialized</span>
+  <span class="tok-prop">headers</span>: { <span class="tok-prop">'Content-Type'</span>: <span class="tok-str">'application/json'</span> }
+});
+<span class="tok-fn">expect</span>(<span class="tok-var">response</span>.<span class="tok-fn">status</span>()).<span class="tok-fn">toBe</span>(<span class="tok-num">201</span>);  <span class="tok-com">// 201 = Created</span></div>
+
+<!-- PUT / PATCH / DELETE -->
+<div class="two-col">
+<div class="col-card">
+<h4>🔄 PUT (Full Update)</h4>
+<div class="codebox codebox-sm"><span class="tok-kw">const</span> <span class="tok-var">res</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">put</span>(
+  <span class="tok-str">'/users/1'</span>, {
+  <span class="tok-prop">data</span>: { <span class="tok-prop">name</span>: <span class="tok-str">'Updated'</span>, <span class="tok-prop">email</span>: <span class="tok-str">'u@t.com'</span> }
+});
+<span class="tok-fn">expect</span>(<span class="tok-var">res</span>.<span class="tok-fn">status</span>()).<span class="tok-fn">toBe</span>(<span class="tok-num">200</span>);</div>
+</div>
+<div class="col-card">
+<h4>🩹 PATCH (Partial Update)</h4>
+<div class="codebox codebox-sm"><span class="tok-kw">const</span> <span class="tok-var">res</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">patch</span>(
+  <span class="tok-str">'/users/1'</span>, {
+  <span class="tok-prop">data</span>: { <span class="tok-prop">email</span>: <span class="tok-str">'new@t.com'</span> }
+  <span class="tok-com">// only email changes</span>
+});
+<span class="tok-fn">expect</span>(<span class="tok-var">res</span>.<span class="tok-fn">status</span>()).<span class="tok-fn">toBe</span>(<span class="tok-num">200</span>);</div>
+</div>
+</div>
+
+<h3 class="sub-title">🗑️ DELETE Request</h3>
+<div class="codebox"><span class="tok-kw">const</span> <span class="tok-var">res</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">delete</span>(<span class="tok-str">'/users/1'</span>);
+<span class="tok-fn">expect</span>(<span class="tok-var">res</span>.<span class="tok-fn">status</span>()).<span class="tok-fn">toBe</span>(<span class="tok-num">204</span>);  <span class="tok-com">// 204 = No Content (deleted, no body returned)</span></div>
+
+<div class="callout callout-warn">
+  ⚠️ <strong>Gotcha:</strong> <code>request.delete()</code> — don't call it <code>.delete()</code> in older JS — it's a reserved word in some transpilers. Playwright handles it safely but be aware in raw fetch.
+</div>
+
+<div class="page-num">Page 2 of 6</div>
+</div></div><!-- end page 2 -->
+
+<!-- ═══════════════════ PAGE 3 ═══════════════════ -->
+<div class="page-wrapper"><div class="page">
+<div class="page-header">
+  <h1>🔎 Request Details &amp; Response Validation</h1>
+  <span class="phase-tag">Topic 23 Continued</span>
+</div>
+
+<h2 class="section-title">📬 Request Configuration Deep Dive</h2>
+
+<!-- Request Headers -->
+<h3 class="sub-title">📋 Request Headers</h3>
+<div class="codebox"><span class="tok-kw">const</span> <span class="tok-var">response</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">get</span>(<span class="tok-str">'/secure/data'</span>, {
+  <span class="tok-prop">headers</span>: {
+    <span class="tok-prop">'Authorization'</span>: <span class="tok-str">`Bearer ${<span class="tok-var">token</span>}`</span>,    <span class="tok-com">// auth</span>
+    <span class="tok-prop">'Accept'</span>:        <span class="tok-str">'application/json'</span>,       <span class="tok-com">// expected format</span>
+    <span class="tok-prop">'X-Request-ID'</span>: <span class="tok-str">'test-123'</span>,             <span class="tok-com">// tracing/custom header</span>
+    <span class="tok-prop">'Accept-Language'</span>: <span class="tok-str">'en-US'</span>                 <span class="tok-com">// locale</span>
+  }
+});</div>
+
+<!-- Query Parameters -->
+<h3 class="sub-title">🔍 Query Parameters</h3>
+<div class="codebox"><span class="tok-com">// Option 1: Pass as params object (Playwright auto-encodes)</span>
+<span class="tok-kw">const</span> <span class="tok-var">res</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">get</span>(<span class="tok-str">'/users'</span>, {
+  <span class="tok-prop">params</span>: {
+    <span class="tok-prop">page</span>: <span class="tok-num">2</span>,
+    <span class="tok-prop">limit</span>: <span class="tok-num">10</span>,
+    <span class="tok-prop">role</span>: <span class="tok-str">'admin'</span>
+  }  <span class="tok-com">// → /users?page=2&limit=10&role=admin</span>
+});
+
+<span class="tok-com">// Option 2: Inline in URL (manual)</span>
+<span class="tok-kw">const</span> <span class="tok-var">res2</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">get</span>(<span class="tok-str">'/users?page=2&limit=10'</span>);</div>
+
+<!-- Request Body -->
+<h3 class="sub-title">📦 Request Body Formats</h3>
+<div class="codebox"><span class="tok-com">// JSON body (most common for REST APIs)</span>
+<span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">post</span>(<span class="tok-str">'/login'</span>, {
+  <span class="tok-prop">data</span>: { <span class="tok-prop">username</span>: <span class="tok-str">'admin'</span>, <span class="tok-prop">password</span>: <span class="tok-str">'pass'</span> }  <span class="tok-com">// data → auto Content-Type: application/json</span>
+});
+
+<span class="tok-com">// Form data (URL-encoded)</span>
+<span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">post</span>(<span class="tok-str">'/upload'</span>, {
+  <span class="tok-prop">form</span>: { <span class="tok-prop">username</span>: <span class="tok-str">'admin'</span>, <span class="tok-prop">token</span>: <span class="tok-str">'abc'</span> }  <span class="tok-com">// form → Content-Type: application/x-www-form-urlencoded</span>
+});
+
+<span class="tok-com">// Multipart form (file upload)</span>
+<span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">post</span>(<span class="tok-str">'/file'</span>, {
+  <span class="tok-prop">multipart</span>: { <span class="tok-prop">file</span>: <span class="tok-var">fs</span>.<span class="tok-fn">createReadStream</span>(<span class="tok-str">'./test.pdf'</span>), <span class="tok-prop">name</span>: <span class="tok-str">'report'</span> }
+});</div>
+
+<!-- Response Validation -->
+<h3 class="sub-title">✅ Response Validation</h3>
+<div class="codebox"><span class="tok-kw">const</span> <span class="tok-var">res</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">get</span>(<span class="tok-str">'/users/1'</span>);
+
+<span class="tok-com">// ── Status ──────────────────────────</span>
+<span class="tok-fn">expect</span>(<span class="tok-var">res</span>.<span class="tok-fn">status</span>()).<span class="tok-fn">toBe</span>(<span class="tok-num">200</span>);
+<span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">res</span>).<span class="tok-fn">toBeOK</span>();  <span class="tok-com">// checks 200-299 range</span>
+
+<span class="tok-com">// ── Body ────────────────────────────</span>
+<span class="tok-kw">const</span> <span class="tok-var">body</span>   = <span class="tok-kw">await</span> <span class="tok-var">res</span>.<span class="tok-fn">json</span>();    <span class="tok-com">// parse JSON</span>
+<span class="tok-kw">const</span> <span class="tok-var">text</span>   = <span class="tok-kw">await</span> <span class="tok-var">res</span>.<span class="tok-fn">text</span>();    <span class="tok-com">// raw string</span>
+<span class="tok-kw">const</span> <span class="tok-var">buffer</span> = <span class="tok-kw">await</span> <span class="tok-var">res</span>.<span class="tok-fn">body</span>();    <span class="tok-com">// Buffer (binary)</span>
+
+<span class="tok-com">// ── Field Assertions ────────────────</span>
+<span class="tok-fn">expect</span>(<span class="tok-var">body</span>.<span class="tok-prop">id</span>).<span class="tok-fn">toBe</span>(<span class="tok-num">1</span>);
+<span class="tok-fn">expect</span>(<span class="tok-var">body</span>.<span class="tok-prop">name</span>).<span class="tok-fn">toBe</span>(<span class="tok-str">'John'</span>);
+<span class="tok-fn">expect</span>(<span class="tok-var">body</span>.<span class="tok-prop">email</span>).<span class="tok-fn">toMatch</span>(<span class="tok-str">/^.+@.+\..+$/</span>);
+
+<span class="tok-com">// ── Headers ─────────────────────────</span>
+<span class="tok-fn">expect</span>(<span class="tok-var">res</span>.<span class="tok-fn">headers</span>()[<span class="tok-str">'content-type'</span>]).<span class="tok-fn">toContain</span>(<span class="tok-str">'application/json'</span>);</div>
+
+<div class="callout callout-note">
+  📝 <strong>Note:</strong> <code>data:</code> key auto-sets <code>Content-Type: application/json</code>. Using <code>form:</code> sets <code>application/x-www-form-urlencoded</code>. Using <code>multipart:</code> sets <code>multipart/form-data</code>. Pick the right key — don't mix them!
+</div>
+
+<!-- Speech Box -->
+<div class="speech-wrap">
+<div class="speech-box" class="speech-box">
+<div class="speech-icon">🎤</div>
+<div class="speech-title">🗣️ How I’d say it in an interview</div>
+<div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span> “How do you make API requests directly in Playwright tests?”</div>
+<div class="speech-inner">
+<p class="sl"><span class="anchor">Playwright&#x27;s request fixture</span> lets me send API requests directly without opening a browser page.</p>
+<p class="sl"><span class="anchor">The reason this matters is</span> I can validate backend behavior and prepare data quickly before UI tests run.</p>
+<p class="sl"><span class="anchor">For authentication, I</span> pass the required headers, and I use params for query-string values.</p>
+<p class="sl"><span class="anchor">For request bodies, I</span> send JSON data with the data option when the endpoint expects a body.</p>
+<p class="sl"><span class="anchor">After the request, I</span> assert the status code and read the response with <code>response.json()</code>.</p>
+<p class="sl"><span class="anchor">I use this approach</span> to create test data through an API when the UI setup would be slower.</p>
+<p class="sl closer"><span class="anchor">So, in short,</span> I use direct API requests for fast setup and focused checks, keeping UI tests about user-visible behavior.</p>
+</div>
+<div class="speech-alt">🔄 Also asked as: "How do you test APIs without a frontend?" / "How do you set up data for a UI test?"</div>
+</div>
+</div>
+
+<div class="page-num">Page 3 of 6</div>
+</div></div><!-- end page 3 -->
+
+<!-- ═══════════════════ PAGE 4 ═══════════════════ -->
+<div class="page-wrapper"><div class="page">
+<div class="page-header">
+  <h1>🕸️ Network Interception</h1>
+  <span class="phase-tag">Topic 24 — page.route()</span>
+</div>
+
+<h2 class="section-title">🚦 Network Interception with <code>page.route()</code></h2>
+
+<div class="callout callout-def">
+  🔷 <strong>What is it?</strong> <code>page.route()</code> intercepts network requests matching a URL pattern <em>before</em> they reach the server. You can then inspect, modify, mock, block, or let them continue.
+</div>
+
+<!-- page.route Syntax -->
+<h3 class="sub-title">📐 Syntax</h3>
+<div class="codebox"><span class="tok-com">// page.route(urlPattern, handlerFn)</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/api/users'</span>, <span class="tok-kw">async</span> (<span class="tok-var">route</span>, <span class="tok-var">request</span>) => {
+  <span class="tok-com">// 'route' → controls what happens to the request</span>
+  <span class="tok-com">// 'request' → lets you inspect the original request</span>
+  <span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">continue</span>();  <span class="tok-com">// default: just let it pass through</span>
+});</div>
+
+<!-- Four options mind-map style -->
+<h3 class="sub-title">🔀 What Can You Do With a Route?</h3>
+<div class="mindmap-wrap">
+<svg viewBox="0 0 680 200" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <!-- Center -->
+  <rect x="270" y="75" width="140" height="40" rx="10" fill="#1a3fa0" stroke="#0d2b80" stroke-width="2"/>
+  <text x="340" y="100" text-anchor="middle" fill="#fff" font-family="Kalam,cursive" font-size="13">route handler</text>
+  <!-- Continue -->
+  <line x1="270" y1="95" x2="160" y2="50" stroke="#2e7d32" stroke-width="1.8" stroke-dasharray="4,2"/>
+  <rect x="60" y="32" width="100" height="36" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="110" y="54" text-anchor="middle" fill="#1b5e20" font-family="Patrick Hand,cursive" font-size="12">✅ continue()</text>
+  <!-- Abort -->
+  <line x1="270" y1="95" x2="160" y2="155" stroke="#c62828" stroke-width="1.8" stroke-dasharray="4,2"/>
+  <rect x="60" y="137" width="100" height="36" rx="8" fill="#ffebee" stroke="#c62828" stroke-width="2"/>
+  <text x="110" y="159" text-anchor="middle" fill="#c62828" font-family="Patrick Hand,cursive" font-size="12">❌ abort()</text>
+  <!-- Fulfill -->
+  <line x1="410" y1="95" x2="520" y2="50" stroke="#6a1b9a" stroke-width="1.8" stroke-dasharray="4,2"/>
+  <rect x="518" y="32" width="110" height="36" rx="8" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="2"/>
+  <text x="573" y="54" text-anchor="middle" fill="#4a148c" font-family="Patrick Hand,cursive" font-size="12">🎭 fulfill()</text>
+  <!-- Modify/Fetch -->
+  <line x1="410" y1="95" x2="520" y2="155" stroke="#e65100" stroke-width="1.8" stroke-dasharray="4,2"/>
+  <rect x="510" y="137" width="130" height="36" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+  <text x="575" y="155" text-anchor="middle" fill="#e65100" font-family="Patrick Hand,cursive" font-size="12">✏️ fetch+fulfill()</text>
+  <!-- Labels -->
+  <text x="110" y="85" text-anchor="middle" fill="#2e7d32" font-family="Patrick Hand,cursive" font-size="10">pass through</text>
+  <text x="110" y="186" text-anchor="middle" fill="#c62828" font-family="Patrick Hand,cursive" font-size="10">block request</text>
+  <text x="573" y="86" text-anchor="middle" fill="#6a1b9a" font-family="Patrick Hand,cursive" font-size="10">mock response</text>
+  <text x="575" y="186" text-anchor="middle" fill="#e65100" font-family="Patrick Hand,cursive" font-size="10">modify &amp; send</text>
+</svg>
+</div>
+
+<!-- Continue, Abort, Fulfill, Modify -->
+<h3 class="sub-title">📋 Route Actions — Code Examples</h3>
+<div class="codebox"><span class="tok-com">// ✅ CONTINUE — pass through (optionally modify request headers)</span>
+<span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">continue</span>({ <span class="tok-prop">headers</span>: { ...<span class="tok-var">request</span>.<span class="tok-fn">headers</span>(), <span class="tok-prop">'X-Test'</span>: <span class="tok-str">'true'</span> } });
+
+<span class="tok-com">// ❌ ABORT — block the request entirely</span>
+<span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">abort</span>();          <span class="tok-com">// default error type: 'failed'</span>
+<span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">abort</span>(<span class="tok-str">'blockedbyclient'</span>);  <span class="tok-com">// or: 'connectionrefused'</span>
+
+<span class="tok-com">// 🎭 FULFILL — return a mock response (no network call)</span>
+<span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({
+  <span class="tok-prop">status</span>: <span class="tok-num">200</span>,
+  <span class="tok-prop">contentType</span>: <span class="tok-str">'application/json'</span>,
+  <span class="tok-prop">body</span>: <span class="tok-cls">JSON</span>.<span class="tok-fn">stringify</span>({ <span class="tok-prop">id</span>: <span class="tok-num">1</span>, <span class="tok-prop">name</span>: <span class="tok-str">'Mocked User'</span> })
+});
+
+<span class="tok-com">// ✏️ FETCH + MODIFY — hit real server, then modify the response</span>
+<span class="tok-kw">const</span> <span class="tok-var">realResponse</span> = <span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">fetch</span>();
+<span class="tok-kw">const</span> <span class="tok-var">json</span> = <span class="tok-kw">await</span> <span class="tok-var">realResponse</span>.<span class="tok-fn">json</span>();
+<span class="tok-var">json</span>.<span class="tok-prop">name</span> = <span class="tok-str">'Modified Name'</span>;      <span class="tok-com">// modify field</span>
+<span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({ <span class="tok-prop">json</span> });   <span class="tok-com">// send modified response to browser</span></div>
+
+<!-- Block specific resources -->
+<h3 class="sub-title">🚫 Block Specific Request Types</h3>
+<div class="codebox"><span class="tok-com">// Block all image/font requests → speeds up tests!</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/*'</span>, <span class="tok-var">route</span> => {
+  <span class="tok-kw">const</span> <span class="tok-var">type</span> = <span class="tok-var">route</span>.<span class="tok-fn">request</span>().<span class="tok-fn">resourceType</span>();
+  [<span class="tok-str">'image'</span>, <span class="tok-str">'font'</span>, <span class="tok-str">'stylesheet'</span>].<span class="tok-fn">includes</span>(<span class="tok-var">type</span>)
+    ? <span class="tok-var">route</span>.<span class="tok-fn">abort</span>()
+    : <span class="tok-var">route</span>.<span class="tok-fn">continue</span>();
+});</div>
+
+<div class="sticky">
+  <div class="sticky-title">📌 Pattern Matching</div>
+  <code style="font-size:13px;">'**/api/**'</code> → any URL containing /api/<br>
+  <code style="font-size:13px;">'https://exact.com/path'</code> → exact URL<br>
+  Can also use a <strong>RegExp</strong>: <code style="font-size:13px;">/.*\.json$/</code>
+</div>
+
+<div class="page-num">Page 4 of 6</div>
+</div></div><!-- end page 4 -->
+
+<!-- ═══════════════════ PAGE 5 ═══════════════════ -->
+<div class="page-wrapper"><div class="page">
+<div class="page-header">
+  <h1>🎭 API Mocking &amp; Stubbing</h1>
+  <span class="phase-tag">Topic 25 — Mock / Stub / Simulate</span>
+</div>
+
+<h2 class="section-title">🧩 API Mocking in Playwright</h2>
+
+<div class="callout callout-def">
+  🔷 <strong>API Mocking</strong> = intercepting network calls and returning fake (controlled) responses. Test the <em>frontend</em> without a real backend. Also called <strong>stubbing</strong>.
+</div>
+
+<!-- Mock backend -->
+<h3 class="sub-title">1️⃣ Mock a Backend Response (Static)</h3>
+<div class="codebox"><span class="tok-com">// Return fake data without hitting the real API</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/api/products'</span>, <span class="tok-kw">async</span> <span class="tok-var">route</span> => {
+  <span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({
+    <span class="tok-prop">status</span>: <span class="tok-num">200</span>,
+    <span class="tok-prop">contentType</span>: <span class="tok-str">'application/json'</span>,
+    <span class="tok-prop">body</span>: <span class="tok-cls">JSON</span>.<span class="tok-fn">stringify</span>([
+      { <span class="tok-prop">id</span>: <span class="tok-num">1</span>, <span class="tok-prop">name</span>: <span class="tok-str">'Widget A'</span>, <span class="tok-prop">price</span>: <span class="tok-num">9.99</span> },
+      { <span class="tok-prop">id</span>: <span class="tok-num">2</span>, <span class="tok-prop">name</span>: <span class="tok-str">'Widget B'</span>, <span class="tok-prop">price</span>: <span class="tok-num">19.99</span> }
+    ])
+  });
+});
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">goto</span>(<span class="tok-str">'/shop'</span>);  <span class="tok-com">// page loads with mocked product data</span></div>
+
+<!-- Simulate Errors -->
+<h3 class="sub-title">2️⃣ Simulate API Errors</h3>
+<div class="codebox"><span class="tok-com">// Test how UI handles server errors</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/api/login'</span>, <span class="tok-kw">async</span> <span class="tok-var">route</span> => {
+  <span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({
+    <span class="tok-prop">status</span>: <span class="tok-num">401</span>,       <span class="tok-com">// Unauthorized</span>
+    <span class="tok-prop">contentType</span>: <span class="tok-str">'application/json'</span>,
+    <span class="tok-prop">body</span>: <span class="tok-cls">JSON</span>.<span class="tok-fn">stringify</span>({ <span class="tok-prop">message</span>: <span class="tok-str">'Invalid credentials'</span> })
+  });
+});
+<span class="tok-com">// → test that "Invalid credentials" error message appears in UI</span>
+
+<span class="tok-com">// Simulate network failure (no internet)</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/api/**'</span>, <span class="tok-var">route</span> => <span class="tok-var">route</span>.<span class="tok-fn">abort</span>(<span class="tok-str">'failed'</span>));
+<span class="tok-com">// → test offline/error state in the UI</span></div>
+
+<!-- Simulate Slow API -->
+<h3 class="sub-title">3️⃣ Simulate Slow APIs (Loading States)</h3>
+<div class="codebox"><span class="tok-com">// Add artificial delay to test loading spinners, skeleton screens</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/api/data'</span>, <span class="tok-kw">async</span> <span class="tok-var">route</span> => {
+  <span class="tok-kw">await</span> <span class="tok-kw">new</span> <span class="tok-cls">Promise</span>(<span class="tok-var">resolve</span> => <span class="tok-fn">setTimeout</span>(<span class="tok-var">resolve</span>, <span class="tok-num">3000</span>)); <span class="tok-com">// 3s delay</span>
+  <span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({
+    <span class="tok-prop">status</span>: <span class="tok-num">200</span>,
+    <span class="tok-prop">body</span>: <span class="tok-cls">JSON</span>.<span class="tok-fn">stringify</span>({ <span class="tok-prop">data</span>: <span class="tok-str">'slow response'</span> })
+  });
+});
+<span class="tok-com">// ✅ Playwright test waits automatically — no flakiness from timeout</span></div>
+
+<!-- Compare: Stub vs Mock vs Intercept -->
+<h3 class="sub-title">📊 Stub vs Mock vs Intercept — Comparison</h3>
+<div class="table-scroll">
+<table class="nb-table" aria-label="Stub vs Mock vs Intercept">
+<caption style="display:none">Stub vs Mock vs Intercept</caption>
+<thead><tr><th>Concept</th><th>What it does</th><th>Backend hits?</th><th>Use when...</th></tr></thead>
+<tbody>
+<tr><td><span class="hl-yellow"><strong>Stub</strong></span></td><td>Returns fixed fake response</td><td>❌ No</td><td>Backend not ready / unstable</td></tr>
+<tr><td><span class="hl-green"><strong>Mock</strong></span></td><td>Returns dynamic fake response + can assert call was made</td><td>❌ No</td><td>Test-specific data needed</td></tr>
+<tr><td><span class="hl-pink"><strong>Intercept</strong></span></td><td>Captures real call, optionally modifies</td><td>✅ Yes</td><td>Real data + modification needed</td></tr>
+<tr><td><span class="hl-orange"><strong>Abort</strong></span></td><td>Blocks request completely</td><td>❌ No</td><td>Test error states / offline</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- Speech Box -->
+<div class="speech-wrap">
+<div class="speech-box" class="speech-box">
+<div class="speech-icon">🎤</div>
+<div class="speech-title">🗣️ How I’d say it in an interview</div>
+<div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span> “What is API mocking in Playwright, and when would you use it?”</div>
+<div class="speech-inner">
+<p class="sl"><span class="anchor">API mocking means</span> intercepting a network request and returning a controlled response instead of calling the real backend.</p>
+<p class="sl"><span class="anchor">The reason I use it is</span> it lets me test UI behavior without depending on backend availability or changing data.</p>
+<p class="sl"><span class="anchor">In Playwright, I</span> intercept requests with <code>page.route()</code> and provide a response with <code>route.fulfill()</code>.</p>
+<p class="sl"><span class="anchor">For example, I</span> can return a 401 response to check how the UI handles an expired session.</p>
+<p class="sl"><span class="anchor">I can also</span> mock empty data, specific records, or an error response for edge cases.</p>
+<p class="sl"><span class="anchor">I keep in mind</span> that mocks test frontend behavior, so important backend behavior still needs real API coverage.</p>
+<p class="sl closer"><span class="anchor">So, in short,</span> I mock only the network behavior needed for a scenario, making UI tests repeatable without hiding backend defects.</p>
+</div>
+<div class="speech-alt">🔄 Also asked as: "How do you test frontend without backend?" / "How do you simulate errors in Playwright?"</div>
+</div>
+</div>
+
+<div class="callout callout-tip">
+  💡 <strong>Pro tip:</strong> Use <code>page.unroute('**/api/users')</code> to remove a route handler after a specific test. Or use <code>page.routeFromHAR('recorded.har')</code> to replay a full network session!
+</div>
+
+<div class="page-num">Page 5 of 6</div>
+</div></div><!-- end page 5 -->
+
+<!-- ═══════════════════ PAGE 6 — QUICK REVISION SHEET ═══════════════════ -->
+<div class="page-wrapper"><div class="page">
+<div class="rev-header">
+  <h1>⚡ Quick Revision Sheet</h1>
+  <span class="rev-tag">Scan before your interview!</span>
+</div>
+
+<!-- How To Use -->
+<div class="how-to-box">
+  <strong>⚡ HOW TO USE THIS PAGE (read once, then ignore this box)</strong><br>
+  <strong>TIER 1</strong> — Scan the Topic Map. Fuzzy branch? → drop to Tier 2.<br>
+  <strong>TIER 2</strong> — Read ONLY the rows that felt weak in Tier 1.<br>
+  <strong>TIER 3</strong> — ALWAYS read Mistakes + Memory Tricks, even if Tiers 1&amp;2 felt perfect. These catch the gaps you don't know you have.<br>
+  <strong>LOOKUP</strong> — Key Commands: glance only if tested on exact syntax.
+</div>
+
+<!-- ── TIER 1: Topic Map ── -->
+<span class="tier-label">TIER 1</span>
+<div class="rev-section-title" style="color:#00695c;">🗺️ Topic Map</div>
+<div class="mindmap-wrap">
+<svg viewBox="0 0 680 230" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <!-- Center -->
+  <ellipse cx="340" cy="115" rx="68" ry="28" fill="#004d40" stroke="#00695c" stroke-width="2"/>
+  <text x="340" y="119" text-anchor="middle" fill="#fff" font-family="Kalam,cursive" font-size="13">Network &amp; API</text>
+  <!-- HTTP Basics -->
+  <line x1="272" y1="100" x2="120" y2="50" stroke="#1565c0" stroke-width="1.5"/>
+  <rect x="20" y="28" width="100" height="44" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="70" y="46" text-anchor="middle" fill="#0d47a1" font-family="Kalam,cursive" font-size="11">HTTP Basics</text>
+  <text x="70" y="60" text-anchor="middle" fill="#1565c0" font-family="Patrick Hand,cursive" font-size="9">GET POST PUT PATCH DELETE</text>
+  <text x="70" y="72" text-anchor="middle" fill="#1565c0" font-family="Patrick Hand,cursive" font-size="9">Headers · Cookies · 2xx/4xx/5xx</text>
+  <!-- API Testing -->
+  <line x1="272" y1="125" x2="120" y2="165" stroke="#2e7d32" stroke-width="1.5"/>
+  <rect x="20" y="144" width="100" height="44" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="70" y="162" text-anchor="middle" fill="#1b5e20" font-family="Kalam,cursive" font-size="11">API Testing</text>
+  <text x="70" y="176" text-anchor="middle" fill="#2e7d32" font-family="Patrick Hand,cursive" font-size="9">request fixture · APIRequestContext</text>
+  <text x="70" y="188" text-anchor="middle" fill="#2e7d32" font-family="Patrick Hand,cursive" font-size="9">params · data · form · .json()</text>
+  <!-- Network Interception -->
+  <line x1="408" y1="100" x2="560" y2="50" stroke="#6a1b9a" stroke-width="1.5"/>
+  <rect x="558" y="28" width="112" height="44" rx="8" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="1.5"/>
+  <text x="614" y="46" text-anchor="middle" fill="#4a148c" font-family="Kalam,cursive" font-size="11">Interception</text>
+  <text x="614" y="60" text-anchor="middle" fill="#6a1b9a" font-family="Patrick Hand,cursive" font-size="9">page.route() · continue()</text>
+  <text x="614" y="72" text-anchor="middle" fill="#6a1b9a" font-family="Patrick Hand,cursive" font-size="9">abort() · fulfill() · fetch()</text>
+  <!-- API Mocking -->
+  <line x1="408" y1="125" x2="560" y2="165" stroke="#e65100" stroke-width="1.5"/>
+  <rect x="558" y="144" width="112" height="44" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="614" y="162" text-anchor="middle" fill="#bf360c" font-family="Kalam,cursive" font-size="11">API Mocking</text>
+  <text x="614" y="176" text-anchor="middle" fill="#e65100" font-family="Patrick Hand,cursive" font-size="9">Stub · Mock · Simulate errors</text>
+  <text x="614" y="188" text-anchor="middle" fill="#e65100" font-family="Patrick Hand,cursive" font-size="9">Slow API · Offline · No backend</text>
+</svg>
+</div>
+
+<!-- ── TIER 2: Must-Know ── -->
+<span class="tier-label t2">TIER 2</span>
+<div class="rev-section-title" style="color:#1565c0;">🔑 Must-Know Concepts</div>
+<div class="must-know-grid">
+  <div class="mk-row"><div class="mk-key">GET</div><div class="mk-val">Fetch data — no body, safe &amp; idempotent</div></div>
+  <div class="mk-row"><div class="mk-key">POST</div><div class="mk-val">Create resource — has body, NOT idempotent, returns 201</div></div>
+  <div class="mk-row"><div class="mk-key">PUT vs PATCH</div><div class="mk-val">PUT replaces entire resource; PATCH updates only fields sent</div></div>
+  <div class="mk-row"><div class="mk-key">DELETE</div><div class="mk-val">Remove resource — typically returns 204 No Content</div></div>
+  <div class="mk-row"><div class="mk-key bl-green">request fixture</div><div class="mk-val">Playwright's APIRequestContext — makes HTTP calls without a browser</div></div>
+  <div class="mk-row"><div class="mk-key bl-green">data: vs form:</div><div class="mk-val"><code>data</code> → JSON body; <code>form</code> → URL-encoded; <code>multipart</code> → file upload</div></div>
+  <div class="mk-row"><div class="mk-key bl-green">.toBeOK()</div><div class="mk-val">Playwright assertion — passes if status is 200–299</div></div>
+  <div class="mk-row"><div class="mk-key bl-purple">page.route()</div><div class="mk-val">Intercepts matching network requests before they reach the server</div></div>
+  <div class="mk-row"><div class="mk-key bl-purple">route.fulfill()</div><div class="mk-val">Returns a fake mock response — backend is never called</div></div>
+  <div class="mk-row"><div class="mk-key bl-purple">route.abort()</div><div class="mk-val">Blocks the request entirely — simulates network failure</div></div>
+  <div class="mk-row"><div class="mk-key bl-purple">route.continue()</div><div class="mk-val">Passes request through, optionally with modified headers/body</div></div>
+  <div class="mk-row"><div class="mk-key bl-purple">route.fetch()</div><div class="mk-val">Hits real server, returns response so you can modify it before sending to browser</div></div>
+  <div class="mk-row"><div class="mk-key bl-orange">API Mocking</div><div class="mk-val">Intercept + fulfill — test UI with controlled fake data, no real backend</div></div>
+  <div class="mk-row"><div class="mk-key bl-orange">Simulate errors</div><div class="mk-val">fulfill({ status: 401/500 }) — test how UI handles error responses</div></div>
+  <div class="mk-row"><div class="mk-key bl-orange">Slow API</div><div class="mk-val">Add setTimeout inside route handler before fulfill — tests loading states</div></div>
+  <div class="mk-row"><div class="mk-key bl-teal">Status Codes</div><div class="mk-val">2xx = success, 4xx = client error, 5xx = server error, 3xx = redirect</div></div>
+  <div class="mk-row"><div class="mk-key bl-teal">resourceType()</div><div class="mk-val">Returns 'image','font','xhr','fetch' etc. — use to selectively block asset types</div></div>
+  <div class="mk-row"><div class="mk-key bl-red">Idempotent</div><div class="mk-val">Same request = same result (GET, PUT, DELETE are idempotent; POST is not)</div></div>
+</div>
+
+<!-- ── TIER 2: Rapid Fire ── -->
+<span class="tier-label t2">TIER 2</span>
+<div class="rev-section-title" style="color:#1565c0;">🎯 Interview Rapid-Fire Q→A</div>
+<div class="table-scroll">
+<table class="rf-table" aria-label="Rapid fire interview QA">
+<caption style="display:none">Interview Q&A</caption>
+<thead><tr><th>Q</th><th>A (one-liner)</th></tr></thead>
+<tbody>
+<tr><td><span class="hl-yellow">What's the difference between PUT and PATCH?</span></td><td>PUT replaces the full resource; PATCH updates only the fields you send</td></tr>
+<tr><td><span class="hl-yellow">How do you make API calls in Playwright?</span></td><td>Use the <code>request</code> fixture → <code>request.get/post/put/delete(url, options)</code></td></tr>
+<tr><td><span class="hl-yellow">What is <code>page.route()</code>?</span></td><td>Intercepts requests matching a URL pattern before they hit the server</td></tr>
+<tr><td><span class="hl-yellow">How do you mock an API in Playwright?</span></td><td><code>page.route(pattern, route => route.fulfill({ status, body }))</code></td></tr>
+<tr><td>What does <code>toBeOK()</code> check?</td><td>That response status is in 200–299 range</td></tr>
+<tr><td>How do you simulate a 500 error in tests?</td><td><code>route.fulfill({ status: 500, body: '...' })</code></td></tr>
+<tr><td>How do you test a loading spinner?</td><td>Add <code>setTimeout(resolve, 3000)</code> in route handler before fulfill</td></tr>
+<tr><td>How do you block image requests to speed up tests?</td><td>Route <code>'**/*'</code>, check <code>resourceType() === 'image'</code>, then <code>route.abort()</code></td></tr>
+<tr><td>Difference: <code>data:</code> vs <code>form:</code> in Playwright?</td><td><code>data</code> → JSON; <code>form</code> → URL-encoded; they set Content-Type automatically</td></tr>
+<tr><td>What does <code>route.fetch()</code> do?</td><td>Hits real server, returns response — lets you modify it before browser gets it</td></tr>
+<tr><td>When do you use API mocking in testing?</td><td>Backend unavailable, test error states, need specific data, or in CI without backend</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ── LOOKUP STRIP ── -->
+<span class="tier-label lookup">LOOKUP ONLY</span>
+<div class="rev-section-title" style="color:#37474f;">⚡ Key Commands &amp; Syntax <span class="lookup-badge">🔍 LOOKUP ONLY</span></div>
+<div class="codebox codebox-sm"><span class="tok-com">// API GET with params + header</span>
+<span class="tok-kw">const</span> <span class="tok-var">res</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">get</span>(<span class="tok-str">'/users'</span>, { <span class="tok-prop">params</span>: { <span class="tok-prop">page</span>: <span class="tok-num">1</span> }, <span class="tok-prop">headers</span>: { <span class="tok-prop">'Authorization'</span>: <span class="tok-str">'Bearer TOKEN'</span> } });
+<span class="tok-com">// API POST JSON body</span>
+<span class="tok-kw">const</span> <span class="tok-var">res</span> = <span class="tok-kw">await</span> <span class="tok-var">request</span>.<span class="tok-fn">post</span>(<span class="tok-str">'/users'</span>, { <span class="tok-prop">data</span>: { <span class="tok-prop">name</span>: <span class="tok-str">'Jane'</span> } });
+<span class="tok-com">// Validate response</span>
+<span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">res</span>).<span class="tok-fn">toBeOK</span>();  <span class="tok-kw">const</span> <span class="tok-var">body</span> = <span class="tok-kw">await</span> <span class="tok-var">res</span>.<span class="tok-fn">json</span>();
+<span class="tok-com">// Route mock</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/api/users'</span>, <span class="tok-var">route</span> => <span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({ <span class="tok-prop">status</span>: <span class="tok-num">200</span>, <span class="tok-prop">body</span>: <span class="tok-cls">JSON</span>.<span class="tok-fn">stringify</span>([{ <span class="tok-prop">id</span>: <span class="tok-num">1</span> }]) }));
+<span class="tok-com">// Route abort (block)</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/api/**'</span>, <span class="tok-var">route</span> => <span class="tok-var">route</span>.<span class="tok-fn">abort</span>());
+<span class="tok-com">// Fetch real + modify</span>
+<span class="tok-kw">const</span> <span class="tok-var">real</span> = <span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">fetch</span>();  <span class="tok-kw">const</span> <span class="tok-var">json</span> = <span class="tok-kw">await</span> <span class="tok-var">real</span>.<span class="tok-fn">json</span>();  <span class="tok-var">json</span>.<span class="tok-prop">name</span> = <span class="tok-str">'New'</span>;  <span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({ <span class="tok-prop">json</span> });
+<span class="tok-com">// Block images for speed</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/*'</span>, <span class="tok-var">r</span> => [<span class="tok-str">'image'</span>,<span class="tok-str">'font'</span>].<span class="tok-fn">includes</span>(<span class="tok-var">r</span>.<span class="tok-fn">request</span>().<span class="tok-fn">resourceType</span>()) ? <span class="tok-var">r</span>.<span class="tok-fn">abort</span>() : <span class="tok-var">r</span>.<span class="tok-fn">continue</span>());</div>
+
+<!-- ── TIER 3: Common Mistakes ── -->
+<span class="tier-label t3">TIER 3</span>
+<div class="rev-section-title" style="color:#6a1b9a;">⚠️ Common Mistakes &amp; Gotchas <span class="always-read-badge">ALWAYS READ</span></div>
+<ul class="mistake-list">
+  <li>⚠️ Forgetting to <code>await</code> <code>route.fulfill()</code> or <code>route.continue()</code> — request stays hanging forever</li>
+  <li>⚠️ Using <code>data:</code> key but setting <code>Content-Type: text/plain</code> — Content-Type wins, server gets confused</li>
+  <li>⚠️ Asserting <code>status === 200</code> on a <span class="hl-pink">POST create</span> request — it should be <strong>201</strong>, not 200</li>
+  <li>⚠️ Calling <code>await res.json()</code> on a <span class="hl-orange">204 No Content</span> response — throws because body is empty</li>
+  <li>⚠️ <code>page.route()</code> registers the handler but doesn't fire until a matching request is actually made — always navigate/trigger after setting the route</li>
+  <li>⚠️ Mocking <code>'**/api/**'</code> too broadly — blocks requests you didn't intend to mock, causing silent test failures</li>
+  <li>⚠️ Confusing <code>route.fetch()</code> (hit real server) with <code>route.fulfill()</code> (skip server) — easy to mix up</li>
+  <li>⚠️ PUT vs PATCH trap: sending a PATCH with only one field is fine; sending a PUT with only one field <span class="hl-pink">deletes</span> all other fields</li>
+</ul>
+
+<!-- ── TIER 3: Memory Tricks ── -->
+<span class="tier-label t3">TIER 3</span>
+<div class="rev-section-title" style="color:#6a1b9a;">🧠 Memory Tricks &amp; Last-Minute Tips</div>
+<div class="trick-box">
+  <div class="trick-title">🧠 CRUD ↔ HTTP Method Mapping</div>
+  <strong>C</strong>reate → POST &nbsp;|&nbsp; <strong>R</strong>ead → GET &nbsp;|&nbsp; <strong>U</strong>pdate → PUT/PATCH &nbsp;|&nbsp; <strong>D</strong>elete → DELETE<br>
+  <em>Mnemonic: "Create Really Useful Data"</em>
+</div>
+<div class="trick-box" style="border-color:#1565c0;background:#e3f2fd;">
+  <div class="trick-title" style="color:#1565c0;">🧠 Status Code Groups: "I See Maybe Some Silly"</div>
+  <strong>1</strong>xx = Informational &nbsp;|&nbsp; <strong>2</strong>xx = Success &nbsp;|&nbsp; <strong>3</strong>xx = Move &nbsp;|&nbsp; <strong>4</strong>xx = Client Fail &nbsp;|&nbsp; <strong>5</strong>xx = Server Fail
+</div>
+<div class="trick-box" style="border-color:#e65100;background:#fff3e0;">
+  <div class="trick-title" style="color:#e65100;">🧠 Route Action: "Can A Footballer Fly?"</div>
+  <strong>C</strong>ontinue &nbsp;|&nbsp; <strong>A</strong>bort &nbsp;|&nbsp; <strong>F</strong>ulfill &nbsp;|&nbsp; <strong>F</strong>etch+modify — the 4 things you can do with a route
+</div>
+<ul class="tip-bullets">
+  <li>Always set up <code>page.route()</code> <em>before</em> navigating to the page — routes must be registered first</li>
+  <li>Use <code>request</code> fixture for API setup/teardown in <code>test.beforeEach</code> — don't create users via UI when API is faster</li>
+  <li>If asserting JSON body, always check status first — a 500 can return valid JSON that fools your assertions</li>
+  <li>To unregister a route: <code>page.unroute('**/api/users')</code> — prevents interference between tests</li>
+  <li>Record HAR files in dev tools and replay with <code>page.routeFromHAR('file.har')</code> — instant mocking without writing handlers</li>
+</ul>
+
+<div class="page-num">Page 6 of 6</div>
+</div></div><!-- end page 6 (Quick Revision Sheet) -->
+
+</div><!-- end pages-container -->
+</body>
+</html>

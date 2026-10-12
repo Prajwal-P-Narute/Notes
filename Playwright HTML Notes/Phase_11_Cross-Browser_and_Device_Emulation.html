@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Cross-Browser Testing — Handwritten Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;600;700&family=Patrick+Hand&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page-w:794px; --page-h:1123px;
+  --ink:#1a3fa0; --ink-dark:#12296e;
+  --black:#1c1c1c; --subhead:#0d2a66;
+  --page-bg:#fffdf8; --rule:#cfe3f7; --margin-red:#e2685f;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:#e8e8e8;}
+body{font-family:'Patrick Hand',cursive;color:var(--ink);}
+
+.pages-container{width:100%;padding-bottom:40px;}
+.page-wrapper{display:flex;justify-content:center;align-items:flex-start;padding:24px 12px;}
+@media(min-width:860px){.page-wrapper{padding:40px 24px;}}
+
+.page{
+  width:100%; max-width:var(--page-w); min-height:var(--page-h);
+  position:relative; background-color:var(--page-bg);
+  background-image:
+    repeating-linear-gradient(#fffdf8 0px,#fffdf8 27px,var(--rule) 28px),
+    radial-gradient(circle at 20% 15%, rgba(0,0,0,0.015) 0, transparent 50%),
+    radial-gradient(circle at 80% 85%, rgba(0,0,0,0.015) 0, transparent 50%);
+  box-shadow:0 6px 24px rgba(0,0,0,0.18);
+  padding:90px 36px 90px 68px;
+  rotate:-0.25deg;
+}
+.page:nth-of-type(even){rotate:0.25deg;}
+.page::before{
+  content:'';position:absolute; top:0; bottom:0; left:52px;
+  width:2px; background:var(--margin-red); opacity:0.55;
+}
+.page-number{
+  position:absolute; bottom:22px; right:34px;
+  font-family:'Kalam',cursive; font-weight:700; font-size:15px;
+  color:#888; background:#fff; padding:2px 10px; border-radius:10px;
+  border:1px solid #ddd;
+}
+
+h1.page-title{
+  font-family:'Kalam',cursive; font-weight:700; font-size:34px; color:var(--black);
+  margin:0 0 4px 0; transform:rotate(-0.4deg);
+}
+.subtitle-strip{
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:'Caveat',cursive; font-size:19px; color:#555;
+  border-bottom:2px dashed #b9c9e8; padding-bottom:8px; margin-bottom:18px;
+}
+.subtitle-strip span.tag{
+  background:linear-gradient(90deg,#1a3fa0,#234ebf); color:#fff;
+  padding:2px 12px; border-radius:12px; font-family:'Kalam',cursive; font-size:14px;
+}
+
+h2.section-head{
+  font-family:'Kalam',cursive; font-weight:700; font-size:24px; color:var(--subhead);
+  margin:22px 0 10px 0; transform:rotate(0.3deg);
+  display:flex; align-items:center; gap:8px;
+}
+h3.subhead{
+  font-family:'Kalam',cursive; font-weight:700; font-size:19px; color:var(--subhead);
+  margin:14px 0 6px 0;
+}
+p, li{font-size:19px; line-height:29px; color:var(--ink);}
+p{margin:6px 0;}
+.alt{transform:rotate(-0.35deg); display:inline-block;}
+
+/* highlighter */
+.hl-yellow{background:linear-gradient(180deg,transparent 58%, #fff59d 58%);padding:0 2px;}
+.hl-green{background:linear-gradient(180deg,transparent 58%, #b9f6ca 58%);padding:0 2px;}
+.hl-pink{background:linear-gradient(180deg,transparent 58%, #f8bbd0 58%);padding:0 2px;}
+.hl-orange{background:linear-gradient(180deg,transparent 58%, #ffcc80 58%);padding:0 2px;}
+
+/* inline code */
+code{
+  font-family:'Consolas','Courier New',monospace; font-size:15.5px;
+  background:#eef1fb; border:1px solid #c9d3ee; border-radius:5px;
+  padding:1px 6px; color:#1e2235;
+}
+
+/* code box */
+.codebox{
+  background:#1e2235; color:#e0e6f5; border-radius:8px;
+  padding:14px 16px; margin:12px 0; font-family:'Consolas','Courier New',monospace;
+  font-size:14.5px; line-height:22px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  white-space:pre; word-break:normal; max-width:100%;
+  border:1.5px dashed #445; box-shadow:0 4px 10px rgba(0,0,0,0.25);
+}
+.codebox .cmt{font-size:12.5px;color:#9aa4c0;font-family:'Patrick Hand',cursive;margin:0 0 6px 0;}
+.tok-kw{color:#ff7b72;font-weight:bold;}
+.tok-fn{color:#d2a8ff;}
+.tok-var{color:#79c0ff;}
+.tok-str{color:#a8e6a3;}
+.tok-prop{color:#56d364;}
+.tok-num{color:#f0883e;}
+.tok-com{color:#8b949e;font-style:italic;}
+.tok-cls{color:#ffa657;}
+.tok-def{color:#e2c08d;}
+
+/* table */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;margin:12px 0;}
+table.nb-table{border-collapse:collapse;width:100%;min-width:420px;font-family:'Patrick Hand',cursive;font-size:16.5px;}
+table.nb-table caption{text-align:left;font-family:'Caveat',cursive;font-size:15px;color:#777;margin-bottom:4px;}
+table.nb-table th{
+  background:#eaf1ff; color:var(--subhead); border:2px solid #9fb8e8; padding:8px 10px;
+  border-radius:6px 6px 0 0; font-family:'Kalam',cursive; font-size:16px;
+}
+table.nb-table td{
+  border:1.5px dashed #a9bde3; padding:8px 10px; border-radius:4px; vertical-align:top;
+}
+
+/* callout / sticky */
+.sticky{
+  background:#fff8b3; border:1px solid #e3d68a; border-radius:2px;
+  padding:12px 14px; margin:16px 6px; max-width:100%; box-sizing:border-box;
+  box-shadow:3px 5px 10px rgba(0,0,0,0.18); font-family:'Caveat',cursive; font-size:19px;
+  position:relative;
+}
+.sticky.rot1{transform:rotate(-1.5deg);}
+.sticky.rot2{transform:rotate(1.3deg); background:#c8f7c5;}
+.sticky::after{
+  content:''; position:absolute; bottom:0; right:0; width:0; height:0;
+  border-style:solid; border-width:0 0 14px 14px; border-color:transparent transparent rgba(0,0,0,0.15) transparent;
+}
+.sticky .stitle{font-family:'Kalam',cursive;font-weight:700;font-size:17px;color:#5c4d00;display:block;margin-bottom:4px;}
+
+.warn-box{
+  border:2px dashed #e07a5f; background:#fff3ef; border-radius:8px;
+  padding:10px 14px; margin:14px 0; font-size:18px;
+}
+.tip-box{
+  border:2px dashed #57a773; background:#f2fbf4; border-radius:8px;
+  padding:10px 14px; margin:14px 0; font-size:18px;
+}
+
+/* flow diagram */
+.flow{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:16px 0;}
+.flow-box{
+  border:2px solid var(--ink-dark); border-radius:10px; padding:10px 14px;
+  font-family:'Kalam',cursive; font-size:16px; background:#eef3ff; text-align:center;
+  min-width:110px;
+}
+.flow-arrow{font-size:22px; color:var(--ink-dark); font-weight:bold;}
+
+/* speech box (interview) */
+.speech-box{
+  position:relative; max-width:100%; box-sizing:border-box;
+  border:3.5px solid #7b2ff7; border-radius:22px;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255,255,255,0.55), transparent 45%),
+    linear-gradient(135deg,#7b2ff7 0%, #f107a3 55%, #ff9f43 100%);
+  padding:16px; margin:24px 8px 34px 8px; transform:rotate(-0.8deg);
+  box-shadow:6px 6px 0 rgba(123,47,247,0.35), 0 10px 24px rgba(0,0,0,0.25);
+}
+.speech-box::before{
+  content:''; position:absolute; inset:6px; border-radius:16px;
+  border:2px dashed rgba(255,255,255,0.75); pointer-events:none;
+}
+.speech-box::after{
+  content:''; position:absolute; left:40px; bottom:-16px; width:0; height:0;
+  border-style:solid; border-width:18px 14px 0 0; border-color:#f107a3 transparent transparent transparent;
+}
+.speech-badge{
+  position:absolute; top:-18px; right:-14px; width:42px; height:42px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff, #ffd23f 60%, #f77f00);
+  display:flex; align-items:center; justify-content:center; font-size:20px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.3); border:2px solid #fff;
+}
+.speech-title{
+  font-family:'Kalam',cursive; font-weight:700; font-size:14px; color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,0.3); margin-bottom:8px;
+}
+.speech-panel{
+  background:rgba(255,255,255,0.92); border-radius:14px; padding:12px 16px;
+  font-family:'Patrick Hand',cursive; font-size:20px; line-height:28px; color:#2b1055;
+  word-break:break-word; overflow-wrap:anywhere;
+}
+.speech-sub{
+  margin-top:8px; background:rgba(255,255,255,0.8); border-radius:10px; padding:8px 12px;
+  font-family:'Caveat',cursive; font-size:17px; color:#3a1461;
+}
+.followup{font-size:15.5px; color:#4a2273; margin-top:6px; font-family:'Patrick Hand',cursive;}
+
+@media(prefers-reduced-motion:reduce){
+  .page{rotate:0deg !important;}
+  .speech-box,.sticky{transform:none !important;}
+  *{transition:none !important; animation:none !important;}
+}
+@media print{
+  .page-wrapper{display:flex !important; page-break-after:always;}
+  .pages-container{background:#fff;}
+  .page{box-shadow:none; rotate:0deg !important; margin:0; border:none;}
+}
+
+/* Interview speech-card upgrades */
+.speech-q{
+  margin:10px 0 12px; padding:9px 12px; background:#fffdf7; border-left:5px solid #ffb300;
+  border-radius:8px; color:#174ea6; font-family:'Kalam',cursive; font-size:18px; line-height:1.4;
+}
+.speech-q .qlabel{
+  display:block; color:#e65100; font-family:'Patrick Hand',cursive; font-size:14px;
+  font-weight:700; margin-bottom:3px;
+}
+.speech-panel p.sl{
+  margin:7px 0; padding:0; color:#2b1055; font-family:'Patrick Hand',cursive;
+  font-size:18.5px; line-height:1.42;
+}
+.speech-panel .anchor{
+  color:#6b4c00; background:#fff176; font-weight:700; padding:0 3px; border-radius:3px;
+}
+.speech-panel p.sl.closer{
+  border-top:2px dashed #e9a23b; padding-top:8px; margin-top:10px; font-weight:700;
+}
+
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+<!-- ============ PAGE 1 ============ -->
+<div class="page-wrapper"><div class="page">
+  <h1 class="page-title">⚡ Cross-Browser Testing — Playwright</h1>
+  <div class="subtitle-strip"><span>Phase 11 · Page 1 of 5</span><span class="tag">Browser Projects</span></div>
+
+  <h2 class="section-head">📌 36. Browser Projects — Big Picture</h2>
+  <p>Playwright can run the <span class="hl-yellow">same test suite</span> against multiple browser engines by defining <code>projects</code> in <code>playwright.config.ts</code>. Each project = one engine + one configuration.</p>
+  <p>The three real rendering engines Playwright drives are: <span class="hl-green">Chromium</span> (Chrome/Edge), <span class="hl-green">Firefox</span>, and <span class="hl-green">WebKit</span> (Safari). This gives real cross-browser coverage — not just one browser pretending to be another.</p>
+
+  <div class="flow">
+    <div class="flow-box">One Test File</div><div class="flow-arrow">→</div>
+    <div class="flow-box">Chromium Project</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">Firefox Project</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">WebKit Project</div>
+  </div>
+  <p class="alt">Same spec runs 3× — once per engine — in parallel by default.</p>
+
+  <h3 class="subhead">🔧 Defining projects in config</h3>
+  <div class="codebox">
+<p class="cmt">// playwright.config.ts — register 3 browser engines as projects</p>
+<span class="tok-kw">import</span> { <span class="tok-var">defineConfig</span>, <span class="tok-var">devices</span> } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/test'</span>;
+
+<span class="tok-kw">export</span> <span class="tok-kw">default</span> <span class="tok-fn">defineConfig</span>({
+  <span class="tok-prop">projects</span>: [
+    { <span class="tok-prop">name</span>: <span class="tok-str">'chromium'</span>, <span class="tok-prop">use</span>: { ...<span class="tok-var">devices</span>[<span class="tok-str">'Desktop Chrome'</span>] } },
+    { <span class="tok-prop">name</span>: <span class="tok-str">'firefox'</span>,  <span class="tok-prop">use</span>: { ...<span class="tok-var">devices</span>[<span class="tok-str">'Desktop Firefox'</span>] } },
+    { <span class="tok-prop">name</span>: <span class="tok-str">'webkit'</span>,   <span class="tok-prop">use</span>: { ...<span class="tok-var">devices</span>[<span class="tok-str">'Desktop Safari'</span>] } },
+  ],
+});</div>
+
+  <p>Run only one project: <code>npx playwright test --project=webkit</code>. Run all: just <code>npx playwright test</code> (all projects execute, usually in parallel workers).</p>
+
+  <h2 class="section-head">🧩 Meet the 3 Engines</h2>
+  <div class="table-scroll">
+  <table class="nb-table">
+    <caption>Playwright's three browser engines compared</caption>
+    <tr><th>Engine</th><th>Real browser it maps to</th><th>Notes</th></tr>
+    <tr><td><span class="hl-yellow">Chromium</span></td><td>Google Chrome, Microsoft Edge</td><td>Fastest, most stable, best debugging tools</td></tr>
+    <tr><td><span class="hl-yellow">Firefox</span></td><td>Mozilla Firefox (Gecko)</td><td>Different JS engine (SpiderMonkey) — catches Chromium-only bugs</td></tr>
+    <tr><td><span class="hl-yellow">WebKit</span></td><td>Apple Safari</td><td>Closest thing to testing Safari on Linux/Windows CI</td></tr>
+  </table>
+  </div>
+
+  <h3 class="subhead">📱 Mobile Browser Projects</h3>
+  <p>Playwright ships built-in <code>devices</code> presets that combine an engine + viewport + touch + user-agent, so a "mobile browser project" is really <span class="hl-green">Chromium/WebKit + a device profile</span> (there's no separate mobile-only engine).</p>
+  <div class="codebox">
+<p class="cmt">// mobile browser projects using built-in device presets</p>
+<span class="tok-prop">projects</span>: [
+  { <span class="tok-prop">name</span>: <span class="tok-str">'Mobile Chrome'</span>, <span class="tok-prop">use</span>: { ...<span class="tok-var">devices</span>[<span class="tok-str">'Pixel 7'</span>] } },
+  { <span class="tok-prop">name</span>: <span class="tok-str">'Mobile Safari'</span>, <span class="tok-prop">use</span>: { ...<span class="tok-var">devices</span>[<span class="tok-str">'iPhone 14'</span>] } },
+]</div>
+  <p><code>devices['Pixel 7']</code> runs on the <span class="hl-green">Chromium</span> engine; <code>devices['iPhone 14']</code> runs on the <span class="hl-green">WebKit</span> engine — Playwright picks the matching engine automatically from the preset.</p>
+
+  <div class="sticky rot1"><span class="stitle">📌 Note</span>Project <code>name</code> is just a label — it's what you'll see in the HTML report and pass to <code>--project</code>. Give it a meaningful name!</div>
+
+  <div class="warn-box">⚠️ <span class="hl-pink">Don't</span> assume "mobile testing" = real device behaviour. Playwright emulates viewport/touch/UA — it's <em>not</em> a real phone GPU/OS. For true device coverage, pair with a device-farm/cloud grid.</div>
+
+  <div class="speech-box">
+    <div class="speech-badge">🌐</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>How do you configure cross-browser testing in Playwright?</div>
+    <div class="speech-panel">
+      <p class="sl"><span class="anchor">In Playwright,</span> I use named <code>projects</code> to run the same test suite against different browser engines.</p><p class="sl"><span class="anchor">The main engines are</span> <code>Chromium</code>, <code>Firefox</code>, and <code>WebKit</code>, which cover Chrome/Edge, Firefox, and Safari-like rendering respectively.</p><p class="sl"><span class="anchor">This matters because</span> each engine can render layouts or execute browser features differently, so one browser alone may miss defects.</p><p class="sl"><span class="anchor">In the config,</span> I define a project for each engine and give each project a clear name.</p><p class="sl"><span class="anchor">When needed,</span> I can run one project with <code>npx playwright test --project=webkit</code> or run all configured projects together.</p><p class="sl closer"><span class="anchor">So, in short,</span> projects let me reuse one test suite for broader browser coverage without maintaining duplicate tests.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: "How do you run the same tests on Chrome, Firefox, and Safari?" / "What is a Playwright project?"</div>
+    <div class="followup">Follow-up Qs: How do you run only one project from the command line? Is WebKit exactly the same as Safari? How would you limit cross-browser coverage in CI?</div>
+  </div>
+
+  <div class="page-number">Page 1</div>
+</div></div>
+
+<!-- ============ PAGE 2 ============ -->
+<div class="page-wrapper"><div class="page">
+  <h1 class="page-title">📱 Device Emulation — Part 1</h1>
+  <div class="subtitle-strip"><span>Phase 11 · Page 2 of 5</span><span class="tag">37. Device Emulation</span></div>
+
+  <p>Device emulation = telling the browser context to <span class="hl-yellow">behave like a specific real device</span> — viewport size, pixel density, touch support, and identity string — without needing the actual hardware.</p>
+
+  <h2 class="section-head">📱 Mobile Devices (built-in presets)</h2>
+  <p>Playwright bundles ~100+ presets in the <code>devices</code> object (from <code>@playwright/test</code>), each pre-filled with viewport, UA, <code>deviceScaleFactor</code>, <code>isMobile</code> and <code>hasTouch</code>.</p>
+  <div class="codebox">
+<p class="cmt">// spread a full device preset into the browser context</p>
+<span class="tok-kw">import</span> { <span class="tok-var">test</span>, <span class="tok-var">devices</span> } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/test'</span>;
+
+<span class="tok-fn">test.use</span>({ ...<span class="tok-var">devices</span>[<span class="tok-str">'iPhone 14 Pro'</span>] });
+
+<span class="tok-fn">test</span>(<span class="tok-str">'mobile nav opens'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => {
+  <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">goto</span>(<span class="tok-str">'https://example.com'</span>);
+  <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">click</span>(<span class="tok-str">'.hamburger-menu'</span>);
+});</div>
+
+  <h2 class="section-head">📐 Screen Size / Viewport</h2>
+  <p>Set manually with <code>viewport: { width, height }</code> when you need a custom size instead of a preset.</p>
+  <div class="codebox">
+<p class="cmt">// custom viewport — e.g. testing a specific tablet breakpoint</p>
+<span class="tok-fn">test.use</span>({
+  <span class="tok-prop">viewport</span>: { <span class="tok-prop">width</span>: <span class="tok-num">1024</span>, <span class="tok-prop">height</span>: <span class="tok-num">768</span> },
+});</div>
+  <p>Or change it mid-test: <code>await page.setViewportSize({ width: 375, height: 667 })</code> — useful for a single test that checks a <span class="hl-green">resize/responsive breakpoint</span> without a new project.</p>
+
+  <h2 class="section-head">🕵️ User Agent</h2>
+  <p>The <code>userAgent</code> string is what the site's JS reads to detect "what browser/device is this?" Overriding it lets you simulate a device's identity even on a desktop engine.</p>
+  <div class="codebox">
+<p class="cmt">// override the User-Agent header manually</p>
+<span class="tok-fn">test.use</span>({
+  <span class="tok-prop">userAgent</span>: <span class="tok-str">'Mozilla/5.0 (Linux; Android 13; Pixel 7) ...'</span>,
+});</div>
+  <div class="tip-box">💡 <span class="hl-green">Tip:</span> Prefer a full <code>devices[...]</code> preset over hand-writing a UA string — presets keep UA, viewport, and touch flags consistent with each other.</div>
+
+  <h2 class="section-head">🔍 Device Scale Factor (DSF)</h2>
+  <p>DSF = pixel density ratio (CSS pixels → physical pixels). A standard monitor is <code>1</code>; a Retina/high-DPI phone screen is typically <code>2</code> or <code>3</code>.</p>
+  <div class="codebox">
+<p class="cmt">// simulate a high-density Retina-style screen</p>
+<span class="tok-fn">test.use</span>({
+  <span class="tok-prop">viewport</span>: { <span class="tok-prop">width</span>: <span class="tok-num">390</span>, <span class="tok-prop">height</span>: <span class="tok-num">844</span> },
+  <span class="tok-prop">deviceScaleFactor</span>: <span class="tok-num">3</span>,
+});</div>
+  <p>Matters for: screenshot comparison tests (sharper images at higher DSF) and any layout that uses <code>image-set()</code>/responsive images keyed to pixel density.</p>
+
+  <div class="sticky rot2"><span class="stitle">✅ Quick recall</span>Viewport = size in CSS px · DSF = sharpness/density multiplier · UA = "who am I" string the site reads.</div>
+
+  <div class="warn-box">⚠️ Setting <code>viewport</code> alone does <span class="hl-pink">not</span> make a desktop engine behave like touch/mobile — you must also set <code>isMobile: true</code> and <code>hasTouch: true</code> (or just use a preset) or tap/touch events won't fire correctly.</div>
+
+  <div class="page-number">Page 2</div>
+</div></div>
+
+<!-- ============ PAGE 3 ============ -->
+<div class="page-wrapper"><div class="page">
+  <h1 class="page-title">🌍 Device Emulation — Part 2</h1>
+  <div class="subtitle-strip"><span>Phase 11 · Page 3 of 5</span><span class="tag">37. Device Emulation (contd.)</span></div>
+
+  <h2 class="section-head">📍 Geolocation</h2>
+  <p>Fakes GPS coordinates so location-aware features (maps, "stores near me," delivery zones) can be tested deterministically — without moving your test runner around the planet.</p>
+  <div class="codebox">
+<p class="cmt">// grant permission + set a fake location (Mumbai coords)</p>
+<span class="tok-fn">test.use</span>({
+  <span class="tok-prop">geolocation</span>: { <span class="tok-prop">latitude</span>: <span class="tok-num">19.0760</span>, <span class="tok-prop">longitude</span>: <span class="tok-num">72.8777</span> },
+  <span class="tok-prop">permissions</span>: [<span class="tok-str">'geolocation'</span>],
+});</div>
+  <div class="warn-box">⚠️ If you set <code>geolocation</code> but forget <code>permissions: ['geolocation']</code>, the browser silently blocks the location and the page sees nothing — a very common gotcha.</div>
+
+  <h2 class="section-head">🔐 Permissions</h2>
+  <p>Pre-grants browser permission prompts (camera, mic, notifications, geolocation, clipboard) so tests don't stall on a real popup dialog.</p>
+  <div class="codebox">
+<p class="cmt">// grant multiple permissions at context level</p>
+<span class="tok-kw">const</span> <span class="tok-var">context</span> = <span class="tok-kw">await</span> <span class="tok-var">browser</span>.<span class="tok-fn">newContext</span>({
+  <span class="tok-prop">permissions</span>: [<span class="tok-str">'camera'</span>, <span class="tok-str">'microphone'</span>, <span class="tok-str">'notifications'</span>],
+});
+<span class="tok-kw">await</span> <span class="tok-var">context</span>.<span class="tok-fn">grantPermissions</span>([<span class="tok-str">'clipboard-read'</span>]);
+<span class="tok-com">// revoke any time:</span>
+<span class="tok-kw">await</span> <span class="tok-var">context</span>.<span class="tok-fn">clearPermissions</span>();</div>
+
+  <h2 class="section-head">🕑 Timezone</h2>
+  <p>Overrides the browser's reported timezone — vital for testing date/time-sensitive UI (booking slots, "posted 2 hours ago," scheduling) consistently regardless of the CI server's real timezone.</p>
+  <div class="codebox">
+<p class="cmt">// force a specific IANA timezone</p>
+<span class="tok-fn">test.use</span>({ <span class="tok-prop">timezoneId</span>: <span class="tok-str">'Asia/Kolkata'</span> });</div>
+
+  <h2 class="section-head">🗣️ Locale</h2>
+  <p>Sets the browser's <code>Accept-Language</code> header and <code>navigator.language</code> — drives which language/number/date format the site renders, for locale-specific UI tests.</p>
+  <div class="codebox">
+<p class="cmt">// simulate a French (France) browser</p>
+<span class="tok-fn">test.use</span>({ <span class="tok-prop">locale</span>: <span class="tok-str">'fr-FR'</span> });</div>
+
+  <h3 class="subhead">🧩 Combining everything for one realistic profile</h3>
+  <div class="codebox">
+<p class="cmt">// full emulated profile: device + geo + permissions + locale + timezone</p>
+<span class="tok-fn">test.use</span>({
+  ...<span class="tok-var">devices</span>[<span class="tok-str">'iPhone 14'</span>],
+  <span class="tok-prop">geolocation</span>: { <span class="tok-prop">latitude</span>: <span class="tok-num">48.8566</span>, <span class="tok-prop">longitude</span>: <span class="tok-num">2.3522</span> },
+  <span class="tok-prop">permissions</span>: [<span class="tok-str">'geolocation'</span>],
+  <span class="tok-prop">locale</span>: <span class="tok-str">'fr-FR'</span>,
+  <span class="tok-prop">timezoneId</span>: <span class="tok-str">'Europe/Paris'</span>,
+});</div>
+
+  <div class="speech-box">
+    <div class="speech-badge">📱</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>What is device emulation in Playwright, and which settings can you emulate?</div>
+    <div class="speech-panel">
+      <p class="sl"><span class="anchor">Device emulation means</span> configuring a browser context to mimic device characteristics without requiring the physical device.</p><p class="sl"><span class="anchor">A device preset</span> can bundle viewport size, user agent, device scale factor, mobile behavior, and touch support.</p><p class="sl"><span class="anchor">For location-aware tests,</span> I can set <code>geolocation</code> and grant <code>permissions: ['geolocation']</code> so the page can access it.</p><p class="sl"><span class="anchor">For regional behavior,</span> I can set <code>locale</code> and <code>timezoneId</code> to test language and date/time presentation consistently.</p><p class="sl"><span class="anchor">My preference is</span> to start with a built-in <code>devices</code> preset and add only the extra settings the test needs.</p><p class="sl closer"><span class="anchor">So, in short,</span> device emulation makes mobile and regional scenarios repeatable, but it does not replace testing on real hardware.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: "How would you test a site for users in different countries?" / "How do you simulate mobile behavior without a physical phone?"</div>
+    <div class="followup">Follow-up Qs: Why must geolocation permission be granted? What is deviceScaleFactor? Does emulation guarantee real-device coverage?</div>
+  </div>
+
+  <div class="page-number">Page 3</div>
+</div></div>
+
+<!-- ============ PAGE 4 ============ -->
+<div class="page-wrapper"><div class="page">
+  <h1 class="page-title">📏 Responsive Testing & Browser Quirks</h1>
+  <div class="subtitle-strip"><span>Phase 11 · Page 4 of 5</span><span class="tag">38. Responsive Testing</span></div>
+
+  <h2 class="section-head">📐 Desktop / Tablet / Mobile Breakpoints</h2>
+  <p>Responsive testing = re-running the same functional checks at <span class="hl-yellow">different viewport widths</span> to confirm layout, navigation, and touch targets adapt correctly.</p>
+  <div class="table-scroll">
+  <table class="nb-table">
+    <caption>Common breakpoint ranges used in test projects</caption>
+    <tr><th>Category</th><th>Typical width</th><th>What to check</th></tr>
+    <tr><td>🖥️ Desktop</td><td>1280px – 1920px</td><td>Full nav bar, multi-column layout, hover states</td></tr>
+    <tr><td>📟 Tablet</td><td>768px – 1024px</td><td>Collapsed/condensed nav, 2-column grids, touch + mouse both possible</td></tr>
+    <tr><td>📱 Mobile</td><td>360px – 428px</td><td>Hamburger menu, single column, tap targets ≥ 44px, no hover-only UI</td></tr>
+  </table>
+  </div>
+
+  <div class="codebox">
+<p class="cmt">// parametrised responsive test across 3 breakpoints</p>
+<span class="tok-kw">const</span> <span class="tok-var">breakpoints</span> = [
+  { <span class="tok-prop">name</span>: <span class="tok-str">'desktop'</span>, <span class="tok-prop">width</span>: <span class="tok-num">1440</span>, <span class="tok-prop">height</span>: <span class="tok-num">900</span> },
+  { <span class="tok-prop">name</span>: <span class="tok-str">'tablet'</span>,  <span class="tok-prop">width</span>: <span class="tok-num">834</span>,  <span class="tok-prop">height</span>: <span class="tok-num">1112</span> },
+  { <span class="tok-prop">name</span>: <span class="tok-str">'mobile'</span>,  <span class="tok-prop">width</span>: <span class="tok-num">390</span>,  <span class="tok-prop">height</span>: <span class="tok-num">844</span> },
+];
+
+<span class="tok-kw">for</span> (<span class="tok-kw">const</span> <span class="tok-var">bp</span> <span class="tok-kw">of</span> <span class="tok-var">breakpoints</span>) {
+  <span class="tok-fn">test</span>(<span class="tok-str">`nav is usable at ${bp.name}`</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => {
+    <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">setViewportSize</span>({ <span class="tok-prop">width</span>: <span class="tok-var">bp</span>.<span class="tok-prop">width</span>, <span class="tok-prop">height</span>: <span class="tok-var">bp</span>.<span class="tok-prop">height</span> });
+    <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">goto</span>(<span class="tok-str">'https://example.com'</span>);
+    <span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'nav'</span>)).<span class="tok-fn">toBeVisible</span>();
+  });
+}</div>
+
+  <h2 class="section-head">🧬 Browser-Specific Behaviour</h2>
+  <p>Even with identical HTML/CSS/JS, engines can render or execute things slightly differently — this is <em>exactly</em> what cross-browser + responsive testing is meant to surface.</p>
+  <div class="table-scroll">
+  <table class="nb-table">
+    <caption>Known engine-specific quirks to watch for</caption>
+    <tr><th>Area</th><th>Typical quirk</th></tr>
+    <tr><td>Form controls</td><td>Native <code>&lt;select&gt;</code>/date pickers render differently per engine — screenshot diffs can false-fail</td></tr>
+    <tr><td>Scrollbars</td><td>WebKit/Firefox reserve scrollbar width differently, shifting layout by a few px</td></tr>
+    <tr><td>Font rendering</td><td>Sub-pixel anti-aliasing differs — never pixel-diff text-heavy areas across engines</td></tr>
+    <tr><td>Flexbox/Grid edge cases</td><td>Rare gap/wrap differences in older Firefox/WebKit versions</td></tr>
+    <tr><td>Timing</td><td>Animation/transition callback timing can vary — avoid hard-coded waits</td></tr>
+  </table>
+  </div>
+
+  <div class="tip-box">💡 <span class="hl-green">Best practice:</span> Assert on <em>behaviour</em> (element visible, text present, state changed) rather than pixel-perfect screenshots when running across all 3 engines — reserve visual-diff tests for a single baseline engine (usually Chromium).</div>
+
+  <div class="warn-box">⚠️ Don't run <span class="hl-pink">every</span> test on <span class="hl-pink">every</span> device × every browser — combinatorial explosion. Pick a <span class="hl-green">critical-path subset</span> (login, checkout, nav) for full cross-browser × responsive coverage; run the rest on one baseline engine.</div>
+
+  <div class="speech-box">
+    <div class="speech-badge">📐</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>How do you test responsive layouts and handle browser-specific differences?</div>
+    <div class="speech-panel">
+      <p class="sl"><span class="anchor">Responsive testing checks</span> whether the same page remains usable at different viewport widths, such as desktop, tablet, and mobile.</p><p class="sl"><span class="anchor">In practice,</span> I test important navigation and page behavior at representative breakpoints instead of duplicating every test for every width.</p><p class="sl"><span class="anchor">For example,</span> I verify that a desktop navigation bar changes to a working hamburger menu on a narrow screen.</p><p class="sl"><span class="anchor">Across browser engines,</span> I focus assertions on behavior because fonts, scrollbars, and native controls can render differently.</p><p class="sl"><span class="anchor">To control test cost,</span> I run critical paths across browsers and devices, while keeping the broader suite on a baseline engine.</p><p class="sl closer"><span class="anchor">So, in short,</span> I combine representative viewport coverage with behavior-based assertions to catch real issues without creating noisy failures.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: "How do you validate a mobile-first redesign?" / "What is the difference between responsive and cross-browser testing?"</div>
+    <div class="followup">Follow-up Qs: How do you choose breakpoints? Why can screenshot comparisons fail across engines? How do you avoid a combinatorial explosion in CI?</div>
+  </div>
+
+  <div class="page-number">Page 4</div>
+</div></div>
+
+<!-- ============ PAGE 5 — QUICK REVISION SHEET ============ -->
+<div class="page-wrapper"><div class="page">
+  <h1 class="page-title" style="background:linear-gradient(90deg,#00695c,#004d40);-webkit-background-clip:text;background-clip:text;color:transparent;">⚡ Quick Revision Sheet</h1>
+  <div class="subtitle-strip"><span>⚡ Quick Revision Sheet</span><span class="tag" style="background:linear-gradient(90deg,#00695c,#004d40);">Scan before your interview!</span></div>
+
+  <div style="background:#fff6e0;border:1px solid #e3c98a;border-radius:8px;padding:10px 14px;margin:10px 0 18px 0;font-family:'Patrick Hand',cursive;font-size:15.5px;line-height:22px;">
+    ⚡ <b>HOW TO USE THIS PAGE</b> (read once, then ignore this box)<br>
+    TIER 1 — Scan the Topic Map. Fuzzy branch? → drop to Tier 2.<br>
+    TIER 2 — Read ONLY the rows that felt weak in Tier 1.<br>
+    TIER 3 — ALWAYS read Mistakes + Memory Tricks, even if Tiers 1&2 felt perfect.<br>
+    LOOKUP — Key Commands: glance only if tested on exact syntax.
+  </div>
+
+  <!-- Section 1: Topic Map -->
+  <h2 class="section-head" style="border-left:4px solid #00695c;padding-left:8px;">🗺️ 1. Topic Map <span style="font-size:12px;color:#999;">(TIER 1)</span></h2>
+  <svg viewBox="0 0 700 220" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <line x1="350" y1="110" x2="130" y2="35" stroke="#79c0ff" stroke-width="2"/>
+    <line x1="350" y1="110" x2="130" y2="185" stroke="#a8e6a3" stroke-width="2"/>
+    <line x1="350" y1="110" x2="570" y2="35" stroke="#f0883e" stroke-width="2"/>
+    <line x1="350" y1="110" x2="570" y2="185" stroke="#d2a8ff" stroke-width="2"/>
+    <rect x="280" y="88" width="140" height="44" rx="12" fill="#1a3fa0"/>
+    <text x="350" y="115" text-anchor="middle" fill="#fff" font-family="Kalam" font-size="15" font-weight="bold">Cross-Browser Testing</text>
+    <rect x="40" y="14" width="180" height="40" rx="10" fill="#eaf4ff" stroke="#79c0ff" stroke-width="1.5"/>
+    <text x="130" y="38" text-anchor="middle" font-family="Kalam" font-size="13">Chromium/Firefox/WebKit</text>
+    <rect x="20" y="164" width="220" height="40" rx="10" fill="#eafff0" stroke="#a8e6a3" stroke-width="1.5"/>
+    <text x="130" y="188" text-anchor="middle" font-family="Kalam" font-size="13">Mobile devices · UA · DSF</text>
+    <rect x="480" y="14" width="200" height="40" rx="10" fill="#fff3e8" stroke="#f0883e" stroke-width="1.5"/>
+    <text x="580" y="38" text-anchor="middle" font-family="Kalam" font-size="13">Geo · Permissions · TZ · Locale</text>
+    <rect x="480" y="164" width="200" height="40" rx="10" fill="#f6ecff" stroke="#d2a8ff" stroke-width="1.5"/>
+    <text x="580" y="188" text-anchor="middle" font-family="Kalam" font-size="13">Desktop/Tablet/Mobile · Quirks</text>
+  </svg>
+
+  <!-- Section 2: Must-Know -->
+  <h2 class="section-head" style="border-left:4px solid #1a3fa0;padding-left:8px;">🔑 2. Must-Know Concepts <span style="font-size:12px;color:#999;">(TIER 2)</span></h2>
+  <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:2px;font-size:15.5px;">
+    <div style="border-left:4px solid #79c0ff;padding:4px 8px;"><span class="hl-yellow"><b>Project</b></span></div><div style="padding:4px 8px;">Named bundle of engine + config; run via <code>--project</code></div>
+    <div style="border-left:4px solid #79c0ff;padding:4px 8px;"><span class="hl-yellow"><b>devices[]</b></span></div><div style="padding:4px 8px;">Built-in presets = viewport + UA + touch + DSF bundled</div>
+    <div style="border-left:4px solid #a8e6a3;padding:4px 8px;"><span class="hl-yellow"><b>Viewport</b></span></div><div style="padding:4px 8px;">CSS-pixel size of the visible browser area</div>
+    <div style="border-left:4px solid #a8e6a3;padding:4px 8px;"><span class="hl-yellow"><b>deviceScaleFactor</b></span></div><div style="padding:4px 8px;">Pixel density multiplier (Retina = 2–3)</div>
+    <div style="border-left:4px solid #a8e6a3;padding:4px 8px;"><span class="hl-yellow"><b>userAgent</b></span></div><div style="padding:4px 8px;">Identity string a site reads to detect browser/device</div>
+    <div style="border-left:4px solid #f0883e;padding:4px 8px;"><span class="hl-yellow"><b>geolocation</b></span></div><div style="padding:4px 8px;">Fake GPS coords; needs <code>permissions:['geolocation']</code> too</div>
+    <div style="border-left:4px solid #f0883e;padding:4px 8px;"><span class="hl-yellow"><b>permissions</b></span></div><div style="padding:4px 8px;">Pre-grants browser prompts (camera/mic/notifications/etc.)</div>
+    <div style="border-left:4px solid #f0883e;padding:4px 8px;"><span class="hl-yellow"><b>timezoneId</b></span></div><div style="padding:4px 8px;">IANA zone string overriding browser's reported timezone</div>
+    <div style="border-left:4px solid #f0883e;padding:4px 8px;"><span class="hl-yellow"><b>locale</b></span></div><div style="padding:4px 8px;">Sets Accept-Language + navigator.language for i18n tests</div>
+    <div style="border-left:4px solid #d2a8ff;padding:4px 8px;"><span class="hl-yellow"><b>Responsive testing</b></span></div><div style="padding:4px 8px;">Re-run checks at desktop/tablet/mobile widths</div>
+    <div style="border-left:4px solid #d2a8ff;padding:4px 8px;"><span class="hl-yellow"><b>Browser-specific quirk</b></span></div><div style="padding:4px 8px;">Same code, different render/timing per engine</div>
+  </div>
+
+  <!-- Section 5: Rapid fire -->
+  <h2 class="section-head" style="border-left:4px solid #1a3fa0;padding-left:8px;">🎯 5. Interview Rapid-Fire <span style="font-size:12px;color:#999;">(TIER 2)</span></h2>
+  <div class="table-scroll">
+  <table class="nb-table">
+    <caption>Fast self-test — cover the answer column and try to recall</caption>
+    <tr><th>Q</th><th>A</th></tr>
+    <tr><td><span class="hl-yellow">★ How to run tests on all 3 engines?</span></td><td>Define 3 projects (chromium/firefox/webkit) in config; run <code>npx playwright test</code></td></tr>
+    <tr><td>How to target only one browser from CLI?</td><td><code>--project=firefox</code></td></tr>
+    <tr><td><span class="hl-yellow">★ How does Playwright know a device's UA/viewport?</span></td><td>Built-in <code>devices[...]</code> presets, spread into <code>use</code>/<code>test.use</code></td></tr>
+    <tr><td>How to force geolocation in a test?</td><td>Set <code>geolocation</code> + grant <code>permissions:['geolocation']</code></td></tr>
+    <tr><td>How to test date-sensitive UI reliably?</td><td>Override <code>timezoneId</code> so it's independent of the CI machine's clock</td></tr>
+    <tr><td>How to simulate a French user?</td><td>Set <code>locale: 'fr-FR'</code> (+ timezoneId/geolocation as needed)</td></tr>
+    <tr><td><span class="hl-yellow">★ Difference between cross-browser and responsive testing?</span></td><td>Cross-browser = different engines; responsive = different viewport sizes on same engine</td></tr>
+    <tr><td>Why avoid pixel screenshot diffs across all 3 engines?</td><td>Font/scrollbar/anti-aliasing render differently per engine → false fails</td></tr>
+    <tr><td>What is deviceScaleFactor for?</td><td>Pixel density (Retina-style sharpness), affects screenshot tests</td></tr>
+    <tr><td><span class="hl-yellow">★ How to make touch/tap events work on desktop engine?</span></td><td>Set <code>isMobile: true</code> and <code>hasTouch: true</code> (or use a device preset)</td></tr>
+  </table>
+  </div>
+
+  <!-- Section 3: Key Commands -->
+  <h2 class="section-head" style="border-left:4px solid #888;padding-left:8px;">⚡ 3. Key Commands / Syntax <span style="font-size:11px;background:#eee;border-radius:8px;padding:1px 8px;">🔍 LOOKUP ONLY</span></h2>
+  <div class="codebox">
+<p class="cmt">// run one project only</p>npx playwright test <span class="tok-fn">--project</span>=webkit
+
+<p class="cmt">// device preset spread</p>
+{ ...<span class="tok-var">devices</span>[<span class="tok-str">'iPhone 14'</span>] }
+
+<p class="cmt">// resize mid-test</p>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">setViewportSize</span>({ <span class="tok-prop">width</span>: <span class="tok-num">375</span>, <span class="tok-prop">height</span>: <span class="tok-num">667</span> });
+
+<p class="cmt">// geolocation + permission</p>
+<span class="tok-prop">geolocation</span>: { <span class="tok-prop">latitude</span>: <span class="tok-num">19.0760</span>, <span class="tok-prop">longitude</span>: <span class="tok-num">72.8777</span> },
+<span class="tok-prop">permissions</span>: [<span class="tok-str">'geolocation'</span>]
+
+<p class="cmt">// grant / clear permissions at runtime</p>
+<span class="tok-kw">await</span> <span class="tok-var">context</span>.<span class="tok-fn">grantPermissions</span>([<span class="tok-str">'clipboard-read'</span>]);
+<span class="tok-kw">await</span> <span class="tok-var">context</span>.<span class="tok-fn">clearPermissions</span>();
+
+<p class="cmt">// timezone + locale</p>
+<span class="tok-prop">timezoneId</span>: <span class="tok-str">'Asia/Kolkata'</span>, <span class="tok-prop">locale</span>: <span class="tok-str">'fr-FR'</span></div>
+
+  <!-- Section 4: Common Mistakes -->
+  <h2 class="section-head" style="border-left:4px solid #e07a5f;padding-left:8px;">⚠️ 4. Common Mistakes & Gotchas <span style="font-size:11px;background:#ffe3db;border-radius:8px;padding:1px 8px;">ALWAYS READ</span></h2>
+  <ul>
+    <li>⚠️ Setting <span class="hl-pink">geolocation</span> without granting the <code>geolocation</code> permission — location silently fails.</li>
+    <li>⚠️ Manually setting <span class="hl-pink">viewport</span> without <code>isMobile</code>/<code>hasTouch</code> — touch/tap gestures won't behave like mobile.</li>
+    <li>⚠️ Pixel-diffing screenshots across <span class="hl-pink">all 3 engines</span> — font/scrollbar rendering differs, causing false failures.</li>
+    <li>⚠️ Running the <span class="hl-pink">full suite</span> on every device × every browser — huge CI time for little extra signal; scope it to critical paths.</li>
+    <li>⚠️ Forgetting a <span class="hl-pink">device preset</span> already sets UA + touch + DSF together — don't fight it by re-setting only one field.</li>
+    <li>⚠️ Assuming WebKit-on-Linux == real Safari-on-Mac in every detail — it's close, not identical.</li>
+  </ul>
+
+  <!-- Section 6: Memory tricks -->
+  <h2 class="section-head" style="border-left:4px solid #57a773;padding-left:8px;">🧠 6. Memory Tricks & Last-Minute Tips</h2>
+  <div class="sticky rot1" style="display:inline-block;width:44%;vertical-align:top;"><span class="stitle">🧠 Mnemonic</span>"C-F-W" = Chrome, Firefox, WebKit — the 3 engines, in the order Playwright lists them.</div>
+  <div class="sticky rot2" style="display:inline-block;width:44%;vertical-align:top;margin-left:2%;"><span class="stitle">🧠 Mnemonic</span>"GPT-L" = Geo, Permissions, Timezone, Locale — the 4 identity knobs of device emulation.</div>
+  <p style="margin-top:14px;"><b>Last-minute tips:</b></p>
+  <ul>
+    <li>Double-check you granted permissions before geolocation-dependent assertions.</li>
+    <li>Know the CLI flag <code>--project=&lt;name&gt;</code> cold — it's asked often.</li>
+    <li>Be ready to explain <em>why</em> you wouldn't screenshot-diff across engines.</li>
+    <li>Have one real example ready: a bug you caught only on Firefox/WebKit or only at mobile width.</li>
+  </ul>
+
+  <div class="page-number">Page 5</div>
+</div></div>
+
+</div>
+</body>
+</html>

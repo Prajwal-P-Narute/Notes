@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Phase 21 — Advanced Playwright Topics | Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@600;700&family=Patrick+Hand&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page-w:794px;
+    --page-h:1123px;
+    --ink-black:#1c1c1c;
+    --ink-blue:#1a3fa0;
+    --ink-darkblue:#0d2a6e;
+    --paper:#fffdf8;
+    --rule:#cfe3f7;
+    --margin-red:#e0645a;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#e8e8e8;font-family:'Patrick Hand',cursive;}
+  .pages-container{width:100%;padding-bottom:40px;background:#e8e8e8;}
+  .page-wrapper{display:flex;justify-content:center;align-items:flex-start;padding:24px 12px;}
+  @media (min-width:860px){.page-wrapper{padding:40px 24px;}}
+
+  .page{
+    width:100%;max-width:var(--page-w);min-height:var(--page-h);
+    position:relative;background:var(--paper);
+    background-image: repeating-linear-gradient(#fffdf8 0px,#fffdf8 27px,var(--rule) 28px);
+    box-shadow:0 6px 24px rgba(0,0,0,.18);
+    padding:90px 34px 90px 70px;
+    rotate:-.3deg;
+  }
+  .page:nth-of-type(even){rotate:.25deg;}
+  .page::before{ /* red margin line */
+    content:"";position:absolute;top:0;bottom:0;left:52px;width:2px;background:var(--margin-red);opacity:.55;
+  }
+  .page-number{position:absolute;bottom:18px;right:26px;font-family:'Caveat',cursive;font-size:20px;color:var(--ink-darkblue);}
+
+  h1,h2,h3{font-family:'Kalam',cursive;color:var(--ink-black);margin:.2em 0 .3em;}
+  h1{font-size:34px;}
+  h2{font-size:26px;color:var(--ink-darkblue);border-bottom:2px solid #b9c9f2;padding-bottom:3px;display:inline-block;}
+  h3{font-size:21px;color:var(--ink-darkblue);}
+  p,li{font-size:19px;line-height:32px;color:var(--ink-blue);}
+  li{margin-bottom:4px;}
+  .lean{transform:rotate(-.4deg);display:inline-block;}
+  .lean2{transform:rotate(.4deg);display:inline-block;}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;font-family:'Caveat',cursive;font-size:18px;color:#8a8a8a;margin-bottom:6px;}
+
+  /* Highlighter marker spans */
+  .hl-yellow{background:linear-gradient(180deg, transparent 60%, #fff59d 60%);padding:0 2px;}
+  .hl-green{background:linear-gradient(180deg, transparent 60%, #b9f6ca 60%);padding:0 2px;}
+  .hl-pink{background:linear-gradient(180deg, transparent 60%, #ffcdd2 60%);padding:0 2px;}
+  .hl-orange{background:linear-gradient(180deg, transparent 60%, #ffe0b2 60%);padding:0 2px;}
+
+  /* inline code */
+  code.inl{font-family:'Consolas','Courier New',monospace;background:#eef1fb;border:1px solid #c7d0ea;border-radius:5px;padding:1px 6px;font-size:16px;color:#26314f;}
+
+  /* code box */
+  .codebox{
+    background:#1e2235;color:#e0e6f5;border-radius:8px;border:2px dashed #545a7a;
+    padding:14px 16px;margin:14px 0;font-family:'Consolas','Courier New',monospace;
+    font-size:14.5px;line-height:22px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    white-space:pre;word-break:normal;max-width:100%;
+  }
+  .codebox .cap{display:block;font-family:'Patrick Hand',cursive;color:#9aa4d4;font-size:14px;margin-bottom:6px;font-style:italic;}
+  .tok-kw{color:#ff7b72;font-weight:bold;}
+  .tok-fn{color:#d2a8ff;}
+  .tok-var{color:#79c0ff;}
+  .tok-str{color:#a8e6a3;}
+  .tok-prop{color:#56d364;}
+  .tok-num{color:#f0883e;}
+  .tok-com{color:#8b949e;font-style:italic;}
+  .tok-cls{color:#ffa657;}
+  .tok-def{color:#e2c08d;}
+
+  /* callout / sticky */
+  .sticky{background:#fff8b8;border:1px dashed #d8c65a;border-radius:4px;padding:10px 14px;
+    box-shadow:2px 4px 8px rgba(0,0,0,.15);transform:rotate(-1.4deg);max-width:100%;margin:16px 0;
+    font-size:17px;color:#5a4c00;}
+  .sticky.pink{background:#ffe1ec;border-color:#e79bb5;color:#7a1f42;transform:rotate(1.2deg);}
+  .sticky.blue{background:#e2edff;border-color:#9db8e8;color:#123a7a;transform:rotate(-1deg);}
+
+  /* tables */
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;margin:12px 0;}
+  table.nb-table{border-collapse:collapse;width:100%;font-size:17px;color:var(--ink-blue);}
+  table.nb-table caption{caption-side:top;text-align:left;font-family:'Kalam',cursive;font-size:16px;color:#888;margin-bottom:4px;}
+  table.nb-table th,table.nb-table td{border:1.5px solid #9fb3de;border-radius:6px;padding:7px 10px;text-align:left;}
+  table.nb-table th{background:#eaf0ff;color:var(--ink-darkblue);font-family:'Kalam',cursive;}
+
+  /* flow boxes */
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:14px 0;}
+  .flow .box{background:#f1f6ff;border:2px solid #7c9be0;border-radius:8px;padding:8px 12px;font-size:16px;color:var(--ink-darkblue);text-align:center;}
+  .flow .arrow{font-size:22px;color:#5a72b0;}
+
+  /* speech box */
+  .speech-box{position:relative;max-width:100%;box-sizing:border-box;border-radius:16px;
+    border:3.5px solid #ff8a3d;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 55%),
+      linear-gradient(135deg,#ffb066 0%,#ff8a3d 45%,#ff6f61 100%);
+    box-shadow: 6px 6px 0 rgba(255,111,97,.35), 8px 10px 18px rgba(0,0,0,.2);
+    padding:16px 18px 14px;margin:20px 6px 26px;transform:rotate(-1deg);
+  }
+  .speech-box::before{content:"";position:absolute;inset:6px;border-radius:11px;border:2px dashed rgba(255,255,255,.75);pointer-events:none;}
+  .speech-box .badge{position:absolute;top:-16px;left:-14px;width:38px;height:38px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff, #ffd166 60%, #f4a300);
+    display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 6px rgba(0,0,0,.3);}
+  .speech-box .stitle{font-family:'Kalam',cursive;font-size:15px;color:#5a1e00;margin-bottom:8px;}
+  .speech-box .panel{background:rgba(255,255,255,.82);border-radius:10px;padding:10px 12px;font-family:'Patrick Hand',cursive;font-size:20px;line-height:29px;color:#3a1400;word-break:break-word;overflow-wrap:anywhere;}
+  .speech-box .alt{margin-top:8px;background:rgba(255,255,255,.55);border-radius:8px;padding:6px 10px;font-size:15px;color:#5a1e00;}
+  .speech-box .follow{margin-top:6px;font-size:14px;color:#5a1e00;font-style:italic;}
+
+  .svgwrap{margin:14px 0;}
+  svg{max-width:100%;height:auto;}
+
+  @media (prefers-reduced-motion:reduce){
+    .page{rotate:0deg!important;}
+    .speech-box,.sticky{transform:none!important;}
+    *{transition:none!important;animation:none!important;}
+  }
+  @media print{
+    .page-wrapper{display:flex!important;page-break-after:always;}
+    .pages-container{background:#fff;}
+    .page{box-shadow:none;rotate:0deg!important;margin:0;border:none;}
+  }
+
+  /* Quick revision sheet specific */
+  .qr-page .page{ }
+  .qr-title{background:linear-gradient(135deg,#00695c,#004d40);color:#fff;border-radius:10px;padding:12px 18px;margin:-4px 0 12px;}
+  .qr-title h1{color:#fff;margin:0;font-size:30px;}
+  .qr-title .sub{font-family:'Caveat',cursive;font-size:16px;color:#d7f3ef;display:flex;justify-content:space-between;margin-top:2px;}
+  .qr-howto{background:#fff3d6;border:1px solid #e0c26a;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:15px;color:#5a4300;line-height:22px;}
+  .qr-howto b{font-family:'Kalam',cursive;}
+  .tier-tag{font-family:'Caveat',cursive;font-size:14px;font-weight:700;padding:1px 8px;border-radius:10px;margin-left:8px;}
+  .tier1{background:#ffe0b2;color:#a35700;}
+  .tier2{background:#c8e6c9;color:#1b5e20;}
+  .tier3{background:#f8bbd0;color:#880e4f;}
+  .lookup{background:#cfd8dc;color:#263238;}
+  .badge-always{background:#ff5252;color:#fff;font-family:'Kalam',cursive;font-size:12px;border-radius:6px;padding:2px 7px;margin-left:6px;}
+  .badge-lookup{background:#607d8b;color:#fff;font-family:'Kalam',cursive;font-size:12px;border-radius:6px;padding:2px 7px;margin-left:6px;}
+  .mustknow{display:grid;grid-template-columns:1fr 1.6fr;gap:2px 10px;margin:10px 0;}
+  .mustknow .k{border-left:5px solid #7c9be0;padding:2px 8px;font-weight:bold;color:var(--ink-darkblue);font-size:16px;}
+  .mustknow .k.c1{border-left-color:#ff8a3d;}
+  .mustknow .k.c2{border-left-color:#4caf50;}
+  .mustknow .k.c3{border-left-color:#7c4dff;}
+  .mustknow .v{font-size:15.5px;line-height:21px;color:var(--ink-blue);padding:2px 0;}
+  .rapid td:first-child{font-weight:bold;color:var(--ink-darkblue);width:45%;}
+
+/* ─── UPGRADED INTERVIEW SPEECH CARDS ─── */
+.speech-box {
+  background: radial-gradient(circle at 100% 0%, rgba(255,255,255,.22), transparent 34%),
+              linear-gradient(135deg,#172554 0%,#1e40af 52%,#075985 100%);
+  border: 3px solid #60a5fa;
+  outline: 2px dashed rgba(255,255,255,.55);
+  outline-offset: -8px;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.12),
+              5px 6px 0 #0b1b52, 0 10px 22px rgba(30,64,175,.28);
+  padding: 20px 20px 16px;
+  transform: rotate(-.25deg);
+  color: #fff;
+}
+.speech-box::before {
+  inset: 6px;
+  border: 2px dashed rgba(255,255,255,.5);
+  border-radius: 12px;
+}
+.speech-box .badge {
+  top: -14px; left: auto; right: 14px;
+  border: 2px solid #fff;
+}
+.speech-box .stitle {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 2px 44px 10px 0;
+  margin-bottom: 8px;
+}
+.speech-box .question-strip {
+  position: relative;
+  z-index: 1;
+  background: #fffdf5;
+  border-left: 5px solid #fbbf24;
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin: 0 0 12px;
+  box-shadow: 0 2px 0 rgba(0,0,0,.12);
+  color: #1e3a8a;
+  font: 19px/1.35 'Caveat', cursive;
+}
+.speech-box .question-label {
+  display: block;
+  color: #c2410c;
+  font: 700 11px/1.4 'Kalam', cursive;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.speech-box .panel {
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,.09);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 10px;
+  padding: 10px 13px;
+  color: #fff;
+  font: 16px/1.55 'Patrick Hand', cursive;
+}
+.speech-box .panel p.sl {
+  margin: 0 0 7px;
+  color: #fff;
+  font: 16px/1.55 'Patrick Hand', cursive;
+}
+.speech-box .panel p.sl:last-child { margin-bottom: 0; }
+.speech-box .anchor {
+  color: #fff176;
+  background: rgba(255,213,79,.13);
+  border-bottom: 2px solid #facc15;
+  font-weight: 700;
+  padding: 0 2px;
+}
+.speech-box .panel p.closer {
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255,255,255,.42);
+  font-weight: 700;
+}
+.speech-box .alt, .speech-box .follow {
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255,255,255,.35);
+  background: transparent;
+  border-radius: 0;
+  color: #dbeafe;
+  font: 14px/1.55 'Patrick Hand', cursive;
+}
+.speech-box .follow strong { color: #fde68a; }
+.speech-box .follow ul { margin: 4px 0 0 18px; }
+.speech-box .follow li { color: #dbeafe; font: 14px/1.45 'Patrick Hand', cursive; margin-bottom: 2px; }
+@media (max-width:550px) {
+  .speech-box { padding: 18px 14px 14px; }
+  .speech-box .question-strip { font-size: 17px; }
+  .speech-box .panel p.sl { font-size: 15px; }
+}
+
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+<!-- ============ PAGE 1 ============ -->
+<div class="page-wrapper"><div class="page">
+  <div class="topbar"><span>Playwright &middot; Phase 21</span><span>Advanced Topics</span></div>
+  <h1 class="lean">⚡ Phase 21 — Advanced Playwright Topics</h1>
+  <p>After the fundamentals, these are the <span class="hl-yellow">"pro-level"</span> skills interviewers use to separate juniors from seniors: testing components in isolation, thinking about accessibility, controlling the network layer, handling multiple logged-in users at once, testing real-time apps, and debugging flaky CI failures.</p>
+
+  <div class="svgwrap">
+    <svg viewBox="0 0 700 190" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="350" cy="95" r="46" fill="#eaf0ff" stroke="#1a3fa0" stroke-width="2"/>
+      <text x="350" y="90" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0d2a6e">Phase 21</text>
+      <text x="350" y="107" text-anchor="middle" font-family="Kalam" font-size="12" fill="#0d2a6e">Advanced</text>
+      <g font-family="Patrick Hand" font-size="13" fill="#1a3fa0">
+        <line x1="304" y1="95" x2="120" y2="30" stroke="#7c9be0" stroke-width="1.5"/>
+        <text x="30" y="26">72 Component Testing</text>
+        <line x1="320" y1="60" x2="180" y2="10" stroke="#7c9be0" stroke-width="1.5"/>
+        <text x="150" y="8">73 Accessibility Locators</text>
+        <line x1="396" y1="95" x2="590" y2="30" stroke="#7c9be0" stroke-width="1.5"/>
+        <text x="470" y="26">74 Network Control</text>
+        <line x1="350" y1="141" x2="150" y2="175" stroke="#7c9be0" stroke-width="1.5"/>
+        <text x="30" y="185">75 Multi-User Scenarios</text>
+        <line x1="380" y1="135" x2="500" y2="175" stroke="#7c9be0" stroke-width="1.5"/>
+        <text x="460" y="185">76 WebSocket Testing</text>
+        <line x1="330" y1="70" x2="640" y2="95" stroke="#7c9be0" stroke-width="1.5"/>
+        <text x="600" y="99">77 Debugging</text>
+      </g>
+    </svg>
+  </div>
+
+  <h2>72 · Component Testing</h2>
+  <p><span class="hl-green">Component testing</span> = mounting a single UI component (React/Vue/Svelte) in a real browser and testing it <b>alone</b> — not the whole app, no backend, no routing.</p>
+  <ul>
+    <li><b class="hl-yellow">Component isolation</b> — the component runs with mocked/controlled props and dependencies, so a failing test always points to that one component, not some unrelated page.</li>
+    <li><b>UI component validation</b> — assert rendered output, event handlers, and prop-driven states (loading / error / empty) directly, faster than a full E2E page load.</li>
+    <li>Uses <code class="inl">@playwright/experimental-ct-react</code> / <code class="inl">-vue</code> / <code class="inl">-svelte</code> packages — a small dev-server mounts just the component.</li>
+  </ul>
+
+  <div class="sticky">📌 <b>Why it matters:</b> Component tests run much faster than full E2E and catch UI bugs earlier — but they don't replace E2E, since they never test real integration/navigation.</div>
+
+  <div class="codebox">
+    <span class="cap">// mounting and testing a component in isolation</span>
+<span class="tok-kw">import</span> { <span class="tok-var">test</span>, <span class="tok-var">expect</span> } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/experimental-ct-react'</span>;
+<span class="tok-kw">import</span> <span class="tok-cls">Button</span> <span class="tok-kw">from</span> <span class="tok-str">'./Button'</span>;
+
+<span class="tok-var">test</span>(<span class="tok-str">'button click fires handler'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">mount</span> }) => {
+  <span class="tok-kw">const</span> <span class="tok-var">component</span> = <span class="tok-kw">await</span> <span class="tok-fn">mount</span>(&lt;<span class="tok-cls">Button</span> <span class="tok-prop">label</span>=<span class="tok-str">"Save"</span> /&gt;);
+  <span class="tok-kw">await</span> <span class="tok-var">component</span>.<span class="tok-fn">click</span>();
+  <span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">component</span>).<span class="tok-fn">toHaveText</span>(<span class="tok-str">'Saved!'</span>);
+});</div>
+
+  <h2>73 · Accessibility Locators</h2>
+  <p>Playwright encourages locating elements the way a <span class="hl-green">screen-reader user</span> would — this makes tests resilient to CSS/class changes and improves app accessibility as a side effect.</p>
+  <ul>
+    <li><b class="hl-yellow">ARIA roles</b> — every interactive element has an implicit or explicit role (<code class="inl">button</code>, <code class="inl">link</code>, <code class="inl">textbox</code>, <code class="inl">checkbox</code>...). Locate with <code class="inl">getByRole()</code>.</li>
+    <li><b>Accessible names</b> — the visible/label text (or <code class="inl">aria-label</code>) exposed to assistive tech; used as the second argument to <code class="inl">getByRole('button', { name: ... })</code>.</li>
+    <li><b class="hl-orange">Accessibility-first locator strategy</b> — prefer role + name over CSS selectors or XPath, because it's stable and doubles as an a11y smoke check.</li>
+  </ul>
+  <div class="codebox">
+    <span class="cap">// role-based locator — resilient & accessibility-aware</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">getByRole</span>(<span class="tok-str">'button'</span>, { <span class="tok-prop">name</span>: <span class="tok-str">'Submit'</span> }).<span class="tok-fn">click</span>();</div>
+
+<div class="speech-box">
+    <div class="badge">🎤</div>
+    <div class="stitle">🗣️ How I'd say it in an interview</div>
+    <div class="question-strip"><span class="question-label">❓ Interviewer asks:</span>How do you use network interception in Playwright?</div>
+    <div class="panel">
+      <p class="sl"><span class="anchor">I use</span> <code class="inl">page.route()</code> to intercept matching network requests and control how the browser receives responses.</p><p class="sl"><span class="anchor">This helps</span> me test loading, error, and edge states without depending on a live or unreliable backend.</p><p class="sl"><span class="anchor">For example,</span> I can use <code class="inl">route.fulfill()</code> to return a controlled 500 response and verify the error message.</p><p class="sl"><span class="anchor">When I need</span> the real request to proceed, I use <code class="inl">route.continue()</code>, optionally changing headers or request data.</p><p class="sl"><span class="anchor">I keep it targeted</span> by matching the relevant URL or request method and allowing unrelated requests to continue.</p><p class="sl"><span class="anchor">That makes</span> tests more deterministic and lets me reproduce scenarios that are difficult to trigger on demand.</p><p class="sl closer"><span class="anchor">So, in short,</span> <code class="inl">page.route()</code> gives me controlled network behavior so I can verify UI outcomes reliably without unnecessary external dependencies.</p>
+    </div>
+    <div class="alt"><strong>🔄 Also asked as:</strong> "How would you test an API failure in the UI?" "How do you mock a third-party service?"</div>
+    <div class="follow"><strong>Follow-up Qs:</strong><ul><li>What is the difference between `route.fulfill()` and `route.continue()`?</li><li>How would you simulate a slow response or timeout?</li><li>How do you ensure unrelated requests are not blocked?</li></ul></div>
+  </div>
+
+  <div class="page-number">1</div>
+</div></div>
+
+<!-- ============ PAGE 2 ============ -->
+<div class="page-wrapper"><div class="page">
+  <div class="topbar"><span>Playwright &middot; Phase 21</span><span>Advanced Topics</span></div>
+  <h2>74 · Advanced Network Control</h2>
+  <p>Playwright can sit <span class="hl-yellow">between the browser and the network</span> — intercepting, inspecting, and rewriting every request/response with <code class="inl">page.route()</code>.</p>
+
+  <div class="flow">
+    <div class="box">Browser sends request</div><span class="arrow">→</span>
+    <div class="box">page.route() intercepts</div><span class="arrow">→</span>
+    <div class="box">condition? modify? mock?</div><span class="arrow">→</span>
+    <div class="box">route.fulfill() / continue()</div>
+  </div>
+
+  <ul>
+    <li><b class="hl-green">Conditional interception</b> — only intercept requests matching a URL pattern, method, or resource type; let everything else pass through.</li>
+    <li><b>Request modification</b> — change headers, method, or POST body before it's sent (<code class="inl">route.continue({...})</code>).</li>
+    <li><b class="hl-yellow">Response modification</b> — replace status, headers or body entirely (<code class="inl">route.fulfill({...})</code>) without ever hitting the real server.</li>
+    <li><b>Network simulation</b> — force slow responses, timeouts, or offline states to test loading/error UI.</li>
+    <li><b class="hl-orange">API dependency replacement</b> — swap a flaky/3rd-party API for a fixed mock response so tests stay deterministic.</li>
+  </ul>
+
+  <div class="codebox">
+    <span class="cap">// mock an API response so the test never depends on a real backend</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/api/users'</span>, <span class="tok-kw">async</span> <span class="tok-var">route</span> => {
+  <span class="tok-kw">await</span> <span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({
+    <span class="tok-prop">status</span>: <span class="tok-num">200</span>,
+    <span class="tok-prop">contentType</span>: <span class="tok-str">'application/json'</span>,
+    <span class="tok-prop">body</span>: <span class="tok-fn">JSON.stringify</span>([{ <span class="tok-prop">id</span>: <span class="tok-num">1</span>, <span class="tok-prop">name</span>: <span class="tok-str">'Mock User'</span> }]),
+  });
+});
+<span class="tok-com">// only intercept a specific method, pass everything else through</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">route</span>(<span class="tok-str">'**/api/orders'</span>, <span class="tok-var">route</span> =>
+  <span class="tok-var">route</span>.<span class="tok-fn">request</span>().<span class="tok-fn">method</span>() === <span class="tok-str">'POST'</span>
+    ? <span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({ <span class="tok-prop">status</span>: <span class="tok-num">500</span> })
+    : <span class="tok-var">route</span>.<span class="tok-fn">continue</span>()
+);</div>
+
+  <div class="sticky pink">⚠️ Remember: <code class="inl">route.fulfill()</code> ends the request — the real network call never fires. <code class="inl">route.continue()</code> lets it through, optionally modified.</div>
+
+  <div class="speech-box">
+    <div class="badge">🎤</div>
+    <div class="stitle">🗣️ How I'd say it in an interview</div>
+    <div class="question-strip"><span class="question-label">❓ Interviewer asks:</span>How do you test a workflow involving multiple logged-in users?</div>
+    <div class="panel">
+      <p class="sl"><span class="anchor">I create</span> a separate browser context for each user so every actor has independent cookies and storage.</p><p class="sl"><span class="anchor">For example,</span> an admin, a regular user, and a manager can each use their own context and page.</p><p class="sl"><span class="anchor">This matters because</span> sharing a context can leak authentication state and make one user's actions affect another session.</p><p class="sl"><span class="anchor">To save time,</span> I can load role-specific <code class="inl">storageState</code> files instead of repeating the login flow.</p><p class="sl"><span class="anchor">Then I coordinate</span> the pages according to the business workflow, such as creating a request and approving it.</p><p class="sl"><span class="anchor">I also clean up</span> contexts and test data so the scenario does not leave state behind for later tests.</p><p class="sl closer"><span class="anchor">So, in short,</span> separate contexts model separate users faithfully and keep multi-user tests isolated, repeatable, and easier to debug.</p>
+    </div>
+    <div class="alt"><strong>🔄 Also asked as:</strong> "How do you test admin and user interactions in one test?" "How do you prevent session leakage between users?"</div>
+    <div class="follow"><strong>Follow-up Qs:</strong><ul><li>What is the difference between a browser and a browser context?</li><li>How can you reuse authentication with `storageState`?</li><li>How would you clean up multiple contexts after a test?</li></ul></div>
+  </div>
+
+  <div class="page-number">2</div>
+</div></div>
+
+<!-- ============ PAGE 3 ============ -->
+<div class="page-wrapper"><div class="page">
+  <div class="topbar"><span>Playwright &middot; Phase 21</span><span>Advanced Topics</span></div>
+  <h2>75 · Multi-User Scenarios</h2>
+  <p>Many real flows need <span class="hl-yellow">more than one logged-in user at once</span> — e.g. an admin creates a user, that user logs in, a manager approves something. Playwright's <b>browser contexts</b> make this easy: each context is an isolated "browser profile" (own cookies/storage).</p>
+
+  <div class="svgwrap">
+    <svg viewBox="0 0 700 150" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="20" width="200" height="60" rx="8" fill="#eaf0ff" stroke="#1a3fa0" stroke-width="2"/>
+      <text x="110" y="45" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0d2a6e">Admin context</text>
+      <text x="110" y="65" text-anchor="middle" font-family="Patrick Hand" font-size="12" fill="#1a3fa0">creates user</text>
+      <rect x="250" y="20" width="200" height="60" rx="8" fill="#eafbea" stroke="#2e7d32" stroke-width="2"/>
+      <text x="350" y="45" text-anchor="middle" font-family="Kalam" font-size="14" fill="#1b5e20">User context</text>
+      <text x="350" y="65" text-anchor="middle" font-family="Patrick Hand" font-size="12" fill="#2e7d32">logs in</text>
+      <rect x="490" y="20" width="200" height="60" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+      <text x="590" y="45" text-anchor="middle" font-family="Kalam" font-size="14" fill="#a35700">Manager context</text>
+      <text x="590" y="65" text-anchor="middle" font-family="Patrick Hand" font-size="12" fill="#e65100">approves request</text>
+      <line x1="210" y1="50" x2="248" y2="50" stroke="#555" stroke-width="2" marker-end="url(#arrow1)"/>
+      <line x1="450" y1="50" x2="488" y2="50" stroke="#555" stroke-width="2" marker-end="url(#arrow1)"/>
+      <defs><marker id="arrow1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#555"/></marker></defs>
+      <text x="350" y="115" text-anchor="middle" font-family="Patrick Hand" font-size="13" fill="#555">3 separate browser.newContext() calls — fully isolated cookies/storage each</text>
+    </svg>
+  </div>
+
+  <div class="codebox">
+    <span class="cap">// three independent, isolated authenticated sessions</span>
+<span class="tok-kw">const</span> <span class="tok-var">adminCtx</span>   = <span class="tok-kw">await</span> <span class="tok-var">browser</span>.<span class="tok-fn">newContext</span>({ <span class="tok-prop">storageState</span>: <span class="tok-str">'admin.json'</span> });
+<span class="tok-kw">const</span> <span class="tok-var">userCtx</span>    = <span class="tok-kw">await</span> <span class="tok-var">browser</span>.<span class="tok-fn">newContext</span>();
+<span class="tok-kw">const</span> <span class="tok-var">managerCtx</span> = <span class="tok-kw">await</span> <span class="tok-var">browser</span>.<span class="tok-fn">newContext</span>({ <span class="tok-prop">storageState</span>: <span class="tok-str">'manager.json'</span> });
+
+<span class="tok-kw">const</span> <span class="tok-var">adminPage</span> = <span class="tok-kw">await</span> <span class="tok-var">adminCtx</span>.<span class="tok-fn">newPage</span>();
+<span class="tok-kw">const</span> <span class="tok-var">userPage</span>  = <span class="tok-kw">await</span> <span class="tok-var">userCtx</span>.<span class="tok-fn">newPage</span>();</div>
+
+  <div class="sticky blue">💡 Each <code class="inl">newContext()</code> = a brand new "incognito" profile. Save/reuse login with <code class="inl">storageState</code> so you don't repeat the login flow per test.</div>
+
+  <h2>76 · WebSocket Testing</h2>
+  <p>For <span class="hl-green">real-time apps</span> (chat, live dashboards), Playwright can observe and even intercept the WebSocket layer, not just HTTP.</p>
+  <ul>
+    <li><b class="hl-yellow">WebSocket connection</b> — listen for a new socket via the <code class="inl">page.on('websocket', ...)</code> event.</li>
+    <li><b>WebSocket interception</b> — inspect frames sent/received (<code class="inl">ws.on('framesent' / 'framereceived')</code>) to assert on real-time messages.</li>
+    <li><b class="hl-orange">Real-time applications</b> — useful for chat apps, stock tickers, collaborative editors — anywhere state updates push from server to client.</li>
+  </ul>
+  <div class="codebox">
+    <span class="cap">// observe websocket frames for a real-time feature</span>
+<span class="tok-var">page</span>.<span class="tok-fn">on</span>(<span class="tok-str">'websocket'</span>, <span class="tok-var">ws</span> => {
+  <span class="tok-var">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">`WS opened: ${ws.url()}`</span>);
+  <span class="tok-var">ws</span>.<span class="tok-fn">on</span>(<span class="tok-str">'framereceived'</span>, <span class="tok-var">event</span> => <span class="tok-var">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">'received:'</span>, <span class="tok-var">event</span>.<span class="tok-prop">payload</span>));
+});</div>
+
+  <div class="page-number">3</div>
+</div></div>
+
+<!-- ============ PAGE 4 ============ -->
+<div class="page-wrapper"><div class="page">
+  <div class="topbar"><span>Playwright &middot; Phase 21</span><span>Advanced Topics</span></div>
+  <h2>77 · Advanced Debugging</h2>
+  <p>The hardest bugs are the ones that only show up in <span class="hl-pink">CI</span>, not on your machine. These tools close that gap.</p>
+
+  <ul>
+    <li><b class="hl-yellow">Trace analysis</b> — record a full trace (DOM snapshots, network, console, screenshots per action) with <code class="inl">trace: 'on'</code> / <code class="inl">retain-on-failure</code>, then replay it visually with <code class="inl">npx playwright show-trace</code>.</li>
+    <li><b>Network debugging</b> — inspect every request/response Playwright made, including timing and headers, straight from the trace viewer or <code class="inl">page.on('request'/'response')</code> listeners.</li>
+    <li><b class="hl-green">Console debugging</b> — capture in-page <code class="inl">console.log</code>/errors via <code class="inl">page.on('console', ...)</code> to catch JS errors invisible in the terminal.</li>
+    <li><b>Browser logs</b> — pageerror, crash and dialog events surface issues the app itself doesn't report cleanly.</li>
+    <li><b class="hl-orange">CI-only failures</b> — usually timing/race conditions, missing fonts, headless-vs-headed rendering diffs, or env/secrets differences; traces + video + screenshots-on-failure are the main weapons.</li>
+  </ul>
+
+  <div class="codebox">
+    <span class="cap">// enable full tracing + capture console errors</span>
+<span class="tok-kw">await</span> <span class="tok-var">context</span>.<span class="tok-fn">tracing</span>.<span class="tok-fn">start</span>({ <span class="tok-prop">screenshots</span>: <span class="tok-kw">true</span>, <span class="tok-prop">snapshots</span>: <span class="tok-kw">true</span> });
+<span class="tok-var">page</span>.<span class="tok-fn">on</span>(<span class="tok-str">'console'</span>, <span class="tok-var">msg</span> => {
+  <span class="tok-kw">if</span> (<span class="tok-var">msg</span>.<span class="tok-fn">type</span>() === <span class="tok-str">'error'</span>) <span class="tok-var">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">'Page error:'</span>, <span class="tok-var">msg</span>.<span class="tok-fn">text</span>());
+});
+<span class="tok-com">// ...run the test...</span>
+<span class="tok-kw">await</span> <span class="tok-var">context</span>.<span class="tok-fn">tracing</span>.<span class="tok-fn">stop</span>({ <span class="tok-prop">path</span>: <span class="tok-str">'trace.zip'</span> });</div>
+
+  <div class="codebox">
+    <span class="cap">// replay a trace visually</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> show-trace trace.zip</div>
+
+  <div class="sticky">📌 CI-only failures checklist: fixed viewport size? disabled animations? enough retries? correct timezone/locale set? headless flag matching local repro?</div>
+
+  <div class="speech-box">
+    <div class="badge">🎤</div>
+    <div class="stitle">🗣️ How I'd say it in an interview</div>
+    <div class="question-strip"><span class="question-label">❓ Interviewer asks:</span>How do you debug a Playwright test that fails only in CI?</div>
+    <div class="panel">
+      <p class="sl"><span class="anchor">I start with</span> the test report and captured evidence rather than guessing or immediately increasing timeouts.</p><p class="sl"><span class="anchor">I enable</span> tracing and preserve screenshots or videos on failure to reconstruct what happened.</p><p class="sl"><span class="anchor">With Trace Viewer,</span> I inspect action timing, DOM snapshots, network activity, and screenshots step by step.</p><p class="sl"><span class="anchor">I also capture</span> browser console errors and page errors that may not appear clearly in the terminal.</p><p class="sl"><span class="anchor">Then I compare</span> local and CI settings such as viewport, timezone, browser mode, fonts, environment variables, and test data.</p><p class="sl"><span class="anchor">After identifying</span> the root cause, I fix the synchronization or environment issue and rerun the focused test and suite.</p><p class="sl closer"><span class="anchor">So, in short,</span> I use trace evidence and controlled comparisons to diagnose CI-only failures instead of hiding them with arbitrary waits.</p>
+    </div>
+    <div class="alt"><strong>🔄 Also asked as:</strong> "Tell me about a flaky test you investigated." "What evidence do you collect when a pipeline test fails?"</div>
+    <div class="follow"><strong>Follow-up Qs:</strong><ul><li>What information does a Playwright trace contain?</li><li>Which trace and video settings are useful in CI?</li><li>How do you distinguish a timing issue from a product defect?</li></ul></div>
+  </div>
+
+  <div class="page-number">4</div>
+</div></div>
+
+<!-- ============ PAGE 5 — QUICK REVISION SHEET ============ -->
+<div class="page-wrapper qr-page"><div class="page">
+  <div class="topbar"><span>Playwright &middot; Phase 21</span><span>Advanced Topics</span></div>
+  <div class="qr-title">
+    <h1>⚡ Quick Revision Sheet</h1>
+    <div class="sub"><span>⚡ Quick Revision Sheet</span><span>Scan before your interview!</span></div>
+  </div>
+
+  <div class="qr-howto">
+    <b>⚡ HOW TO USE THIS PAGE</b> (read once, then ignore this box)<br>
+    TIER 1 — Scan the Topic Map. Fuzzy branch? → drop to Tier 2.<br>
+    TIER 2 — Read ONLY the rows that felt weak in Tier 1.<br>
+    TIER 3 — ALWAYS read Mistakes + Memory Tricks, even if Tiers 1&2 felt perfect.<br>
+    LOOKUP — Key Commands: glance only if tested on exact syntax.
+  </div>
+
+  <!-- SECTION 1 -->
+  <h3>🗺️ Topic Map <span class="tier-tag tier1">TIER 1</span></h3>
+  <div class="svgwrap">
+    <svg viewBox="0 0 700 160" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="350" cy="80" r="34" fill="#e0f2f1" stroke="#00695c" stroke-width="2"/>
+      <text x="350" y="85" text-anchor="middle" font-family="Kalam" font-size="12" fill="#00695c">Phase 21</text>
+      <g font-family="Patrick Hand" font-size="12" fill="#1a3fa0">
+        <line x1="320" y1="60" x2="120" y2="20" stroke="#7c9be0"/><text x="20" y="18">component · isolation</text>
+        <line x1="330" y1="50" x2="220" y2="10" stroke="#7c9be0"/><text x="180" y="8">ARIA · role · name</text>
+        <line x1="380" y1="55" x2="560" y2="15" stroke="#7c9be0"/><text x="480" y="12">route · fulfill · continue</text>
+        <line x1="330" y1="100" x2="140" y2="140" stroke="#7c9be0"/><text x="30" y="150">contexts · storageState</text>
+        <line x1="370" y1="100" x2="560" y2="140" stroke="#7c9be0"/><text x="500" y="150">websocket · frames</text>
+        <line x1="384" y1="80" x2="650" y2="80" stroke="#7c9be0"/><text x="600" y="76">trace · console</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- SECTION 2 -->
+  <h3>🔑 Must-Know Concepts <span class="tier-tag tier2">TIER 2</span></h3>
+  <div class="mustknow">
+    <div class="k c1">Component testing</div><div class="v">Mount + test one UI component alone, no full app.</div>
+    <div class="k c1">Component isolation</div><div class="v">Mocked props/deps so failures point to just that component.</div>
+    <div class="k c1">ARIA role</div><div class="v">Implicit/explicit role every interactive element exposes to a11y tech.</div>
+    <div class="k c1">Accessible name</div><div class="v">Label text exposed to screen readers; used in getByRole(role, {name}).</div>
+    <div class="k c2">page.route()</div><div class="v">Intercepts a request matching a URL pattern.</div>
+    <div class="k c2">route.fulfill()</div><div class="v">Ends the request, returns a fake response — real network never called.</div>
+    <div class="k c2">route.continue()</div><div class="v">Lets the request through, optionally modified first.</div>
+    <div class="k c2">Network simulation</div><div class="v">Force delay/timeout/offline to test loading & error states.</div>
+    <div class="k c3">Browser context</div><div class="v">Isolated "profile" — own cookies/storage — one per user.</div>
+    <div class="k c3">storageState</div><div class="v">Saved login session reused across contexts to skip re-login.</div>
+    <div class="k c3">WebSocket interception</div><div class="v">Read/inspect frames via page.on('websocket') + ws.on('framereceived').</div>
+    <div class="k c3">Trace viewer</div><div class="v">Replays a recorded run — DOM, network, console, screenshots per step.</div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <h3>🎯 Interview Rapid-Fire <span class="tier-tag tier2">TIER 2</span></h3>
+  <div class="table-scroll">
+  <table class="nb-table rapid">
+    <caption>Rapid-fire Q&amp;A — cover, then recall</caption>
+    <tr><th>Question</th><th>Answer</th></tr>
+    <tr><td class="hl-yellow">Component vs E2E testing?</td><td>Component = one UI piece, isolated, fast. E2E = whole app, real flow, slower.</td></tr>
+    <tr><td>Why prefer getByRole() over CSS selectors?</td><td>Stable against markup/class changes; doubles as an accessibility check.</td></tr>
+    <tr><td class="hl-yellow">fulfill() vs continue()?</td><td>fulfill = fake response, request never sent. continue = real request, optionally modified.</td></tr>
+    <tr><td>How to test a flaky 3rd-party API?</td><td>Replace it via page.route() with a fixed mock response.</td></tr>
+    <tr><td class="hl-yellow">How to test 3 users interacting?</td><td>One browser.newContext() per user — each fully isolated.</td></tr>
+    <tr><td>How to skip login in every test?</td><td>Log in once, save storageState, reuse it in newContext().</td></tr>
+    <tr><td>How to test a live chat feature?</td><td>Listen for 'websocket' event, inspect frames sent/received.</td></tr>
+    <tr><td class="hl-yellow">Test fails only in CI — first step?</td><td>Enable tracing, replay with show-trace to see exact failure point.</td></tr>
+    <tr><td>Common cause of CI-only flakiness?</td><td>Timing/race conditions — CI is slower than local machines.</td></tr>
+    <tr><td>What does trace record?</td><td>DOM snapshots, network, console logs, screenshot per action.</td></tr>
+  </table>
+  </div>
+
+  <!-- SECTION 3 -->
+  <h3>⚡ Key Commands / Syntax <span class="tier-tag lookup">LOOKUP</span><span class="badge-lookup">🔍 LOOKUP ONLY</span></h3>
+  <div class="codebox">
+    <span class="cap">// role-based locator</span>
+<span class="tok-var">page</span>.<span class="tok-fn">getByRole</span>(<span class="tok-str">'button'</span>, { <span class="tok-prop">name</span>: <span class="tok-str">'Submit'</span> })</div>
+  <div class="codebox">
+    <span class="cap">// mock a response</span>
+<span class="tok-var">route</span>.<span class="tok-fn">fulfill</span>({ <span class="tok-prop">status</span>: <span class="tok-num">200</span>, <span class="tok-prop">body</span>: <span class="tok-str">'...'</span> })</div>
+  <div class="codebox">
+    <span class="cap">// new isolated context + reuse login</span>
+<span class="tok-var">browser</span>.<span class="tok-fn">newContext</span>({ <span class="tok-prop">storageState</span>: <span class="tok-str">'user.json'</span> })</div>
+  <div class="codebox">
+    <span class="cap">// websocket frames</span>
+<span class="tok-var">page</span>.<span class="tok-fn">on</span>(<span class="tok-str">'websocket'</span>, <span class="tok-var">ws</span> => <span class="tok-var">ws</span>.<span class="tok-fn">on</span>(<span class="tok-str">'framereceived'</span>, ...))</div>
+  <div class="codebox">
+    <span class="cap">// trace + replay</span>
+<span class="tok-var">context</span>.<span class="tok-fn">tracing</span>.<span class="tok-fn">start</span>({ <span class="tok-prop">screenshots</span>: <span class="tok-kw">true</span>, <span class="tok-prop">snapshots</span>: <span class="tok-kw">true</span> })
+<span class="tok-var">context</span>.<span class="tok-fn">tracing</span>.<span class="tok-fn">stop</span>({ <span class="tok-prop">path</span>: <span class="tok-str">'trace.zip'</span> })
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> show-trace trace.zip</div>
+
+  <!-- SECTION 4 -->
+  <h3>⚠️ Common Mistakes &amp; Gotchas <span class="tier-tag tier3">TIER 3</span><span class="badge-always">ALWAYS READ</span></h3>
+  <ul>
+    <li>⚠️ Forgetting <code class="inl">route.continue()</code> for non-matching requests — <span class="hl-pink">everything gets blocked</span> if you only handle the matched case.</li>
+    <li>⚠️ Sharing one context across "different users" — <span class="hl-orange">cookies leak between them</span>; always use separate newContext() calls.</li>
+    <li>⚠️ Using CSS class selectors instead of roles — brittle the moment a designer renames a class.</li>
+    <li>⚠️ Not enabling <code class="inl">retain-on-failure</code> tracing in CI — you get a failure with <span class="hl-pink">zero evidence</span> to debug from.</li>
+    <li>⚠️ Assuming a WebSocket bug is an HTTP bug — check <code class="inl">page.on('websocket')</code> frames, not just network requests.</li>
+    <li>⚠️ Treating component tests as a replacement for E2E — they never test real navigation/integration.</li>
+  </ul>
+
+  <!-- SECTION 6 -->
+  <h3>🧠 Memory Tricks &amp; Last-Minute Tips <span class="tier-tag tier3">TIER 3</span></h3>
+  <div class="sticky">🧠 <b>fulfill = FAKE it</b> (short-circuits, fake response). <b>continue = CARRY on</b> (real request continues).</div>
+  <div class="sticky pink">🧠 Think of a browser <b>context</b> like a separate incognito window per actor — Admin, User, Manager each get their own.</div>
+  <div class="sticky blue">🧠 "Trace" = a <b>black box flight recorder</b> for your test — always keep it on for CI.</div>
+  <ul>
+    <li>✅ Right before an interview: recall one real example of a mocked API and one of a multi-context test.</li>
+    <li>✅ Double-check you can explain getByRole() vs a CSS selector in one breath.</li>
+    <li>✅ Know the exact trace command: <code class="inl">npx playwright show-trace trace.zip</code>.</li>
+  </ul>
+
+  <div class="page-number">5</div>
+</div></div>
+
+</div>
+</body>
+</html>

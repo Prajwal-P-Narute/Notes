@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Phase 3 — Browser &amp; Page Operations | Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Permanent+Marker&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * , *::before, *::after { box-sizing: border-box; }
+  :root{
+    --page-w: 794px;
+    --page-h: 1123px;
+    --ink: #1a3fa0;
+    --heading: #14213d;
+    --subhead: #0d2873;
+    --paper: #fffdf8;
+    --rule: #cfe3f7;
+    --margin-red: #d9534f;
+  }
+  html,body{ margin:0; padding:0; background:#e8e8e8; }
+  body{ font-family:'Patrick Hand', cursive, sans-serif; }
+
+  .pages-container{ width:100%; background:#e8e8e8; padding-bottom:40px; }
+
+  .page-wrapper{ display:flex; justify-content:center; align-items:flex-start; padding:24px 12px; }
+  @media (min-width:860px){ .page-wrapper{ padding:40px 24px; } }
+
+  .page{
+    width:100%;
+    max-width: var(--page-w);
+    min-height: var(--page-h);
+    background: var(--paper);
+    background-image:
+      repeating-linear-gradient(#fffdf8 0px, #fffdf8 27px, var(--rule) 28px, #fffdf8 29px);
+    position: relative;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    rotate: -0.25deg;
+    padding: 95px 32px 60px 74px;
+  }
+  .page.revision{ rotate: 0.2deg; }
+  .page::before{
+    content:""; position:absolute; top:0; bottom:0; left:48px; width:2px; background: var(--margin-red); opacity:.55;
+  }
+
+  .page-number{
+    position:absolute; bottom:22px; right:30px; font-family:'Kalam', cursive;
+    font-size:15px; color:#666; background:#fffdf8; padding:2px 8px; border:1px dashed #bbb; border-radius:6px;
+  }
+  .page-strip{
+    position:absolute; top:0; left:0; right:0; height:38px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px 0 60px; font-family:'Kalam',cursive; font-size:12.5px; color:#fff;
+    background: linear-gradient(90deg,#1a3fa0,#234ebf);
+  }
+  .page-strip.revision-strip{ background: linear-gradient(90deg,#00695c,#004d40); }
+
+  h1.title{ font-family:'Permanent Marker', cursive; color:var(--heading); font-size:30px; margin:0 0 4px 0; rotate:-0.4deg; }
+  .subtitle{ font-family:'Kalam',cursive; color:var(--subhead); font-size:16px; margin:0 0 16px 0;}
+
+  h2.sec{
+    font-family:'Permanent Marker', cursive; color:var(--heading); font-size:21px; margin:22px 0 8px 0;
+    border-bottom: 2.5px solid #14213d33; display:inline-block; padding-bottom:2px; rotate:-0.3deg;
+  }
+  h3.sub{ font-family:'Kalam', cursive; font-weight:700; color:var(--subhead); font-size:17.5px; margin:14px 0 5px 0; }
+  p, li{ font-family:'Kalam', cursive; color: var(--ink); font-size:16px; line-height:1.6; margin:5px 0; }
+  ul{ padding-left:20px; margin:5px 0;}
+  .alt{ rotate:-0.4deg; display:inline-block; }
+
+  .hl-y{ background: linear-gradient(180deg, transparent 60%, #fff59d 60%); padding:0 2px;}
+  .hl-g{ background: linear-gradient(180deg, transparent 60%, #b9f6ca 60%); padding:0 2px;}
+  .hl-p, .hl-pink{ background: linear-gradient(180deg, transparent 60%, #f8bbd0 60%); padding:0 2px;}
+  .hl-o, .hl-orange{ background: linear-gradient(180deg, transparent 60%, #ffd8a8 60%); padding:0 2px;}
+
+  code, .inline-code{
+    font-family:'Consolas','Menlo',monospace; background:#f1f3f9; border:1px solid #d7dcea;
+    border-radius:5px; padding:1px 6px; font-size:13.5px; color:#24292e;
+  }
+
+  .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; margin:10px 0 6px 0;}
+  table{ border-collapse:collapse; width:100%; min-width:500px; font-family:'Kalam',cursive; font-size:14px;}
+  caption{ text-align:left; font-family:'Kalam',cursive; font-weight:700; color:var(--subhead); margin-bottom:4px;}
+  th, td{ border:1.6px solid #6d7b96; padding:6px 9px; text-align:left; color:var(--ink); border-radius:3px;}
+  th{ background:#e7edf9; color:var(--heading); font-weight:700; }
+  tr:nth-child(even) td{ background:#fbfcff; }
+
+  .flow{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:12px 0 6px 0; }
+  .flow-box{
+    font-family:'Kalam',cursive; font-size:13.5px; color:#14213d; background:#fff;
+    border:2px solid #1a3fa0; border-radius:10px; padding:7px 11px; text-align:center;
+    box-shadow:2px 3px 0 rgba(26,63,160,0.15); min-width:90px;
+  }
+  .flow-arrow{ font-size:19px; color:#1a3fa0; font-weight:700; }
+
+  .callout{ border:2px dashed #999; border-radius:10px; padding:9px 13px; margin:12px 0; font-family:'Kalam',cursive; font-size:14.5px; color:var(--ink); background:#fffef4; }
+  .callout.tip{ border-color:#2e7d32; background:#f1faf1;}
+  .callout.warn{ border-color:#c62828; background:#fff4f2;}
+  .callout b{ color:var(--heading); }
+
+  .sticky{
+    display:inline-block; background:#fff59d; border-radius:2px 12px 2px 12px; padding:9px 13px;
+    margin:8px 8px 8px 0; box-shadow:3px 5px 8px rgba(0,0,0,0.18); font-family:'Kalam',cursive; font-size:14px;
+    rotate:-2deg; max-width:220px; clip-path: polygon(0 0, 92% 0, 100% 12%, 100% 100%, 0 100%);
+  }
+
+  .codebox{
+    background:#1e2235; color:#e0e6f5; border:2px dashed #3a3f4b; border-radius:10px; padding:11px 13px;
+    margin:11px 0; overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%;
+    white-space:pre; word-break:normal; font-family:'Consolas','Menlo',monospace; font-size:13px; line-height:1.6;
+    box-shadow: 2px 4px 0 rgba(0,0,0,0.12);
+  }
+  .codebox .label{ font-family:'Kalam',cursive; color:#9fb3d1; font-size:12px; margin-bottom:5px; display:block;}
+  .tok-kw{ color:#ff7b72; font-weight:700; }
+  .tok-fn{ color:#d2a8ff; }
+  .tok-var{ color:#79c0ff; }
+  .tok-str{ color:#a8e6a3; }
+  .tok-prop{ color:#56d364; }
+  .tok-num{ color:#f0883e; }
+  .tok-com{ color:#8b949e; font-style:italic; }
+  .tok-cls{ color:#ffa657; }
+  .tok-def{ color:#e2c08d; }
+
+  /* tree diagram */
+  .tree{ font-family:'Kalam',cursive; font-size:14.5px; color:var(--ink); margin:10px 0;}
+  .tree ul{ list-style:none; margin:0; padding-left:22px; border-left:2px dashed #9db4de; }
+  .tree > ul{ padding-left:0; border-left:none; }
+  .tree li{ position:relative; padding:4px 0 4px 16px; }
+  .tree li::before{ content:""; position:absolute; left:0; top:14px; width:14px; height:2px; background:#9db4de; }
+  .tree .root{ font-family:'Permanent Marker',cursive; color:var(--heading); font-size:16px; }
+
+
+  /* Interview speech cards: question-first, line-by-line recall */
+  .speech-q{
+    background:rgba(255,255,255,0.93); color:#0d2060; border-left:5px solid #ffd54f;
+    border-radius:10px; padding:8px 12px; margin:0 0 10px 0;
+    font-family:'Kalam',cursive; font-size:15.5px; font-weight:700; line-height:1.45;
+  }
+  .speech-q .qlabel{display:block;font-family:'Caveat',cursive;font-size:14px;font-weight:700;color:#e65100;letter-spacing:0.03em;}
+  .speech-inner{
+    background:rgba(30,34,53,0.94); color:#f6f3ff; border-radius:14px; padding:10px 13px;
+    font-family:'Patrick Hand',cursive; font-size:18px; line-height:1.45; overflow-wrap:anywhere;
+  }
+  .speech-inner p.sl{margin:0 0 7px 0;padding-left:2px;color:inherit;font-family:'Patrick Hand',cursive;font-size:18px;line-height:1.45;}
+  .speech-inner p.sl:last-child{margin-bottom:0;}
+  .speech-inner p.sl .anchor{font-weight:700;color:#ffd54f;margin-right:4px;}
+  .speech-inner p.sl code{background:rgba(255,255,255,0.15);border:none;color:#a8e6a3;font-size:13px;}
+  .speech-inner p.sl.closer{margin-top:10px;padding:7px 10px;background:rgba(255,213,79,0.16);border-left:4px solid #ffd54f;border-radius:6px;color:#fffde7;}
+  .speech-inner p.sl.closer .anchor{color:#ffeb3b;}
+  .speech-followup{margin-top:8px;font-size:14px;font-family:'Kalam',cursive;color:#3d1a4d;background:rgba(255,255,255,0.6);border:1.6px dashed #6a1b9a;border-radius:8px;padding:7px 11px;line-height:1.45;}
+  .speech-followup b{font-family:'Permanent Marker',cursive;font-size:14px;color:#4a148c;}
+
+  /* speech box */
+  .speech-box{
+    position:relative; max-width:100%; box-sizing:border-box; margin:20px 4px 28px 4px;
+    padding:15px 17px 13px 17px; border-radius:22px; rotate:0.7deg;
+    border:3.2px solid #6a1b9a; outline: 2px dashed rgba(255,255,255,0.65); outline-offset:-8px;
+    background: radial-gradient(circle at 15% 10%, rgba(255,255,255,0.5) 0%, transparent 40%),
+                linear-gradient(135deg,#c084fc 0%, #ff8fc9 55%, #ffb199 100%);
+    box-shadow: 6px 9px 0px rgba(106,27,154,0.18), 6px 9px 20px rgba(142,68,173,0.35);
+  }
+  .speech-box::after{
+    content:""; position:absolute; left:34px; bottom:-16px; width:0; height:0;
+    border:14px solid transparent; border-top-color:#ff8fc9; rotate:-8deg;
+  }
+  .speech-badge{
+    position:absolute; top:-16px; right:20px; width:38px; height:38px; border-radius:50%;
+    background: radial-gradient(circle, #fff 30%, #f8bbd0 100%); border:2.5px solid #6a1b9a;
+    display:flex; align-items:center; justify-content:center; font-size:18px;
+    box-shadow: 2px 3px 0 rgba(0,0,0,0.15); rotate:8deg;
+  }
+  .speech-title{
+    display:inline-block; font-family:'Permanent Marker',cursive; font-size:18px; color:#4a148c;
+    background:#fff3fb; border:1.6px solid #6a1b9a; border-radius:14px; padding:3px 11px;
+    rotate:-1.2deg; box-shadow:2px 3px 0 rgba(0,0,0,0.12); margin-bottom:9px;
+  }
+  .speech-answer{
+    font-family:'Patrick Hand', cursive; font-size:19px; line-height:1.6; color:#241a2e;
+    background: rgba(255,255,255,0.32); border-radius:14px; padding:9px 13px; margin-top:4px;
+    word-break: break-word; overflow-wrap: anywhere;
+  }
+  .diff-angle{
+    margin-top:9px; font-family:'Patrick Hand',cursive; font-size:14px; color:#3d1a4d;
+    background: repeating-linear-gradient(135deg, rgba(255,255,255,0.5) 0 8px, rgba(255,255,255,0.25) 8px 16px);
+    border:1.6px dashed #6a1b9a; border-radius:10px; padding:7px 11px;
+  }
+  .diff-angle b{ font-family:'Permanent Marker',cursive; font-size:14px; color:#4a148c; }
+
+  .followup{
+    max-width:100%; box-sizing:border-box; margin:12px 4px 6px 4px; padding:10px 15px;
+    border-radius:12px 12px 12px 2px; rotate:-0.6deg;
+    border:3px solid #e07b1f; outline:2px dashed rgba(255,255,255,0.7); outline-offset:-7px;
+    background: radial-gradient(circle at 85% 15%, rgba(255,255,255,0.5) 0, transparent 45%),
+                linear-gradient(135deg,#ffd39b 0%, #ff9e6d 100%);
+    box-shadow: 5px 7px 0 rgba(224,123,31,0.18), 5px 7px 16px rgba(224,123,31,0.3);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 88%);
+    font-family:'Patrick Hand',cursive; font-size:14.5px; color:#3a1e00;
+  }
+  .followup b{ font-family:'Permanent Marker',cursive; font-size:14px; color:#5c2e00; }
+  .followup ul{ margin:5px 0 0 18px; font-family:'Patrick Hand',cursive; font-size:14px; }
+
+  /* ---- Revision sheet specific ---- */
+  .rev-sec-head{
+    display:inline-flex; align-items:center; gap:8px; font-family:'Permanent Marker',cursive; font-size:18px;
+    color:#004d40; background:#e0f2f1; border:1.6px solid #00695c; border-radius:10px; padding:4px 12px;
+    margin:18px 0 8px 0; rotate:-0.3deg;
+  }
+  .concept-grid{ display:grid; grid-template-columns: 1fr 1.4fr; gap:4px 10px; margin:8px 0 4px 0; }
+  .concept-grid .k{ font-family:'Kalam',cursive; font-weight:700; color:var(--heading); font-size:14px; }
+  .concept-grid .v{ font-family:'Kalam',cursive; color:var(--ink); font-size:14px; }
+  .mm-wrap{ margin:8px 0; }
+  .mnemonic{
+    border:2px dashed #00695c; border-radius:10px; padding:8px 12px; margin:8px 0; background:#f2fbfa;
+    font-family:'Kalam',cursive; font-size:14px; color:var(--ink);
+  }
+  .mnemonic b{ color:#004d40; }
+
+  @media (prefers-reduced-motion: reduce){
+    .page{ rotate:0deg !important; }
+    .speech-box, .sticky{ rotate:0deg !important; transform:none !important; }
+    *{ transition:none !important; animation:none !important; }
+  }
+  @media print{
+    .page-wrapper{ display:flex !important; page-break-after: always; }
+    .pages-container{ background:white; }
+    .page{ box-shadow:none; rotate:0deg !important; margin:0; border:none; }
+  }
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+  <!-- ===================== PAGE 1 — Browser Concepts ===================== -->
+  <div class="page-wrapper">
+  <div class="page">
+    <div class="page-strip">📘 Phase 3 — Browser &amp; Page Operations <span>Topic 9</span></div>
+    <h1 class="title">9. Browser Concepts</h1>
+    <p class="subtitle alt">🧩 The object hierarchy every automation script is built on</p>
+
+    <h2 class="sec">📌 The three core objects</h2>
+    <p><span class="hl-y">Browser</span> → <span class="hl-y">BrowserContext</span> → <span class="hl-y">Page</span>. Each level is a container for the one below it — understanding this hierarchy explains almost everything about isolation and speed in automation.</p>
+
+    <div class="tree">
+      <ul>
+        <li><span class="root">Browser</span> <span class="alt">(one Chromium/Firefox/WebKit process)</span>
+          <ul>
+            <li><b>BrowserContext #1</b> <i>— isolated "profile"</i>
+              <ul>
+                <li>Page (tab) 1</li>
+                <li>Page (tab) 2</li>
+              </ul>
+            </li>
+            <li><b>BrowserContext #2</b> <i>— separate cookies/storage</i>
+              <ul>
+                <li>Page (tab) 1</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <h3 class="sub">Definitions</h3>
+    <ul>
+      <li><b>Browser</b> — the actual launched browser process (<code>chromium</code>, <code>firefox</code>, <code>webkit</code>). Expensive to start, so it's usually launched <span class="hl-g">once</span> per test run.</li>
+      <li><b>BrowserContext</b> — an <span class="hl-y">isolated session</span> inside a browser: its own cookies, storage, cache — like a fresh incognito profile. Cheap to create.</li>
+      <li><b>Page</b> — a single tab inside a context. Most actions (<code>click</code>, <code>goto</code>) happen on a <code>Page</code> object.</li>
+      <li><b>Multiple contexts</b> — spin up several contexts from one browser to simulate different logged-in users <i>at the same time</i>, fully isolated from each other.</li>
+      <li><b>Multiple pages</b> — several tabs inside the same context; they <span class="hl-p">share</span> cookies/storage since they're in the same context.</li>
+      <li><b>Persistent context</b> — a context tied to a real user-data directory on disk, so cookies/history/extensions survive between runs (like a normal Chrome profile, not incognito).</li>
+      <li><b>Incognito-like isolation</b> — the default behaviour of a plain <code>browser.newContext()</code>: nothing is saved to disk, every context starts squeaky clean.</li>
+    </ul>
+
+    <div class="callout tip">
+      💡 <b>Best practice:</b> Launch <span class="hl-g">one Browser</span>, then create a <span class="hl-g">new BrowserContext per test</span> — this gives full isolation between tests without paying the cost of relaunching the browser itself.
+    </div>
+
+    <div class="sticky">📌 Browser = the engine.<br>Context = the profile.<br>Page = the tab.</div>
+
+    <div class="speech-box">
+      <span class="speech-badge" role="img" aria-label="microphone">🎤</span>
+      <span class="speech-title">🗣️ How I'd say it in an interview</span>
+      <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span> “What are Browser, BrowserContext, and Page in Playwright?”</div>
+      
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">Browser, BrowserContext, and Page are</span> the three main objects in Playwright.</p>
+        <p class="sl"><span class="anchor">The Browser is</span> the actual browser that runs our tests.</p>
+        <p class="sl"><span class="anchor">A BrowserContext is</span> a separate session with its own cookies and storage.</p>
+        <p class="sl"><span class="anchor">A Page is</span> one browser tab inside a context.</p>
+        <p class="sl"><span class="anchor">This matters because</span> separate contexts keep users and tests isolated.</p>
+        <p class="sl"><span class="anchor">In my framework, I</span> reuse the browser and create a new context for each test.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I use separate contexts to keep tests independent without restarting the browser every time.</p>
+      </div>
+      <div class="diff-angle">
+        <b>🔄 Also asked as:</b> "How does Playwright keep tests isolated from each other?" · "Why not open a new browser for every test?"</div>
+      <div class="speech-followup"><b>Follow-up Qs:</b> "What is the difference between a context and a page?" → "Contexts isolate sessions; pages are tabs inside a session." · "Can one context have multiple pages?" → "Yes, and those pages share the context storage."</div>
+    </div>
+
+    <div class="page-number">Page 1 / 5</div>
+  </div>
+  </div>
+
+  <!-- ===================== PAGE 2 — Page Navigation ===================== -->
+  <div class="page-wrapper">
+  <div class="page">
+    <div class="page-strip">📘 Phase 3 — Browser &amp; Page Operations <span>Topic 10</span></div>
+    <h1 class="title">10. Page Navigation</h1>
+    <p class="subtitle alt">🧭 Moving the browser between URLs, reliably</p>
+
+    <h2 class="sec">📌 Navigation methods</h2>
+    <div class="table-scroll">
+    <table>
+      <caption>Core navigation calls</caption>
+      <tr><th>Method</th><th>What it does</th></tr>
+      <tr><td><code>goto(url)</code></td><td>Navigates to a URL and waits for load</td></tr>
+      <tr><td><code>goBack()</code></td><td>Browser "back" button equivalent</td></tr>
+      <tr><td><code>goForward()</code></td><td>Browser "forward" button equivalent</td></tr>
+      <tr><td><code>reload()</code></td><td>Refreshes the current page</td></tr>
+    </table>
+    </div>
+
+    <div class="codebox">
+      <span class="label">// Playwright — basic navigation</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">goto</span>(<span class="tok-str">'https://example.com'</span>, { <span class="tok-prop">timeout</span>: <span class="tok-num">30000</span> });
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">goBack</span>();
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">goForward</span>();
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">reload</span>({ <span class="tok-prop">waitUntil</span>: <span class="tok-str">'networkidle'</span> });
+    </div>
+
+    <h3 class="sub">URL validation</h3>
+    <p>After navigating, assert the browser actually landed where expected — don't just trust <code>goto()</code> resolved. Compare against <code>page.url()</code> or use a built-in URL assertion.</p>
+    <div class="codebox">
+      <span class="label">// assert the URL after navigation</span>
+<span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">page</span>).<span class="tok-fn">toHaveURL</span>(<span class="tok-str">/dashboard/</span>);
+    </div>
+
+    <h3 class="sub">Navigation timeout</h3>
+    <p>Every navigation call has a <span class="hl-y">default timeout</span> (usually 30s) — if the page hasn't fired its load event by then, the call throws. Override per-call with a <code>timeout</code> option, or globally in config.</p>
+
+    <div class="flow">
+      <div class="flow-box">goto(url)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box alt">wait for<br>load event</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">within<br>timeout?</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box alt">✅ resolved /<br>⚠️ throws</div>
+    </div>
+
+    <div class="callout warn">
+      ⚠️ <b>Warning:</b> A <span class="hl-p">navigation timeout</span> almost always means the app was slower than expected, a redirect loop happened, or a network call hung — don't just bump the timeout blindly, investigate first.
+    </div>
+
+    <div class="speech-box">
+      <span class="speech-badge" role="img" aria-label="microphone">🎤</span>
+      <span class="speech-title">🗣️ How I'd say it in an interview</span>
+      <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span> “How do you navigate between pages and verify navigation in Playwright?”</div>
+      
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">I use</span> <code>goto()</code> to open a URL and <code>goBack()</code>, <code>goForward()</code>, or <code>reload()</code> to navigate.</p>
+        <p class="sl"><span class="anchor">The important point is</span> navigation waits for the selected page-load event or until it times out.</p>
+        <p class="sl"><span class="anchor">For example, I</span> use <code>page.goto()</code> to open the application page.</p>
+        <p class="sl"><span class="anchor">After navigation, I</span> check the URL with <code>toHaveURL()</code> to confirm I reached the right page.</p>
+        <p class="sl"><span class="anchor">If a page is slow, I</span> set a suitable navigation timeout instead of adding a fixed sleep.</p>
+        <p class="sl"><span class="anchor">I do this because</span> a URL check can catch an unexpected redirect or error page.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I verify both navigation and the final URL so the test confirms the correct page opened.</p>
+      </div>
+      <div class="diff-angle">
+        <b>🔄 Also asked as:</b> "How does Playwright know a page finished loading?" · "What happens if navigation takes too long?"</div>
+      <div class="speech-followup"><b>Follow-up Qs:</b> "How do you verify navigation?" → "I use `expect(page).toHaveURL(...)`." · "Should you always use `networkidle`?" → "No, I choose the wait condition that fits the application."</div>
+    </div>
+
+    <div class="followup">
+      <b>💬 Follow-up Qs interviewer may ask</b>
+      <ul>
+        <li>What's the difference between <code>load</code> and <code>networkidle</code> wait states?</li>
+        <li>How would you debug a recurring navigation timeout?</li>
+      </ul>
+    </div>
+
+    <div class="page-number">Page 2 / 5</div>
+  </div>
+  </div>
+
+  <!-- ===================== PAGE 3 — Browser Actions ===================== -->
+  <div class="page-wrapper">
+  <div class="page">
+    <div class="page-strip">📘 Phase 3 — Browser &amp; Page Operations <span>Topic 11</span></div>
+    <h1 class="title">11. Browser Actions</h1>
+    <p class="subtitle alt">🖱️ The core interactions every test performs</p>
+
+    <div class="table-scroll">
+    <table>
+      <caption>Mouse &amp; keyboard actions</caption>
+      <tr><th>Action</th><th>Call</th><th>Note</th></tr>
+      <tr><td>Click</td><td><code>locator.click()</code></td><td>Auto-waits for actionability</td></tr>
+      <tr><td>Double click</td><td><code>locator.dblclick()</code></td><td>Two rapid clicks</td></tr>
+      <tr><td>Right click</td><td><code>locator.click({button:'right'})</code></td><td>Opens context menu</td></tr>
+      <tr><td>Hover</td><td><code>locator.hover()</code></td><td>Triggers CSS <code>:hover</code>, tooltips</td></tr>
+      <tr><td>Drag &amp; drop</td><td><code>locator.dragTo(target)</code></td><td>Simulates mouse drag</td></tr>
+      <tr><td>Fill</td><td><code>locator.fill(text)</code></td><td>Sets value instantly, clears first</td></tr>
+      <tr><td>Type</td><td><code>locator.pressSequentially(text)</code></td><td>Real key-by-key typing</td></tr>
+      <tr><td>Press key</td><td><code>locator.press('Enter')</code></td><td>Single keyboard key</td></tr>
+      <tr><td>Clear</td><td><code>locator.clear()</code></td><td>Empties an input</td></tr>
+      <tr><td>Focus</td><td><code>locator.focus()</code></td><td>Moves keyboard focus</td></tr>
+      <tr><td>Blur</td><td><code>locator.blur()</code></td><td>Removes focus, fires blur events</td></tr>
+    </table>
+    </div>
+
+    <div class="codebox">
+      <span class="label">// common action patterns</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#submit'</span>).<span class="tok-fn">click</span>();
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#menu'</span>).<span class="tok-fn">click</span>({ <span class="tok-prop">button</span>: <span class="tok-str">'right'</span> });
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#src'</span>).<span class="tok-fn">dragTo</span>(<span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#drop'</span>));
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#search'</span>).<span class="tok-fn">fill</span>(<span class="tok-str">'playwright'</span>);
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#search'</span>).<span class="tok-fn">press</span>(<span class="tok-str">'Enter'</span>);
+    </div>
+
+    <div class="callout tip">
+      💡 <b>fill() vs type():</b> Use <code>fill()</code> for speed (sets the value directly) — use <code>pressSequentially()</code> ("type") only when the app has JS listeners that react to <span class="hl-g">each individual keystroke</span> (autocomplete, live validation).
+    </div>
+    <div class="callout warn">
+      ⚠️ <b>Warning:</b> Elements must pass <span class="hl-p">actionability checks</span> (visible, enabled, stable, not obscured) before <code>click()</code>/<code>fill()</code> run — a hidden or animating element will cause the call to wait, then time out.
+    </div>
+
+    <div class="speech-box">
+      <span class="speech-badge" role="img" aria-label="microphone">🎤</span>
+      <span class="speech-title">🗣️ How I'd say it in an interview</span>
+      <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span> “What is the difference between `fill()` and `pressSequentially()` in Playwright?”</div>
+      
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">`fill()` is</span> used to set the input value in one action.</p>
+        <p class="sl"><span class="anchor">I use it by default because</span> it is simple and fast for most text fields.</p>
+        <p class="sl"><span class="anchor">`pressSequentially()` is</span> used to type the text one character at a time.</p>
+        <p class="sl"><span class="anchor">I use it when</span> the page needs real key presses, such as live search suggestions.</p>
+        <p class="sl"><span class="anchor">The key difference is</span> <code>fill()</code> sets the value, while <code>pressSequentially()</code> sends key events.</p>
+        <p class="sl"><span class="anchor">I choose the method based on</span> how the application responds to the input.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I use <code>fill()</code> for normal inputs and sequential typing only when the UI needs key-by-key events.</p>
+      </div>
+      <div class="diff-angle">
+        <b>🔄 Also asked as:</b> "When is `fill()` not enough?" · "How do you simulate real typing?"</div>
+      <div class="speech-followup"><b>Follow-up Qs:</b> "Which method is faster?" → "Usually `fill()`." · "When might sequential typing be needed?" → "For interfaces that react to individual key presses."</div>
+    </div>
+
+    <div class="page-number">Page 3 / 5</div>
+  </div>
+  </div>
+
+  <!-- ===================== PAGE 4 — Form Handling ===================== -->
+  <div class="page-wrapper">
+  <div class="page">
+    <div class="page-strip">📘 Phase 3 — Browser &amp; Page Operations <span>Topic 12</span></div>
+    <h1 class="title">12. Form Handling</h1>
+    <p class="subtitle alt">📝 Every input type, and the right way to drive it</p>
+
+    <div class="table-scroll">
+    <table>
+      <caption>Form control cheat sheet</caption>
+      <tr><th>Control</th><th>Typical call</th></tr>
+      <tr><td>Text box</td><td><code>locator.fill('value')</code></td></tr>
+      <tr><td>Checkbox</td><td><code>locator.check()</code> / <code>.uncheck()</code></td></tr>
+      <tr><td>Radio button</td><td><code>locator.check()</code> on the specific option</td></tr>
+      <tr><td>Dropdown (native)</td><td><code>locator.selectOption('value')</code></td></tr>
+      <tr><td>Multi-select</td><td><code>selectOption(['a','b'])</code></td></tr>
+      <tr><td>File upload</td><td><code>locator.setInputFiles('path')</code></td></tr>
+      <tr><td>Date picker</td><td><code>fill()</code> if text input; else click calendar cells</td></tr>
+      <tr><td>Auto-complete</td><td><code>pressSequentially()</code> + wait for suggestion, then click it</td></tr>
+      <tr><td>Search box</td><td><code>fill()</code> + <code>press('Enter')</code></td></tr>
+    </table>
+    </div>
+
+    <div class="codebox">
+      <span class="label">// form handling patterns</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#agree'</span>).<span class="tok-fn">check</span>();
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#country'</span>).<span class="tok-fn">selectOption</span>(<span class="tok-str">'IN'</span>);
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#skills'</span>).<span class="tok-fn">selectOption</span>([<span class="tok-str">'js'</span>, <span class="tok-str">'ts'</span>]);
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#resume'</span>).<span class="tok-fn">setInputFiles</span>(<span class="tok-str">'resume.pdf'</span>);
+    </div>
+
+    <h3 class="sub">Date pickers &amp; autocomplete — the tricky ones</h3>
+    <p>Custom date pickers are usually <span class="hl-y">not real <code>&lt;input&gt;</code> fields</span> — you often can't just <code>fill()</code> them; you may need to click through calendar navigation and day cells. Autocomplete boxes need a real keystroke sequence to trigger the suggestion list, then an explicit click on the matching suggestion.</p>
+
+    <div class="callout tip">
+      💡 <b>Tip:</b> For custom dropdowns built from <code>&lt;div&gt;</code>s (not native <code>&lt;select&gt;</code>), <code>selectOption()</code> won't work — click to open it, then click the visible option text.
+    </div>
+    <div class="callout warn">
+      ⚠️ <b>Warning:</b> <code>setInputFiles()</code> works even on a <span class="hl-p">hidden</span> file input — no need to make it visible first, which is a common beginner trap.
+    </div>
+
+    <div class="speech-box">
+      <span class="speech-badge" role="img" aria-label="microphone">🎤</span>
+      <span class="speech-title">🗣️ How I'd say it in an interview</span>
+      <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span> “How do you handle different form controls in Playwright?”</div>
+      
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">I choose the method based on</span> the type of form control.</p>
+        <p class="sl"><span class="anchor">For checkboxes, I use</span> <code>check()</code> or <code>uncheck()</code>.</p>
+        <p class="sl"><span class="anchor">For native dropdowns, I use</span> <code>selectOption()</code>.</p>
+        <p class="sl"><span class="anchor">For file uploads, I use</span> <code>setInputFiles()</code>.</p>
+        <p class="sl"><span class="anchor">For custom controls, I</span> interact with the visible options, such as clicking a date in a calendar.</p>
+        <p class="sl"><span class="anchor">I do this because</span> custom widgets may not behave like normal HTML inputs.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I use the Playwright method that matches the control instead of forcing every control through <code>fill()</code>.</p>
+      </div>
+      <div class="diff-angle">
+        <b>🔄 Also asked as:</b> "How would you automate a date picker?" · "Why does `fill()` not work for every control?"</div>
+      <div class="speech-followup"><b>Follow-up Qs:</b> "How do you upload a file?" → "I use `setInputFiles()`." · "How do you select a native dropdown option?" → "I use `selectOption()`."</div>
+    </div>
+
+    <div class="page-number">Page 4 / 5</div>
+  </div>
+  </div>
+
+  <!-- ===================== PAGE 5 — QUICK REVISION SHEET ===================== -->
+  <div class="page-wrapper">
+  <div class="page revision">
+    <div class="page-strip revision-strip">⚡ Quick Revision Sheet <span>Scan before your interview!</span></div>
+    <h1 class="title" style="color:#004d40;">⚡ Quick Revision Sheet</h1>
+    <p class="subtitle alt">Phase 3 — Browser &amp; Page Operations, end-to-end in 5 minutes</p>
+
+    <div class="rev-sec-head">🗺️ 1. Topic Map</div>
+    <div class="tree mm-wrap">
+      <ul>
+        <li><span class="root">Browser &amp; Page Ops</span>
+          <ul>
+            <li><b>Browser Concepts</b>
+              <ul><li>Browser · Context · Page</li><li>Multi-context / multi-page</li><li>Persistent vs incognito-like</li></ul>
+            </li>
+            <li><b>Page Navigation</b>
+              <ul><li>goto/goBack/goForward/reload</li><li>URL validation</li><li>Timeouts</li></ul>
+            </li>
+            <li><b>Browser Actions</b>
+              <ul><li>Click family, hover, drag-drop</li><li>fill vs type, press, clear, focus/blur</li></ul>
+            </li>
+            <li><b>Form Handling</b>
+              <ul><li>Checkbox/radio/dropdown/multi-select</li><li>File upload, date picker, autocomplete</li></ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="rev-sec-head">🔑 2. Must-Know Concepts</div>
+    <div class="concept-grid">
+      <div class="k hl-y">Browser</div><div class="v">The launched browser process/engine.</div>
+      <div class="k hl-y">BrowserContext</div><div class="v">Isolated profile — own cookies/storage.</div>
+      <div class="k hl-y">Page</div><div class="v">A single tab inside a context.</div>
+      <div class="k">Persistent context</div><div class="v">Context backed by a real user-data folder on disk.</div>
+      <div class="k">Incognito-like isolation</div><div class="v">Default context — nothing saved to disk.</div>
+      <div class="k hl-g">goto()</div><div class="v">Navigate + wait for load, respects timeout.</div>
+      <div class="k">Navigation timeout</div><div class="v">Max wait before a nav call throws (default ~30s).</div>
+      <div class="k hl-g">fill() vs type()</div><div class="v">fill = instant value; type = real keystrokes for JS listeners.</div>
+      <div class="k">Actionability checks</div><div class="v">Visible/enabled/stable before click/fill run.</div>
+      <div class="k">selectOption()</div><div class="v">Only works on native <code>&lt;select&gt;</code>, not custom divs.</div>
+      <div class="k">setInputFiles()</div><div class="v">Uploads files even to hidden file inputs.</div>
+    </div>
+
+    <div class="rev-sec-head">⚡ 3. Key Commands / Syntax</div>
+    <div class="codebox">
+      <span class="label">// new context per test — isolation pattern</span>
+<span class="tok-kw">const</span> <span class="tok-var">context</span> = <span class="tok-kw">await</span> <span class="tok-var">browser</span>.<span class="tok-fn">newContext</span>();
+<span class="tok-kw">const</span> <span class="tok-var">page</span> = <span class="tok-kw">await</span> <span class="tok-var">context</span>.<span class="tok-fn">newPage</span>();
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">goto</span>(<span class="tok-str">'https://example.com'</span>);
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">reload</span>();
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#x'</span>).<span class="tok-fn">click</span>();
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#y'</span>).<span class="tok-fn">fill</span>(<span class="tok-str">'text'</span>);
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#z'</span>).<span class="tok-fn">check</span>();
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#d'</span>).<span class="tok-fn">selectOption</span>(<span class="tok-str">'IN'</span>);
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#f'</span>).<span class="tok-fn">setInputFiles</span>(<span class="tok-str">'a.pdf'</span>);
+    </div>
+
+    <div class="rev-sec-head">⚠️ 4. Common Mistakes &amp; Gotchas</div>
+    <ul>
+      <li>⚠️ Reusing one <span class="hl-pink">BrowserContext</span> across tests — leaks cookies/login state between them.</li>
+      <li>⚠️ Assuming <code>goto()</code> means the page is fully interactive — actionability is checked separately per action.</li>
+      <li>⚠️ Using <code>fill()</code> on a custom autocomplete and wondering why <span class="hl-orange">no suggestions appear</span> — it never fires real keystrokes.</li>
+      <li>⚠️ Trying <code>selectOption()</code> on a <span class="hl-pink">div-based fake dropdown</span> — it only works on native <code>&lt;select&gt;</code>.</li>
+      <li>⚠️ Making a hidden file input visible before uploading — unnecessary, <code>setInputFiles()</code> works on hidden inputs.</li>
+      <li>⚠️ Blindly increasing <span class="hl-orange">navigation timeout</span> instead of investigating the real slow cause.</li>
+    </ul>
+
+    <div class="rev-sec-head">🎯 5. Interview Rapid-Fire</div>
+    <div class="table-scroll">
+    <table>
+      <caption>Q → A quick recall</caption>
+      <tr><th>Question</th><th>Answer</th></tr>
+      <tr><td class="hl-y">Browser vs BrowserContext vs Page?</td><td>Engine → isolated profile → single tab.</td></tr>
+      <tr><td>Why new context per test?</td><td>Full isolation, cheaper than new browser.</td></tr>
+      <tr><td>Persistent vs default context?</td><td>Persistent saves to disk; default is incognito-like.</td></tr>
+      <tr><td class="hl-y">fill() vs type()?</td><td>fill sets value instantly; type fires real keystrokes.</td></tr>
+      <tr><td>What causes a navigation timeout?</td><td>Slow load, redirect loop, hung network call.</td></tr>
+      <tr><td>How to validate navigation succeeded?</td><td>Assert <code>page.url()</code> / <code>toHaveURL()</code>.</td></tr>
+      <tr><td>Why does click() sometimes wait then fail?</td><td>Element failed an actionability check (hidden/unstable).</td></tr>
+      <tr><td class="hl-y">How to handle a custom (div) dropdown?</td><td>Click to open, then click the option text — not selectOption().</td></tr>
+      <tr><td>How to upload a file?</td><td><code>setInputFiles()</code> — works even if input is hidden.</td></tr>
+      <tr><td>How to automate a date picker?</td><td>Click calendar nav/cells if it's not a real text input.</td></tr>
+    </table>
+    </div>
+
+    <div class="rev-sec-head">🧠 6. Memory Tricks &amp; Last-Minute Tips</div>
+    <div class="mnemonic">🧠 <b>"Engine → Profile → Tab"</b> — say it out loud to recall Browser → Context → Page instantly.</div>
+    <div class="mnemonic">🧠 <b>"Fill is a shortcut, Type is the real thing"</b> — fill skips events, type fires every keystroke.</div>
+    <ul>
+      <li>Double-check whether a dropdown is native <code>&lt;select&gt;</code> or a custom div before picking your method.</li>
+      <li>Always assert the URL right after navigation — don't assume <code>goto()</code> landed correctly.</li>
+      <li>Keep one Browser instance, but a fresh Context per test — say this out loud if asked about isolation.</li>
+    </ul>
+
+    <div class="page-number">Page 5 / 5</div>
+  </div>
+  </div>
+
+</div>
+</body>
+</html>

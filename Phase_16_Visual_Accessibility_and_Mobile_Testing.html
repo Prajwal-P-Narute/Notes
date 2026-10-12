@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Phase 16 — Advanced Testing | Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page-w: 794px;
+    --page-h: 1123px;
+    --ink: #1a3fa0;
+    --ink-dark: #0d1b3e;
+    --sub: #10306e;
+    --line: #cfe3f7;
+    --paper: #fffdf8;
+    --red-margin: #d65c5c;
+  }
+  *,*::before,*::after{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; background:#e8e8e8; }
+  body{ font-family:'Patrick Hand', cursive; }
+
+  .pages-container{ width:100%; background:#e8e8e8; padding-bottom:40px; }
+  .page-wrapper{ display:flex; justify-content:center; align-items:flex-start; padding:24px 12px; }
+  @media (min-width: 860px){ .page-wrapper{ padding:40px 24px; } }
+
+  .page{
+    width:100%;
+    max-width:var(--page-w);
+    min-height:var(--page-h);
+    position:relative;
+    background:
+      repeating-linear-gradient(#fffdf8 0px, #fffdf8 27px, var(--line) 28px);
+    box-shadow:0 6px 24px rgba(0,0,0,0.18);
+    padding:90px 34px 100px 68px;
+    rotate: -0.25deg;
+    border-radius:2px;
+  }
+  .page:nth-of-type(even){ rotate:0.25deg; }
+  .page::before{
+    content:"";
+    position:absolute; top:0; bottom:0; left:48px; width:2px;
+    background:var(--red-margin);
+    opacity:0.55;
+  }
+  .page::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image:radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px);
+    background-size:3px 3px;
+    pointer-events:none; opacity:0.5;
+  }
+
+  .page-number{
+    position:absolute; bottom:22px; right:34px;
+    font-family:'Caveat',cursive; font-size:20px; color:var(--sub); opacity:0.75;
+  }
+
+  h1,h2,h3{ font-family:'Kalam',cursive; color:var(--ink-dark); margin:0 0 6px 0; }
+  h1{ font-size:34px; font-weight:700; }
+  h2{ font-size:25px; font-weight:700; color:var(--sub); margin-top:22px; }
+  h3{ font-size:20px; font-weight:700; color:var(--sub); }
+  p, li{ color:var(--ink); font-size:19px; line-height:28px; }
+  p{ margin:6px 0; }
+  ul{ margin:6px 0 6px 20px; padding:0; }
+  li{ margin-bottom:4px; }
+  li:nth-child(odd){ transform: rotate(-0.3deg); display:inline-block; }
+  li:nth-child(even){ transform: rotate(0.2deg); display:inline-block; }
+
+  .title-bar{
+    background:linear-gradient(120deg,#1a3fa0,#234ebf);
+    color:#fff; border-radius:10px; padding:14px 20px; margin-bottom:18px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  }
+  .title-bar h1{ color:#fff; margin:0; }
+  .title-bar .sub{ font-family:'Patrick Hand',cursive; font-size:16px; opacity:0.9; }
+  .label-strip{
+    display:flex; justify-content:space-between; font-family:'Caveat',cursive;
+    font-size:18px; color:var(--sub); margin:-10px 0 16px 0; opacity:0.8;
+  }
+
+  .hl-yellow{ background:linear-gradient(180deg, transparent 60%, #fff59d 60%); padding:0 2px; }
+  .hl-green{ background:linear-gradient(180deg, transparent 60%, #b9f6ca 60%); padding:0 2px; }
+  .hl-pink{ background:linear-gradient(180deg, transparent 60%, #ffcdd2 60%); padding:0 2px; }
+  .hl-orange{ background:linear-gradient(180deg, transparent 60%, #ffe0b2 60%); padding:0 2px; }
+
+  code, .inline-code{
+    font-family:'Consolas','Menlo',monospace; background:#eef1fb; border:1px solid #c7d2f0;
+    border-radius:5px; padding:1px 5px; font-size:15px; color:#20306e;
+  }
+
+  .codebox{
+    background:#1e2235; color:#e0e6f5; font-family:'Consolas','Menlo',monospace;
+    font-size:14px; border-radius:8px; padding:14px 16px; margin:12px 0;
+    overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%;
+    white-space:pre; word-break:normal; box-shadow: inset 0 0 0 1px #30365a;
+  }
+  .codebox .comment-line{ display:block; margin-bottom:6px; color:#8b949e; }
+  .tok-kw{ color:#ff7b72; font-weight:bold; }
+  .tok-fn{ color:#d2a8ff; }
+  .tok-var{ color:#79c0ff; }
+  .tok-str{ color:#a8e6a3; }
+  .tok-prop{ color:#56d364; }
+  .tok-num{ color:#f0883e; }
+  .tok-com{ color:#8b949e; font-style:italic; }
+  .tok-cls{ color:#ffa657; }
+
+  .callout{
+    border:2px dashed #7a8bbf; border-radius:10px; padding:10px 14px; margin:14px 0;
+    background:#f4f7ff; font-size:18px;
+  }
+  .sticky{
+    background:#fff6b0; border-radius:4px; box-shadow:3px 5px 10px rgba(0,0,0,0.2);
+    padding:12px 14px; margin:14px 8px; display:inline-block; max-width:100%;
+    font-size:18px; transform:rotate(-1.2deg); position:relative;
+  }
+  .sticky::after{
+    content:""; position:absolute; top:0; right:0; width:0; height:0;
+    border-style:solid; border-width:0 14px 14px 0; border-color:transparent #d8c85a transparent transparent;
+  }
+
+  table.nb-table{ border-collapse:collapse; width:100%; font-size:17px; }
+  .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; margin:10px 0; }
+  table.nb-table th, table.nb-table td{
+    border:1.5px dashed #8ea0d6; padding:8px 10px; text-align:left; color:var(--ink);
+    border-radius:4px;
+  }
+  table.nb-table th{ background:#e7edfb; color:var(--ink-dark); font-family:'Kalam',cursive; }
+
+  .speech-box{
+    max-width:100%; box-sizing:border-box; position:relative; border-radius:20px;
+    border:3.5px solid #ff8a3d; padding:16px 18px 14px 18px; margin:22px 6px;
+    background: radial-gradient(circle at 25% 20%, rgba(255,255,255,0.5), transparent 55%),
+                linear-gradient(135deg,#ffd8a8 0%, #ffb37a 55%, #ff8a3d 100%);
+    box-shadow: 5px 6px 0 rgba(255,122,40,0.35), 0 10px 20px rgba(0,0,0,0.15);
+    transform: rotate(-0.6deg);
+  }
+  .speech-box::before{
+    content:""; position:absolute; inset:3px; border-radius:17px;
+    border:2px dashed rgba(255,255,255,0.75); pointer-events:none;
+  }
+  .speech-box::after{
+    content:""; position:absolute; bottom:-14px; left:40px; width:0; height:0;
+    border-style:solid; border-width:16px 12px 0 0; border-color:#ff8a3d transparent transparent transparent;
+  }
+  .speech-badge{
+    position:absolute; top:-16px; right:16px; width:38px; height:38px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff, #ffb37a 70%);
+    display:flex; align-items:center; justify-content:center; font-size:19px;
+    box-shadow:0 3px 6px rgba(0,0,0,0.3);
+  }
+  .speech-title{ font-family:'Kalam',cursive; font-size:16px; color:#7a3200; margin-bottom:8px; }
+  .speech-panel{
+    background:rgba(255,255,255,0.82); border-radius:12px; padding:10px 12px;
+    font-family:'Patrick Hand',cursive; font-size:20px; color:#4a2a00; line-height:27px;
+    word-break:break-word; overflow-wrap:anywhere;
+  }
+  .speech-alt{
+    margin-top:8px; background:rgba(255,255,255,0.55); border-radius:8px; padding:6px 10px;
+    font-size:16px; color:#5a3400;
+  }
+  .followup{ font-size:15px; color:#5a3400; margin-top:6px; }
+
+  .warn{ font-size:18px; margin:6px 0; }
+  .warn .trap{ font-weight:bold; }
+
+  .mistake-badge, .lookup-badge{
+    display:inline-block; font-family:'Kalam',cursive; font-size:13px; padding:2px 10px;
+    border-radius:20px; margin-left:8px; vertical-align:middle;
+  }
+  .mistake-badge{ background:#ffcdd2; color:#8a1c1c; }
+  .lookup-badge{ background:#c9e4ff; color:#0d3f7a; }
+
+  .tier-stripe{ border-left:5px solid; padding-left:10px; margin:6px 0; }
+  .tier1{ border-color:#00897b; }
+  .tier2{ border-color:#8e24aa; }
+  .tier3{ border-color:#e65100; }
+  .lookup{ border-color:#1565c0; }
+
+  .svg-wrap{ width:100%; }
+
+  @media (prefers-reduced-motion: reduce){
+    .page{ rotate:0deg !important; }
+    .speech-box, .sticky{ transform:none !important; }
+    *{ transition:none !important; animation:none !important; }
+  }
+  @media print{
+    .page-wrapper{ display:flex !important; page-break-after:always; }
+    .pages-container{ background:white; }
+    .page{ box-shadow:none; rotate:0deg !important; margin:0; border:none; }
+  }
+
+  /* Interview-practice card enhancements */
+  .interview-card{
+    border:3.5px solid #ff8a3d;
+    background:radial-gradient(circle at 20% 15%, rgba(255,255,255,.62), transparent 52%),
+               linear-gradient(135deg,#ffe3bd 0%,#ffbd86 55%,#ff944d 100%);
+    box-shadow:5px 6px 0 rgba(255,122,40,.35),0 10px 20px rgba(0,0,0,.15),inset 0 0 0 2px rgba(255,255,255,.35);
+    padding:18px 18px 16px;
+  }
+  .interview-card .speech-title{font-family:'Kalam',cursive;font-size:17px;font-weight:700;color:#7a3200;margin:0 0 10px}
+  .interview-card .question-strip{
+    background:#fffdf8;border-left:5px solid #ffd43b;border-radius:8px;padding:9px 11px;margin:8px 0 10px;
+    box-shadow:0 2px 4px rgba(0,0,0,.08);line-height:1.35
+  }
+  .interview-card .question-label{font-family:'Patrick Hand',cursive;font-size:15px;font-weight:700;color:#d95f18}
+  .interview-card .question-text{font-family:'Caveat',cursive;font-size:22px;font-weight:700;color:#1748a0}
+  .interview-card .speech-panel{background:rgba(255,255,255,.88);padding:11px 13px;color:#34220d;font-size:18px;line-height:1.42}
+  .interview-card .sl{margin:0 0 7px;color:#34220d;font-size:18px;line-height:1.42}
+  .interview-card .anchor{background:linear-gradient(180deg,transparent 53%,#fff176 53%);font-weight:700;color:#173f91;padding:0 2px}
+  .interview-card .sl.closer{margin-top:8px;padding-top:7px;border-top:1px dashed #e5a05f}
+  .interview-card .speech-alt{margin-top:10px;background:rgba(255,243,205,.9);padding:8px 10px;font-size:15px;line-height:1.35}
+  .interview-card .followup{font-size:15px;line-height:1.35;color:#5a3400;margin-top:8px}
+  .interview-card code{white-space:normal;overflow-wrap:anywhere}
+
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="title-bar">
+    <h1>Phase 16 — Advanced Testing 🎭</h1>
+    <div class="sub">Playwright · Visual, A11y, Mobile &amp; Localization Testing</div>
+  </div>
+  <div class="label-strip"><span>📘 Topic 56 — Visual Testing</span><span>Page 1</span></div>
+
+  <p>Visual testing catches bugs that <span class="hl-yellow">functional tests miss</span> — a button that still works but looks broken. It compares how a page <em>looks</em> against a trusted reference.</p>
+
+  <h2>🖼️ Screenshot Comparison</h2>
+  <p>The core idea: capture today's render, compare it <span class="hl-green">pixel-by-pixel</span> against a saved "baseline" image. Any meaningful difference fails the test.</p>
+
+  <h2>📉 Visual Regression</h2>
+  <p>A <span class="hl-pink">visual regression</span> is an unintended UI change — spacing shifted, a color changed, an element overlapped — caught automatically instead of by a human eyeballing the app.</p>
+
+  <h2>📸 <code>toHaveScreenshot()</code></h2>
+  <p>Playwright's built-in assertion. On first run it <span class="hl-yellow">creates the baseline</span>; on later runs it <span class="hl-yellow">diffs against it</span> and fails if pixels differ beyond a threshold.</p>
+  <div class="codebox">
+<span class="comment-line">// Full page screenshot assertion</span>
+<span class="tok-kw">await</span> <span class="tok-fn">expect</span>(page).<span class="tok-fn">toHaveScreenshot</span>(<span class="tok-str">'homepage.png'</span>);
+
+<span class="comment-line">// Element-level screenshot</span>
+<span class="tok-kw">await</span> <span class="tok-fn">expect</span>(page.<span class="tok-fn">locator</span>(<span class="tok-str">'.header'</span>)).<span class="tok-fn">toHaveScreenshot</span>();
+
+<span class="comment-line">// Tolerate tiny anti-aliasing differences</span>
+<span class="tok-kw">await</span> <span class="tok-fn">expect</span>(page).<span class="tok-fn">toHaveScreenshot</span>(<span class="tok-str">'page.png'</span>, {
+  <span class="tok-prop">maxDiffPixels</span>: <span class="tok-num">100</span>,
+  <span class="tok-prop">threshold</span>: <span class="tok-num">0.2</span>,
+});
+  </div>
+
+  <h2>🗂️ Baseline Management</h2>
+  <p>Baselines are stored image files checked into the repo, usually one set <span class="hl-orange">per OS/browser</span> since fonts and rendering differ across platforms.</p>
+  <div class="codebox">
+<span class="comment-line">// Regenerate all baselines</span>
+npx playwright <span class="tok-fn">test</span> <span class="tok-kw">--update-snapshots</span>
+  </div>
+
+  <div class="sticky">📌 Rule of thumb: generate baselines in CI, not on your laptop — different OS renders fonts differently!</div>
+
+    <div class="speech-box interview-card">
+    <div class="speech-badge">🎤</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="question-strip"><span class="question-label">❓ Interviewer asks:</span> <span class="question-text">What is visual regression testing in Playwright?</span></div>
+    <div class="speech-panel">
+        <p class="sl"><span class="anchor">For me,</span> visual regression testing means comparing the current UI against a trusted screenshot baseline.</p>
+        <p class="sl"><span class="anchor">The goal is</span> to catch unintended visual changes, such as shifted spacing, changed colors, or overlapping elements.</p>
+        <p class="sl"><span class="anchor">In Playwright,</span> I use <code>toHaveScreenshot()</code> to capture and compare a page or a specific element.</p>
+        <p class="sl"><span class="anchor">On the first run,</span> Playwright creates the baseline, and later runs compare new screenshots against that saved image.</p>
+        <p class="sl"><span class="anchor">To reduce noise,</span> I can configure <code>maxDiffPixels</code> or <code>threshold</code> for small rendering differences.</p>
+        <p class="sl"><span class="anchor">For reliable results,</span> I keep baselines aligned with the same operating system and browser used in CI.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> screenshot comparison helps me detect visual regressions automatically, while consistent baselines prevent false failures.</p>
+      <div class="speech-alt">🔄 Also asked as: "How would you catch a CSS regression before production?" / "How do you detect unexpected changes in a page's appearance?"</div>
+      <div class="followup"><strong>Follow-up Qs:</strong> How would you handle dynamic content in screenshots? When would you update a baseline?</div>
+    </div>
+  </div>
+
+  <div class="page-number">1</div>
+</div></div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="label-strip"><span>📘 Topic 57 — Accessibility Testing</span><span>Page 2</span></div>
+  <h1>Accessibility (a11y) Testing ♿</h1>
+
+  <h2>💡 What is it?</h2>
+  <p>Checking that <span class="hl-yellow">everyone can use the app</span> — blind, deaf, color-blind, or keyboard-only users.</p>
+
+  <h2>🧱 4 Pillars — POUR</h2>
+  <div class="table-scroll">
+  <table class="nb-table">
+    <tr><th>Pillar</th><th>Ask yourself</th><th>Quick test</th></tr>
+    <tr><td><b>P</b>erceivable 👀</td><td>Can they <span class="hl-green">sense</span> it?</td><td>Images have alt text, text is readable</td></tr>
+    <tr><td><b>O</b>perable ⌨️</td><td>Can they <span class="hl-green">use</span> it without a mouse?</td><td>Press Tab + Enter everywhere</td></tr>
+    <tr><td><b>U</b>nderstandable 💬</td><td>Is it <span class="hl-green">clear</span>?</td><td>Errors say "Email is required"</td></tr>
+    <tr><td><b>R</b>obust 🔧</td><td>Does it work with <span class="hl-green">screen readers</span>?</td><td>Real <code>&lt;button&gt;</code>, proper roles</td></tr>
+  </table>
+  </div>
+
+  <h2>🔧 Robust, made simple</h2>
+  <p>Robust = <span class="hl-yellow">clean, standard HTML</span> so any tool (screen reader, voice control) can understand the page.</p>
+  <div class="codebox">
+<span class="comment-line">// Both look the same on screen</span>
+&lt;<span class="tok-kw">button</span>&gt;Submit&lt;/<span class="tok-kw">button</span>&gt;      <span class="tok-com">// ✅ "Submit, button" + keyboard works</span>
+&lt;<span class="tok-kw">div</span>&gt;Submit&lt;/<span class="tok-kw">div</span>&gt;          <span class="tok-com">// ❌ just "Submit" — no role, no keyboard</span>
+  </div>
+  <div class="sticky">📌 Real tag first. ARIA (<code>role="button"</code>) only if you can't. Check: does every button, link &amp; input have a <b>name</b> and a <b>role</b>?</div>
+
+  <h2>🏷️ ARIA, Roles &amp; Labels</h2>
+  <p><span class="hl-green">ARIA</span> = extra HTML attributes that tell screen readers about custom widgets.</p>
+  <ul>
+    <li><code>role</code> → what the element <b>IS</b> (<code>role="button"</code>)</li>
+    <li><code>aria-label</code> → its <b>name</b>, what the screen reader says</li>
+    <li><code>aria-hidden</code> → hide decorative stuff</li>
+  </ul>
+  <p>👉 Best practice: use real tags (<code>&lt;button&gt;</code>) first, ARIA only if needed.</p>
+
+  <h2>🧪 Testing in Playwright</h2>
+  <p><span class="hl-orange">@axe-core/playwright</span> scans the page and lists violations automatically.</p>
+  <div class="codebox">
+<span class="tok-kw">import</span> <span class="tok-cls">AxeBuilder</span> <span class="tok-kw">from</span> <span class="tok-str">'@axe-core/playwright'</span>;
+
+<span class="tok-fn">test</span>(<span class="tok-str">'a11y scan'</span>, <span class="tok-kw">async</span> ({ page }) =&gt; {
+  <span class="tok-kw">await</span> page.<span class="tok-fn">goto</span>(<span class="tok-str">'/'</span>);
+  <span class="tok-kw">const</span> <span class="tok-var">results</span> = <span class="tok-kw">await</span> <span class="tok-kw">new</span> <span class="tok-cls">AxeBuilder</span>({ page }).<span class="tok-fn">analyze</span>();
+  <span class="tok-fn">expect</span>(results.<span class="tok-prop">violations</span>).<span class="tok-fn">toEqual</span>([]);
+});
+  </div>
+
+  <div class="callout">💡 <b>Tip:</b> Axe finds only some issues — also test <span class="hl-yellow">manually with the keyboard</span>. Scan error &amp; loading states too.</div>
+
+    <div class="speech-box interview-card">
+    <div class="speech-badge">💬</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="question-strip"><span class="question-label">❓ Interviewer asks:</span> <span class="question-text">How do you test accessibility in Playwright?</span></div>
+    <div class="speech-panel">
+        <p class="sl"><span class="anchor">Accessibility testing means</span> checking that people with different abilities can use the application.</p>
+        <p class="sl"><span class="anchor">I use POUR,</span> which stands for Perceivable, Operable, Understandable, and Robust.</p>
+        <p class="sl"><span class="anchor">For automation,</span> I can scan a page with <code>@axe-core/playwright</code> and inspect the reported violations.</p>
+        <p class="sl"><span class="anchor">I also check</span> keyboard navigation, accessible names, roles, labels, and clear validation messages.</p>
+        <p class="sl"><span class="anchor">For semantic HTML,</span> I prefer native elements such as <code>&lt;button&gt;</code> instead of a clickable <code>&lt;div&gt;</code>.</p>
+        <p class="sl"><span class="anchor">I remember that</span> automated scans find only some issues, so I include manual keyboard checks and different page states.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I combine automated accessibility scans with practical keyboard and semantic checks rather than relying on one tool.</p>
+      <div class="speech-alt">🔄 Also asked as: "How do you check that a UI works with a screen reader?" / "What is your approach to accessibility testing?"</div>
+      <div class="followup"><strong>Follow-up Qs:</strong> Can axe detect every accessibility issue? What is the difference between an ARIA role and an accessible label?</div>
+    </div>
+  </div>
+
+  <div class="page-number">2</div>
+</div></div>
+
+<!-- ================= PAGE 3 ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="label-strip"><span>📘 Topic 58 — Mobile Web Testing</span><span>Page 3</span></div>
+  <h1>Mobile Web Testing 📱</h1>
+
+  <h2>🤖 Device Emulation</h2>
+  <p>Playwright ships a <code>devices</code> dictionary that bundles a <span class="hl-yellow">viewport size, user agent, pixel ratio, and touch support</span> into one preset — like putting on a costume for a specific phone.</p>
+  <div class="codebox">
+<span class="tok-kw">const</span> { <span class="tok-var">devices</span> } = <span class="tok-fn">require</span>(<span class="tok-str">'@playwright/test'</span>);
+<span class="tok-kw">const</span> <span class="tok-var">iPhone</span> = devices[<span class="tok-str">'iPhone 13'</span>];
+
+test.<span class="tok-fn">use</span>({ ...iPhone });
+  </div>
+
+  <h2>👆 Touch Events</h2>
+  <p>Real mobile users tap and swipe, not click. <code>locator.tap()</code> dispatches <span class="hl-green">touch events</span> instead of mouse events — it needs <code>hasTouch: true</code> in the context (already on by default in mobile device presets).</p>
+  <div class="codebox">
+<span class="tok-fn">test</span>(<span class="tok-str">'tap the menu'</span>, <span class="tok-kw">async</span> ({ page }) =&gt; {
+  <span class="tok-kw">await</span> page.<span class="tok-fn">goto</span>(<span class="tok-str">'/'</span>);
+  <span class="tok-kw">await</span> page.<span class="tok-fn">locator</span>(<span class="tok-str">'.menu'</span>).<span class="tok-fn">tap</span>();
+});
+  </div>
+
+  <h2>📐 Mobile Viewport</h2>
+  <p>You can also set just the viewport manually, without a full device preset, to test a specific breakpoint.</p>
+  <div class="codebox">
+<span class="tok-kw">await</span> page.<span class="tok-fn">setViewportSize</span>({ <span class="tok-prop">width</span>: <span class="tok-num">375</span>, <span class="tok-prop">height</span>: <span class="tok-num">667</span> });
+  </div>
+
+  <h2>🌐 Mobile Browser Testing</h2>
+  <p>Playwright can launch <span class="hl-orange">Mobile Safari &amp; Mobile Chrome</span> engines directly (via <code>webkit</code>/<code>chromium</code> with mobile emulation), so you test real responsive breakpoints, not just a resized desktop browser.</p>
+
+  <div class="sticky">📌 isMobile flag also toggles meta-viewport behaviour &amp; touch — set it explicitly if you build a custom device.</div>
+
+    <div class="speech-box interview-card">
+    <div class="speech-badge">🎤</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="question-strip"><span class="question-label">❓ Interviewer asks:</span> <span class="question-text">How do you test mobile web behavior with Playwright?</span></div>
+    <div class="speech-panel">
+        <p class="sl"><span class="anchor">For mobile testing,</span> I use Playwright's device presets to configure viewport, user agent, and touch support together.</p>
+        <p class="sl"><span class="anchor">For example,</span> <code>devices['iPhone 13']</code> provides a ready-made configuration for that device profile.</p>
+        <p class="sl"><span class="anchor">When checking gestures,</span> I use <code>locator.tap()</code> to simulate touch interaction instead of a mouse click.</p>
+        <p class="sl"><span class="anchor">For one breakpoint,</span> I can use <code>page.setViewportSize()</code> without applying a full device preset.</p>
+        <p class="sl"><span class="anchor">I also verify</span> responsive layouts at relevant mobile and tablet sizes.</p>
+        <p class="sl"><span class="anchor">When using custom settings,</span> I make sure touch support is enabled before calling <code>tap()</code>.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I choose device emulation for realistic mobile settings and a custom viewport for focused breakpoint checks.</p>
+      <div class="speech-alt">🔄 Also asked as: "How would you test responsive design in Playwright?" / "When would you use tap() instead of click()?"</div>
+      <div class="followup"><strong>Follow-up Qs:</strong> What does a Playwright device preset configure? How would you test a tablet landscape breakpoint?</div>
+    </div>
+  </div>
+
+  <div class="page-number">3</div>
+</div></div>
+
+<!-- ================= PAGE 4 ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="label-strip"><span>📘 Topic 59 — Localization Testing</span><span>Page 4</span></div>
+  <h1>Localization Testing 🌍</h1>
+
+  <h2>💡 What is it?</h2>
+  <p>Checking that the app shows the <span class="hl-yellow">right date, time &amp; money</span> for users in different countries.</p>
+
+  <h2>🎛️ 2 Settings to Know</h2>
+  <div class="table-scroll">
+  <table class="nb-table">
+    <tr><th>Setting</th><th>What it changes</th><th>Example</th></tr>
+    <tr><td><code>locale</code> 🌐</td><td>Date, number &amp; currency <span class="hl-green">format</span></td><td><code>'en-IN'</code> → 10/10/2026, ₹1,00,000</td></tr>
+    <tr><td><code>timezoneId</code> 🕒</td><td>The <span class="hl-green">time</span> shown in the browser</td><td><code>'Asia/Kolkata'</code> (IST)</td></tr>
+  </table>
+  </div>
+
+  <h2>🪜 How to Test (3 steps)</h2>
+  <ul>
+    <li><b>1.</b> Set <code>locale</code> + <code>timezoneId</code></li>
+    <li><b>2.</b> Open the page</li>
+    <li><b>3.</b> Check the text looks right for that country</li>
+  </ul>
+  <div class="codebox">
+<span class="comment-line">// Step 1: pretend the user is in India</span>
+test.<span class="tok-fn">use</span>({ <span class="tok-prop">locale</span>: <span class="tok-str">'en-IN'</span>, <span class="tok-prop">timezoneId</span>: <span class="tok-str">'Asia/Kolkata'</span> });
+
+<span class="tok-fn">test</span>(<span class="tok-str">'indian date'</span>, <span class="tok-kw">async</span> ({ page }) =&gt; {
+  <span class="tok-kw">await</span> page.<span class="tok-fn">goto</span>(<span class="tok-str">'/'</span>);                        <span class="tok-com">// Step 2</span>
+  <span class="tok-kw">await</span> <span class="tok-fn">expect</span>(page.<span class="tok-fn">locator</span>(<span class="tok-str">'.date'</span>))            <span class="tok-com">// Step 3</span>
+    .<span class="tok-fn">toContainText</span>(<span class="tok-str">'10/10/2026'</span>);
+});
+  </div>
+
+  <div class="sticky">📌 Same date, different look: US <code>10/25/2026</code> · India <code>25/10/2026</code> (day first). Money too: US <code>$100,000</code> vs India <code>₹1,00,000</code> (lakh style commas).</div>
+
+  <div class="callout">⚠️ <span class="hl-pink">locale ≠ translation</span>. It changes date/number/currency <i>format</i> only — your app's text stays in the same language.</div>
+
+    <div class="speech-box interview-card">
+    <div class="speech-badge">💬</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="question-strip"><span class="question-label">❓ Interviewer asks:</span> <span class="question-text">How do you test localization in Playwright?</span></div>
+    <div class="speech-panel">
+        <p class="sl"><span class="anchor">Localization testing checks</span> whether dates, times, numbers, and currencies appear in the expected regional format.</p>
+        <p class="sl"><span class="anchor">In Playwright,</span> I configure <code>locale</code> for regional formatting and <code>timezoneId</code> for browser time behavior.</p>
+        <p class="sl"><span class="anchor">For example,</span> I can set <code>locale: 'en-IN'</code> and <code>timezoneId: 'Asia/Kolkata'</code>.</p>
+        <p class="sl"><span class="anchor">Then I</span> open the page and assert that displayed values follow the expected format.</p>
+        <p class="sl"><span class="anchor">One important distinction is</span> locale settings do not translate application text into another language.</p>
+        <p class="sl"><span class="anchor">To avoid brittle tests,</span> I use expected values that match the configured locale and timezone.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I test localization by controlling regional settings and verifying formatting without confusing it with translation.</p>
+      <div class="speech-alt">🔄 Also asked as: "How would you catch region-specific date or currency bugs?" / "What is the difference between locale and timezoneId?"</div>
+      <div class="followup"><strong>Follow-up Qs:</strong> Does locale translate the application's text? How would you test right-to-left language layouts?</div>
+    </div>
+  </div>
+
+  <div class="page-number">4</div>
+</div></div>
+
+<!-- ================= PAGE 5: QUICK REVISION SHEET ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="title-bar" style="background:linear-gradient(120deg,#00695c,#004d40);">
+    <h1>⚡ Quick Revision Sheet</h1>
+    <div class="sub">Scan before your interview!</div>
+  </div>
+  <div class="label-strip"><span>⚡ Quick Revision Sheet</span><span>Scan before your interview!</span></div>
+
+  <div class="callout" style="background:#fff3d6; border-color:#e0a800;">
+    <b>⚡ HOW TO USE THIS PAGE</b> (read once, then ignore this box)<br>
+    <b>TIER 1</b> — Scan the Topic Map. Fuzzy branch? → drop to Tier 2.<br>
+    <b>TIER 2</b> — Read ONLY the rows that felt weak in Tier 1.<br>
+    <b>TIER 3</b> — ALWAYS read Mistakes + Memory Tricks, even if Tiers 1&amp;2 felt perfect.<br>
+    <b>LOOKUP</b> — Key Commands: glance only if tested on exact syntax.
+  </div>
+
+  <!-- SECTION 1: TOPIC MAP -->
+  <div class="tier-stripe tier1">
+  <h2>🗺️ Topic Map <span style="font-size:14px; color:#00897b;">TIER 1 · 30-sec scan</span></h2>
+  <div class="svg-wrap">
+  <svg viewBox="0 0 700 260" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="350" cy="130" r="46" fill="#e7edfb" stroke="#1a3fa0" stroke-width="2"/>
+    <text x="350" y="126" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0d1b3e">Advanced</text>
+    <text x="350" y="142" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0d1b3e">Testing</text>
+
+    <line x1="304" y1="105" x2="120" y2="45" stroke="#00897b" stroke-width="2"/>
+    <circle cx="110" cy="40" r="4" fill="#00897b"/>
+    <text x="30" y="30" font-family="Patrick Hand" font-size="15" fill="#00897b">Visual Testing</text>
+    <text x="30" y="50" font-family="Patrick Hand" font-size="13" fill="#00695c">screenshot · baseline · toHaveScreenshot</text>
+
+    <line x1="304" y1="155" x2="120" y2="215" stroke="#8e24aa" stroke-width="2"/>
+    <circle cx="110" cy="220" r="4" fill="#8e24aa"/>
+    <text x="20" y="235" font-family="Patrick Hand" font-size="15" fill="#8e24aa">Accessibility</text>
+    <text x="20" y="253" font-family="Patrick Hand" font-size="13" fill="#6a1b7a">POUR · ARIA · role · label · axe-core</text>
+
+    <line x1="396" y1="105" x2="580" y2="45" stroke="#e65100" stroke-width="2"/>
+    <circle cx="590" cy="40" r="4" fill="#e65100"/>
+    <text x="530" y="30" font-family="Patrick Hand" font-size="15" fill="#e65100">Mobile Web</text>
+    <text x="510" y="50" font-family="Patrick Hand" font-size="13" fill="#bf360c">devices · tap · viewport</text>
+
+    <line x1="396" y1="155" x2="580" y2="215" stroke="#1565c0" stroke-width="2"/>
+    <circle cx="590" cy="220" r="4" fill="#1565c0"/>
+    <text x="530" y="235" font-family="Patrick Hand" font-size="15" fill="#1565c0">Localization</text>
+    <text x="510" y="253" font-family="Patrick Hand" font-size="13" fill="#0d3f7a">locale · timezoneId · currency · dates</text>
+  </svg>
+  </div>
+  </div>
+
+  <!-- SECTION 2: MUST-KNOW -->
+  <div class="tier-stripe tier2">
+  <h2>🔑 Must-Know Concepts <span style="font-size:14px; color:#8e24aa;">TIER 2</span></h2>
+  <div class="table-scroll">
+  <table class="nb-table">
+    <tr><th>Concept</th><th>One-liner</th></tr>
+    <tr><td><span class="hl-yellow">Screenshot comparison</span></td><td>Pixel-diffing current render vs. saved baseline</td></tr>
+    <tr><td><span class="hl-yellow">Visual regression</span></td><td>Unintended UI change caught by screenshot diffing</td></tr>
+    <tr><td><code>toHaveScreenshot()</code></td><td>Playwright assertion that captures &amp; compares automatically</td></tr>
+    <tr><td>Baseline management</td><td>Storing/versioning/updating "known-good" reference images</td></tr>
+    <tr><td><span class="hl-green">POUR</span></td><td>Perceivable, Operable, Understandable, Robust</td></tr>
+    <tr><td>ARIA</td><td>Attributes describing roles/states to screen readers</td></tr>
+    <tr><td>Role</td><td>What an element IS to assistive tech</td></tr>
+    <tr><td>Label</td><td>The accessible NAME a screen reader announces</td></tr>
+    <tr><td>Device emulation</td><td>Simulating a device's viewport + UA + touch as one preset</td></tr>
+    <tr><td>Touch events</td><td>Tap/swipe gestures, distinct from mouse click</td></tr>
+    <tr><td>Locale</td><td>Language+region setting affecting date/number formatting</td></tr>
+    <tr><td>timezoneId</td><td>Context option controlling how Date renders in-browser</td></tr>
+  </table>
+  </div>
+  </div>
+
+  <!-- SECTION 5: RAPID FIRE -->
+  <div class="tier-stripe tier2">
+  <h2>🎯 Interview Rapid-Fire <span style="font-size:14px; color:#8e24aa;">TIER 2</span></h2>
+  <div class="table-scroll">
+  <table class="nb-table">
+    <tr><th>Question</th><th>Answer</th></tr>
+    <tr><td class="hl-yellow">★ What is visual regression testing?</td><td>Catches unintended UI changes vs. a saved baseline</td></tr>
+    <tr><td class="hl-yellow">★ What does toHaveScreenshot() do?</td><td>Pixel-compares render against a stored baseline</td></tr>
+    <tr><td>How do you update baselines?</td><td><code>--update-snapshots</code> flag</td></tr>
+    <tr><td class="hl-yellow">★ What is POUR?</td><td>Perceivable / Operable / Understandable / Robust</td></tr>
+    <tr><td>What is ARIA for?</td><td>Adds semantics to elements native HTML can't express</td></tr>
+    <tr><td>How do you run automated a11y scans?</td><td><code>@axe-core/playwright</code>'s <code>AxeBuilder</code></td></tr>
+    <tr><td class="hl-yellow">★ How does Playwright emulate a device?</td><td><code>devices['iPhone 13']</code> + <code>test.use()</code></td></tr>
+    <tr><td>tap() vs click()?</td><td>tap = touch event, click = mouse event</td></tr>
+    <tr><td>How to set a custom viewport?</td><td><code>page.setViewportSize()</code></td></tr>
+    <tr><td>How to test a locale?</td><td><code>test.use({ locale: 'fr-FR' })</code></td></tr>
+    <tr><td>Does locale translate text?</td><td>No — only formatting (dates/numbers/currency)</td></tr>
+  </table>
+  </div>
+  </div>
+
+  <!-- SECTION 3: KEY COMMANDS -->
+  <div class="tier-stripe lookup">
+  <h2>⚡ Key Commands / Syntax <span class="lookup-badge">🔍 LOOKUP ONLY</span></h2>
+  <div class="codebox">
+<span class="comment-line">// Screenshot assertions</span>
+<span class="tok-kw">await</span> <span class="tok-fn">expect</span>(page).<span class="tok-fn">toHaveScreenshot</span>(<span class="tok-str">'name.png'</span>);
+npx playwright <span class="tok-fn">test</span> <span class="tok-kw">--update-snapshots</span>
+
+<span class="comment-line">// Accessibility scan</span>
+<span class="tok-kw">new</span> <span class="tok-cls">AxeBuilder</span>({ page }).<span class="tok-fn">analyze</span>()
+
+<span class="comment-line">// Mobile emulation</span>
+devices[<span class="tok-str">'iPhone 13'</span>]
+<span class="tok-kw">await</span> page.<span class="tok-fn">setViewportSize</span>({ <span class="tok-prop">width</span>, <span class="tok-prop">height</span> })
+<span class="tok-kw">await</span> locator.<span class="tok-fn">tap</span>()
+
+<span class="comment-line">// Localization</span>
+test.<span class="tok-fn">use</span>({ <span class="tok-prop">locale</span>: <span class="tok-str">'fr-FR'</span>, <span class="tok-prop">timezoneId</span>: <span class="tok-str">'Europe/Paris'</span> })
+  </div>
+  </div>
+
+  <!-- SECTION 4: COMMON MISTAKES -->
+  <div class="tier-stripe tier3">
+  <h2>⚠️ Common Mistakes &amp; Gotchas <span class="mistake-badge">ALWAYS READ</span></h2>
+  <p class="warn">⚠️ Screenshots <span class="trap hl-pink">differ across OS/browser</span> — generate baselines in CI, not locally.</p>
+  <p class="warn">⚠️ Skipping <span class="trap hl-pink">maxDiffPixels/threshold</span> makes tests fail on tiny anti-aliasing noise.</p>
+  <p class="warn">⚠️ Adding <code>aria-label</code> on elements that <span class="trap hl-orange">already have visible text</span> causes confusing duplicate announcements.</p>
+  <p class="warn">⚠️ Calling <code>tap()</code> <span class="trap hl-pink">without hasTouch enabled</span> outside a device preset throws or misbehaves.</p>
+  <p class="warn">⚠️ Assuming <span class="trap hl-pink">locale translates UI text</span> — it only changes native formatting, not your app's strings.</p>
+  <p class="warn">⚠️ Hardcoding a date string in an assertion — breaks the moment <span class="trap hl-orange">timezone or locale changes</span>.</p>
+  </div>
+
+  <!-- SECTION 6: MEMORY TRICKS -->
+  <div class="tier-stripe tier3">
+  <h2>🧠 Memory Tricks &amp; Last-Minute Tips</h2>
+  <div class="sticky">🧠 <b>POUR</b> = like pouring water — accessibility is the vessel that holds everyone.</div>
+  <div class="sticky">🧠 Visual testing = screenshot-diff detective: baseline is the alibi photo, today's run is the suspect photo.</div>
+  <div class="sticky">🧠 <code>devices['iPhone 13']</code> = a whole costume in one line — viewport + UA + touch together.</div>
+  <div class="sticky">🧠 <b>locale</b> vs <b>timezoneId</b> = "where you SAY you are" vs "WHEN you say it is."</div>
+  <ul>
+    <li>✅ Regenerate baselines in CI, matching CI's exact rendering environment.</li>
+    <li>✅ Run axe scans on empty/loading/error states, not just the happy path.</li>
+    <li>✅ Test at least two breakpoints: mobile portrait + tablet landscape.</li>
+    <li>✅ Test at least one non-US locale to catch date/currency format bugs early.</li>
+  </ul>
+  </div>
+
+  <div class="page-number">5</div>
+</div></div>
+
+</div>
+</body>
+</html>

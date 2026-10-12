@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Phase 8 — Page Object Model & Framework Design | Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Patrick+Hand&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page-w:794px;
+    --page-h:1123px;
+    --ink-blue:#1a3fa0;
+    --ink-dark:#0d1b3e;
+    --content-grad-1:#1a3fa0;
+    --content-grad-2:#234ebf;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#e8e8e8;}
+  body{
+    font-family:'Patrick Hand','Kalam',cursive;
+    color:var(--ink-blue);
+  }
+  .pages-container{
+    width:100%;
+    background:#e8e8e8;
+    padding-bottom:40px;
+  }
+  .page-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:24px 12px;
+  }
+  @media (min-width:860px){
+    .page-wrapper{ padding:40px 24px; }
+  }
+  .page{
+    width:100%;
+    max-width:var(--page-w);
+    min-height:var(--page-h);
+    position:relative;
+    background:
+      repeating-linear-gradient(#fffdf8 0px,#fffdf8 27px,#cfe3f7 28px);
+    background-color:#fffdf8;
+    box-shadow:0 6px 24px rgba(0,0,0,0.18);
+    border-radius:3px;
+    padding:90px 34px 95px 68px;
+    rotate:-0.3deg;
+    overflow:visible;
+  }
+  .page:nth-of-type(even){ rotate:0.25deg; }
+  .page::before{
+    /* red margin line */
+    content:"";
+    position:absolute;
+    top:0; bottom:0; left:46px;
+    width:2px;
+    background:#e57373;
+    opacity:0.75;
+  }
+  .page-topbar{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:56px;
+    background:linear-gradient(135deg,var(--content-grad-1),var(--content-grad-2));
+    border-radius:3px 3px 0 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 30px 0 68px;
+    color:#fff;
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    font-size:19px;
+    letter-spacing:.3px;
+  }
+  .page-topbar.revision{
+    background:linear-gradient(135deg,#00695c,#004d40);
+  }
+  .page-number{
+    position:absolute;
+    bottom:14px; right:26px;
+    font-family:'Kalam',cursive;
+    font-size:15px;
+    color:#7a7a7a;
+    background:#fff;
+    border:1.5px dashed #b5b5b5;
+    border-radius:50%;
+    width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  h1.main-title{
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    font-size:34px;
+    color:#0d0d0d;
+    margin:6px 0 18px 0;
+    transform:rotate(-0.4deg);
+  }
+  h2.sec-title{
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    font-size:25px;
+    color:#0d1b4c;
+    margin:26px 0 10px 0;
+    border-bottom:2.5px solid #b9cdf2;
+    display:inline-block;
+    padding-bottom:2px;
+    transform:rotate(-0.3deg);
+  }
+  h3.sub-title{
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    font-size:20px;
+    color:#123a8f;
+    margin:16px 0 8px 0;
+  }
+  p, li{
+    font-size:19px;
+    line-height:1.65;
+    color:var(--ink-blue);
+  }
+  p:nth-of-type(odd), li:nth-of-type(odd){ transform:rotate(-0.25deg); }
+  p:nth-of-type(even), li:nth-of-type(even){ transform:rotate(0.2deg); }
+  ul, ol{ padding-left:26px; margin:8px 0; }
+  .note-block{ margin-bottom:6px; }
+
+  /* Highlighter marker spans */
+  .hl-yellow{ background:linear-gradient(180deg, transparent 60%, #fff59d 60%); padding:0 2px; font-weight:700; }
+  .hl-green{ background:linear-gradient(180deg, transparent 60%, #b9f6ca 60%); padding:0 2px; font-weight:700; }
+  .hl-pink{ background:linear-gradient(180deg, transparent 60%, #f8bbd0 60%); padding:0 2px; font-weight:700; }
+  .hl-orange{ background:linear-gradient(180deg, transparent 60%, #ffcc80 60%); padding:0 2px; font-weight:700; }
+
+  /* Inline code */
+  code.inline-code{
+    font-family:'Consolas','Monaco',monospace;
+    background:#eef1fb;
+    border:1px solid #c9d3ef;
+    border-radius:5px;
+    padding:1px 6px;
+    font-size:16px;
+    color:#26326b;
+  }
+
+  /* Code box */
+  .codebox{
+    background:#1e2235;
+    color:#e0e6f5;
+    border-radius:10px;
+    padding:16px 18px;
+    font-family:'Consolas','Monaco',monospace;
+    font-size:14.5px;
+    line-height:1.6;
+    margin:14px 0;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    white-space:pre;
+    word-break:normal;
+    border:1.5px dashed #445;
+    box-shadow:0 4px 14px rgba(0,0,0,0.25);
+  }
+  .codebox .cmt-line{ color:#8b949e; font-style:italic; }
+  .tok-kw{ color:#ff7b72; font-weight:700; }
+  .tok-fn{ color:#d2a8ff; }
+  .tok-var{ color:#79c0ff; }
+  .tok-str{ color:#a8e6a3; }
+  .tok-prop{ color:#56d364; }
+  .tok-num{ color:#f0883e; }
+  .tok-com{ color:#8b949e; font-style:italic; }
+  .tok-cls{ color:#ffa657; }
+  .tok-def{ color:#e2c08d; }
+
+  /* Table */
+  .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; margin:14px 0; }
+  table.nb-table{
+    border-collapse:collapse;
+    width:100%;
+    min-width:420px;
+    font-family:'Patrick Hand',cursive;
+    font-size:17px;
+    background:#fffef9;
+  }
+  table.nb-table th, table.nb-table td{
+    border:1.5px dashed #9fb3d9;
+    padding:8px 12px;
+    text-align:left;
+    vertical-align:top;
+  }
+  table.nb-table th{
+    background:#dbe6fb;
+    color:#0d1b4c;
+    font-weight:700;
+    font-size:18px;
+  }
+
+  /* Callout / sticky notes */
+  .sticky{
+    background:#fff8b3;
+    border-radius:4px;
+    padding:14px 16px;
+    box-shadow:3px 5px 10px rgba(0,0,0,0.2);
+    max-width:100%;
+    margin:16px auto;
+    font-family:'Caveat',cursive;
+    font-size:20px;
+    position:relative;
+  }
+  .sticky.pink{ background:#ffd9ec; }
+  .sticky.green{ background:#d4f7d4; }
+  .sticky.blue{ background:#d6e8ff; }
+  .sticky::before{
+    content:"";
+    position:absolute; top:0; right:0;
+    border-width:0 16px 16px 0;
+    border-style:solid;
+    border-color:transparent rgba(0,0,0,0.12) transparent transparent;
+  }
+  .sticky.rot1{ transform:rotate(-1.5deg); }
+  .sticky.rot2{ transform:rotate(1.2deg); }
+
+  .mnemonic-box{
+    border:2px dashed #7a5cc0;
+    border-radius:8px;
+    padding:10px 14px;
+    margin:10px 0;
+    background:#f7f3ff;
+    font-family:'Caveat',cursive;
+    font-size:19px;
+  }
+
+  /* Warning / tip box */
+  .callout{
+    border-left:5px solid #ff8a65;
+    background:#fff3ea;
+    padding:10px 14px;
+    margin:14px 0;
+    border-radius:0 8px 8px 0;
+  }
+  .callout.tip{ border-left-color:#4db6ac; background:#eafffb; }
+  .callout.warn{ border-left-color:#e57373; background:#fff0f0; }
+
+  /* Speech / Interview box */
+  .speech-box{
+    max-width:100%;
+    box-sizing:border-box;
+    margin:22px auto 14px auto;
+    border-radius:22px;
+    border:3.3px solid #7b3fe4;
+    padding:16px 18px 14px 18px;
+    position:relative;
+    background:
+      radial-gradient(circle at 25% 20%, rgba(255,255,255,0.55), transparent 55%),
+      linear-gradient(135deg,#c9a9ff 0%, #9d7bf0 50%, #7b3fe4 100%);
+    box-shadow: 4px 6px 0 rgba(123,63,228,0.35), 0 10px 24px rgba(0,0,0,0.25);
+    transform:rotate(-0.6deg);
+  }
+  .speech-box::after{
+    content:"";
+    position:absolute;
+    bottom:-14px; left:40px;
+    width:0;height:0;
+    border-style:solid;
+    border-width:18px 14px 0 0;
+    border-color:#7b3fe4 transparent transparent transparent;
+  }
+  .speech-box-inner{
+    box-sizing:border-box;
+    border:2px dashed rgba(255,255,255,0.8);
+    border-radius:16px;
+    padding:12px 14px;
+  }
+  .speech-badge{
+    position:absolute;
+    top:-18px; right:14px;
+    width:42px; height:42px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ffe082, #ff9800);
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.35);
+  }
+  .speech-title{
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    font-size:16px;
+    color:#2c0e5c;
+    margin-bottom:6px;
+  }
+  .speech-panel{
+    background:rgba(255,255,255,0.82);
+    border-radius:12px;
+    padding:10px 12px;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+  }
+  .speech-panel p{
+    font-family:'Patrick Hand',cursive;
+    font-size:20px;
+    line-height:1.55;
+    color:#2b1857;
+    margin:6px 0;
+  }
+
+  /* Interview speech cards — question first, one spoken sentence per line */
+  .speech-q{
+    background:rgba(255,255,255,0.93);
+    color:#0d2060;
+    border-left:5px solid #ffd54f;
+    border-radius:10px;
+    padding:8px 12px;
+    margin:0 0 10px;
+    font-family:'Kalam',cursive;
+    font-size:15.5px;
+    font-weight:700;
+    line-height:1.45;
+  }
+  .speech-q .qlabel{
+    display:block;
+    font-family:'Caveat',cursive;
+    font-size:14px;
+    font-weight:700;
+    color:#e65100;
+    letter-spacing:.03em;
+  }
+  .speech-q code{
+    background:#1e2235;
+    border:1px solid #344;
+    color:#79c0ff;
+    font-size:13px;
+  }
+  .speech-inner{
+    background:rgba(30,34,53,0.94);
+    border-radius:12px;
+    padding:12px 14px;
+    color:#fff;
+    overflow-wrap:anywhere;
+  }
+  .speech-inner p.sl{
+    font-family:'Patrick Hand',cursive;
+    font-size:19px;
+    line-height:1.48;
+    color:#fff;
+    margin:0 0 7px;
+    padding-left:2px;
+  }
+  .speech-inner p.sl:last-child{margin-bottom:0;}
+  .speech-inner p.sl .anchor{
+    font-weight:700;
+    color:#ffd54f;
+    margin-right:4px;
+  }
+  .speech-inner p.sl code{
+    background:rgba(255,255,255,0.15);
+    border:none;
+    color:#a8e6a3;
+    font-size:13px;
+    padding:1px 4px;
+  }
+  .speech-inner p.sl.closer{
+    margin-top:10px;
+    padding:7px 10px;
+    background:rgba(255,213,79,0.16);
+    border-left:4px solid #ffd54f;
+    border-radius:6px;
+    color:#fffde7;
+  }
+  .speech-inner p.sl.closer .anchor{color:#ffeb3b;}
+  .speech-alt{
+    margin-top:8px;
+    background:rgba(255,255,255,0.6);
+    border-radius:10px;
+    padding:6px 10px;
+    font-size:16px;
+    color:#3a2266;
+    font-family:'Caveat',cursive;
+  }
+  .speech-follow{
+    font-size:15.5px;
+    color:#3a2266;
+    margin-top:6px;
+    font-family:'Patrick Hand',cursive;
+  }
+  .speech-sub{
+    margin-top:8px;
+    background:rgba(255,255,255,0.6);
+    border-radius:10px;
+    padding:6px 10px;
+    font-size:16px;
+    color:#3a2266;
+    font-family:'Caveat',cursive;
+  }
+  .followup{
+    font-size:15.5px;
+    color:#3a2266;
+    margin-top:6px;
+    font-family:'Patrick Hand',cursive;
+  }
+
+  /* Tree diagram (folder structure) */
+  .tree{
+    font-family:'Consolas','Monaco',monospace;
+    font-size:16px;
+    background:#1e2235;
+    color:#e0e6f5;
+    border-radius:10px;
+    padding:16px 20px;
+    line-height:1.75;
+    overflow-x:auto;
+    margin:14px 0;
+    border:1.5px dashed #445;
+  }
+  .tree .folder{ color:#79c0ff; font-weight:700; }
+  .tree .file{ color:#a8e6a3; }
+  .tree .cmt{ color:#8b949e; font-style:italic; }
+
+  /* Mind map (mini) */
+  .mindmap-wrap{ margin:14px 0; text-align:center; }
+  .mindmap-wrap svg{ width:100%; height:auto; }
+
+  /* Decision diamond (unused variant kept minimal) */
+  .flow-box{
+    display:inline-block;
+    background:#eaf1ff;
+    border:2px solid #4a6fd6;
+    border-radius:10px;
+    padding:8px 14px;
+    font-size:17px;
+    margin:4px;
+    font-family:'Patrick Hand',cursive;
+  }
+  .flow-arrow{ font-size:22px; color:#4a6fd6; margin:0 6px; }
+
+  .safe-gap-top{ height:2px; }
+  .safe-gap-bottom{ height:2px; }
+
+  /* Revision sheet grid */
+  .concept-grid{
+    display:grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap:6px 14px;
+    font-size:16.5px;
+    margin:10px 0;
+  }
+  .concept-grid .k{ font-weight:700; color:#0d1b4c; }
+  .concept-grid .v{ color:var(--ink-blue); }
+
+  .badge-head{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#eef3ff;
+    border:1.5px solid #b9cdf2;
+    border-radius:20px;
+    padding:4px 14px;
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    font-size:19px;
+    color:#0d1b4c;
+    margin:20px 0 10px 0;
+  }
+  .badge-head.teal{ background:#e0f2f1; border-color:#00897b; color:#004d40; }
+  .badge-head.amber{ background:#fff3e0; border-color:#ef6c00; color:#bf360c; }
+
+  @media (prefers-reduced-motion: reduce){
+    .page{ rotate:0deg !important; }
+    .speech-box, .sticky{ transform:none !important; }
+    *{ transition:none !important; animation:none !important; }
+  }
+  @media print{
+    .page-wrapper{ display:flex !important; page-break-after:always; }
+    .pages-container{ background:#fff; }
+    .page{ box-shadow:none; rotate:0deg !important; margin:0; border:none; }
+  }
+  @media (max-width:420px){
+    .page{ padding:80px 18px 85px 46px; }
+    .page::before{ left:28px; }
+    h1.main-title{ font-size:27px; }
+    h2.sec-title{ font-size:21px; }
+    p, li{ font-size:17px; }
+  }
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-topbar"><span>📘 Phase 8 · POM &amp; Framework Design</span><span>Page 1</span></div>
+
+  <h1 class="main-title">🧩 Page Object Model &amp; Framework Design</h1>
+  <p>This phase covers how real automation frameworks are structured: the <span class="hl-yellow">Page Object Model (POM)</span>, folder architecture, reusable components, and data-driven testing.</p>
+
+  <h2 class="sec-title">🗺️ What This Phase Covers</h2>
+  <div class="mindmap-wrap">
+    <svg viewBox="0 0 700 260" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="350" cy="130" r="55" fill="#1a3fa0"/>
+      <text x="350" y="126" text-anchor="middle" fill="#fff" font-family="Kalam" font-size="15" font-weight="700">Framework</text>
+      <text x="350" y="144" text-anchor="middle" fill="#fff" font-family="Kalam" font-size="15" font-weight="700">Design</text>
+
+      <line x1="350" y1="130" x2="120" y2="45" stroke="#79c0ff" stroke-width="2"/>
+      <line x1="350" y1="130" x2="120" y2="215" stroke="#79c0ff" stroke-width="2"/>
+      <line x1="350" y1="130" x2="580" y2="45" stroke="#79c0ff" stroke-width="2"/>
+      <line x1="350" y1="130" x2="580" y2="215" stroke="#79c0ff" stroke-width="2"/>
+
+      <rect x="30" y="20" width="180" height="50" rx="10" fill="#eaf1ff" stroke="#4a6fd6" stroke-width="2"/>
+      <text x="120" y="50" text-anchor="middle" font-family="Patrick Hand" font-size="16" fill="#0d1b4c">Page Object Model</text>
+
+      <rect x="30" y="190" width="180" height="50" rx="10" fill="#eaf1ff" stroke="#4a6fd6" stroke-width="2"/>
+      <text x="120" y="220" text-anchor="middle" font-family="Patrick Hand" font-size="16" fill="#0d1b4c">Folder Architecture</text>
+
+      <rect x="490" y="20" width="180" height="50" rx="10" fill="#eaf1ff" stroke="#4a6fd6" stroke-width="2"/>
+      <text x="580" y="50" text-anchor="middle" font-family="Patrick Hand" font-size="16" fill="#0d1b4c">Reusable Components</text>
+
+      <rect x="490" y="190" width="180" height="50" rx="10" fill="#eaf1ff" stroke="#4a6fd6" stroke-width="2"/>
+      <text x="580" y="220" text-anchor="middle" font-family="Patrick Hand" font-size="16" fill="#0d1b4c">Data-Driven Testing</text>
+    </svg>
+  </div>
+
+  <h2 class="sec-title">28. What is POM?</h2>
+  <p><span class="hl-yellow">Page Object Model (POM)</span> is a design pattern where each web page (or component) of the app under test is represented as a <b>class</b>. That class stores the page's locators and exposes methods to interact with it — tests never touch locators directly.</p>
+  <div class="callout tip">💡 Think of a Page Object as a "remote control" for a page — the test just presses buttons (<code class="inline-code">login()</code>, <code class="inline-code">searchProduct()</code>) without knowing how the page is wired internally.</div>
+
+  <h3 class="sub-title">Why use POM?</h3>
+  <ul>
+    <li><span class="hl-green">Separation of concerns</span> — test logic ≠ UI locators.</li>
+    <li>One place to fix a locator when UI changes.</li>
+    <li>Tests read like plain English (business flow).</li>
+    <li>Encourages reusability across many test files.</li>
+  </ul>
+
+  <h2 class="sec-title">Page Classes</h2>
+  <p>A <b>page class</b> models one screen/page. It typically contains: a constructor taking the <code class="inline-code">page</code> object, locator definitions, and action methods.</p>
+
+  <h2 class="sec-title">Locators Inside Page Classes</h2>
+  <p>Locators are declared as <b>class fields/getters</b> so they're defined once and reused by every method in the class — never hard-coded inside test files.</p>
+  <div class="codebox">
+<span class="tok-com">// LoginPage.js — locators declared inside the class</span>
+<span class="tok-kw">class</span> <span class="tok-cls">LoginPage</span> {
+  <span class="tok-fn">constructor</span>(<span class="tok-var">page</span>) {
+    <span class="tok-var">this</span>.<span class="tok-prop">page</span> = <span class="tok-var">page</span>;
+    <span class="tok-var">this</span>.<span class="tok-prop">usernameInput</span> = <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#username'</span>);
+    <span class="tok-var">this</span>.<span class="tok-prop">passwordInput</span> = <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'#password'</span>);
+    <span class="tok-var">this</span>.<span class="tok-prop">loginBtn</span> = <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'button[type="submit"]'</span>);
+  }
+}
+  </div>
+
+  <div class="page-number">1</div>
+</div></div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-topbar"><span>📘 Phase 8 · POM &amp; Framework Design</span><span>Page 2</span></div>
+
+  <h2 class="sec-title">Reusable Methods</h2>
+  <p>Each page class exposes <span class="hl-yellow">low-level action methods</span> that wrap Playwright/Selenium calls — e.g. <code class="inline-code">fillUsername()</code>, <code class="inline-code">clickLogin()</code>. These are reused across many tests.</p>
+
+  <h2 class="sec-title">Business Methods</h2>
+  <p><span class="hl-green">Business methods</span> combine several low-level actions into one meaningful step that mirrors a real user action, e.g. <code class="inline-code">login(user, pass)</code> internally calls fill + fill + click.</p>
+
+  <div class="codebox">
+<span class="tok-com">// LoginPage.js — reusable + business methods</span>
+<span class="tok-kw">class</span> <span class="tok-cls">LoginPage</span> {
+  <span class="tok-com">// ...constructor with locators above...</span>
+
+  <span class="tok-kw">async</span> <span class="tok-fn">fillUsername</span>(<span class="tok-var">value</span>) {
+    <span class="tok-kw">await</span> <span class="tok-var">this</span>.<span class="tok-prop">usernameInput</span>.<span class="tok-fn">fill</span>(<span class="tok-var">value</span>);
+  }
+
+  <span class="tok-kw">async</span> <span class="tok-fn">fillPassword</span>(<span class="tok-var">value</span>) {
+    <span class="tok-kw">await</span> <span class="tok-var">this</span>.<span class="tok-prop">passwordInput</span>.<span class="tok-fn">fill</span>(<span class="tok-var">value</span>);
+  }
+
+  <span class="tok-com">// business method — one real user action</span>
+  <span class="tok-kw">async</span> <span class="tok-fn">login</span>(<span class="tok-var">username</span>, <span class="tok-var">password</span>) {
+    <span class="tok-kw">await</span> <span class="tok-var">this</span>.<span class="tok-fn">fillUsername</span>(<span class="tok-var">username</span>);
+    <span class="tok-kw">await</span> <span class="tok-var">this</span>.<span class="tok-fn">fillPassword</span>(<span class="tok-var">password</span>);
+    <span class="tok-kw">await</span> <span class="tok-var">this</span>.<span class="tok-prop">loginBtn</span>.<span class="tok-fn">click</span>();
+  }
+}
+<span class="tok-kw">module</span>.<span class="tok-prop">exports</span> = { <span class="tok-cls">LoginPage</span> };
+  </div>
+
+  <h3 class="sub-title">Using it in a test</h3>
+  <div class="codebox">
+<span class="tok-kw">const</span> <span class="tok-var">loginPage</span> = <span class="tok-kw">new</span> <span class="tok-cls">LoginPage</span>(<span class="tok-var">page</span>);
+<span class="tok-kw">await</span> <span class="tok-var">loginPage</span>.<span class="tok-fn">login</span>(<span class="tok-str">'admin'</span>, <span class="tok-str">'secret123'</span>);
+<span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">page</span>).<span class="tok-fn">toHaveURL</span>(<span class="tok-str">'/dashboard'</span>);
+  </div>
+
+  <h2 class="sec-title">Avoiding Duplicate Code</h2>
+  <ul>
+    <li>Never repeat the <span class="hl-pink">same locator string</span> in multiple test files — define it once in the page class.</li>
+    <li>Extract common steps (e.g. login, navigation) into <b>business methods</b>, not copy-pasted in every test.</li>
+    <li>Use a <b>Base Page</b> (see Page 4) for actions common to every page — click, type, wait.</li>
+  </ul>
+
+  <div class="speech-box">
+    <div class="speech-badge" aria-hidden="true">🎤</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-box-inner">
+      <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span> “What is the Page Object Model, and how does it make an automation framework easier to maintain?”</div>
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">POM is</span> a design pattern where I keep each page's locators and actions inside a dedicated class.</p>
+        <p class="sl"><span class="anchor">The problem is</span> UI changes can break many tests when locators are copied across test files.</p>
+        <p class="sl"><span class="anchor">With POM, I</span> define locators once and expose reusable methods such as <code>login()</code>.</p>
+        <p class="sl"><span class="anchor">For example,</span> my test calls <code>loginPage.login(user, pass)</code> without knowing the underlying locator details.</p>
+        <p class="sl"><span class="anchor">When the UI changes,</span> I update the relevant page class instead of editing every test.</p>
+        <p class="sl"><span class="anchor">I also keep</span> business methods focused on user actions and avoid oversized page classes.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I use POM to separate test intent from UI details, making changes safer and the suite easier to maintain.</p>
+      </div>
+      <div class="speech-alt">🔄 Also asked as: “How do you keep your test suite maintainable?” · “How do you manage UI changes that break tests?”</div>
+      <div class="speech-follow">Follow-up Qs: Low-level method → business method? · When should a page class be split?</div>
+    </div>
+  </div>
+
+  <div class="page-number">2</div>
+</div></div>
+
+<!-- ================= PAGE 3 ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-topbar"><span>📘 Phase 8 · POM &amp; Framework Design</span><span>Page 3</span></div>
+
+  <h1 class="main-title" style="font-size:28px;">29. Better Framework Architecture</h1>
+  <p>A scalable automation framework separates concerns into dedicated folders — this makes the codebase <span class="hl-yellow">navigable</span> even as it grows to hundreds of tests.</p>
+
+  <div class="tree">
+<span class="folder">project-root/</span>
+├── <span class="folder">tests/</span>          <span class="cmt">// actual test spec files (*.spec.js)</span>
+├── <span class="folder">pages/</span>          <span class="cmt">// Page Object classes (LoginPage, HomePage...)</span>
+├── <span class="folder">fixtures/</span>       <span class="cmt">// custom test fixtures / setup-teardown hooks</span>
+├── <span class="folder">utils/</span>          <span class="cmt">// helper functions (date utils, string utils)</span>
+├── <span class="folder">test-data/</span>      <span class="cmt">// JSON / CSV / Excel data files</span>
+├── <span class="folder">api/</span>            <span class="cmt">// API client wrappers for hybrid UI+API tests</span>
+├── <span class="folder">config/</span>         <span class="cmt">// env configs, playwright.config.js</span>
+├── <span class="folder">reports/</span>        <span class="cmt">// generated HTML/Allure test reports</span>
+└── <span class="file">package.json</span>
+  </div>
+
+  <div class="table-scroll">
+  <table class="nb-table" aria-label="Folder purpose table">
+    <caption style="caption-side:top; text-align:left; font-family:'Kalam',cursive; font-size:16px; color:#0d1b4c; padding-bottom:6px;">Folder purposes at a glance</caption>
+    <tr><th>Folder</th><th>Purpose</th></tr>
+    <tr><td><code class="inline-code">tests/</code></td><td>Actual test specs — call page methods, hold assertions.</td></tr>
+    <tr><td><code class="inline-code">pages/</code></td><td>One class per page/component — POM lives here.</td></tr>
+    <tr><td><code class="inline-code">fixtures/</code></td><td>Reusable setup/teardown — e.g. logged-in browser context.</td></tr>
+    <tr><td><code class="inline-code">utils/</code></td><td>Generic helpers not tied to any page (dates, random data).</td></tr>
+    <tr><td><code class="inline-code">test-data/</code></td><td>External data files used by data-driven tests.</td></tr>
+    <tr><td><code class="inline-code">api/</code></td><td>Direct API calls — for seeding data or hybrid checks.</td></tr>
+    <tr><td><code class="inline-code">config/</code></td><td>Environment URLs, timeouts, credentials per environment.</td></tr>
+    <tr><td><code class="inline-code">reports/</code></td><td>Auto-generated output — screenshots, traces, HTML reports.</td></tr>
+  </table>
+  </div>
+
+  <div class="callout warn">⚠️ <span class="hl-pink">Common mistake</span>: dumping locators and test logic into one flat folder — this becomes unmaintainable past ~20 tests.</div>
+
+  <h3 class="sub-title">Flow: how a test uses the structure</h3>
+  <div style="text-align:center; margin:14px 0;">
+    <span class="flow-box">test file</span><span class="flow-arrow">→</span><span class="flow-box">imports Page Object</span><span class="flow-arrow">→</span><span class="flow-box">Page Object uses config/</span><span class="flow-arrow">↓</span><br>
+    <span class="flow-box">reads test-data/</span><span class="flow-arrow">→</span><span class="flow-box">runs assertions</span><span class="flow-arrow">→</span><span class="flow-box">writes to reports/</span>
+  </div>
+
+  <div class="sticky rot1">📌 Rule of thumb: if a new teammate can't find where "login logic" lives within 10 seconds, your architecture needs folders.</div>
+
+  <div class="page-number">3</div>
+</div></div>
+
+<!-- ================= PAGE 4 ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-topbar"><span>📘 Phase 8 · POM &amp; Framework Design</span><span>Page 4</span></div>
+
+  <h1 class="main-title" style="font-size:28px;">30. Reusable Components</h1>
+
+  <h2 class="sec-title">Base Page</h2>
+  <p>A <span class="hl-yellow">Base Page</span> class holds actions common to <b>every</b> page (click, type, wait, screenshot). All other page classes <code class="inline-code">extend</code> it.</p>
+  <div class="codebox">
+<span class="tok-com">// BasePage.js</span>
+<span class="tok-kw">class</span> <span class="tok-cls">BasePage</span> {
+  <span class="tok-fn">constructor</span>(<span class="tok-var">page</span>) { <span class="tok-var">this</span>.<span class="tok-prop">page</span> = <span class="tok-var">page</span>; }
+
+  <span class="tok-kw">async</span> <span class="tok-fn">click</span>(<span class="tok-var">locator</span>) { <span class="tok-kw">await</span> <span class="tok-var">locator</span>.<span class="tok-fn">click</span>(); }
+  <span class="tok-kw">async</span> <span class="tok-fn">type</span>(<span class="tok-var">locator</span>, <span class="tok-var">text</span>) { <span class="tok-kw">await</span> <span class="tok-var">locator</span>.<span class="tok-fn">fill</span>(<span class="tok-var">text</span>); }
+  <span class="tok-kw">async</span> <span class="tok-fn">waitVisible</span>(<span class="tok-var">locator</span>) {
+    <span class="tok-kw">await</span> <span class="tok-var">locator</span>.<span class="tok-fn">waitFor</span>({ <span class="tok-prop">state</span>: <span class="tok-str">'visible'</span> });
+  }
+}
+<span class="tok-kw">class</span> <span class="tok-cls">LoginPage</span> <span class="tok-kw">extends</span> <span class="tok-cls">BasePage</span> { <span class="tok-com">/* ... */</span> }
+  </div>
+
+  <h2 class="sec-title">Utility Classes &amp; Common Actions/Assertions</h2>
+  <div class="table-scroll">
+  <table class="nb-table" aria-label="Reusable component types">
+    <tr><th>Component</th><th>What it holds</th></tr>
+    <tr><td><span class="hl-green">Utility classes</span></td><td>Date formatting, random string/email generators, file readers.</td></tr>
+    <tr><td><span class="hl-green">Common actions</span></td><td>Generic UI actions in BasePage: <code class="inline-code">click()</code>, <code class="inline-code">type()</code>, <code class="inline-code">scrollTo()</code>.</td></tr>
+    <tr><td><span class="hl-green">Common assertions</span></td><td>Wrapped checks e.g. <code class="inline-code">expectVisible()</code>, <code class="inline-code">expectText()</code> for consistent error messages.</td></tr>
+    <tr><td><span class="hl-green">Constants</span></td><td>Fixed values — timeouts, roles, status codes — never magic numbers in tests.</td></tr>
+    <tr><td><span class="hl-green">Environment config</span></td><td>Base URLs & credentials per env (dev/staging/prod), loaded at runtime.</td></tr>
+  </table>
+  </div>
+
+  <div class="codebox">
+<span class="tok-com">// config/env.js — environment configuration</span>
+<span class="tok-kw">const</span> <span class="tok-var">config</span> = {
+  <span class="tok-prop">dev</span>: { <span class="tok-prop">baseURL</span>: <span class="tok-str">'https://dev.app.com'</span> },
+  <span class="tok-prop">staging</span>: { <span class="tok-prop">baseURL</span>: <span class="tok-str">'https://staging.app.com'</span> },
+  <span class="tok-prop">prod</span>: { <span class="tok-prop">baseURL</span>: <span class="tok-str">'https://app.com'</span> }
+};
+<span class="tok-kw">module</span>.<span class="tok-prop">exports</span> = <span class="tok-var">config</span>[<span class="tok-var">process</span>.<span class="tok-prop">env</span>.<span class="tok-prop">ENV</span> || <span class="tok-str">'dev'</span>];
+  </div>
+
+  <div class="callout tip">💡 Constants + env config together mean you never hard-code a URL or timeout value inside a test.</div>
+
+  <div class="page-number">4</div>
+</div></div>
+
+<!-- ================= PAGE 5 ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-topbar"><span>📘 Phase 8 · POM &amp; Framework Design</span><span>Page 5</span></div>
+
+  <h1 class="main-title" style="font-size:28px;">31. Data-Driven Testing</h1>
+  <p><span class="hl-yellow">Data-driven testing</span> runs the same test logic multiple times with different input data sets — instead of writing one test per data combination.</p>
+
+  <h2 class="sec-title">Data Sources: JSON / CSV / Excel</h2>
+  <div class="codebox">
+<span class="tok-com">// test-data/users.json</span>
+[
+  { <span class="tok-prop">"username"</span>: <span class="tok-str">"admin"</span>, <span class="tok-prop">"password"</span>: <span class="tok-str">"secret123"</span>, <span class="tok-prop">"expected"</span>: <span class="tok-str">"dashboard"</span> },
+  { <span class="tok-prop">"username"</span>: <span class="tok-str">"guest"</span>, <span class="tok-prop">"password"</span>: <span class="tok-str">"wrongpass"</span>, <span class="tok-prop">"expected"</span>: <span class="tok-str">"error"</span> }
+]
+  </div>
+  <ul>
+    <li><span class="hl-green">JSON</span> — best for structured, nested data; native JS parsing.</li>
+    <li><span class="hl-green">CSV</span> — simple flat tabular data, easy for non-technical testers to edit.</li>
+    <li><span class="hl-green">Excel</span> — used when QA/business teams maintain test data manually.</li>
+  </ul>
+
+  <h2 class="sec-title">Parameterized Tests</h2>
+  <p>Loop over the data set and generate one test per row — this is Playwright/JS's equivalent of TestNG's <span class="hl-orange">Data Provider</span>.</p>
+  <div class="codebox">
+<span class="tok-com">// login.spec.js — parameterized test</span>
+<span class="tok-kw">const</span> <span class="tok-var">users</span> = <span class="tok-fn">require</span>(<span class="tok-str">'../test-data/users.json'</span>);
+
+<span class="tok-kw">for</span> (<span class="tok-kw">const</span> <span class="tok-var">user</span> <span class="tok-kw">of</span> <span class="tok-var">users</span>) {
+  <span class="tok-fn">test</span>(<span class="tok-str">`login with ${user.username}`</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => {
+    <span class="tok-kw">const</span> <span class="tok-var">loginPage</span> = <span class="tok-kw">new</span> <span class="tok-cls">LoginPage</span>(<span class="tok-var">page</span>);
+    <span class="tok-kw">await</span> <span class="tok-var">loginPage</span>.<span class="tok-fn">login</span>(<span class="tok-var">user</span>.<span class="tok-prop">username</span>, <span class="tok-var">user</span>.<span class="tok-prop">password</span>);
+    <span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">page</span>).<span class="tok-fn">toHaveURL</span>(<span class="tok-fn">new</span> <span class="tok-cls">RegExp</span>(<span class="tok-var">user</span>.<span class="tok-prop">expected</span>));
+  });
+}
+  </div>
+
+  <h2 class="sec-title">Environment-Specific Data</h2>
+  <p>Keep a separate data file/section per environment (e.g. <code class="inline-code">users.dev.json</code>, <code class="inline-code">users.staging.json</code>) so the same test logic runs safely across environments.</p>
+
+  <div class="mnemonic-box">🧠 Mnemonic: <b>"J-C-E, Data's Free"</b> — <b>J</b>SON, <b>C</b>SV, <b>E</b>xcel are the 3 common data sources; picking the right one keeps your data layer "free" of hard-coded values in test code.</div>
+
+  <div class="speech-box">
+    <div class="speech-badge" aria-hidden="true">💬</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-box-inner">
+      <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span> “What is data-driven testing, and how would you implement it in Playwright?”</div>
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">Data-driven testing is</span> running the same test logic with multiple input sets instead of duplicating test scripts.</p>
+        <p class="sl"><span class="anchor">The reason this matters is</span> one flow may need valid, invalid, boundary, and other input combinations.</p>
+        <p class="sl"><span class="anchor">Common data sources are</span> <code>JSON</code>, <code>CSV</code>, and Excel, chosen according to the team's needs.</p>
+        <p class="sl"><span class="anchor">For data, I</span> keep inputs outside the test logic so cases are easier to review and update.</p>
+        <p class="sl"><span class="anchor">In Playwright, I</span> can loop through the data and define a separate test for each case.</p>
+        <p class="sl"><span class="anchor">I also check</span> expected outcomes for each row and keep environment-specific data separate when needed.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I separate test data from test logic to reduce duplication and make coverage easier to extend reliably.</p>
+      </div>
+      <div class="speech-alt">🔄 Also asked as: “How do you test one flow with many inputs?” · “How do you reduce duplicate test cases?”</div>
+      <div class="speech-follow">Follow-up Qs: Environment-specific data → how is it selected? · Negative test row → how is failure asserted?</div>
+    </div>
+  </div>
+
+  <div class="page-number">5</div>
+</div></div>
+
+<!-- ================= PAGE 6 — QUICK REVISION SHEET ================= -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-topbar revision"><span>⚡ Quick Revision Sheet</span><span>Scan before your interview!</span></div>
+
+  <div class="badge-head teal">🗺️ Topic Map</div>
+  <div class="mindmap-wrap">
+    <svg viewBox="0 0 700 210" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="350" cy="105" r="42" fill="#00695c"/>
+      <text x="350" y="102" text-anchor="middle" fill="#fff" font-family="Kalam" font-size="13" font-weight="700">Framework</text>
+      <text x="350" y="117" text-anchor="middle" fill="#fff" font-family="Kalam" font-size="13" font-weight="700">Design</text>
+      <line x1="350" y1="105" x2="110" y2="35" stroke="#4db6ac" stroke-width="2"/>
+      <line x1="350" y1="105" x2="110" y2="175" stroke="#4db6ac" stroke-width="2"/>
+      <line x1="350" y1="105" x2="590" y2="35" stroke="#4db6ac" stroke-width="2"/>
+      <line x1="350" y1="105" x2="590" y2="175" stroke="#4db6ac" stroke-width="2"/>
+      <rect x="20" y="15" width="180" height="40" rx="8" fill="#e0f2f1" stroke="#00897b" stroke-width="1.5"/>
+      <text x="110" y="40" text-anchor="middle" font-family="Patrick Hand" font-size="14" fill="#004d40">POM (locators+methods)</text>
+      <rect x="20" y="155" width="180" height="40" rx="8" fill="#e0f2f1" stroke="#00897b" stroke-width="1.5"/>
+      <text x="110" y="180" text-anchor="middle" font-family="Patrick Hand" font-size="14" fill="#004d40">Folder Architecture</text>
+      <rect x="500" y="15" width="180" height="40" rx="8" fill="#e0f2f1" stroke="#00897b" stroke-width="1.5"/>
+      <text x="590" y="40" text-anchor="middle" font-family="Patrick Hand" font-size="14" fill="#004d40">Base Page + Utils</text>
+      <rect x="500" y="155" width="180" height="40" rx="8" fill="#e0f2f1" stroke="#00897b" stroke-width="1.5"/>
+      <text x="590" y="180" text-anchor="middle" font-family="Patrick Hand" font-size="14" fill="#004d40">Data-Driven Testing</text>
+    </svg>
+  </div>
+
+  <div class="badge-head teal">🔑 Must-Know Concepts</div>
+  <div class="concept-grid">
+    <div class="k hl-yellow">POM</div><div class="v">Design pattern — one class per page holding locators + methods.</div>
+    <div class="k hl-yellow">Page class</div><div class="v">Represents a screen; constructor takes <code class="inline-code">page</code>, defines locators.</div>
+    <div class="k hl-green">Reusable method</div><div class="v">Low-level wrapped action, e.g. <code class="inline-code">fillUsername()</code>.</div>
+    <div class="k hl-green">Business method</div><div class="v">Combines actions into one real user step, e.g. <code class="inline-code">login()</code>.</div>
+    <div class="k hl-green">Base Page</div><div class="v">Parent class with actions common to every page.</div>
+    <div class="k hl-green">Fixtures</div><div class="v">Reusable setup/teardown (e.g. logged-in session) shared across tests.</div>
+    <div class="k hl-green">Constants</div><div class="v">Fixed values (timeouts, roles) — no magic numbers in tests.</div>
+    <div class="k hl-green">Env config</div><div class="v">Per-environment base URLs & credentials, loaded at runtime.</div>
+    <div class="k hl-orange">Data-driven testing</div><div class="v">Same test logic run against many data rows (JSON/CSV/Excel).</div>
+    <div class="k hl-orange">Parameterized test</div><div class="v">Loop generating one test per data row — JS's Data Provider equivalent.</div>
+  </div>
+
+  <div class="badge-head amber">⚡ Key Commands / Syntax</div>
+  <div class="codebox">
+<span class="tok-com">// locator inside page class</span>
+<span class="tok-var">this</span>.<span class="tok-prop">loginBtn</span> = <span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'button[type="submit"]'</span>);
+
+<span class="tok-com">// business method call from test</span>
+<span class="tok-kw">await</span> <span class="tok-var">loginPage</span>.<span class="tok-fn">login</span>(<span class="tok-str">'admin'</span>, <span class="tok-str">'secret123'</span>);
+
+<span class="tok-com">// class extending BasePage</span>
+<span class="tok-kw">class</span> <span class="tok-cls">LoginPage</span> <span class="tok-kw">extends</span> <span class="tok-cls">BasePage</span> { }
+
+<span class="tok-com">// parameterized loop over JSON data</span>
+<span class="tok-kw">for</span> (<span class="tok-kw">const</span> <span class="tok-var">user</span> <span class="tok-kw">of</span> <span class="tok-var">users</span>) { <span class="tok-fn">test</span>(<span class="tok-str">`login ${user.username}`</span>, ...); }
+  </div>
+
+  <div class="badge-head amber">⚠️ Common Mistakes &amp; Gotchas</div>
+  <ul>
+    <li>⚠️ Hard-coding <span class="hl-pink">locators inside test files</span> instead of the page class.</li>
+    <li>⚠️ Skipping a <span class="hl-pink">Base Page</span> — leads to duplicated click/type logic everywhere.</li>
+    <li>⚠️ Mixing <span class="hl-orange">business methods and low-level methods</span> with no clear naming split.</li>
+    <li>⚠️ Hard-coding <span class="hl-pink">URLs or credentials</span> instead of using env config.</li>
+    <li>⚠️ Flat folder structure with no <code class="inline-code">pages/</code> vs <code class="inline-code">tests/</code> separation.</li>
+    <li>⚠️ Not separating <span class="hl-orange">test data</span> by environment — causes flaky cross-env runs.</li>
+  </ul>
+
+  <div class="badge-head amber">🎯 Interview Rapid-Fire</div>
+  <div class="table-scroll">
+  <table class="nb-table" aria-label="Interview rapid fire Q and A">
+    <tr><th>Question</th><th>Answer</th></tr>
+    <tr><td class="hl-yellow">What is POM?</td><td>Pattern: one class per page holds locators + methods.</td></tr>
+    <tr><td>Why use POM?</td><td>Maintainability — fix locator once, not in every test.</td></tr>
+    <tr><td>Business vs reusable method?</td><td>Business = full user step; reusable = single low-level action.</td></tr>
+    <tr><td class="hl-yellow">What is a Base Page?</td><td>Parent class with actions common to all pages.</td></tr>
+    <tr><td>Why separate folders (pages/tests/utils)?</td><td>Keeps large suites navigable & maintainable.</td></tr>
+    <tr><td>What goes in fixtures/?</td><td>Reusable setup/teardown, e.g. authenticated session.</td></tr>
+    <tr><td class="hl-yellow">What is data-driven testing?</td><td>Running same test logic with multiple data sets.</td></tr>
+    <tr><td>JSON vs CSV vs Excel for test data?</td><td>JSON=structured, CSV=simple flat, Excel=business-editable.</td></tr>
+    <tr><td>How to parameterize a test?</td><td>Loop over data array, call <code class="inline-code">test()</code> per row.</td></tr>
+    <tr><td>Data Provider equivalent in JS?</td><td>Looping over JSON/array and generating tests dynamically.</td></tr>
+    <tr><td>How to handle env-specific data?</td><td>Separate data files/config per environment (dev/staging/prod).</td></tr>
+  </table>
+  </div>
+
+  <div class="badge-head amber">🧠 Memory Tricks &amp; Last-Minute Tips</div>
+  <div class="mnemonic-box">🧠 "<b>L-R-B</b>" for page classes: <b>L</b>ocators → <b>R</b>eusable methods → <b>B</b>usiness methods (build in that order).</div>
+  <div class="mnemonic-box">🧠 "<b>J-C-E</b>" = JSON, CSV, Excel — the 3 data sources for data-driven tests.</div>
+  <ul>
+    <li>✅ Double-check every page class extends <code class="inline-code">BasePage</code>.</li>
+    <li>✅ Confirm no locator is duplicated across two page classes.</li>
+    <li>✅ Confirm test data is environment-scoped before running in staging.</li>
+    <li>✅ Be ready to sketch the folder tree (tests/pages/fixtures/utils) on a whiteboard.</li>
+  </ul>
+
+  <div class="page-number">6</div>
+</div></div>
+
+</div>
+</body>
+</html>

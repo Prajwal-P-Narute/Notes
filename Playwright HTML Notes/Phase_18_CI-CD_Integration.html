@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>CI/CD with Playwright — Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #d5d5d5;
+  font-family: 'Kalam', 'Patrick Hand', cursive;
+  padding: 0;
+}
+
+.pages-container {
+  width: 100%;
+  background: #c8c8c8;
+  padding-bottom: 60px;
+}
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px 12px;
+}
+
+@media (min-width: 860px) {
+  .page-wrapper { padding: 40px 24px; }
+}
+
+.page {
+  width: 100%;
+  max-width: 794px;
+  min-height: 1123px;
+  position: relative;
+  background-color: #fffdf8;
+  background-image:
+    repeating-linear-gradient(
+      #fffdf8 0, #fffdf8 27px, #cfe3f7 28px
+    );
+  border-left: 3px solid #e8a0a0;
+  padding: 80px 40px 80px 60px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18), 4px 4px 0 rgba(0,0,0,0.06);
+  transform: rotate(-0.2deg);
+}
+
+.page:nth-child(odd) { transform: rotate(0.15deg); }
+
+/* ── Page number ── */
+.pg-num {
+  position: absolute;
+  bottom: 28px;
+  right: 36px;
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: #999;
+}
+
+/* ── Page header banner ── */
+.page-banner {
+  background: linear-gradient(135deg, #1a3fa0 0%, #234ebf 60%, #1565c0 100%);
+  color: #fff;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(26,63,160,0.3);
+}
+
+.page-banner h1 {
+  font-family: 'Kalam', cursive;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.page-banner .topic-label {
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  background: rgba(255,255,255,0.2);
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+/* ── Headings ── */
+h2 {
+  font-family: 'Kalam', cursive;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  border-bottom: 2.5px solid #1a3fa0;
+  padding-bottom: 4px;
+  margin: 24px 0 14px 0;
+}
+
+h3 {
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a3fa0;
+  margin: 18px 0 10px 0;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 15px;
+  color: #234ebf;
+  margin: 12px 0 6px 0;
+}
+
+/* ── Body text ── */
+p, li {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 15px;
+  color: #1a1a6e;
+  line-height: 1.9;
+}
+
+ul, ol { padding-left: 22px; margin: 6px 0; }
+li { margin-bottom: 3px; }
+
+/* ── Highlights ── */
+.hl-yellow { background: linear-gradient(180deg, transparent 55%, #fff59d 55%); padding: 0 2px; }
+.hl-green  { background: linear-gradient(180deg, transparent 55%, #c8f7c5 55%); padding: 0 2px; }
+.hl-pink   { background: linear-gradient(180deg, transparent 55%, #ffd6e0 55%); padding: 0 2px; }
+.hl-orange { background: linear-gradient(180deg, transparent 55%, #ffe0b2 55%); padding: 0 2px; }
+.hl-blue   { background: linear-gradient(180deg, transparent 55%, #b3d9ff 55%); padding: 0 2px; }
+
+/* ── Inline code ── */
+code {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  background: #f0f3ff;
+  border: 1px solid #c5d0f0;
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: #2d3691;
+}
+
+/* ── Code box ── */
+.codebox {
+  background: #1e2235;
+  color: #e0e6f5;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 14px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre;
+  word-break: normal;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.codebox .tok-kw   { color: #ff7b72; font-weight: bold; }
+.codebox .tok-fn   { color: #d2a8ff; }
+.codebox .tok-var  { color: #79c0ff; }
+.codebox .tok-str  { color: #a8e6a3; }
+.codebox .tok-prop { color: #56d364; }
+.codebox .tok-num  { color: #f0883e; }
+.codebox .tok-com  { color: #8b949e; font-style: italic; }
+.codebox .tok-cls  { color: #ffa657; }
+.codebox .tok-def  { color: #e2c08d; }
+
+.code-label {
+  font-family: 'Caveat', cursive;
+  font-size: 12px;
+  color: #8b949e;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* ── Tables ── */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; margin: 12px 0; }
+
+.nb-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 14px;
+}
+
+.nb-table th {
+  background: #1a3fa0;
+  color: #fff;
+  padding: 8px 12px;
+  text-align: left;
+  font-family: 'Kalam', cursive;
+}
+
+.nb-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #cfe3f7;
+  color: #1a1a6e;
+  vertical-align: top;
+}
+
+.nb-table tr:nth-child(even) td { background: #f0f6ff; }
+
+/* ── Bullet notes ── */
+.note-bullet { list-style: none; padding-left: 0; }
+.note-bullet li::before { content: "→ "; color: #1a3fa0; font-weight: bold; }
+
+/* ── Callout / sticky boxes ── */
+.callout {
+  border-left: 4px solid #1a3fa0;
+  background: #eef4ff;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 16px;
+  margin: 14px 0;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 14px;
+  color: #1a1a6e;
+}
+
+.callout.warn  { border-color: #e53935; background: #fff3f3; }
+.callout.tip   { border-color: #2e7d32; background: #f1fff2; }
+.callout.note  { border-color: #f9a825; background: #fffde7; }
+
+/* ── Sticky note ── */
+.sticky {
+  background: #fff9c4;
+  border: 1px solid #f9e04b;
+  border-radius: 4px 12px 12px 4px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  transform: rotate(0.6deg);
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.12);
+  font-family: 'Caveat', cursive;
+  font-size: 15px;
+  color: #5a4500;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* ── Flowchart ── */
+.flow-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 16px 0;
+}
+
+.flow-box {
+  background: linear-gradient(135deg, #e8f0fe, #c5d8ff);
+  border: 2px solid #1a3fa0;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 14px;
+  color: #1a1a6e;
+  text-align: center;
+  min-width: 200px;
+  max-width: 100%;
+}
+
+.flow-box.green { background: linear-gradient(135deg, #e8f5e9, #c8f7c5); border-color: #2e7d32; }
+.flow-box.red   { background: linear-gradient(135deg, #fff3e0, #ffe0b2); border-color: #e65100; }
+.flow-box.purple { background: linear-gradient(135deg, #f3e5f5, #e1bee7); border-color: #6a1b9a; }
+
+.flow-arrow {
+  font-size: 20px;
+  color: #1a3fa0;
+  line-height: 1;
+}
+
+/* ── Speech / Interview box ── */
+.speech-wrap {
+  position: relative;
+  margin: 22px 0;
+  max-width: 100%;
+}
+
+.speech-box {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a6e 0%, #1a3fa0 50%, #0d47a1 100%);
+  border: 3px solid #42a5f5;
+  outline: 2px dashed rgba(255,255,255,0.3);
+  outline-offset: -6px;
+  border-radius: 16px;
+  padding: 18px 20px 14px 20px;
+  box-shadow: 6px 6px 0 #0d47a1, 0 12px 30px rgba(13,71,161,0.35);
+  transform: rotate(-0.4deg);
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.speech-box::after {
+  content: '';
+  position: absolute;
+  bottom: -14px;
+  left: 36px;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 14px solid #42a5f5;
+}
+
+.speech-icon {
+  position: absolute;
+  top: -16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #42a5f5, #1565c0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.speech-title {
+  font-family: 'Caveat', cursive;
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.speech-inner {
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+.speech-inner p {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 15px;
+  color: #e8f0fe;
+  line-height: 1.8;
+}
+
+.speech-alt {
+  background: rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin-top: 6px;
+}
+
+.speech-alt p {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  color: #b3d9ff;
+}
+
+.followup {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 6px;
+}
+
+.followup p {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  color: #c5d8ff;
+}
+
+/* ── Cornell notes layout ── */
+.cornell {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 0;
+  border: 1.5px solid #cfe3f7;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 14px 0;
+}
+
+.cornell-cue {
+  background: #e8f0fe;
+  padding: 10px 12px;
+  border-right: 1.5px solid #cfe3f7;
+  font-family: 'Kalam', cursive;
+  font-size: 14px;
+  color: #1a3fa0;
+  font-weight: 700;
+}
+
+.cornell-note {
+  padding: 10px 14px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 14px;
+  color: #1a1a6e;
+  line-height: 1.8;
+}
+
+.cornell-row {
+  display: contents;
+}
+
+.cornell-row:nth-child(even) .cornell-cue { background: #dce8fe; }
+.cornell-row:nth-child(even) .cornell-note { background: #f8faff; }
+
+/* ── Mini mind map (SVG-based) ── */
+.mindmap-svg { max-width: 100%; height: auto; overflow: visible; }
+
+/* ── Two-column layout ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 12px 0;
+}
+
+@media (max-width: 560px) {
+  .two-col { grid-template-columns: 1fr; }
+  .cornell { grid-template-columns: 1fr; }
+  .cornell-cue { border-right: none; border-bottom: 1.5px solid #cfe3f7; }
+}
+
+/* ── Section card ── */
+.section-card {
+  background: #f4f8ff;
+  border: 1.5px solid #c5d8ff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+}
+
+.section-card h4 { margin-top: 0; }
+
+/* ── Emoji anchors ── */
+.icon-anchor { font-size: 16px; margin-right: 6px; }
+
+/* ── Mnemonic box ── */
+.mnemonic {
+  border: 2px dashed #1a3fa0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin: 12px 0;
+  background: #f0f6ff;
+  font-family: 'Caveat', cursive;
+  font-size: 15px;
+  color: #1a1a6e;
+}
+
+/* ── Sharding diagram ── */
+.shard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.shard-box {
+  background: linear-gradient(135deg, #e8f5e9, #c8f7c5);
+  border: 2px solid #2e7d32;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  color: #1b5e20;
+}
+
+/* ── Badge ── */
+.badge {
+  display: inline-block;
+  font-family: 'Caveat', cursive;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.badge-red    { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+.badge-green  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+.badge-blue   { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+.badge-amber  { background: #fff8e1; color: #e65100; border: 1px solid #ffcc02; }
+
+/* ── QUICK REVISION SHEET ── */
+.qr-banner {
+  background: linear-gradient(135deg, #00695c 0%, #004d40 50%, #00796b 100%);
+  color: #fff;
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 14px rgba(0,105,92,0.4);
+}
+
+.qr-banner h1 {
+  font-family: 'Kalam', cursive;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.qr-banner .qr-right {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  background: rgba(255,255,255,0.2);
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.how-to-box {
+  background: #e0f7fa;
+  border: 1px solid #80deea;
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 18px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  color: #00363a;
+  line-height: 1.8;
+}
+
+.how-to-box strong { color: #006064; font-family: 'Kalam', cursive; }
+
+.qr-section-title {
+  font-family: 'Kalam', cursive;
+  font-size: 16px;
+  color: #004d40;
+  border-bottom: 2px solid #00695c;
+  padding-bottom: 3px;
+  margin: 18px 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tier-strip {
+  display: inline-block;
+  font-family: 'Caveat', cursive;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.tier-1 { background: #ff8f00; color: #fff; }
+.tier-2 { background: #1565c0; color: #fff; }
+.tier-3 { background: #6a1b9a; color: #fff; }
+.tier-lookup { background: #37474f; color: #fff; }
+.always-read { background: #c62828; color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 11px; margin-left: 8px; }
+
+/* Must-know grid */
+.must-know-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0;
+  border: 1px solid #80cbc4;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.mnk-label {
+  padding: 6px 10px;
+  border-bottom: 1px solid #b2dfdb;
+  font-family: 'Kalam', cursive;
+  font-size: 13px;
+  background: #e0f7fa;
+  color: #00363a;
+  font-weight: 700;
+}
+
+.mnk-value {
+  padding: 6px 10px;
+  border-bottom: 1px solid #b2dfdb;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  color: #1a1a6e;
+  background: #f9fdfd;
+}
+
+.mnk-label.stripe-j { border-left: 4px solid #e65100; }
+.mnk-label.stripe-g { border-left: 4px solid #1565c0; }
+.mnk-label.stripe-d { border-left: 4px solid #6a1b9a; }
+.mnk-label.stripe-p { border-left: 4px solid #2e7d32; }
+
+/* Rapid-fire table */
+.rf-table { width: 100%; border-collapse: collapse; font-family: 'Patrick Hand', cursive; font-size: 13px; }
+.rf-table th { background: #004d40; color: #fff; padding: 6px 10px; font-family: 'Kalam', cursive; }
+.rf-table td { padding: 5px 10px; border-bottom: 1px solid #b2dfdb; color: #1a1a6e; vertical-align: top; }
+.rf-table tr:nth-child(even) td { background: #f0fdfb; }
+
+/* Common mistakes */
+.mistake-list { list-style: none; padding-left: 0; margin: 0; }
+.mistake-list li { padding: 5px 0; font-family: 'Patrick Hand', cursive; font-size: 13px; color: #1a1a6e; border-bottom: 1px dashed #ffcdd2; }
+
+/* Memory trick cards */
+.trick-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0; }
+
+@media (max-width: 560px) {
+  .trick-cards { grid-template-columns: 1fr; }
+  .must-know-grid { grid-template-columns: 1fr; }
+}
+
+.trick-card {
+  border: 2px dashed #00695c;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #f0fdf9;
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: #004d40;
+  transform: rotate(0.3deg);
+}
+
+.trick-card:nth-child(even) { transform: rotate(-0.4deg); background: #fff8e1; border-color: #f9a825; color: #5a3e00; }
+
+.tips-list { list-style: none; padding-left: 0; }
+.tips-list li { padding: 4px 0; font-family: 'Patrick Hand', cursive; font-size: 13px; color: #1a1a6e; }
+.tips-list li::before { content: "⚡ "; color: #00695c; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page { rotate: 0deg !important; transform: none !important; }
+  .speech-box, .sticky { transform: none !important; }
+  * { transition: none !important; animation: none !important; }
+}
+
+@media print {
+  .page-wrapper { display: flex !important; page-break-after: always; }
+  .pages-container { background: white; }
+  .page { box-shadow: none; rotate: 0deg !important; transform: none !important; margin: 0; border: none; }
+}
+
+/* ── Interview practice cards ── */
+.interview-question {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: #fffdf5;
+  border-left: 4px solid #ffd54f;
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin: 8px 0 10px;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.08);
+}
+.question-label {
+  color: #e65100;
+  font: 700 12px 'Kalam', cursive;
+}
+.question-text {
+  color: #164da8;
+  font: 700 16px 'Caveat', cursive;
+  line-height: 1.45;
+}
+.speech-inner p.sl {
+  margin: 0 0 7px;
+  color: #f2f6ff;
+  font: 15px/1.65 'Patrick Hand', cursive;
+}
+.speech-inner p.sl:last-child { margin-bottom: 0; }
+.speech-inner .anchor {
+  background: #fff176;
+  color: #18224d;
+  font-weight: 700;
+  border-radius: 3px;
+  padding: 0 3px;
+}
+.speech-inner p.closer {
+  border-top: 1px dashed rgba(255,255,255,0.45);
+  padding-top: 7px;
+  margin-top: 8px;
+  color: #fff8cf;
+  font-weight: 700;
+}
+.speech-inner code {
+  color: #a8e6a3;
+  background: rgba(0,0,0,0.3);
+  border-color: rgba(255,255,255,0.16);
+}
+.speech-alt p, .followup p { line-height: 1.65; }
+@media (max-width: 560px) {
+  .speech-box { padding: 18px 14px 14px; }
+  .question-text { font-size: 15px; }
+  .speech-inner p.sl { font-size: 14px; }
+}
+
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 1 — CI/CD Overview + Jenkins Introduction
+     ════════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-banner">
+    <h1>📦 Phase 18 — CI/CD with Playwright</h1>
+    <span class="topic-label">Jenkins + GitHub Actions + Docker + Parallelization</span>
+  </div>
+
+  <h2>🌐 What is CI/CD?</h2>
+
+  <div class="two-col">
+    <div class="section-card">
+      <h4>🔁 Continuous Integration (CI)</h4>
+      <ul class="note-bullet">
+        <li>Automatically <span class="hl-yellow">build &amp; test</span> code on every push</li>
+        <li>Catch bugs early before they reach prod</li>
+        <li>Run Playwright tests on each PR/commit</li>
+      </ul>
+    </div>
+    <div class="section-card">
+      <h4>🚀 Continuous Delivery (CD)</h4>
+      <ul class="note-bullet">
+        <li>Auto-deploy to staging/prod after tests pass</li>
+        <li>Full pipeline: code → test → deploy</li>
+        <li>Zero manual steps needed</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CI/CD Flow -->
+  <h3>⚡ CI/CD Pipeline Flow</h3>
+  <div class="flow-container">
+    <div class="flow-box">👨‍💻 Developer pushes code</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-box">🔧 CI Server triggers (Jenkins / GitHub Actions)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-box">📦 Install dependencies → <code>npm ci</code></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-box green">✅ Run Playwright Tests → <code>npx playwright test</code></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-box purple">📊 Generate &amp; Upload Reports + Screenshots</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-box red">🚀 Deploy OR ❌ Fail &amp; Notify</div>
+  </div>
+
+  <h2>🔧 64. Jenkins + Playwright</h2>
+
+  <h3>🛠️ Install Playwright on Jenkins Agent</h3>
+  <div class="callout tip">
+    <span class="icon-anchor">💡</span> Jenkins agents need <span class="hl-green">Node.js installed</span> + browser dependencies. Use a Docker agent or install via NodeJS plugin.
+  </div>
+
+  <div class="cornell">
+    <div class="cornell-row">
+      <div class="cornell-cue">Install Node</div>
+      <div class="cornell-note">Use Jenkins <span class="hl-yellow">NodeJS Plugin</span> — configure Global Tool in Manage Jenkins → Tools</div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">npm Commands</div>
+      <div class="cornell-note"><code>npm ci</code> (clean install) → <code>npx playwright install</code> → <code>npx playwright test</code></div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">Browser Deps</div>
+      <div class="cornell-note">Run <code>npx playwright install-deps</code> on Linux agents to get system libs</div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">Env Variables</div>
+      <div class="cornell-note">Set via <span class="hl-green">Manage Jenkins → Configure System</span> or inside <code>environment {}</code> block in pipeline</div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">Reports</div>
+      <div class="cornell-note">Use <span class="hl-blue">HTML Publisher Plugin</span> to display Playwright HTML report in Jenkins UI</div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">Artifacts</div>
+      <div class="cornell-note"><code>archiveArtifacts</code> step saves reports, screenshots, videos for download</div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">On Failure</div>
+      <div class="cornell-note">Playwright auto-saves <span class="hl-pink">screenshots + trace.zip</span> in <code>test-results/</code> on failure → archive them</div>
+    </div>
+  </div>
+
+  <div class="sticky">📌 Always use <code>npm ci</code> instead of <code>npm install</code> in CI — it's faster, deterministic &amp; uses lockfile!</div>
+
+  <div class="pg-num">1</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 2 — Jenkins Pipeline Code
+     ════════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-banner">
+    <h1>🔧 Jenkins Pipeline — Declarative</h1>
+    <span class="topic-label">Jenkinsfile Syntax + Config</span>
+  </div>
+
+  <h2>📝 Jenkinsfile (Declarative Pipeline)</h2>
+
+  <span class="code-label">// Jenkinsfile — place in project root</span>
+  <div class="codebox"><span class="tok-cls">pipeline</span> {
+  <span class="tok-cls">agent</span> { <span class="tok-cls">docker</span> { <span class="tok-prop">image</span> <span class="tok-str">'mcr.microsoft.com/playwright:v1.44.0-jammy'</span> } }
+
+  <span class="tok-cls">environment</span> {
+    <span class="tok-prop">BASE_URL</span> = <span class="tok-str">'https://staging.myapp.com'</span>
+    <span class="tok-prop">CI</span>       = <span class="tok-str">'true'</span>
+  }
+
+  <span class="tok-cls">stages</span> {
+    <span class="tok-cls">stage</span>(<span class="tok-str">'Install'</span>) {
+      <span class="tok-cls">steps</span> {
+        <span class="tok-fn">sh</span> <span class="tok-str">'npm ci'</span>
+      }
+    }
+    <span class="tok-cls">stage</span>(<span class="tok-str">'Test'</span>) {
+      <span class="tok-cls">steps</span> {
+        <span class="tok-fn">sh</span> <span class="tok-str">'npx playwright test --reporter=html,line'</span>
+      }
+    }
+  }
+
+  <span class="tok-cls">post</span> {
+    <span class="tok-cls">always</span> {
+      <span class="tok-fn">archiveArtifacts</span>(
+        <span class="tok-prop">artifacts</span>: <span class="tok-str">'playwright-report/**,test-results/**'</span>,
+        <span class="tok-prop">allowEmptyArchive</span>: <span class="tok-kw">true</span>
+      )
+      <span class="tok-fn">publishHTML</span>([
+        <span class="tok-prop">allowMissing</span>: <span class="tok-kw">false</span>,
+        <span class="tok-prop">reportDir</span>: <span class="tok-str">'playwright-report'</span>,
+        <span class="tok-prop">reportFiles</span>: <span class="tok-str">'index.html'</span>,
+        <span class="tok-prop">reportName</span>: <span class="tok-str">'Playwright Report'</span>
+      ])
+    }
+    <span class="tok-cls">failure</span> {
+      <span class="tok-fn">emailext</span>(<span class="tok-prop">to</span>: <span class="tok-str">'team@company.com'</span>, <span class="tok-prop">subject</span>: <span class="tok-str">'Tests Failed!'</span>)
+    }
+  }
+}</div>
+
+  <h3>🌿 Environment Variables in Jenkins</h3>
+  <div class="two-col">
+    <div class="section-card">
+      <h4>Pipeline-Level <code>environment {}</code></h4>
+      <ul class="note-bullet">
+        <li>Scope: entire pipeline</li>
+        <li>Use <code>env.VAR_NAME</code> to read</li>
+        <li>Set secrets via <code>credentials('id')</code></li>
+      </ul>
+    </div>
+    <div class="section-card">
+      <h4>Stage-Level env vars</h4>
+      <ul class="note-bullet">
+        <li>Defined inside a <code>stage {}</code> block</li>
+        <li>Override pipeline-level vars</li>
+        <li>Useful for per-env test runs</li>
+      </ul>
+    </div>
+  </div>
+
+  <span class="code-label">// Access env vars in playwright.config.ts</span>
+  <div class="codebox"><span class="tok-kw">const</span> <span class="tok-var">config</span> = {
+  <span class="tok-prop">use</span>: {
+    <span class="tok-prop">baseURL</span>: <span class="tok-var">process</span>.<span class="tok-var">env</span>.<span class="tok-prop">BASE_URL</span> ?? <span class="tok-str">'http://localhost:3000'</span>,
+  }
+};</div>
+
+  <h3>📸 Screenshots &amp; Videos on Failure</h3>
+  <div class="callout note">
+    <span class="icon-anchor">🎥</span> In <code>playwright.config.ts</code>: set <code>screenshot: 'only-on-failure'</code> and <code>video: 'retain-on-failure'</code> — Jenkins then archives <code>test-results/</code> automatically.
+  </div>
+
+  <span class="code-label">// playwright.config.ts — failure capture</span>
+  <div class="codebox"><span class="tok-fn">use</span>: {
+  <span class="tok-prop">screenshot</span>: <span class="tok-str">'only-on-failure'</span>,   <span class="tok-com">// capture on fail</span>
+  <span class="tok-prop">video</span>: <span class="tok-str">'retain-on-failure'</span>,      <span class="tok-com">// keep video on fail</span>
+  <span class="tok-prop">trace</span>: <span class="tok-str">'on-first-retry'</span>,        <span class="tok-com">// trace on retry</span>
+}</div>
+
+  <!-- Interview box -->
+  <div class="speech-wrap">
+    <div class="speech-box">
+      <div class="speech-icon">🎤</div>
+      <span class="speech-title">🗣️ How I'd say it in an interview</span>
+      <div class="interview-question"><span class="question-label">❓ Interviewer asks:</span><span class="question-text">How would you configure a Playwright test pipeline in Jenkins?</span></div>
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">I usually</span> configure a declarative Jenkins pipeline with a Playwright Docker agent for consistent browser dependencies.</p>
+        <p class="sl"><span class="anchor">The pipeline</span> starts with <code>npm ci</code>, installs or reuses the required browsers, and runs <code>npx playwright test</code>.</p>
+        <p class="sl"><span class="anchor">For configuration</span> I pass values such as <code>BASE_URL</code> through environment variables instead of hardcoding environment-specific settings.</p>
+        <p class="sl"><span class="anchor">When tests finish</span> I archive the HTML report, screenshots, videos, and traces so failures remain diagnosable.</p>
+        <p class="sl"><span class="anchor">To keep feedback useful</span> I publish the report in Jenkins and notify the team when the pipeline fails.</p>
+        <p class="sl"><span class="anchor">For reliability</span> I pin compatible Playwright and Docker versions and keep secrets in Jenkins credentials.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I make the pipeline repeatable, secure, and easy to troubleshoot—not just capable of launching tests.</p>
+      </div>
+      <div class="speech-alt">
+        <p>🔄 Also asked as: "How do you run Playwright in Jenkins?" / "How do you publish test reports from CI?"</p>
+      </div>
+      <div class="followup">
+        <p>📎 Follow-up Qs: "Why use `npm ci` instead of `npm install`?" / "How do you store credentials securely?" / "What artifacts do you keep after a failed run?"</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg-num">2</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 3 — GitHub Actions
+     ════════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-banner">
+    <h1>🐙 65. GitHub Actions — Playwright</h1>
+    <span class="topic-label">Workflow YAML + Matrix + Parallel Jobs</span>
+  </div>
+
+  <h2>📄 What is GitHub Actions?</h2>
+
+  <div class="callout">
+    GitHub's built-in CI/CD system. Workflows defined as <span class="hl-yellow">YAML files</span> in <code>.github/workflows/</code>. Triggered by push, PR, schedule, or manual dispatch. Runs on <span class="hl-green">GitHub-hosted runners</span> (ubuntu-latest, windows, macos).
+  </div>
+
+  <h3>🔑 Key YAML Components</h3>
+  <div class="table-scroll">
+    <table class="nb-table" aria-label="GitHub Actions key components">
+      <thead><tr><th>Key</th><th>What it does</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>on:</code></td><td>Trigger events</td><td><code>push, pull_request, schedule</code></td></tr>
+        <tr><td><code>jobs:</code></td><td>Define job groups</td><td><code>test:</code>, <code>deploy:</code></td></tr>
+        <tr><td><code>runs-on:</code></td><td>Choose runner OS</td><td><code>ubuntu-latest</code></td></tr>
+        <tr><td><code>steps:</code></td><td>List of commands</td><td><code>- run: npm ci</code></td></tr>
+        <tr><td><code>uses:</code></td><td>Reference an action</td><td><code>actions/checkout@v4</code></td></tr>
+        <tr><td><code>with:</code></td><td>Pass inputs to action</td><td><code>node-version: 20</code></td></tr>
+        <tr><td><code>env:</code></td><td>Inject env variables</td><td><code>BASE_URL: ${{ secrets.URL }}</code></td></tr>
+        <tr><td><code>if:</code></td><td>Conditional execution</td><td><code>if: always()</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>📝 Full Playwright Workflow YAML</h2>
+
+  <span class="code-label">// .github/workflows/playwright.yml</span>
+  <div class="codebox"><span class="tok-prop">name</span>: <span class="tok-str">Playwright Tests</span>
+
+<span class="tok-prop">on</span>:
+  <span class="tok-prop">push</span>:    { <span class="tok-prop">branches</span>: [<span class="tok-str">main</span>, <span class="tok-str">develop</span>] }
+  <span class="tok-prop">pull_request</span>: { <span class="tok-prop">branches</span>: [<span class="tok-str">main</span>] }
+
+<span class="tok-prop">jobs</span>:
+  <span class="tok-prop">test</span>:
+    <span class="tok-prop">runs-on</span>: <span class="tok-str">ubuntu-latest</span>
+    <span class="tok-prop">steps</span>:
+      - <span class="tok-prop">uses</span>: <span class="tok-str">actions/checkout@v4</span>
+      - <span class="tok-prop">uses</span>: <span class="tok-str">actions/setup-node@v4</span>
+        <span class="tok-prop">with</span>: { <span class="tok-prop">node-version</span>: <span class="tok-num">20</span> }
+      - <span class="tok-prop">name</span>: <span class="tok-str">Install deps</span>
+        <span class="tok-prop">run</span>: <span class="tok-str">npm ci</span>
+      - <span class="tok-prop">name</span>: <span class="tok-str">Install Playwright Browsers</span>
+        <span class="tok-prop">run</span>: <span class="tok-str">npx playwright install --with-deps</span>
+      - <span class="tok-prop">name</span>: <span class="tok-str">Run Tests</span>
+        <span class="tok-prop">run</span>: <span class="tok-str">npx playwright test</span>
+        <span class="tok-prop">env</span>:
+          <span class="tok-prop">BASE_URL</span>: <span class="tok-str">${{ secrets.BASE_URL }}</span>
+      - <span class="tok-prop">name</span>: <span class="tok-str">Upload Report</span>          <span class="tok-com"># always run</span>
+        <span class="tok-prop">if</span>: <span class="tok-fn">always</span>()
+        <span class="tok-prop">uses</span>: <span class="tok-str">actions/upload-artifact@v4</span>
+        <span class="tok-prop">with</span>:
+          <span class="tok-prop">name</span>: <span class="tok-str">playwright-report</span>
+          <span class="tok-prop">path</span>: <span class="tok-str">playwright-report/</span>
+          <span class="tok-prop">retention-days</span>: <span class="tok-num">30</span></div>
+
+  <div class="sticky">📌 <strong>–with-deps</strong> flag installs Playwright browsers AND system libs in one command — perfect for GitHub Actions runners!</div>
+
+  <div class="callout tip">
+    <span class="icon-anchor">💡</span> <span class="hl-green">Secrets</span> are stored in GitHub → Settings → Secrets and Variables → Actions. Access via <code>${{ secrets.MY_SECRET }}</code> — they're masked in logs automatically.
+  </div>
+
+  <div class="pg-num">3</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 4 — Matrix Testing + Parallel Jobs
+     ════════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-banner">
+    <h1>🧪 Matrix Testing + Parallel Jobs</h1>
+    <span class="topic-label">GitHub Actions Advanced</span>
+  </div>
+
+  <h2>🔢 Matrix Browser Testing</h2>
+
+  <div class="callout">
+    Run the <span class="hl-yellow">same tests across multiple browsers</span> (or OS/Node versions) simultaneously using a <code>strategy.matrix</code>. Each combination becomes its own job.
+  </div>
+
+  <span class="code-label">// Matrix strategy — test on chromium, firefox, webkit in parallel</span>
+  <div class="codebox"><span class="tok-prop">jobs</span>:
+  <span class="tok-prop">test</span>:
+    <span class="tok-prop">runs-on</span>: <span class="tok-str">ubuntu-latest</span>
+    <span class="tok-prop">strategy</span>:
+      <span class="tok-prop">fail-fast</span>: <span class="tok-kw">false</span>         <span class="tok-com"># don't cancel other browsers on failure</span>
+      <span class="tok-prop">matrix</span>:
+        <span class="tok-prop">browser</span>: [<span class="tok-str">chromium</span>, <span class="tok-str">firefox</span>, <span class="tok-str">webkit</span>]
+    <span class="tok-prop">steps</span>:
+      - <span class="tok-prop">uses</span>: <span class="tok-str">actions/checkout@v4</span>
+      - <span class="tok-prop">run</span>: <span class="tok-str">npm ci</span>
+      - <span class="tok-prop">run</span>: <span class="tok-str">npx playwright install ${{ matrix.browser }} --with-deps</span>
+      - <span class="tok-prop">run</span>: <span class="tok-str">npx playwright test --project=${{ matrix.browser }}</span></div>
+
+  <div class="two-col">
+    <div class="section-card">
+      <h4>✅ <code>fail-fast: false</code></h4>
+      <p style="font-size:13px;">Don't cancel remaining matrix jobs when one fails. All browsers run independently — you see ALL failures.</p>
+    </div>
+    <div class="section-card">
+      <h4>📊 Artifact per Browser</h4>
+      <p style="font-size:13px;">Name artifact <code>${{ matrix.browser }}-report</code> to get separate report per browser in GitHub UI.</p>
+    </div>
+  </div>
+
+  <h2>⚡ Parallel Jobs (Job-level)</h2>
+
+  <span class="code-label">// Two jobs running in parallel — smoke + regression</span>
+  <div class="codebox"><span class="tok-prop">jobs</span>:
+  <span class="tok-prop">smoke-tests</span>:
+    <span class="tok-prop">runs-on</span>: <span class="tok-str">ubuntu-latest</span>
+    <span class="tok-prop">steps</span>:
+      - <span class="tok-prop">run</span>: <span class="tok-str">npx playwright test --grep @smoke</span>
+
+  <span class="tok-prop">regression-tests</span>:
+    <span class="tok-prop">runs-on</span>: <span class="tok-str">ubuntu-latest</span>
+    <span class="tok-prop">steps</span>:
+      - <span class="tok-prop">run</span>: <span class="tok-str">npx playwright test --grep @regression</span>
+
+  <span class="tok-prop">deploy</span>:
+    <span class="tok-prop">needs</span>: [<span class="tok-str">smoke-tests</span>, <span class="tok-str">regression-tests</span>]  <span class="tok-com"># wait for BOTH</span>
+    <span class="tok-prop">runs-on</span>: <span class="tok-str">ubuntu-latest</span>
+    <span class="tok-prop">steps</span>:
+      - <span class="tok-prop">run</span>: <span class="tok-str">echo "Deploying..."</span></div>
+
+  <h3>📤 Artifact Upload — Key Points</h3>
+  <ul class="note-bullet">
+    <li>Use <code>actions/upload-artifact@v4</code> — attach test-results, HTML report, videos</li>
+    <li>Use <code>if: always()</code> so artifacts upload even when tests fail</li>
+    <li>Set <span class="hl-yellow"><code>retention-days</code></span> (default 90) to manage storage costs</li>
+    <li>Download from GitHub Actions run UI or use <code>actions/download-artifact@v4</code></li>
+  </ul>
+
+  <!-- Interview speech box -->
+  <div class="speech-wrap">
+    <div class="speech-box">
+      <div class="speech-icon">🎤</div>
+      <span class="speech-title">🗣️ How I'd say it in an interview</span>
+      <div class="interview-question"><span class="question-label">❓ Interviewer asks:</span><span class="question-text">How do you run Playwright tests across browsers in GitHub Actions?</span></div>
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">I usually</span> use a GitHub Actions matrix to run Playwright projects for Chromium, Firefox, and WebKit in parallel.</p>
+        <p class="sl"><span class="anchor">Each matrix entry</span> creates a separate job, so browser results can be compared without running every browser sequentially.</p>
+        <p class="sl"><span class="anchor">I set</span> <code>fail-fast: false</code> when I want remaining browser jobs to finish after one browser fails.</p>
+        <p class="sl"><span class="anchor">Before testing</span> the workflow checks out the repository, sets up Node.js, installs dependencies, and installs the required browsers.</p>
+        <p class="sl"><span class="anchor">For credentials</span> I store sensitive values in GitHub Actions secrets and expose only the variables the tests need.</p>
+        <p class="sl"><span class="anchor">After execution</span> I upload reports and test results with <code>if: always()</code> so diagnostic artifacts survive test failures.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I use matrix jobs for broad browser coverage and preserve each run's evidence for focused debugging.</p>
+      </div>
+      <div class="speech-alt">
+        <p>🔄 Also asked as: "How do you run cross-browser tests in CI?" / "What is a matrix strategy in GitHub Actions?"</p>
+      </div>
+    <div class="followup">
+        <p>📎 Follow-up Qs: "What does `fail-fast: false` change?" / "How would you shard a large test suite?" / "How do you upload artifacts after a failure?"</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg-num">4</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 5 — Docker for Playwright
+     ════════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-banner">
+    <h1>🐳 66. Docker + Playwright</h1>
+    <span class="topic-label">Official Image + Container Execution</span>
+  </div>
+
+  <h2>🐳 Why Docker for Playwright?</h2>
+
+  <div class="two-col">
+    <div class="callout tip" style="margin:0;">
+      <strong>✅ Problem it solves:</strong> Browser dependencies (libglib, libatk, libnss…) differ per OS. Docker packages everything — tests run <span class="hl-green">identically in dev &amp; CI</span>.
+    </div>
+    <div class="callout warn" style="margin:0;">
+      <strong>⚠️ Without Docker:</strong> "Works on my machine" breaks in CI because system libraries are different on the runner.
+    </div>
+  </div>
+
+  <h2>📦 Official Playwright Docker Image</h2>
+
+  <div class="cornell">
+    <div class="cornell-row">
+      <div class="cornell-cue">Image</div>
+      <div class="cornell-note"><code>mcr.microsoft.com/playwright:v1.44.0-jammy</code> — includes Chromium, Firefox, WebKit + all deps</div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">Tag format</div>
+      <div class="cornell-note"><code>v{playwright-version}-{ubuntu-codename}</code> e.g. <code>v1.44.0-jammy</code> (Ubuntu 22)</div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">Run locally</div>
+      <div class="cornell-note"><code>docker run --rm -v $(pwd):/app -w /app mcr.microsoft.com/playwright:v1.44.0-jammy npx playwright test</code></div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">In Jenkins</div>
+      <div class="cornell-note">Use <code>agent { docker { image 'mcr.microsoft.com/playwright:v1.44.0-jammy' } }</code> in Jenkinsfile</div>
+    </div>
+    <div class="cornell-row">
+      <div class="cornell-cue">In GH Actions</div>
+      <div class="cornell-note">Use <code>container: mcr.microsoft.com/playwright:v1.44.0-jammy</code> key in job spec</div>
+    </div>
+  </div>
+
+  <h3>📝 Custom Dockerfile (project-specific)</h3>
+
+  <span class="code-label">// Dockerfile in project root</span>
+  <div class="codebox"><span class="tok-kw">FROM</span> <span class="tok-str">mcr.microsoft.com/playwright:v1.44.0-jammy</span>
+
+<span class="tok-kw">WORKDIR</span> <span class="tok-str">/app</span>
+
+<span class="tok-com"># Copy package files first (layer caching benefit)</span>
+<span class="tok-kw">COPY</span> <span class="tok-str">package*.json ./</span>
+<span class="tok-kw">RUN</span> <span class="tok-fn">npm ci</span>
+
+<span class="tok-com"># Copy rest of source</span>
+<span class="tok-kw">COPY</span> <span class="tok-str">. .</span>
+
+<span class="tok-com"># Default command runs all tests</span>
+<span class="tok-kw">CMD</span> [<span class="tok-str">"npx"</span>, <span class="tok-str">"playwright"</span>, <span class="tok-str">"test"</span>]</div>
+
+  <h3>🔧 Useful Docker Commands</h3>
+  <div class="table-scroll">
+    <table class="nb-table" aria-label="Docker commands for Playwright">
+      <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>docker build -t pw-tests .</code></td><td>Build image from Dockerfile</td></tr>
+        <tr><td><code>docker run --rm pw-tests</code></td><td>Run tests &amp; remove container after</td></tr>
+        <tr><td><code>docker run -v $(pwd)/results:/app/test-results pw-tests</code></td><td>Mount results folder to host</td></tr>
+        <tr><td><code>docker run -e BASE_URL=https://... pw-tests</code></td><td>Pass env variable to container</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🌐 Browser Dependencies (Linux)</h3>
+  <ul class="note-bullet">
+    <li><span class="hl-yellow">Official image</span> = zero extra setup, all deps included</li>
+    <li>Custom base image: run <code>npx playwright install-deps chromium</code></li>
+    <li>Headed mode in Docker needs <span class="hl-pink">Xvfb</span> — use <code>--headed</code> only with virtual display</li>
+    <li>Headless mode (default) = works perfectly in Docker with no display server</li>
+  </ul>
+
+  <div class="sticky">🐳 Always <strong>pin</strong> the Playwright Docker image version (e.g. <code>v1.44.0-jammy</code>) — don't use <code>:latest</code>. Version mismatch = browser launch failures!</div>
+
+  <div class="pg-num">5</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 6 — CI Parallelization
+     ════════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-banner">
+    <h1>⚡ 67. CI Parallelization</h1>
+    <span class="topic-label">Workers + Sharding + Distributed Testing</span>
+  </div>
+
+  <h2>🔀 Three Ways to Parallelize</h2>
+
+  <div class="table-scroll">
+    <table class="nb-table" aria-label="Parallelization methods comparison">
+      <thead><tr><th>Method</th><th>Scope</th><th>Config</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Workers</strong></td>
+          <td>Single machine</td>
+          <td><code>workers: 4</code> in config</td>
+          <td>Moderate test suites on one runner</td>
+        </tr>
+        <tr>
+          <td><strong>Sharding</strong></td>
+          <td>Multiple machines</td>
+          <td><code>--shard=1/3</code> CLI flag</td>
+          <td>Large suites split across CI runners</td>
+        </tr>
+        <tr>
+          <td><strong>Distributed</strong></td>
+          <td>Multiple CI jobs</td>
+          <td>Matrix in GH Actions / parallel in Jenkins</td>
+          <td>Cross-browser / cross-env at scale</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>👷 Workers (Intra-machine)</h2>
+
+  <div class="callout">
+    Playwright uses <span class="hl-yellow">worker processes</span> — each worker runs tests in its own browser context. Configured in <code>playwright.config.ts</code> via <code>workers</code> property.
+  </div>
+
+  <span class="code-label">// playwright.config.ts — worker config</span>
+  <div class="codebox"><span class="tok-kw">export default</span> <span class="tok-fn">defineConfig</span>({
+  <span class="tok-prop">workers</span>: <span class="tok-var">process</span>.<span class="tok-var">env</span>.<span class="tok-prop">CI</span> ? <span class="tok-num">4</span> : <span class="tok-num">2</span>,  <span class="tok-com">// 4 in CI, 2 locally</span>
+  <span class="tok-prop">fullyParallel</span>: <span class="tok-kw">true</span>,               <span class="tok-com">// tests within a file also run in parallel</span>
+  <span class="tok-prop">retries</span>: <span class="tok-var">process</span>.<span class="tok-var">env</span>.<span class="tok-prop">CI</span> ? <span class="tok-num">2</span> : <span class="tok-num">0</span>,    <span class="tok-com">// retry flaky tests in CI</span>
+});</div>
+
+  <h2>🔪 Sharding (Multi-machine)</h2>
+
+  <div class="callout">
+    Split the test suite into <span class="hl-green">N equal shards</span> and run each on a separate machine/job. Playwright distributes tests automatically — no manual grouping needed!
+  </div>
+
+  <div class="shard-grid">
+    <div class="shard-box">🖥️ Machine 1<br><code>--shard=1/3</code><br>Tests 1–33</div>
+    <div class="shard-box">🖥️ Machine 2<br><code>--shard=2/3</code><br>Tests 34–66</div>
+    <div class="shard-box">🖥️ Machine 3<br><code>--shard=3/3</code><br>Tests 67–100</div>
+  </div>
+
+  <span class="code-label">// GitHub Actions matrix sharding</span>
+  <div class="codebox"><span class="tok-prop">strategy</span>:
+  <span class="tok-prop">matrix</span>:
+    <span class="tok-prop">shardIndex</span>: [<span class="tok-num">1</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>]
+    <span class="tok-prop">shardTotal</span>: [<span class="tok-num">3</span>]
+<span class="tok-prop">steps</span>:
+  - <span class="tok-prop">run</span>: <span class="tok-str">npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}</span></div>
+
+  <h3>🌐 Distributed Testing</h3>
+
+  <ul class="note-bullet">
+    <li>Combine sharding + matrix: <span class="hl-blue">3 shards × 3 browsers = 9 parallel jobs</span></li>
+    <li>Each job uploads its own artifact (<code>shard-${{ matrix.shardIndex }}-report</code>)</li>
+    <li>Merge reports: <code>npx playwright merge-reports ./all-blobs --reporter html</code></li>
+    <li>Use <code>blob</code> reporter in each shard, then merge for combined report</li>
+  </ul>
+
+  <span class="code-label">// Blob reporter + merge for distributed shards</span>
+  <div class="codebox"><span class="tok-com">// In playwright.config.ts (each shard)</span>
+<span class="tok-prop">reporter</span>: [
+  [<span class="tok-str">'blob'</span>, { <span class="tok-prop">outputDir</span>: <span class="tok-str">'./blob-report'</span> }]
+],
+
+<span class="tok-com">// Merge job (after all shards complete)</span>
+<span class="tok-fn">npx playwright merge-reports</span> <span class="tok-str">./all-blobs --reporter html,line</span></div>
+
+  <div class="mnemonic">
+    🧠 <strong>Memory Trick:</strong> Think of sharding like cutting a pizza 🍕 — each person (machine) gets equal slices. Workers = how fast one person chews!
+  </div>
+
+  <div class="pg-num">6</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 7 — QUICK REVISION SHEET
+     ════════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+
+  <!-- Title bar — teal gradient (distinct from content pages) -->
+  <div class="qr-banner">
+    <h1>⚡ Quick Revision Sheet</h1>
+    <span class="qr-right">Scan before your interview!</span>
+  </div>
+
+  <!-- Instruction box -->
+  <div class="how-to-box">
+    ⚡ <strong>HOW TO USE THIS PAGE</strong> (read once, then ignore this box)<br>
+    <strong>TIER 1</strong> — Scan the Topic Map. Fuzzy branch? → drop to Tier 2.<br>
+    <strong>TIER 2</strong> — Read ONLY the rows that felt weak in Tier 1.<br>
+    <strong>TIER 3</strong> — <em>ALWAYS read Mistakes + Memory Tricks</em>, even if Tiers 1&amp;2 felt perfect.<br>
+    <strong>LOOKUP</strong> — Key Commands: glance only if tested on exact syntax.
+  </div>
+
+  <!-- SECTION 1: Topic Map (TIER 1) -->
+  <div class="qr-section-title">🗺️ Topic Map <span class="tier-strip tier-1">TIER 1 — 30s scan</span></div>
+
+  <svg viewBox="0 0 720 220" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="mindmap-svg" aria-label="CI/CD Topic Mind Map">
+    <!-- Centre -->
+    <rect x="275" y="90" width="170" height="40" rx="20" fill="#004d40" stroke="#80cbc4" stroke-width="2"/>
+    <text x="360" y="115" text-anchor="middle" font-family="Kalam,cursive" font-size="14" fill="#fff">CI/CD + Playwright</text>
+
+    <!-- Branch: Jenkins -->
+    <line x1="275" y1="105" x2="140" y2="60" stroke="#e65100" stroke-width="2"/>
+    <rect x="60" y="42" width="90" height="30" rx="12" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+    <text x="105" y="62" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12" fill="#e65100">Jenkins</text>
+    <!-- Jenkins tips -->
+    <text x="30" y="30" font-family="Patrick Hand,cursive" font-size="10" fill="#555">Declarative pipeline</text>
+    <text x="30" y="20" font-family="Patrick Hand,cursive" font-size="10" fill="#555">npm ci + archiveArtifacts</text>
+
+    <!-- Branch: GitHub Actions -->
+    <line x1="360" y1="90" x2="360" y2="30" stroke="#1565c0" stroke-width="2"/>
+    <rect x="280" y="10" width="160" height="25" rx="12" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+    <text x="360" y="27" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12" fill="#1565c0">GitHub Actions</text>
+    <text x="290" y="5" font-family="Patrick Hand,cursive" font-size="9" fill="#555">YAML workflow · matrix · upload-artifact</text>
+
+    <!-- Branch: Docker -->
+    <line x1="445" y1="105" x2="580" y2="60" stroke="#6a1b9a" stroke-width="2"/>
+    <rect x="560" y="42" width="80" height="30" rx="12" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="2"/>
+    <text x="600" y="62" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12" fill="#6a1b9a">Docker</text>
+    <text x="570" y="30" font-family="Patrick Hand,cursive" font-size="10" fill="#555">playwright image · pin version</text>
+
+    <!-- Branch: Parallelization -->
+    <line x1="360" y1="130" x2="360" y2="195" stroke="#2e7d32" stroke-width="2"/>
+    <rect x="270" y="190" width="180" height="25" rx="12" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+    <text x="360" y="207" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12" fill="#2e7d32">Parallelization</text>
+    <text x="200" y="217" font-family="Patrick Hand,cursive" font-size="9" fill="#555">Workers · Sharding · Distributed · Merge reports</text>
+
+    <!-- Branch: Reports -->
+    <line x1="275" y1="120" x2="120" y2="160" stroke="#c62828" stroke-width="2"/>
+    <rect x="50" y="148" width="100" height="28" rx="12" fill="#ffebee" stroke="#c62828" stroke-width="2"/>
+    <text x="100" y="167" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12" fill="#c62828">Reports</text>
+    <text x="20" y="185" font-family="Patrick Hand,cursive" font-size="9" fill="#555">HTML · blob · merge · screenshot/video</text>
+
+    <!-- Branch: Env Vars -->
+    <line x1="445" y1="120" x2="600" y2="155" stroke="#f57f17" stroke-width="2"/>
+    <rect x="580" y="143" width="100" height="28" rx="12" fill="#fffde7" stroke="#f57f17" stroke-width="2"/>
+    <text x="630" y="162" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12" fill="#f57f17">Env Variables</text>
+    <text x="565" y="180" font-family="Patrick Hand,cursive" font-size="9" fill="#555">secrets · environment{} · process.env</text>
+  </svg>
+
+  <!-- SECTION 2: Must-Know (TIER 2) -->
+  <div class="qr-section-title">🔑 Must-Know Concepts <span class="tier-strip tier-2">TIER 2</span></div>
+  <div class="must-know-grid">
+    <div class="mnk-label stripe-j"><span class="hl-yellow">Jenkins Pipeline</span></div>
+    <div class="mnk-value">Declarative YAML-like Groovy syntax; <code>pipeline → stages → stage → steps</code>; <code>post { always {} }</code> for cleanup</div>
+    <div class="mnk-label stripe-j"><span class="hl-green">archiveArtifacts</span></div>
+    <div class="mnk-value">Jenkins step to save files (reports, screenshots) for download after run</div>
+    <div class="mnk-label stripe-j">publishHTML</div>
+    <div class="mnk-value">Jenkins plugin to render Playwright HTML report in CI UI (HTML Publisher Plugin)</div>
+    <div class="mnk-label stripe-g"><span class="hl-yellow">strategy.matrix</span></div>
+    <div class="mnk-value">GitHub Actions: run same job across multiple values (browsers, OS) in parallel</div>
+    <div class="mnk-label stripe-g">fail-fast: false</div>
+    <div class="mnk-value">Don't cancel other matrix jobs when one fails — get full cross-browser results</div>
+    <div class="mnk-label stripe-g"><span class="hl-green">upload-artifact</span></div>
+    <div class="mnk-value"><code>actions/upload-artifact@v4</code> + <code>if: always()</code> so reports save even on failure</div>
+    <div class="mnk-label stripe-g">needs:</div>
+    <div class="mnk-value">Makes a job wait for listed jobs to complete; used to gate deploy on all test jobs</div>
+    <div class="mnk-label stripe-d"><span class="hl-yellow">Playwright Image</span></div>
+    <div class="mnk-value"><code>mcr.microsoft.com/playwright:v1.44.0-jammy</code> — includes all browsers + system deps</div>
+    <div class="mnk-label stripe-d">Pin version</div>
+    <div class="mnk-value">Never use <code>:latest</code> — pin exact version to avoid browser mismatch surprises</div>
+    <div class="mnk-label stripe-p"><span class="hl-green">Workers</span></div>
+    <div class="mnk-value">Playwright process count per machine; set in config: <code>workers: 4</code></div>
+    <div class="mnk-label stripe-p"><span class="hl-yellow">Sharding</span></div>
+    <div class="mnk-value">Split suite across machines with <code>--shard=N/TOTAL</code>; Playwright auto-distributes tests</div>
+    <div class="mnk-label stripe-p">blob reporter</div>
+    <div class="mnk-value">Used per-shard for distributed runs; merge with <code>npx playwright merge-reports</code></div>
+    <div class="mnk-label stripe-p">fullyParallel</div>
+    <div class="mnk-value"><code>fullyParallel: true</code> — tests within a file also run in parallel (not just file-level)</div>
+  </div>
+
+  <!-- SECTION 5: Rapid-Fire Q&A (TIER 2) -->
+  <div class="qr-section-title">🎯 Interview Rapid-Fire <span class="tier-strip tier-2">TIER 2</span></div>
+  <div class="table-scroll">
+    <table class="rf-table" aria-label="Rapid fire interview Q&A">
+      <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+      <tbody>
+        <tr><td><span class="hl-yellow">Why use <code>npm ci</code> in CI?</span></td><td>Faster, uses lockfile exactly, fails if lockfile out of sync — deterministic</td></tr>
+        <tr><td>How to install Playwright browsers in GitHub Actions?</td><td><code>npx playwright install --with-deps</code> — installs browsers + system libraries</td></tr>
+        <tr><td><span class="hl-yellow">What is sharding in Playwright?</span></td><td>Split test suite across N machines using <code>--shard=X/N</code>; each runs a fraction</td></tr>
+        <tr><td>How do screenshots reach CI after failure?</td><td>Set <code>screenshot: 'only-on-failure'</code>, archive <code>test-results/</code> folder as CI artifact</td></tr>
+        <tr><td><span class="hl-yellow">Why use official Playwright Docker image?</span></td><td>Packages all browser binaries + system deps — no "works on my machine" issues</td></tr>
+        <tr><td>What does <code>fail-fast: false</code> do in matrix?</td><td>Prevents GitHub Actions from cancelling remaining matrix jobs when one fails</td></tr>
+        <tr><td>How to merge reports from sharded runs?</td><td>Use <code>blob</code> reporter per shard, download artifacts, then <code>npx playwright merge-reports</code></td></tr>
+        <tr><td>Difference: workers vs sharding?</td><td>Workers = parallel on ONE machine; Sharding = split across MULTIPLE machines</td></tr>
+        <tr><td>How to pass secrets in GitHub Actions?</td><td>Store in repo Settings → Secrets; use <code>${{ secrets.NAME }}</code> in YAML</td></tr>
+        <tr><td>How do you run tests only on specific browsers via matrix?</td><td>Use <code>matrix.browser</code> + <code>--project=${{ matrix.browser }}</code> in run command</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 3: Key Commands (LOOKUP) -->
+  <div class="qr-section-title">⚡ Key Commands / Syntax <span class="tier-strip tier-lookup">🔍 LOOKUP ONLY</span></div>
+
+  <span class="code-label">// Core CI commands</span>
+  <div class="codebox" style="font-size:12px;"><span class="tok-com">// Install browsers + deps (CI)</span>
+<span class="tok-fn">npx playwright install</span> <span class="tok-str">--with-deps</span>
+
+<span class="tok-com">// Run with sharding</span>
+<span class="tok-fn">npx playwright test</span> <span class="tok-str">--shard=1/3</span>
+
+<span class="tok-com">// Merge blob reports from shards</span>
+<span class="tok-fn">npx playwright merge-reports</span> <span class="tok-str">./all-blobs</span> <span class="tok-str">--reporter html</span>
+
+<span class="tok-com">// Run specific project (browser)</span>
+<span class="tok-fn">npx playwright test</span> <span class="tok-str">--project=chromium</span>
+
+<span class="tok-com">// Docker run with volume mount</span>
+<span class="tok-fn">docker run</span> <span class="tok-str">--rm -v $(pwd):/app -w /app mcr.microsoft.com/playwright:v1.44.0-jammy npx playwright test</span>
+
+<span class="tok-com">// playwright.config.ts key CI settings</span>
+<span class="tok-prop">workers</span>: <span class="tok-var">process</span>.<span class="tok-var">env</span>.<span class="tok-prop">CI</span> ? <span class="tok-num">4</span> : <span class="tok-num">2</span>,
+<span class="tok-prop">retries</span>: <span class="tok-var">process</span>.<span class="tok-var">env</span>.<span class="tok-prop">CI</span> ? <span class="tok-num">2</span> : <span class="tok-num">0</span>,
+<span class="tok-prop">screenshot</span>: <span class="tok-str">'only-on-failure'</span>,
+<span class="tok-prop">video</span>: <span class="tok-str">'retain-on-failure'</span>,
+<span class="tok-prop">trace</span>: <span class="tok-str">'on-first-retry'</span></div>
+
+  <!-- SECTION 4: Common Mistakes (TIER 3) -->
+  <div class="qr-section-title">⚠️ Common Mistakes &amp; Gotchas <span class="tier-strip tier-3">TIER 3</span> <span class="always-read">ALWAYS READ</span></div>
+  <ul class="mistake-list">
+    <li>⚠️ Using <code>npm install</code> instead of <span class="hl-pink"><code>npm ci</code></span> in CI — causes non-deterministic installs, can silently update deps</li>
+    <li>⚠️ Forgetting <code>if: always()</code> on artifact upload — <span class="hl-pink">reports won't save when tests fail</span> (the only time you need them most!)</li>
+    <li>⚠️ Using <code>:latest</code> Docker tag — <span class="hl-orange">browser version mismatch</span> with your <code>package.json</code> Playwright version causes launch failures</li>
+    <li>⚠️ Setting <code>fail-fast: true</code> (default) in matrix — one browser failing cancels all others, you lose cross-browser insights</li>
+    <li>⚠️ Forgetting <code>--with-deps</code> on GitHub Actions — browsers install but <span class="hl-pink">system libs are missing</span> → tests crash on Linux</li>
+    <li>⚠️ Not mounting test-results volume in Docker — screenshots/videos exist inside container but are <span class="hl-orange">lost when container exits</span></li>
+    <li>⚠️ Sharding without blob reporter — each shard generates a separate HTML report; you get 3 disconnected reports instead of one merged view</li>
+    <li>⚠️ Setting <code>fullyParallel: true</code> with shared state — tests that mutate the same data will conflict; ensure test isolation</li>
+  </ul>
+
+  <!-- SECTION 6: Memory Tricks (TIER 3) -->
+  <div class="qr-section-title">🧠 Memory Tricks &amp; Last-Minute Tips <span class="tier-strip tier-3">TIER 3</span></div>
+  <div class="trick-cards">
+    <div class="trick-card">🍕 <strong>Sharding = Pizza Slices</strong><br>Each machine gets equal slices (tests). Workers = how fast one machine chews through its slice.</div>
+    <div class="trick-card">🔒 <strong>Docker = Zip bag</strong><br>Everything the test needs (browsers + libs) packed in one sealed bag. Same bag → same environment, always.</div>
+    <div class="trick-card">🎭 <strong>matrix = Clone Army</strong><br>GitHub Actions sends the same job to multiple environments simultaneously — like cloning your test team.</div>
+    <div class="trick-card">📦 <strong>always() = safety net</strong><br><code>if: always()</code> is like a parachute — it opens even if everything above it fails. Put artifact upload here.</div>
+  </div>
+
+  <ul class="tips-list">
+    <li>Set <code>CI=true</code> env var in pipeline — Playwright auto-adjusts (no animations, cleaner output)</li>
+    <li>Use <code>retries: 2</code> only in CI — never locally, it hides flaky tests during development</li>
+    <li>For distributed runs: use blob reporter per shard + merge job; don't try to upload HTML per shard and combine manually</li>
+    <li>Keep Docker image version in sync with <code>@playwright/test</code> version in <code>package.json</code> — they must match!</li>
+    <li>Matrix strategy runs FASTER than sequential — 3 browsers in parallel = 3× speed</li>
+  </ul>
+
+  <div class="pg-num">7</div>
+</div>
+</div>
+
+</div><!-- /pages-container -->
+</body>
+</html>

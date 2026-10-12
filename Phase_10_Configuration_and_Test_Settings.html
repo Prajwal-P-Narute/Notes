@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Playwright Configuration — Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  * , *::before, *::after { box-sizing: border-box; }
+  :root{
+    --page-w: 794px;
+    --page-h: 1123px;
+    --ink: #14213d;
+    --sub: #14329e;
+    --body-ink: #1a3fa0;
+    --rule: #cfe3f7;
+    --margin-red: #d64550;
+  }
+  html,body{ margin:0; padding:0; background:#e8e8e8; }
+  body{ font-family:'Kalam', 'Patrick Hand', cursive; }
+
+  .pages-container{ width:100%; padding-bottom:40px; background:#e8e8e8; }
+  .page-wrapper{ display:flex; justify-content:center; align-items:flex-start; padding:24px 12px; }
+  @media (min-width:860px){ .page-wrapper{ padding:40px 24px; } }
+
+  .page{
+    width:100%; max-width:var(--page-w); min-height:var(--page-h);
+    position:relative; background:#fffdf8;
+    background-image: repeating-linear-gradient(#fffdf8 0px, #fffdf8 27px, var(--rule) 28px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+    border-radius:3px;
+    padding: 95px 34px 90px 64px;
+    rotate: -0.3deg;
+    overflow-wrap: anywhere;
+  }
+  .page.tilt2{ rotate: 0.25deg; }
+  .page.tilt3{ rotate: -0.15deg; }
+  .page.tilt4{ rotate: 0.3deg; }
+  .page::before{
+    content:"";
+    position:absolute; top:0; bottom:0; left:46px; width:2px;
+    background: var(--margin-red); opacity:0.55;
+  }
+  .page-number{
+    position:absolute; bottom:14px; right:22px; font-family:'Caveat', cursive;
+    font-size:20px; color:#666; background:#fff8; padding:2px 10px; border-radius:8px;
+  }
+
+  h1.main-title{
+    font-family:'Kalam', cursive; font-weight:700; color:var(--ink);
+    font-size:34px; margin:0 0 4px 0; transform: rotate(-0.4deg);
+  }
+  .subtitle-strip{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'Caveat', cursive; font-size:20px; color:#fff;
+    background: linear-gradient(90deg,#1a3fa0,#234ebf);
+    padding:6px 14px; border-radius:8px; margin-bottom:18px;
+    transform: rotate(-0.2deg);
+  }
+  .subtitle-strip.rev{ background: linear-gradient(90deg,#00695c,#004d40); }
+
+  h2.section-title{
+    font-family:'Kalam', cursive; font-weight:700; color:var(--sub);
+    font-size:25px; margin: 22px 0 8px 0; transform: rotate(0.3deg);
+    border-bottom: 2px dashed #99b6e6; padding-bottom:3px;
+  }
+  h3.sub-title{
+    font-family:'Kalam',cursive; font-weight:700; color:var(--sub);
+    font-size:20px; margin:14px 0 6px 0; transform: rotate(-0.2deg);
+  }
+  p, li{ color: var(--body-ink); font-size:19px; line-height:1.55; margin:6px 0; }
+  p.alt, li.alt{ transform: rotate(-0.3deg); }
+  ul{ padding-left:24px; margin:6px 0; }
+
+  .hl-yellow{ background: linear-gradient(180deg, transparent 60%, #fff59d 60%); padding:0 2px; }
+  .hl-green{ background: linear-gradient(180deg, transparent 60%, #b9f6ca 60%); padding:0 2px; }
+  .hl-pink{ background: linear-gradient(180deg, transparent 60%, #ffcdd6 60%); padding:0 2px; }
+  .hl-orange{ background: linear-gradient(180deg, transparent 60%, #ffe0b2 60%); padding:0 2px; }
+
+  code, .inline-code{
+    font-family:'Consolas','Menlo',monospace; background:#e9edfb; color:#1e2235;
+    border:1px solid #b9c4e6; border-radius:5px; padding:1px 6px; font-size:16px;
+  }
+
+  .codebox{
+    background:#1e2235; color:#e0e6f5; font-family:'Consolas','Menlo',monospace;
+    font-size:14.5px; border-radius:8px; padding:14px 16px; margin:12px 0;
+    overflow-x:auto; -webkit-overflow-scrolling:touch; white-space:pre; word-break:normal;
+    border: 2px dashed #454b6b; max-width:100%;
+  }
+  .codebox .cmt-label{
+    font-family:'Caveat',cursive; color:#8b949e; font-style:italic; font-size:15px; display:block; margin-bottom:4px;
+  }
+  .tok-kw{ color:#ff7b72; font-weight:bold; }
+  .tok-fn{ color:#d2a8ff; }
+  .tok-var{ color:#79c0ff; }
+  .tok-str{ color:#a8e6a3; }
+  .tok-prop{ color:#56d364; }
+  .tok-num{ color:#f0883e; }
+  .tok-com{ color:#8b949e; font-style:italic; }
+  .tok-cls{ color:#ffa657; }
+  .tok-def{ color:#e2c08d; }
+
+  .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; margin:10px 0; }
+  table.nb-table{ border-collapse:collapse; width:100%; min-width:480px; font-family:'Patrick Hand',cursive; }
+  table.nb-table caption{ text-align:left; font-family:'Caveat',cursive; font-size:16px; color:#888; margin-bottom:4px; }
+  table.nb-table th, table.nb-table td{
+    border:1.5px dashed #7d97cc; padding:8px 10px; font-size:16.5px; color:var(--body-ink);
+    border-radius:6px;
+  }
+  table.nb-table th{ background:#dbe7fb; color:var(--ink); font-family:'Kalam',cursive; }
+  table.nb-table tr:nth-child(even) td{ background:#f6f9ff; }
+
+  .callout{
+    border:2px dashed #999; border-radius:10px; padding:10px 14px; margin:14px 0;
+    background:#fffbe8; max-width:100%; box-sizing:border-box;
+  }
+  .callout .badge{ font-family:'Caveat',cursive; font-weight:700; font-size:17px; }
+
+  .sticky{
+    background:#fff3b0; border-radius:4px; padding:14px; margin:16px 8px;
+    box-shadow: 3px 5px 8px rgba(0,0,0,0.18);
+    transform: rotate(-2deg); max-width:100%; box-sizing:border-box;
+    font-family:'Patrick Hand',cursive; font-size:17px; color:#5a4a00; position:relative;
+  }
+  .sticky::after{
+    content:""; position:absolute; bottom:-8px; right:8px;
+    width:0;height:0; border-left:10px solid transparent; border-top:10px solid #d8c766;
+  }
+  .sticky.pink{ background:#ffd6e8; color:#7a1f4b; }
+  .sticky.green{ background:#d3f9d8; color:#1d5c2c; }
+  .sticky.blue{ background:#d6ecff; color:#0d3d6e; }
+  .sticky.rotate2{ transform: rotate(1.5deg); }
+
+  .flow{ display:flex; flex-direction:column; align-items:center; gap:6px; margin:16px 0; }
+  .flow-box{
+    border:2.2px solid #234ebf; border-radius: 14px 4px 12px 5px; background:#eef4ff;
+    color:var(--ink); font-family:'Kalam',cursive; font-size:17px; padding:10px 16px;
+    text-align:center; max-width:90%; box-shadow:2px 3px 0 rgba(35,78,191,0.25);
+  }
+  .flow-arrow{ font-size:22px; color:#234ebf; }
+
+  .speech-box{
+    position:relative; max-width:100%; box-sizing:border-box; margin: 22px 6px 30px 6px;
+    border-radius:20px; border:3.3px solid #e65100;
+    background: radial-gradient(circle at 30% 20%, #fff7e6 0%, transparent 55%),
+                linear-gradient(135deg,#fff3e0 0%, #ffe0b2 55%, #ffcc80 100%);
+    box-shadow: 6px 6px 0 rgba(230,81,0,0.25), 0 10px 20px rgba(0,0,0,0.15);
+    padding: 16px 18px 14px 18px; transform: rotate(-0.6deg);
+  }
+  .speech-box::before{
+    content:""; position:absolute; inset:5px; border-radius:16px;
+    border:2px dashed rgba(255,255,255,0.85); pointer-events:none;
+  }
+  .speech-box::after{
+    content:""; position:absolute; left:36px; bottom:-16px;
+    width:0;height:0; border-left:10px solid transparent; border-right:14px solid transparent;
+    border-top:20px solid #ffcc80;
+  }
+  .speech-badge{
+    position:absolute; top:-16px; right:-10px; width:38px; height:38px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #ffe0b2, #e65100);
+    display:flex; align-items:center; justify-content:center; font-size:18px;
+    box-shadow:0 3px 6px rgba(0,0,0,0.3);
+  }
+  .speech-title{ font-family:'Caveat',cursive; font-weight:700; font-size:18px; color:#8a3b00; margin-bottom:6px; }
+  .speech-inner{
+    background:rgba(255,255,255,0.65); border-radius:12px; padding:10px 12px;
+    font-family:'Patrick Hand',cursive; font-size:20px; color:#5a2a00; line-height:1.5;
+    word-break:break-word; overflow-wrap:anywhere;
+  }
+  .speech-sub{
+    margin-top:8px; background:rgba(255,255,255,0.5); border-radius:10px; padding:6px 10px;
+    font-family:'Patrick Hand',cursive; font-size:15.5px; color:#7a3d00;
+  }
+  .followup{ margin-top:6px; font-family:'Patrick Hand',cursive; font-size:15px; color:#7a3d00; }
+
+  .mindmap-wrap{ margin:16px 0; }
+  svg{ display:block; }
+
+  .safe-note{ font-size:13px; color:#999; }
+
+  @media (prefers-reduced-motion: reduce){
+    .page{ rotate:0deg !important; }
+    .speech-box, .sticky{ transform:none !important; }
+    *{ transition:none !important; animation:none !important; }
+  }
+  @media print{
+    .page-wrapper{ display:flex !important; page-break-after: always; }
+    .pages-container{ background:white; }
+    .page{ box-shadow:none; rotate:0deg !important; margin:0; border:none; }
+  }
+
+  /* Revision sheet specific */
+  .rev-instruction{
+    background:#e0f2f1; border:1px solid #00897b; border-radius:10px; padding:10px 14px;
+    font-family:'Patrick Hand',cursive; font-size:15.5px; color:#00463d; margin-bottom:18px;
+  }
+  .rev-instruction .title-line{ font-family:'Kalam',cursive; font-weight:700; font-size:16.5px; margin-bottom:4px; }
+  .tier-badge{
+    display:inline-block; font-family:'Caveat',cursive; font-size:14px; font-weight:700;
+    color:#fff; padding:2px 9px; border-radius:6px; margin-left:8px; vertical-align:middle;
+  }
+  .tier1{ background:#00897b; }
+  .tier2{ background:#1565c0; }
+  .tier3{ background:#c62828; }
+  .tierlookup{ background:#6a1b9a; }
+  .always-badge{ background:#c62828; color:#fff; font-family:'Caveat',cursive; font-size:13px; padding:2px 8px; border-radius:6px; margin-left:6px; }
+  .lookup-badge{ background:#6a1b9a; color:#fff; font-family:'Caveat',cursive; font-size:13px; padding:2px 8px; border-radius:6px; margin-left:6px; }
+
+  .grid2{ display:grid; grid-template-columns: 1fr 1.6fr; gap:6px 10px; }
+  .grid2 .concept{ font-family:'Kalam',cursive; font-weight:700; color:var(--ink); font-size:16px; padding:4px 6px; border-left:5px solid #90a4ae; }
+  .grid2 .desc{ font-size:15.5px; color:var(--body-ink); padding:4px 6px; }
+  .stripe-a{ border-left-color:#00897b !important; }
+  .stripe-b{ border-left-color:#1565c0 !important; }
+  .stripe-c{ border-left-color:#ef6c00 !important; }
+  .stripe-d{ border-left-color:#6a1b9a !important; }
+
+  .mnemonic-box{
+    border:2px dashed #ad1457; border-radius:10px; padding:10px 12px; margin:10px 4px;
+    background:#fff0f5; font-family:'Patrick Hand',cursive; font-size:15.5px; color:#880e4f;
+  }
+
+  /* Interview speech-card upgrades */
+  .speech-inner p.sl{
+    margin:8px 0; padding:0; color:#5a2a00; font-family:'Patrick Hand',cursive;
+    font-size:19px; line-height:1.45;
+  }
+  .speech-inner .anchor{ color:#6b4c00; background:#fff176; font-weight:700; padding:0 3px; border-radius:3px; }
+  .speech-inner p.sl.closer{ border-top:2px dashed #e9a23b; padding-top:8px; margin-top:10px; font-weight:700; }
+  .speech-q{
+    margin:10px 0 12px; padding:9px 12px; background:#fffdf7; border-left:5px solid #ffb300;
+    border-radius:8px; color:#174ea6; font-family:'Kalam',cursive; font-size:18px; line-height:1.35;
+  }
+  .speech-q .qlabel{ display:block; color:#e65100; font-family:'Patrick Hand',cursive; font-size:14px; font-weight:700; margin-bottom:3px; }
+  .speech-box .speech-sub{ margin-top:10px; }
+
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+<!-- ============ PAGE 1 ============ -->
+<div class="page-wrapper"><div class="page">
+  <h1 class="main-title">⚙️ Playwright Configuration</h1>
+  <div class="subtitle-strip"><span>Phase 10 · playwright.config.ts</span><span>Page 1</span></div>
+
+  <h2 class="section-title">📌 What is playwright.config.ts?</h2>
+  <p>It's the <span class="hl-yellow">single source of truth</span> for how your whole test suite behaves — where tests live, how long they wait, what browser/device to use, retries, reporting, etc.</p>
+  <p class="alt">Playwright reads this file automatically when you run <code>npx playwright test</code> — no need to import it anywhere.</p>
+
+  <div class="mindmap-wrap">
+    <svg viewBox="0 0 700 300" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="350" cy="150" r="52" fill="#1a3fa0"/>
+      <text x="350" y="146" text-anchor="middle" fill="#fff" font-family="Kalam" font-size="15" font-weight="700">playwright</text>
+      <text x="350" y="164" text-anchor="middle" fill="#fff" font-family="Kalam" font-size="15" font-weight="700">.config.ts</text>
+
+      <line x1="350" y1="150" x2="150" y2="60" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="150" cy="60" r="38" fill="#fff59d"/>
+      <text x="150" y="65" text-anchor="middle" font-family="Patrick Hand" font-size="13" fill="#5a4a00">testDir</text>
+
+      <line x1="350" y1="150" x2="120" y2="170" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="120" cy="170" r="38" fill="#b9f6ca"/>
+      <text x="120" y="175" text-anchor="middle" font-family="Patrick Hand" font-size="13" fill="#1d5c2c">timeout</text>
+
+      <line x1="350" y1="150" x2="180" y2="260" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="180" cy="260" r="38" fill="#ffcdd6"/>
+      <text x="180" y="265" text-anchor="middle" font-family="Patrick Hand" font-size="13" fill="#7a1f4b">expect</text>
+
+      <line x1="350" y1="150" x2="560" y2="60" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="560" cy="60" r="38" fill="#ffe0b2"/>
+      <text x="560" y="65" text-anchor="middle" font-family="Patrick Hand" font-size="13" fill="#7a3d00">use{}</text>
+
+      <line x1="350" y1="150" x2="600" y2="170" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="600" cy="170" r="38" fill="#d6ecff"/>
+      <text x="600" y="175" text-anchor="middle" font-family="Patrick Hand" font-size="13" fill="#0d3d6e">projects</text>
+
+      <line x1="350" y1="150" x2="530" y2="260" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="530" cy="260" r="38" fill="#e1bee7"/>
+      <text x="530" y="265" text-anchor="middle" font-family="Patrick Hand" font-size="13" fill="#4a148c">reporter</text>
+    </svg>
+  </div>
+
+  <h2 class="section-title">🗂️ testDir</h2>
+  <p>Tells Playwright <span class="hl-yellow">where your spec files live</span> — e.g. <code>./tests</code>. Playwright scans this folder (and subfolders) for files matching the test pattern.</p>
+
+  <h2 class="section-title">⏱️ timeout</h2>
+  <p>Max time (ms) a <span class="hl-yellow">single test</span> is allowed to run before Playwright marks it as failed (timed out). Default is 30000ms (30s).</p>
+  <p class="alt">Don't confuse with <code>actionTimeout</code> or <code>navigationTimeout</code> — those limit individual actions/navigations inside a test, not the whole test.</p>
+
+  <h2 class="section-title">✅ expect</h2>
+  <p>Configures the default <span class="hl-yellow">assertion timeout</span> — how long <code>expect(locator).toBeVisible()</code> style assertions will keep retrying before failing. Default 5000ms.</p>
+
+  <div class="codebox">
+    <span class="cmt-label">// playwright.config.ts — top-level settings</span>
+<span class="tok-kw">import</span> { <span class="tok-var">defineConfig</span> } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/test'</span>;
+
+<span class="tok-kw">export</span> <span class="tok-kw">default</span> <span class="tok-fn">defineConfig</span>({
+  <span class="tok-prop">testDir</span>: <span class="tok-str">'./tests'</span>,
+  <span class="tok-prop">timeout</span>: <span class="tok-num">30000</span>,
+  <span class="tok-prop">expect</span>: { <span class="tok-prop">timeout</span>: <span class="tok-num">5000</span> },
+});
+  </div>
+
+  <div class="callout">
+    <span class="badge">💡 Tip:</span> Keep <code>timeout</code> generous for flaky UI flows, but keep <code>expect.timeout</code> tighter — it should catch a real failure fast, not mask it.
+  </div>
+
+  <div class="speech-box">
+    <div class="speech-badge">⚙️</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>What is playwright.config.ts, and what do you configure in it?</div>
+    <div class="speech-inner">
+      <p class="sl"><span class="anchor">In simple terms,</span> it is the central configuration file that controls how the Playwright test suite runs.</p><p class="sl"><span class="anchor">It matters because</span> I can manage test locations, timeouts, browser settings, retries, and reports in one place.</p><p class="sl"><span class="anchor">For example,</span> I use <code>testDir</code> to locate tests and <code>timeout</code> to set the maximum duration for a test.</p><p class="sl"><span class="anchor">I also configure</span> <code>expect.timeout</code> separately because it controls how long an assertion retries.</p><p class="sl"><span class="anchor">In practice,</span> I keep shared settings in the main config and override them only when a project needs different behavior.</p><p class="sl closer"><span class="anchor">So, in short,</span> a clear config makes test execution consistent, maintainable, and easier to debug.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: "What is the purpose of the Playwright config file?" / "Which settings do you usually define globally?"</div>
+    <div class="followup">Follow-up Qs: What is the difference between test timeout and expect timeout? How can project settings override global settings?</div>
+  </div>
+
+  <div class="page-number">Page 1</div>
+</div></div>
+
+<!-- ============ PAGE 2 ============ -->
+<div class="page-wrapper"><div class="page tilt2">
+  <h1 class="main-title">⚙️ The use{} Block</h1>
+  <div class="subtitle-strip"><span>Phase 10 · playwright.config.ts</span><span>Page 2</span></div>
+
+  <p>The <code>use</code> object holds <span class="hl-green">default options applied to every test</span> (unless a project overrides them). Think of it as the "global settings" bucket.</p>
+
+  <h2 class="section-title">🌐 baseURL</h2>
+  <p>Sets a <span class="hl-yellow">root URL</span> so tests can call <code>page.goto('/login')</code> instead of the full domain every time. Great for switching environments (see Page 4).</p>
+
+  <h2 class="section-title">🔐 storageState</h2>
+  <p>Lets you <span class="hl-yellow">reuse a saved login session</span> (cookies + localStorage) across tests, so you don't log in from scratch every run — huge speed win.</p>
+
+  <h2 class="section-title">🔍 trace</h2>
+  <p>Records a <span class="hl-yellow">timeline of actions, DOM snapshots, network & console logs</span> for a test — viewable in Trace Viewer for debugging failures.</p>
+  <table class="nb-table" style="margin-top:6px; min-width:0;">
+    <caption>trace option values</caption>
+    <tr><th>Value</th><th>Meaning</th></tr>
+    <tr><td><code>'on'</code></td><td>Always record</td></tr>
+    <tr><td><code>'off'</code></td><td>Never record</td></tr>
+    <tr><td><code>'retain-on-failure'</code></td><td>Keep only for failed tests</td></tr>
+    <tr><td><code>'on-first-retry'</code></td><td>Record only on the first retry attempt</td></tr>
+  </table>
+
+  <h2 class="section-title">🎥 video &nbsp; 📸 screenshot</h2>
+  <p><span class="hl-green">video</span>: records a screen recording of the test run — same value options as trace. <span class="hl-green">screenshot</span>: captures a still image, usually set to <code>'only-on-failure'</code> to save disk space in CI.</p>
+
+  <div class="codebox">
+    <span class="cmt-label">// use{} block — shared defaults for every test</span>
+<span class="tok-kw">export</span> <span class="tok-kw">default</span> <span class="tok-fn">defineConfig</span>({
+  <span class="tok-prop">use</span>: {
+    <span class="tok-prop">baseURL</span>: <span class="tok-str">'https://staging.myapp.com'</span>,
+    <span class="tok-prop">storageState</span>: <span class="tok-str">'auth/state.json'</span>,
+    <span class="tok-prop">trace</span>: <span class="tok-str">'retain-on-failure'</span>,
+    <span class="tok-prop">video</span>: <span class="tok-str">'retain-on-failure'</span>,
+    <span class="tok-prop">screenshot</span>: <span class="tok-str">'only-on-failure'</span>,
+  },
+});
+  </div>
+
+  <div class="speech-box">
+    <div class="speech-badge">🎤</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>What is the use{} block in Playwright, and how do you use baseURL?</div>
+    <div class="speech-inner">
+      <p class="sl"><span class="anchor">The use block</span> stores default browser and test options that apply to tests unless a project overrides them.</p><p class="sl"><span class="anchor">For baseURL,</span> I set the root application URL so tests can navigate with relative paths such as <code>page.goto('/login')</code>.</p><p class="sl"><span class="anchor">This helps because</span> the same tests can target QA or staging without hardcoding a full URL in every test.</p><p class="sl"><span class="anchor">I also configure</span> <code>storageState</code> to reuse a saved session and <code>trace</code> to help investigate failures.</p><p class="sl"><span class="anchor">For debugging,</span> I often retain traces and videos on failure and screenshots only when a test fails.</p><p class="sl closer"><span class="anchor">So, in short,</span> the use block centralizes reusable defaults and makes test runs easier to switch and troubleshoot.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: "How do you avoid hardcoding URLs in your tests?" / "Which options do you commonly configure inside use?"</div>
+    <div class="followup">Follow-up Qs: Can baseURL be overridden per project? What does storageState preserve? When would you use Trace Viewer?</div>
+  </div>
+
+
+  <div class="page-number">Page 2</div>
+</div></div>
+
+<!-- ============ PAGE 3 ============ -->
+<div class="page-wrapper"><div class="page tilt3">
+  <h1 class="main-title">⚙️ Projects · Workers · Retries · Reporter</h1>
+  <div class="subtitle-strip"><span>Phase 10 · playwright.config.ts</span><span>Page 3</span></div>
+
+  <h2 class="section-title">🧩 projects</h2>
+  <p>Lets you run the <span class="hl-yellow">same test suite across multiple browsers/devices/configs</span> in one command — each project can have its own <code>use</code> overrides.</p>
+
+  <h2 class="section-title">👷 workers</h2>
+  <p>Number of <span class="hl-yellow">parallel worker processes</span> Playwright spins up to run test files simultaneously. More workers = faster suite, but more CPU/RAM.</p>
+
+  <h2 class="section-title">🔁 retries</h2>
+  <p>How many times a <span class="hl-yellow">failed test is automatically re-run</span> before being marked as truly failed — useful for taming flaky tests, especially in CI.</p>
+
+  <h2 class="section-title">📊 reporter</h2>
+  <p>Controls the <span class="hl-yellow">output format</span> of test results — e.g. <code>'list'</code> for console, <code>'html'</code> for a browsable report, <code>'json'</code>/<code>'junit'</code> for CI integrations. You can use several at once.</p>
+
+  <div class="codebox">
+    <span class="cmt-label">// projects, workers, retries, reporter</span>
+<span class="tok-kw">import</span> { <span class="tok-var">devices</span> } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/test'</span>;
+
+<span class="tok-kw">export</span> <span class="tok-kw">default</span> <span class="tok-fn">defineConfig</span>({
+  <span class="tok-prop">workers</span>: <span class="tok-num">4</span>,
+  <span class="tok-prop">retries</span>: <span class="tok-kw">process</span>.<span class="tok-var">env</span>.<span class="tok-cls">CI</span> ? <span class="tok-num">2</span> : <span class="tok-num">0</span>,
+  <span class="tok-prop">reporter</span>: [[<span class="tok-str">'list'</span>], [<span class="tok-str">'html'</span>, { <span class="tok-prop">open</span>: <span class="tok-str">'never'</span> }]],
+  <span class="tok-prop">projects</span>: [
+    { <span class="tok-prop">name</span>: <span class="tok-str">'chromium'</span>, <span class="tok-prop">use</span>: { ...<span class="tok-fn">devices</span>[<span class="tok-str">'Desktop Chrome'</span>] } },
+    { <span class="tok-prop">name</span>: <span class="tok-str">'firefox'</span>, &nbsp;<span class="tok-prop">use</span>: { ...<span class="tok-fn">devices</span>[<span class="tok-str">'Desktop Firefox'</span>] } },
+    { <span class="tok-prop">name</span>: <span class="tok-str">'mobile'</span>, &nbsp;&nbsp;<span class="tok-prop">use</span>: { ...<span class="tok-fn">devices</span>[<span class="tok-str">'iPhone 13'</span>] } },
+  ],
+});
+  </div>
+
+  <div class="table-scroll">
+    <table class="nb-table">
+      <caption>projects vs workers — don't mix these up</caption>
+      <tr><th>Option</th><th>Controls</th><th>Analogy</th></tr>
+      <tr><td>projects</td><td>WHAT to run against (browser/device/config)</td><td>Different "lanes" of the same race</td></tr>
+      <tr><td>workers</td><td>HOW MANY run at the same time</td><td>Number of runners racing at once</td></tr>
+    </table>
+  </div>
+
+  <div class="sticky">📌 Real CI trick: set <code>retries</code> conditionally on <code>process.env.CI</code> — 0 locally (fail fast while debugging), 2 in CI (absorb network flakiness).</div>
+
+  <div class="speech-box">
+    <div class="speech-badge">🧩</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>What is the difference between projects, workers, retries, and reporters?</div>
+    <div class="speech-inner">
+      <p class="sl"><span class="anchor">Projects define</span> which browser, device, or configuration a test suite should run against.</p><p class="sl"><span class="anchor">Workers control</span> how many worker processes run tests in parallel, depending on available CPU and memory.</p><p class="sl"><span class="anchor">Retries determine</span> how many times Playwright reruns a failed test before reporting its final result.</p><p class="sl"><span class="anchor">Reporters control</span> how test results are presented, such as in the terminal, an HTML report, JSON, or JUnit output.</p><p class="sl"><span class="anchor">In CI,</span> I may enable retries conditionally and choose a worker count that suits the runner's resources.</p><p class="sl closer"><span class="anchor">So, in short,</span> projects decide the test target, workers decide concurrency, retries handle reruns, and reporters present results.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: "How do you configure cross-browser execution and parallel testing?" / "How do projects differ from workers?"</div>
+    <div class="followup">Follow-up Qs: Why might you use fewer workers in CI? Should retries replace investigating flaky tests? Can you configure multiple reporters?</div>
+  </div>
+
+  <div class="page-number">Page 3</div>
+</div></div>
+
+<!-- ============ PAGE 4 ============ -->
+<div class="page-wrapper"><div class="page tilt4">
+  <h1 class="main-title">🌍 Multiple Environments</h1>
+  <div class="subtitle-strip"><span>Environment Config Management</span><span>Page 4</span></div>
+
+  <h2 class="section-title">🏗️ QA · UAT · Staging · Production-like</h2>
+  <div class="table-scroll">
+    <table class="nb-table">
+      <caption>Typical test environments</caption>
+      <tr><th>Env</th><th>Purpose</th><th>Data</th></tr>
+      <tr><td><span class="hl-green">QA</span></td><td>Devs/QA run new feature tests early</td><td>Synthetic/dummy data</td></tr>
+      <tr><td><span class="hl-green">UAT</span></td><td>Business/client acceptance testing</td><td>Realistic but non-prod data</td></tr>
+      <tr><td><span class="hl-green">Staging</span></td><td>Final rehearsal — mirrors prod closely</td><td>Prod-like data, prod-like infra</td></tr>
+      <tr><td><span class="hl-green">Production-like</span></td><td>Smoke/sanity tests, monitoring checks</td><td>Extreme caution — real users nearby</td></tr>
+    </table>
+  </div>
+
+  <h2 class="section-title">🔑 Environment Variables &amp; .env</h2>
+  <p><span class="hl-yellow">Environment variables</span> keep secrets (URLs, tokens, credentials) <em>out of source code</em>, and let the same test suite point at different environments without editing files.</p>
+  <p class="alt">A <code>.env</code> file stores these as key=value pairs locally; a package like <code>dotenv</code> loads them into <code>process.env</code> at runtime. <span class="hl-pink">Never commit .env to git</span> — add it to <code>.gitignore</code>.</p>
+
+  <div class="codebox">
+    <span class="cmt-label">// .env.qa</span>
+<span class="tok-prop">BASE_URL</span>=<span class="tok-str">https://qa.myapp.com</span>
+<span class="tok-prop">API_KEY</span>=<span class="tok-str">qa-secret-123</span>
+
+    <span class="cmt-label">// playwright.config.ts — reading env vars</span>
+<span class="tok-kw">import</span> <span class="tok-str">'dotenv/config'</span>;
+
+<span class="tok-kw">export</span> <span class="tok-kw">default</span> <span class="tok-fn">defineConfig</span>({
+  <span class="tok-prop">use</span>: {
+    <span class="tok-prop">baseURL</span>: <span class="tok-kw">process</span>.<span class="tok-var">env</span>.<span class="tok-cls">BASE_URL</span>,
+  },
+});
+  </div>
+
+  <div class="flow">
+    <div class="flow-box">Set ENV var → <code>ENV=staging npx playwright test</code></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-box">Config loads <code>.env.staging</code> via dotenv</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-box">baseURL / API_KEY populated from that file</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-box">Same test code runs unchanged against Staging</div>
+  </div>
+
+  <h2 class="section-title">🗃️ Configuration Management — Best Practice</h2>
+  <ul>
+    <li>Keep <span class="hl-green">one config file</span>, drive differences via env vars — avoid duplicate config files per environment.</li>
+    <li>Store secrets in <span class="hl-yellow">CI secret managers</span> (GitHub Actions secrets, etc.), not in committed <code>.env</code> files.</li>
+    <li class="alt">Use naming convention <code>.env.qa</code>, <code>.env.staging</code> and load the right one based on an <code>ENV</code> variable.</li>
+  </ul>
+
+  <div class="speech-box">
+    <div class="speech-badge">🌍</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>How do you manage environment configuration and secrets in Playwright?</div>
+    <div class="speech-inner">
+      <p class="sl"><span class="anchor">My approach is</span> to keep environment-specific URLs and credentials out of test code.</p><p class="sl"><span class="anchor">I use</span> environment variables and, for local development, environment files loaded through a package such as <code>dotenv</code>.</p><p class="sl"><span class="anchor">For example,</span> a <code>BASE_URL</code> variable can point the same test suite at QA or staging.</p><p class="sl"><span class="anchor">To protect secrets,</span> I add local environment files to <code>.gitignore</code> and use CI secret storage for pipeline credentials.</p><p class="sl"><span class="anchor">Before running tests,</span> I verify that the selected environment and required variables are set correctly.</p><p class="sl closer"><span class="anchor">So, in short,</span> one configurable suite with safely managed environment values is easier to maintain and safer to run.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: "How do you run the same suite against QA and staging?" / "How do you prevent credentials from being committed to Git?"</div>
+    <div class="followup">Follow-up Qs: How do you load a specific .env file? What do you do when an environment variable is missing? Where should CI secrets be stored?</div>
+  </div>
+
+
+  <div class="page-number">Page 4</div>
+</div></div>
+
+<!-- ============ PAGE 5 — QUICK REVISION SHEET ============ -->
+<div class="page-wrapper"><div class="page">
+  <h1 class="main-title" style="color:#004d40;">⚡ Quick Revision Sheet</h1>
+  <div class="subtitle-strip rev"><span>⚡ Quick Revision Sheet</span><span>Scan before your interview!</span></div>
+
+  <div class="rev-instruction">
+    <div class="title-line">⚡ HOW TO USE THIS PAGE (read once, then ignore this box)</div>
+    TIER 1 — Scan the Topic Map. Fuzzy branch? → drop to Tier 2.<br>
+    TIER 2 — Read ONLY the rows that felt weak in Tier 1.<br>
+    TIER 3 — ALWAYS read Mistakes + Memory Tricks, even if Tiers 1&2 felt perfect.<br>
+    LOOKUP — Key Commands: glance only if tested on exact syntax.
+  </div>
+
+  <!-- Section 1 -->
+  <h2 class="section-title">🗺️ Topic Map <span class="tier-badge tier1">TIER 1</span></h2>
+  <div class="mindmap-wrap">
+    <svg viewBox="0 0 700 260" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="350" cy="130" r="46" fill="#00695c"/>
+      <text x="350" y="126" text-anchor="middle" fill="#fff" font-family="Kalam" font-size="13" font-weight="700">Playwright</text>
+      <text x="350" y="142" text-anchor="middle" fill="#fff" font-family="Kalam" font-size="13" font-weight="700">Config</text>
+
+      <line x1="350" y1="130" x2="140" y2="50" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="140" cy="50" r="34" fill="#00897b"/>
+      <text x="140" y="47" text-anchor="middle" font-family="Patrick Hand" font-size="11" fill="#fff">testDir</text>
+      <text x="140" y="60" text-anchor="middle" font-family="Patrick Hand" font-size="11" fill="#fff">timeout·expect</text>
+
+      <line x1="350" y1="130" x2="110" y2="180" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="110" cy="180" r="34" fill="#1565c0"/>
+      <text x="110" y="177" text-anchor="middle" font-family="Patrick Hand" font-size="11" fill="#fff">use{}</text>
+      <text x="110" y="190" text-anchor="middle" font-family="Patrick Hand" font-size="10" fill="#fff">baseURL·trace</text>
+
+      <line x1="350" y1="130" x2="590" y2="50" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="590" cy="50" r="34" fill="#ef6c00"/>
+      <text x="590" y="47" text-anchor="middle" font-family="Patrick Hand" font-size="11" fill="#fff">projects</text>
+      <text x="590" y="60" text-anchor="middle" font-family="Patrick Hand" font-size="10" fill="#fff">workers·retries</text>
+
+      <line x1="350" y1="130" x2="600" y2="200" stroke="#7d97cc" stroke-width="2"/>
+      <circle cx="600" cy="200" r="34" fill="#6a1b9a"/>
+      <text x="600" y="197" text-anchor="middle" font-family="Patrick Hand" font-size="11" fill="#fff">Env Mgmt</text>
+      <text x="600" y="210" text-anchor="middle" font-family="Patrick Hand" font-size="10" fill="#fff">.env·QA/UAT</text>
+    </svg>
+  </div>
+
+  <!-- Section 2 -->
+  <h2 class="section-title">🔑 Must-Know Concepts <span class="tier-badge tier2">TIER 2</span></h2>
+  <div class="grid2">
+    <div class="concept stripe-a">testDir</div><div class="desc">Folder Playwright scans for spec files.</div>
+    <div class="concept stripe-a">timeout</div><div class="desc">Max time a whole test can run before failing.</div>
+    <div class="concept stripe-a">expect.timeout</div><div class="desc">Max time an assertion keeps retrying.</div>
+    <div class="concept stripe-b">baseURL</div><div class="desc">Root URL so tests use relative paths like /login.</div>
+    <div class="concept stripe-b">storageState</div><div class="desc">Reused saved login session (cookies/localStorage).</div>
+    <div class="concept stripe-b">trace</div><div class="desc">Records full action timeline for debugging failures.</div>
+    <div class="concept stripe-b">video / screenshot</div><div class="desc">Recording/capture, usually only on failure.</div>
+    <div class="concept stripe-c">projects</div><div class="desc">Run same suite across browsers/devices/configs.</div>
+    <div class="concept stripe-c">workers</div><div class="desc">Parallel processes running test files at once.</div>
+    <div class="concept stripe-c">retries</div><div class="desc">Auto re-runs of a failed test (tame flakiness).</div>
+    <div class="concept stripe-c">reporter</div><div class="desc">Output format: list, html, json, junit — combinable.</div>
+    <div class="concept stripe-d">.env file</div><div class="desc">Stores secrets/URLs as key=value, loaded via dotenv.</div>
+    <div class="concept stripe-d">Env vars</div><div class="desc">Keep secrets out of code; switch environments easily.</div>
+    <div class="concept stripe-d">QA/UAT/Staging</div><div class="desc">Progressive environments closer to production each stage.</div>
+  </div>
+
+  <!-- Section 5 -->
+  <h2 class="section-title">🎯 Interview Rapid-Fire <span class="tier-badge tier2">TIER 2</span></h2>
+  <div class="table-scroll">
+    <table class="nb-table">
+      <caption>Rapid recall Q→A</caption>
+      <tr><th>Question</th><th>Answer</th></tr>
+      <tr><td class="hl-yellow">What does baseURL do?</td><td>Lets tests use relative paths; centralizes env URL.</td></tr>
+      <tr><td>Difference: timeout vs expect.timeout?</td><td>Whole-test limit vs single-assertion retry limit.</td></tr>
+      <tr><td class="hl-yellow">What is trace used for?</td><td>Post-run debugging via Trace Viewer timeline.</td></tr>
+      <tr><td>projects vs workers?</td><td>What to run against vs how many run in parallel.</td></tr>
+      <tr><td class="hl-yellow">Why use retries in CI?</td><td>Absorb flaky network/UI failures automatically.</td></tr>
+      <tr><td>What does storageState save?</td><td>Cookies + localStorage — skips repeated logins.</td></tr>
+      <tr><td>Why avoid committing .env?</td><td>Leaks secrets/credentials into source control.</td></tr>
+      <tr><td class="hl-yellow">How do you support multiple environments?</td><td>One config + env vars/.env files per environment.</td></tr>
+      <tr><td>Best reporter for CI dashboards?</td><td>junit or json, often combined with html.</td></tr>
+      <tr><td>What's a production-like environment for?</td><td>Smoke/sanity checks close to real infra, low risk.</td></tr>
+    </table>
+  </div>
+
+  <!-- Section 3 -->
+  <h2 class="section-title">⚡ Key Commands / Syntax <span class="lookup-badge">🔍 LOOKUP ONLY</span></h2>
+  <div class="codebox">
+    <span class="cmt-label">// core config skeleton</span>
+<span class="tok-kw">export</span> <span class="tok-kw">default</span> <span class="tok-fn">defineConfig</span>({
+  <span class="tok-prop">testDir</span>: <span class="tok-str">'./tests'</span>, <span class="tok-prop">timeout</span>: <span class="tok-num">30000</span>,
+  <span class="tok-prop">expect</span>: { <span class="tok-prop">timeout</span>: <span class="tok-num">5000</span> },
+  <span class="tok-prop">retries</span>: <span class="tok-kw">process</span>.<span class="tok-var">env</span>.<span class="tok-cls">CI</span> ? <span class="tok-num">2</span> : <span class="tok-num">0</span>,
+  <span class="tok-prop">workers</span>: <span class="tok-num">4</span>,
+  <span class="tok-prop">reporter</span>: [[<span class="tok-str">'list'</span>],[<span class="tok-str">'html'</span>]],
+  <span class="tok-prop">use</span>: {
+    <span class="tok-prop">baseURL</span>: <span class="tok-kw">process</span>.<span class="tok-var">env</span>.<span class="tok-cls">BASE_URL</span>,
+    <span class="tok-prop">storageState</span>: <span class="tok-str">'auth/state.json'</span>,
+    <span class="tok-prop">trace</span>: <span class="tok-str">'retain-on-failure'</span>,
+    <span class="tok-prop">video</span>: <span class="tok-str">'retain-on-failure'</span>,
+    <span class="tok-prop">screenshot</span>: <span class="tok-str">'only-on-failure'</span>,
+  },
+  <span class="tok-prop">projects</span>: [{ <span class="tok-prop">name</span>: <span class="tok-str">'chromium'</span>, <span class="tok-prop">use</span>: {...<span class="tok-fn">devices</span>[<span class="tok-str">'Desktop Chrome'</span>]} }],
+});
+
+    <span class="cmt-label">// run against a specific environment</span>
+<span class="tok-var">ENV</span>=staging <span class="tok-fn">npx</span> playwright test
+  </div>
+
+  <!-- Section 4 -->
+  <h2 class="section-title">⚠️ Common Mistakes &amp; Gotchas <span class="always-badge">ALWAYS READ</span></h2>
+  <ul>
+    <li>⚠️ Confusing <span class="hl-pink">timeout</span> (whole test) with <span class="hl-pink">expect timeout</span> (single assertion) — leads to wrong debugging.</li>
+    <li>⚠️ Committing <span class="hl-pink">.env</span> files with real secrets to git.</li>
+    <li>⚠️ Setting <span class="hl-orange">workers</span> too high on limited CI machines → flaky, resource-starved runs.</li>
+    <li>⚠️ Forgetting <span class="hl-pink">retries</span> masks real bugs if set too high — always investigate why a test needed a retry.</li>
+    <li>⚠️ Not scoping <span class="hl-orange">storageState</span> per role/environment → tests silently run as the wrong user.</li>
+  </ul>
+
+  <!-- Section 6 -->
+  <h2 class="section-title">🧠 Memory Tricks &amp; Last-Minute Tips <span class="tier-badge tier3">TIER 3</span></h2>
+  <div class="mnemonic-box">🧠 "T-U-P-W-R-R" → <b>T</b>estDir, <b>U</b>se, <b>P</b>rojects, <b>W</b>orkers, <b>R</b>etries, <b>R</b>eporter — the six pillars of config, in the order you'd usually configure them.</div>
+  <div class="mnemonic-box">🧠 Think of <b>use{}</b> as the "default settings" and <b>projects[]</b> as "exceptions per browser" — projects always win over use.</div>
+  <ul>
+    <li>Double-check <code>.gitignore</code> includes <code>.env</code> before every push.</li>
+    <li>Confirm <code>baseURL</code> matches the environment you intend to hit — a wrong URL silently tests the wrong env.</li>
+    <li>In CI, verify <code>retries</code> and <code>workers</code> are tuned for the runner's actual CPU/RAM.</li>
+    <li>Keep trace/video set to "retain-on-failure" in CI to save storage costs.</li>
+  </ul>
+
+  <div class="page-number">Page 5</div>
+</div></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Playwright Fundamentals — Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #d0d0d0;
+  font-family: 'Kalam', 'Patrick Hand', cursive;
+  min-height: 100vh;
+}
+
+.pages-container {
+  width: 100%;
+  background: #c8c8c8;
+  padding: 30px 0 60px;
+}
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 12px;
+}
+
+@media (min-width: 860px) {
+  .page-wrapper { padding: 32px 24px; }
+}
+
+.page {
+  width: 100%;
+  max-width: 794px;
+  min-height: 1123px;
+  position: relative;
+  background: #fffdf8;
+  background-image:
+    repeating-linear-gradient(
+      transparent 0px, transparent 31px, #cce4f7 31px, #cce4f7 32px
+    );
+  border-left: 4px solid #e8c0c0;
+  padding: 80px 50px 80px 65px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+  transform: rotate(-0.25deg);
+  color: #1a3fa0;
+  font-family: 'Kalam', cursive;
+  font-size: 16px;
+  line-height: 32px;
+}
+
+.page-wrapper:nth-child(even) .page { transform: rotate(0.2deg); }
+.page-wrapper:nth-child(even) .qrs-page { transform: rotate(0.15deg); }
+
+/* Page label strip */
+.page-label {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: linear-gradient(135deg, #1a3fa0 0%, #234ebf 100%);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  padding: 7px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 0.3px;
+  border-radius: 0 0 0 0;
+}
+
+.page-label.teal {
+  background: linear-gradient(135deg, #00695c 0%, #004d40 100%);
+}
+
+.page-num {
+  position: absolute;
+  bottom: 18px;
+  right: 22px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  color: #8899bb;
+  background: #f0f4ff;
+  border-radius: 50%;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid #ccd4ee;
+}
+
+/* Headings */
+h1.page-title {
+  font-family: 'Kalam', cursive;
+  font-weight: 700;
+  font-size: 26px;
+  color: #111;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  border-bottom: 2.5px solid #1a3fa0;
+  padding-bottom: 6px;
+}
+
+h2.section-head {
+  font-family: 'Kalam', cursive;
+  font-weight: 700;
+  font-size: 19px;
+  color: #1a2d7a;
+  margin-top: 20px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+h3.sub-head {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 16px;
+  color: #234ebf;
+  font-weight: 700;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+/* Body text */
+p, li {
+  font-family: 'Kalam', cursive;
+  font-size: 15.5px;
+  line-height: 32px;
+  color: #1a3fa0;
+}
+
+ul { list-style: none; padding-left: 10px; }
+ul li::before { content: "→ "; color: #5577cc; font-weight: bold; }
+ul li { margin-bottom: 0; }
+
+ol { padding-left: 22px; }
+ol li { margin-bottom: 2px; }
+
+/* Highlights */
+.hl-yellow { background: linear-gradient(180deg, transparent 55%, #fff59d 55%); padding: 0 2px; }
+.hl-green  { background: linear-gradient(180deg, transparent 55%, #b9f6ca 55%); padding: 0 2px; }
+.hl-pink   { background: linear-gradient(180deg, transparent 55%, #ffc1cc 55%); padding: 0 2px; }
+.hl-orange { background: linear-gradient(180deg, transparent 55%, #ffe0b2 55%); padding: 0 2px; }
+.hl-blue   { background: linear-gradient(180deg, transparent 55%, #b3d9ff 55%); padding: 0 2px; }
+
+/* Inline code */
+code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13.5px;
+  background: #1e2235;
+  color: #e0e6f5;
+  border: 1px solid #3a4060;
+  border-radius: 4px;
+  padding: 1px 5px;
+  white-space: nowrap;
+}
+
+/* Code box */
+.codebox {
+  background: #1e2235;
+  color: #e0e6f5;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 10px 0;
+  border: 1px solid #3a4060;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: pre;
+  word-break: normal;
+  line-height: 1.7;
+}
+
+.codebox .cb-label {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 11px;
+  color: #8b949e;
+  margin-bottom: 6px;
+  display: block;
+  font-style: italic;
+}
+
+.tok-kw   { color: #ff7b72; font-weight: bold; }
+.tok-fn   { color: #d2a8ff; }
+.tok-var  { color: #79c0ff; }
+.tok-str  { color: #a8e6a3; }
+.tok-prop { color: #56d364; }
+.tok-num  { color: #f0883e; }
+.tok-com  { color: #8b949e; font-style: italic; }
+.tok-cls  { color: #ffa657; }
+.tok-def  { color: #e2c08d; }
+
+/* Sticky note / callout */
+.sticky {
+  background: #fffde7;
+  border: 1.5px solid #f9d62e;
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.12);
+  transform: rotate(0.5deg);
+  font-size: 14.5px;
+  line-height: 28px;
+}
+
+.sticky.blue-note {
+  background: #e3f2fd;
+  border-color: #64b5f6;
+  transform: rotate(-0.4deg);
+}
+
+.sticky.green-note {
+  background: #e8f5e9;
+  border-color: #81c784;
+  transform: rotate(0.3deg);
+}
+
+.sticky.pink-note {
+  background: #fce4ec;
+  border-color: #f48fb1;
+  transform: rotate(-0.3deg);
+}
+
+/* Warning box */
+.warn-box {
+  background: #fff3e0;
+  border-left: 4px solid #ff9800;
+  border-radius: 0 6px 6px 0;
+  padding: 8px 14px;
+  margin: 10px 0;
+  font-size: 14.5px;
+}
+
+/* Tables */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; margin: 10px 0; }
+
+.nb-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+  font-family: 'Patrick Hand', cursive;
+  line-height: 1.5;
+}
+
+.nb-table th {
+  background: linear-gradient(135deg, #1a3fa0, #234ebf);
+  color: white;
+  padding: 8px 12px;
+  text-align: left;
+  font-family: 'Kalam', cursive;
+  font-size: 14px;
+}
+
+.nb-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #dde5f5;
+  vertical-align: top;
+  color: #1a2d7a;
+  line-height: 1.5;
+}
+
+.nb-table tr:nth-child(even) td { background: #f0f4ff; }
+.nb-table tr:hover td { background: #e8eeff; }
+
+.nb-table th:first-child { border-radius: 6px 0 0 0; }
+.nb-table th:last-child  { border-radius: 0 6px 0 0; }
+
+/* Two-col grid for concepts */
+.concept-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr;
+  gap: 2px 0;
+  margin: 8px 0;
+  font-size: 14px;
+  font-family: 'Patrick Hand', cursive;
+  line-height: 1.5;
+}
+
+.cg-key {
+  font-weight: bold;
+  color: #1a2d7a;
+  padding: 5px 8px;
+  background: #f0f4ff;
+  border-right: 2px solid #c3d0f0;
+}
+
+.cg-val {
+  color: #1a3fa0;
+  padding: 5px 10px;
+  background: #f8faff;
+}
+
+.cg-key, .cg-val {
+  border-bottom: 1px solid #e0e8f5;
+}
+
+/* Speech bubble — interview practice card */
+.speech-wrap { position: relative; margin: 26px 0 22px 0; max-width: 100%; }
+.speech-badge {
+  position: absolute; top: -16px; left: 14px; width: 38px; height: 38px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffb74d, #ff6f00 55%, #e65100);
+  display: flex; align-items: center; justify-content: center; font-size: 19px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25); z-index: 2; border: 2px solid #fff;
+}
+.speech-box {
+  position: relative;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255,255,255,0.20), transparent 55%),
+    linear-gradient(135deg, #1a237e 0%, #283593 45%, #1565c0 100%);
+  border: 3.5px solid #42a5f5;
+  outline: 2px dashed rgba(255,255,255,0.35); outline-offset: -8px;
+  border-radius: 18px; padding: 22px 18px 16px 18px;
+  box-shadow: 5px 5px 0 #0d47a1, 0 10px 26px rgba(0,0,0,0.30);
+  transform: rotate(-0.3deg); max-width: 100%; box-sizing: border-box;
+  word-break: break-word; overflow-wrap: anywhere;
+}
+.speech-box::after {
+  content: ''; position: absolute; bottom: -16px; left: 38px; width: 0; height: 0;
+  border-left: 14px solid transparent; border-right: 6px solid transparent; border-top: 16px solid #42a5f5;
+}
+.speech-box.green {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255,255,255,0.20), transparent 55%),
+    linear-gradient(135deg, #1b5e20 0%, #2e7d32 45%, #00796b 100%);
+  border-color: #66bb6a; box-shadow: 5px 5px 0 #14451a, 0 10px 26px rgba(0,0,0,0.30);
+}
+.speech-box.green::after { border-top-color: #66bb6a; }
+.speech-title { font-family: 'Patrick Hand', cursive; font-size: 13px; color: #bbdefb; margin-bottom: 8px; letter-spacing: 0.04em; padding-left: 36px; line-height: 1.4; }
+.speech-box.green .speech-title { color: #c8e6c9; }
+.speech-q {
+  background: rgba(255,255,255,0.93); color: #0d2060; border-left: 5px solid #ffd54f; border-radius: 10px;
+  padding: 8px 12px; margin-bottom: 10px; font-family: 'Kalam', cursive; font-size: 15.5px; font-weight: 700; line-height: 1.45;
+}
+.speech-q .qlabel { display: block; font-family: 'Patrick Hand', cursive; font-size: 13.5px; font-weight: 700; color: #e65100; letter-spacing: 0.03em; }
+.speech-q code { background: #1e2235; border: 1px solid #344; color: #79c0ff; font-size: 13px; }
+.speech-inner { background: rgba(255,255,255,0.12); border-radius: 10px; padding: 12px 14px; font-family: 'Patrick Hand', cursive; font-size: 17px; color: #ffffff; line-height: 1.5; }
+.speech-inner p.sl { font-family: 'Patrick Hand', cursive; font-size: 16.5px; line-height: 1.5; color: #ffffff; margin-bottom: 7px; padding-left: 2px; }
+.speech-inner p.sl:last-child { margin-bottom: 0; }
+.speech-inner p.sl .anchor { font-weight: 700; color: #ffd54f; margin-right: 4px; }
+.speech-inner p.sl code { background: rgba(255,255,255,0.15); border: none; color: #a8e6a3; font-size: 13px; white-space: normal; }
+.speech-inner p.sl.closer { margin-top: 10px; padding: 7px 10px; background: rgba(255,213,79,0.16); border-left: 4px solid #ffd54f; border-radius: 6px; color: #fffde7; }
+.speech-inner p.sl.closer .anchor { color: #ffeb3b; }
+.speech-alt, .speech-follow {
+  margin-top: 8px; padding: 5px 10px; background: rgba(255,255,255,0.1); border-radius: 6px;
+  font-family: 'Patrick Hand', cursive; font-size: 13.5px; color: #b3e5fc; line-height: 1.4;
+}
+.speech-follow { color: #ffe082; }
+.speech-alt code, .speech-follow code { background: rgba(255,255,255,0.15); border: none; color: #a8e6a3; font-size: 12.5px; white-space: normal; }
+
+/* Flowchart */
+.flowchart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin: 12px 0;
+}
+
+.fc-step {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  border: 2px solid #1a3fa0;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 14px;
+  color: #1a2d7a;
+  text-align: center;
+  min-width: 200px;
+  max-width: 340px;
+}
+
+.fc-step.green-step {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  border-color: #2e7d32;
+  color: #1b5e20;
+}
+
+.fc-step.yellow-step {
+  background: linear-gradient(135deg, #fffde7, #fff9c4);
+  border-color: #f57f17;
+  color: #e65100;
+}
+
+.fc-arrow {
+  font-size: 20px;
+  color: #1a3fa0;
+  line-height: 1;
+  margin: 2px 0;
+}
+
+/* Mind map SVG container */
+.mindmap-wrap {
+  margin: 10px 0;
+  width: 100%;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1.5px dashed #bad0ee;
+  margin: 14px 0;
+}
+
+/* Two column layout */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 10px 0;
+}
+
+@media (max-width: 560px) {
+  .two-col { grid-template-columns: 1fr; }
+  .concept-grid { grid-template-columns: 1fr; }
+  .cg-key { border-right: none; border-bottom: 2px solid #1a3fa0; }
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: bold;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.badge-blue   { background: #1a3fa0; color: white; }
+.badge-green  { background: #2e7d32; color: white; }
+.badge-orange { background: #e65100; color: white; }
+.badge-red    { background: #c62828; color: white; }
+.badge-teal   { background: #00695c; color: white; }
+.badge-purple { background: #4a148c; color: white; }
+
+/* Tree diagram */
+.tree {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 14px;
+  color: #1a3fa0;
+  line-height: 1.7;
+  padding-left: 8px;
+  margin: 8px 0;
+}
+
+.tree .t-root {
+  font-weight: bold;
+  color: #111;
+  font-size: 15px;
+}
+
+.tree .t-branch {
+  padding-left: 20px;
+  border-left: 2px solid #bad0ee;
+  margin-left: 6px;
+}
+
+.tree .t-leaf {
+  padding-left: 16px;
+  color: #234ebf;
+}
+
+/* ========================
+   QUICK REVISION SHEET
+   ======================== */
+
+.qrs-page {
+  width: 100%;
+  max-width: 794px;
+  min-height: 1123px;
+  position: relative;
+  background: #fffdf8;
+  background-image:
+    repeating-linear-gradient(
+      transparent 0px, transparent 31px, #cce4f7 31px, #cce4f7 32px
+    );
+  border-left: 4px solid #80cbc4;
+  padding: 80px 50px 80px 65px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+  transform: rotate(-0.2deg);
+  font-family: 'Kalam', cursive;
+  font-size: 15px;
+  line-height: 32px;
+  color: #004d40;
+}
+
+.qrs-label {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: linear-gradient(135deg, #00695c 0%, #004d40 100%);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  padding: 7px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.qrs-main-title {
+  font-family: 'Kalam', cursive;
+  font-weight: 700;
+  font-size: 24px;
+  color: #111;
+  margin-bottom: 10px;
+  border-bottom: 2.5px solid #00695c;
+  padding-bottom: 6px;
+}
+
+/* How-to-use box */
+.how-to-use {
+  background: #e0f2f1;
+  border: 1.5px solid #00897b;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13.5px;
+  color: #00352e;
+  line-height: 1.6;
+}
+
+.how-to-use strong { color: #004d40; }
+
+/* QRS section headings */
+.qrs-sec-head {
+  font-family: 'Kalam', cursive;
+  font-weight: 700;
+  font-size: 16px;
+  color: #111;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 14px 0 6px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.qrs-sec-head.tier1 { background: #fff8e1; border-left: 4px solid #f9a825; }
+.qrs-sec-head.tier2 { background: #e8eaf6; border-left: 4px solid #3949ab; }
+.qrs-sec-head.tier3 { background: #fce4ec; border-left: 4px solid #c62828; }
+.qrs-sec-head.lookup { background: #e0f7fa; border-left: 4px solid #00838f; }
+
+.tier-tag {
+  font-size: 10px;
+  font-family: 'Patrick Hand', cursive;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-left: auto;
+}
+
+.tier-tag.t1 { background: #f9a825; color: #333; }
+.tier-tag.t2 { background: #3949ab; color: white; }
+.tier-tag.t3 { background: #c62828; color: white; }
+.tier-tag.lu { background: #00838f; color: white; }
+
+/* QRS must-know rows (stripe colour = topic-map branch colour) */
+.qr-row {
+  display: grid; grid-template-columns: 165px 1fr; gap: 2px 10px; align-items: baseline;
+  border-left: 5px solid #999; padding: 2px 8px; margin-bottom: 3px; background: rgba(255,255,255,0.6);
+  font-family: 'Patrick Hand', cursive; font-size: 13.5px; line-height: 1.4; color: #1a3fa0;
+}
+.qr-row .k { font-weight: 700; color: #1a2d7a; }
+.qr-row.b1 { border-left-color: #f9a825; }
+.qr-row.b2 { border-left-color: #3949ab; }
+.qr-row.b3 { border-left-color: #2e7d32; }
+.qr-row.b4 { border-left-color: #c62828; }
+.qr-row.b5 { border-left-color: #00838f; }
+@media (max-width: 560px) { .qr-row { grid-template-columns: 1fr; } }
+.qrs-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 4px 0 8px; font-family: 'Patrick Hand', cursive; font-size: 13px; color: #333; line-height: 1.4; }
+.qrs-legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; background: var(--c); }
+.qrs-note { font-family: 'Patrick Hand', cursive; font-size: 13px; color: #00695c; line-height: 1.4; margin: 2px 0 6px; }
+.qrs-cmt { font-family: 'Patrick Hand', cursive; font-size: 13px; color: #00695c; margin-top: 8px; line-height: 1.3; }
+.qrs-table th.star, .qrs-table td.star { width: 30px; text-align: center; color: #bdbdbd; padding: 5px 4px; }
+.qrs-mistakes li::before { content: none; }
+.qrs-title-sub { font-family: 'Patrick Hand', cursive; font-size: 14px; color: #00695c; font-weight: 400; margin-left: 8px; }
+
+/* QRS rapid-fire table */
+.qrs-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12.5px;
+  font-family: 'Patrick Hand', cursive;
+  line-height: 1.4;
+  margin: 4px 0;
+}
+
+.qrs-table th {
+  background: linear-gradient(135deg, #00695c, #004d40);
+  color: white;
+  padding: 5px 10px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.qrs-table td {
+  padding: 5px 10px;
+  border-bottom: 1px solid #dde5f5;
+  vertical-align: top;
+  color: #1a2d7a;
+  line-height: 1.4;
+}
+
+.qrs-table tr:nth-child(even) td { background: #f0f4ff; }
+
+/* QRS mistakes bullets */
+.qrs-mistakes { list-style: none; padding-left: 0; margin: 4px 0; }
+.qrs-mistakes li {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  color: #1a2d7a;
+  line-height: 1.5;
+  padding: 3px 0;
+  border-bottom: 1px dashed #f0c0c0;
+}
+
+/* QRS memory trick card */
+.qrs-trick {
+  border: 2px dashed #00897b;
+  border-radius: 6px;
+  background: #e0f2f1;
+  padding: 8px 12px;
+  margin: 5px 0;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  color: #004d40;
+  line-height: 1.5;
+}
+
+/* QRS code snippet (compact) */
+.qrs-codebox {
+  background: #1e2235;
+  color: #e0e6f5;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11.5px;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 5px 0;
+  border: 1px solid #3a4060;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: pre;
+  word-break: normal;
+  line-height: 1.6;
+}
+
+/* Always-read badge */
+.always-read-badge {
+  font-size: 10px;
+  font-family: 'Patrick Hand', cursive;
+  background: #c62828;
+  color: white;
+  padding: 1px 7px;
+  border-radius: 8px;
+  margin-left: 6px;
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.lookup-badge {
+  font-size: 10px;
+  font-family: 'Patrick Hand', cursive;
+  background: #00838f;
+  color: white;
+  padding: 1px 7px;
+  border-radius: 8px;
+  margin-left: 6px;
+}
+
+/* Tips list */
+.tips-list { list-style: none; padding-left: 0; margin: 4px 0; }
+.tips-list li {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  color: #004d40;
+  line-height: 1.5;
+  padding: 2px 0;
+}
+
+.tips-list li::before { content: "💡 "; }
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .page, .qrs-page { transform: none !important; }
+  .speech-box, .sticky { transform: none !important; }
+  * { transition: none !important; animation: none !important; }
+}
+
+@media print {
+  .page-wrapper { display: flex !important; page-break-after: always; }
+  .pages-container { background: white; }
+  .page, .qrs-page { box-shadow: none; transform: none !important; margin: 0; border-bottom: none; }
+}
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 1 — Playwright Introduction
+     ═══════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-label">
+    <span><span aria-hidden="true">🎭</span> Playwright Fundamentals — Phase 1</span>
+    <span>Introduction &amp; Core Concepts</span>
+  </div>
+
+  <h1 class="page-title">1. What is Playwright? <span aria-hidden="true">🎭</span></h1>
+
+  <div class="sticky blue-note">
+    <strong>Definition:</strong> Playwright is an <span class="hl-yellow">open-source browser automation framework</span> by <strong>Microsoft</strong> that enables reliable end-to-end testing for modern web apps. Released in <strong>2020</strong>.
+  </div>
+
+  <h2 class="section-head"><span aria-hidden="true">🔑</span> Why Playwright Exists</h2>
+  <ul>
+    <li>Modern web apps are <span class="hl-yellow">dynamic, async, and complex</span> — classic tools struggle</li>
+    <li>Built to handle <span class="hl-green">SPAs, shadow DOM, iframes, file uploads, network mocking</span> natively</li>
+    <li>Single API to test <span class="hl-blue">Chromium, Firefox, WebKit</span> — real cross-browser coverage</li>
+    <li>Auto-waiting: no manual <code>sleep()</code> or <code>waitForElement()</code> needed</li>
+  </ul>
+
+  <hr class="divider">
+
+  <h2 class="section-head"><span aria-hidden="true">⚔️</span> Playwright vs Selenium — Key Differences</h2>
+  <div class="table-scroll">
+  <table class="nb-table" aria-label="Playwright vs Selenium comparison">
+    <caption style="font-family:'Patrick Hand',cursive;font-size:12px;color:#666;text-align:left;margin-bottom:4px;">Side-by-side: Playwright vs Selenium</caption>
+    <thead>
+      <tr><th>Aspect</th><th>Playwright</th><th>Selenium</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Released</td><td>2020 (Microsoft)</td><td>2004 (ThoughtWorks)</td></tr>
+      <tr><td>Protocol</td><td><span class="hl-yellow">CDP / WebSocket</span> (direct)</td><td><span class="hl-orange">WebDriver protocol</span> (HTTP)</td></tr>
+      <tr><td>Auto-wait</td><td><span aria-hidden="true">✅</span> Built-in auto-wait</td><td><span aria-hidden="true">❌</span> Manual waits required</td></tr>
+      <tr><td>Browsers</td><td>Chromium, Firefox, WebKit</td><td>Chrome, Firefox, Edge, Safari</td></tr>
+      <tr><td>Parallel tests</td><td><span aria-hidden="true">✅</span> Native, fast</td><td><span aria-hidden="true">⚠️</span> Needs Grid/TestNG</td></tr>
+      <tr><td>Network mock</td><td><span aria-hidden="true">✅</span> <code>page.route()</code></td><td><span aria-hidden="true">❌</span> External tool needed</td></tr>
+      <tr><td>iframe / shadow</td><td><span aria-hidden="true">✅</span> Native support</td><td><span aria-hidden="true">⚠️</span> Tricky, verbose</td></tr>
+      <tr><td>Languages</td><td>JS/TS, Python, Java, C#</td><td>Java, Python, C#, Ruby, JS</td></tr>
+      <tr><td>Speed</td><td><span aria-hidden="true">⚡</span> Faster</td><td><span aria-hidden="true">🐢</span> Slower (HTTP overhead)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 class="section-head"><span aria-hidden="true">🌐</span> Supported Browsers &amp; Languages</h2>
+  <div class="two-col">
+    <div class="sticky green-note">
+      <strong>Browsers <span aria-hidden="true">🌍</span></strong><br>
+      → <span class="hl-green">Chromium</span> (Chrome, Edge)<br>
+      → <span class="hl-green">Firefox</span><br>
+      → <span class="hl-green">WebKit</span> (Safari)
+    </div>
+    <div class="sticky blue-note">
+      <strong>Languages <span aria-hidden="true">💻</span></strong><br>
+      → JavaScript / TypeScript<br>
+      → Python<br>
+      → Java<br>
+      → C# (.NET)
+    </div>
+  </div>
+
+  <div class="speech-wrap">
+    <div class="speech-badge" aria-hidden="true">🎤</div>
+    <div class="speech-box">
+      <div class="speech-title"><span aria-hidden="true">🗣️</span> How I'd say it in an interview</div>
+      <div class="speech-q"><span class="qlabel"><span aria-hidden="true">❓</span> Interviewer asks:</span> “What is Playwright, and why would you use it?”</div>
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">Playwright is</span> Microsoft's open-source browser automation tool, built for modern web testing.</p>
+        <p class="sl"><span class="anchor">The problem it solves is</span> flaky, slow tests on dynamic web apps.</p>
+        <p class="sl"><span class="anchor">What makes it stand out is</span> direct browser communication, with no HTTP middleman, so tests run faster.</p>
+        <p class="sl"><span class="anchor">It auto-waits</span> for elements to be ready, so I never need <code>sleep()</code> calls.</p>
+        <p class="sl"><span class="anchor">I can test on</span> Chrome, Firefox, and Safari with the same code.</p>
+        <p class="sl"><span class="anchor">Compared to Selenium,</span> it's less flaky on dynamic pages and has network mocking built in.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I choose Playwright for fast, reliable, cross-browser tests with less maintenance, which saves the whole team time.</p>
+      </div>
+      <div class="speech-alt"><span aria-hidden="true">🔄</span> Also asked as: "Why would you choose Playwright over Selenium?" · "What's your experience with browser automation tools?"</div>
+      <div class="speech-follow">Follow-up Qs: "How does Playwright talk to the browser?" → "How does auto-waiting work?"</div>
+    </div>
+  </div>
+
+  <div class="page-num">1</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 2 — Architecture & Browser Automation Concepts
+     ═══════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-label">
+    <span><span aria-hidden="true">🎭</span> Playwright Fundamentals — Phase 1</span>
+    <span>Architecture &amp; Automation Concepts</span>
+  </div>
+
+  <h1 class="page-title">2. Playwright Architecture <span aria-hidden="true">🏗️</span></h1>
+
+  <h2 class="section-head"><span aria-hidden="true">🔧</span> How Playwright Communicates with Browsers</h2>
+
+  <div class="flowchart">
+    <div class="fc-step green-step">Your Test Code (JS/TS/Python/Java/C#)</div>
+    <div class="fc-arrow">↓</div>
+    <div class="fc-step">Playwright Library (Node.js server)</div>
+    <div class="fc-arrow">↓ WebSocket / CDP</div>
+    <div class="fc-step yellow-step">Browser Process (Chromium / Firefox / WebKit)</div>
+    <div class="fc-arrow">↓</div>
+    <div class="fc-step green-step">Web Page (DOM + Network)</div>
+  </div>
+
+  <div class="warn-box">
+    <span aria-hidden="true">⚠️</span> <strong>Key insight:</strong> Playwright uses <span class="hl-orange">Chrome DevTools Protocol (CDP)</span> for Chromium and custom protocols for Firefox/WebKit. Communication is via <span class="hl-orange">WebSocket</span> — much faster than Selenium's HTTP/WebDriver.
+  </div>
+
+  <h2 class="section-head"><span aria-hidden="true">🧩</span> Core Architecture Concepts</h2>
+
+  <div class="concept-grid">
+    <div class="cg-key"><span class="hl-yellow">Browser</span></div>
+    <div class="cg-val">A browser instance (Chromium/Firefox/WebKit). One per test run.</div>
+    <div class="cg-key"><span class="hl-yellow">Browser Context</span></div>
+    <div class="cg-val">An isolated session — like an incognito window. Each test gets its own context.</div>
+    <div class="cg-key"><span class="hl-yellow">Page</span></div>
+    <div class="cg-val">A single browser tab. Tests interact with pages via the <code>page</code> object.</div>
+    <div class="cg-key"><span class="hl-green">Locator</span></div>
+    <div class="cg-val">A lazy reference to an element. Auto-waits, retries, more stable than selectors.</div>
+    <div class="cg-key"><span class="hl-green">Frame</span></div>
+    <div class="cg-val">A <code>&lt;iframe&gt;</code> or frame inside a page. Access via <code>page.frame()</code>.</div>
+    <div class="cg-key"><span class="hl-blue">Worker</span></div>
+    <div class="cg-val">A service/web worker attached to the page. Playwright can access these.</div>
+    <div class="cg-key"><span class="hl-pink">Route</span></div>
+    <div class="cg-val">Network interception — mock/modify/block HTTP requests with <code>page.route()</code>.</div>
+    <div class="cg-key"><span class="hl-orange">Tracing</span></div>
+    <div class="cg-val">Records a zip of DOM snapshots, network calls, screenshots for debugging.</div>
+  </div>
+
+  <hr class="divider">
+
+  <h2 class="section-head"><span aria-hidden="true">📦</span> Browser Isolation: Context vs Page</h2>
+
+  <div class="sticky">
+    <strong>Think of it like this:</strong><br>
+    <span aria-hidden="true">🌐</span> <strong>Browser</strong> = the Chrome app<br>
+    <span aria-hidden="true">📂</span> <strong>BrowserContext</strong> = a user profile / incognito window (isolated cookies, storage)<br>
+    <span aria-hidden="true">📄</span> <strong>Page</strong> = a single tab inside that window<br><br>
+    Each test gets its own <span class="hl-green">BrowserContext</span> → <em>no state leakage between tests!</em>
+  </div>
+
+  <h2 class="section-head"><span aria-hidden="true">⚡</span> Auto-Waiting — Playwright's Superpower</h2>
+  <ul>
+    <li>Before <span class="hl-yellow">clicking</span>: waits for element to be <em>visible, enabled, stable</em></li>
+    <li>Before <span class="hl-yellow">filling</span>: waits for element to be <em>editable</em></li>
+    <li>Before <span class="hl-yellow">assertions</span>: retries until condition met (default: 5 seconds)</li>
+    <li>No need for <code>waitForElement()</code>, <code>Thread.sleep()</code>, or <code>time.sleep()</code></li>
+  </ul>
+
+  <div class="speech-wrap">
+    <div class="speech-badge" aria-hidden="true">🎤</div>
+    <div class="speech-box green">
+      <div class="speech-title"><span aria-hidden="true">🗣️</span> How I'd say it in an interview</div>
+      <div class="speech-q"><span class="qlabel"><span aria-hidden="true">❓</span> Interviewer asks:</span> “What is a BrowserContext in Playwright, and why does it matter?”</div>
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">A BrowserContext is</span> an isolated session inside a browser, like an incognito window.</p>
+        <p class="sl"><span class="anchor">It has its own</span> cookies, local storage, and session state.</p>
+        <p class="sl"><span class="anchor">In Playwright,</span> every test gets its own BrowserContext by default.</p>
+        <p class="sl"><span class="anchor">What that means is</span> tests can't accidentally share login state or cached data.</p>
+        <p class="sl"><span class="anchor">So I never</span> have to clear cookies manually between tests.</p>
+        <p class="sl"><span class="anchor">The way I remember it is</span> Browser is the app, Context is the profile, and Page is a tab.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> built-in context isolation keeps every test independent, which makes the suite reliable and safe to run in parallel.</p>
+      </div>
+      <div class="speech-alt"><span aria-hidden="true">🔄</span> Also asked as: "How does Playwright ensure test isolation?" · "Difference between Browser, Context, and Page?"</div>
+      <div class="speech-follow">Follow-up Qs: "How do you reuse a logged-in state across tests?" → "Can one context have multiple pages?"</div>
+    </div>
+  </div>
+
+  <div class="page-num">2</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 3 — Installation & Setup
+     ═══════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-label">
+    <span><span aria-hidden="true">🎭</span> Playwright Fundamentals — Phase 1</span>
+    <span>Installation &amp; Setup</span>
+  </div>
+
+  <h1 class="page-title">3. Installation &amp; Project Setup <span aria-hidden="true">🛠️</span></h1>
+
+  <h2 class="section-head"><span aria-hidden="true">📋</span> Prerequisites</h2>
+  <div class="two-col">
+    <div class="sticky green-note">
+      <strong>Node.js</strong> v16+ required<br>
+      Check: <code>node -v</code><br>
+      Check: <code>npm -v</code><br>
+      Download: nodejs.org
+    </div>
+    <div class="sticky blue-note">
+      <strong>npm basics</strong><br>
+      <code>npm init</code> → create project<br>
+      <code>npm install</code> → install deps<br>
+      <code>package.json</code> → dependency list
+    </div>
+  </div>
+
+  <h2 class="section-head"><span aria-hidden="true">⚡</span> Step-by-Step Installation</h2>
+
+  <div class="flowchart">
+    <div class="fc-step green-step">Step 1: Create a folder &amp; cd into it</div>
+    <div class="fc-arrow">↓</div>
+    <div class="fc-step">Step 2: npm init playwright@latest</div>
+    <div class="fc-arrow">↓</div>
+    <div class="fc-step yellow-step">Step 3: Choose language (TS/JS), test folder, CI config</div>
+    <div class="fc-arrow">↓</div>
+    <div class="fc-step">Step 4: npx playwright install (downloads browsers)</div>
+    <div class="fc-arrow">↓</div>
+    <div class="fc-step green-step"><span aria-hidden="true">✅</span> Ready! Run: npx playwright test</div>
+  </div>
+
+  <h2 class="section-head"><span aria-hidden="true">💻</span> Key Commands to Remember</h2>
+
+  <div class="codebox"><span class="tok-com">// Install Playwright + create project scaffold</span>
+<span class="tok-var">npm</span> <span class="tok-fn">init</span> <span class="tok-str">playwright@latest</span>
+
+<span class="tok-com">// Download all browser binaries (Chromium, Firefox, WebKit)</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-kw">install</span>
+
+<span class="tok-com">// Install only specific browser</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-kw">install</span> <span class="tok-str">chromium</span>
+
+<span class="tok-com">// Run all tests</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span>
+
+<span class="tok-com">// Run tests in headed mode (see browser)</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span> <span class="tok-kw">--headed</span>
+
+<span class="tok-com">// Run tests in headless mode (default)</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span> <span class="tok-kw">--headless</span>
+
+<span class="tok-com">// Open Playwright UI mode (visual test runner)</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span> <span class="tok-kw">--ui</span>
+
+<span class="tok-com">// Show HTML report after test run</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">show-report</span></div>
+
+  <h2 class="section-head"><span aria-hidden="true">📁</span> Default Project Structure</h2>
+
+  <div class="tree">
+    <div class="t-root"><span aria-hidden="true">📦</span> my-playwright-project/</div>
+    <div class="t-branch">
+      <span aria-hidden="true">📄</span> <span class="hl-yellow">playwright.config.ts</span> — main config file<br>
+      <span aria-hidden="true">📂</span> <strong>tests/</strong> — your test files (.spec.ts)
+      <div class="t-leaf">
+        <span aria-hidden="true">📄</span> example.spec.ts<br>
+        <span aria-hidden="true">📄</span> login.spec.ts
+      </div>
+      <span aria-hidden="true">📂</span> <strong>tests-examples/</strong> — demo tests<br>
+      <span aria-hidden="true">📂</span> <strong>node_modules/</strong> — dependencies<br>
+      <span aria-hidden="true">📄</span> package.json — project metadata<br>
+      <span aria-hidden="true">📄</span> package-lock.json
+    </div>
+  </div>
+
+  <div class="warn-box">
+    <span aria-hidden="true">⚠️</span> <strong>Headed vs Headless:</strong> <span class="hl-orange">Headless</span> = browser runs in background (CI/CD default, faster). <span class="hl-green">Headed</span> = browser window visible (great for debugging). Toggle with <code>--headed</code> flag or set <code>headless: false</code> in config.
+  </div>
+
+  <div class="page-num">3</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 4 — playwright.config.ts Deep-Dive
+     ═══════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-label">
+    <span><span aria-hidden="true">🎭</span> Playwright Fundamentals — Phase 1</span>
+    <span>playwright.config.ts</span>
+  </div>
+
+  <h1 class="page-title">4. playwright.config.ts — Deep Dive <span aria-hidden="true">⚙️</span></h1>
+
+  <div class="sticky blue-note">
+    <strong>What is it?</strong> The <span class="hl-yellow">single config file</span> that controls everything: which browsers to use, test timeouts, base URL, reporters, parallel execution, retries, and more.
+  </div>
+
+  <h2 class="section-head"><span aria-hidden="true">📄</span> Annotated playwright.config.ts</h2>
+
+  <div class="codebox"><span class="tok-kw">import</span> { <span class="tok-def">defineConfig</span>, <span class="tok-def">devices</span> } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/test'</span>;
+
+<span class="tok-kw">export default</span> <span class="tok-fn">defineConfig</span>({
+  <span class="tok-prop">testDir</span>: <span class="tok-str">'./tests'</span>,           <span class="tok-com">// folder with test files</span>
+  <span class="tok-prop">timeout</span>: <span class="tok-num">30000</span>,              <span class="tok-com">// max time per test (ms)</span>
+  <span class="tok-prop">retries</span>: <span class="tok-num">2</span>,                 <span class="tok-com">// auto-retry on failure</span>
+  <span class="tok-prop">workers</span>: <span class="tok-num">4</span>,                 <span class="tok-com">// parallel test workers</span>
+  <span class="tok-prop">fullyParallel</span>: <span class="tok-kw">true</span>,        <span class="tok-com">// run all files in parallel</span>
+  <span class="tok-prop">reporter</span>: <span class="tok-str">'html'</span>,            <span class="tok-com">// HTML report (others: 'list','json')</span>
+
+  <span class="tok-prop">use</span>: {
+    <span class="tok-prop">baseURL</span>: <span class="tok-str">'http://localhost:3000'</span>,  <span class="tok-com">// prefix for page.goto('/')</span>
+    <span class="tok-prop">headless</span>: <span class="tok-kw">true</span>,               <span class="tok-com">// run without browser UI</span>
+    <span class="tok-prop">screenshot</span>: <span class="tok-str">'only-on-failure'</span>,  <span class="tok-com">// capture on test fail</span>
+    <span class="tok-prop">video</span>: <span class="tok-str">'retain-on-failure'</span>,     <span class="tok-com">// record video on fail</span>
+    <span class="tok-prop">trace</span>: <span class="tok-str">'on-first-retry'</span>,        <span class="tok-com">// enable Playwright Trace</span>
+  },
+
+  <span class="tok-prop">projects</span>: [                   <span class="tok-com">// run same tests in multiple browsers</span>
+    { <span class="tok-prop">name</span>: <span class="tok-str">'chromium'</span>, <span class="tok-prop">use</span>: { ...devices[<span class="tok-str">'Desktop Chrome'</span>] } },
+    { <span class="tok-prop">name</span>: <span class="tok-str">'firefox'</span>,  <span class="tok-prop">use</span>: { ...devices[<span class="tok-str">'Desktop Firefox'</span>] } },
+    { <span class="tok-prop">name</span>: <span class="tok-str">'webkit'</span>,   <span class="tok-prop">use</span>: { ...devices[<span class="tok-str">'Desktop Safari'</span>] } },
+  ],
+});</div>
+
+  <h2 class="section-head"><span aria-hidden="true">🔑</span> Most Important Config Keys</h2>
+
+  <div class="concept-grid">
+    <div class="cg-key"><code>testDir</code></div>
+    <div class="cg-val">Path to your tests folder</div>
+    <div class="cg-key"><code>timeout</code></div>
+    <div class="cg-val">Max ms a single test can run before it fails</div>
+    <div class="cg-key"><code>retries</code></div>
+    <div class="cg-val">How many times to re-run a failing test automatically</div>
+    <div class="cg-key"><code>workers</code></div>
+    <div class="cg-val">Number of parallel test threads (default: 50% of CPU cores)</div>
+    <div class="cg-key"><code>fullyParallel</code></div>
+    <div class="cg-val">Run tests in the same file in parallel (default: false)</div>
+    <div class="cg-key"><code>baseURL</code></div>
+    <div class="cg-val">Base URL so tests can use relative paths like <code>page.goto('/')</code></div>
+    <div class="cg-key"><code>screenshot</code></div>
+    <div class="cg-val">When to capture: <code>'off'</code> | <code>'on'</code> | <code>'only-on-failure'</code></div>
+    <div class="cg-key"><code>trace</code></div>
+    <div class="cg-val">Tracing: <code>'off'</code> | <code>'on'</code> | <code>'on-first-retry'</code></div>
+    <div class="cg-key"><code>projects</code></div>
+    <div class="cg-val">Array of browser configs — run same tests in multiple browsers</div>
+  </div>
+
+  <h2 class="section-head"><span aria-hidden="true">🧪</span> Test Runner vs Playwright Library</h2>
+  <div class="table-scroll">
+  <table class="nb-table" aria-label="Test runner vs Playwright library">
+    <thead><tr><th>Test Runner (@playwright/test)</th><th>Playwright Library (playwright)</th></tr></thead>
+    <tbody>
+      <tr><td>Has <code>test()</code>, <code>expect()</code>, fixtures</td><td>Raw browser automation API only</td></tr>
+      <tr><td>Built-in parallel, retry, reporting</td><td>No test runner — you bring your own (Jest, Mocha)</td></tr>
+      <tr><td>playwright.config.ts works here</td><td>Config must be manual</td></tr>
+      <tr><td><strong>Use this for testing</strong> <span aria-hidden="true">✅</span></td><td>Use for scraping, automation scripts</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="speech-wrap">
+    <div class="speech-badge" aria-hidden="true">🎤</div>
+    <div class="speech-box">
+      <div class="speech-title"><span aria-hidden="true">🗣️</span> How I'd say it in an interview</div>
+      <div class="speech-q"><span class="qlabel"><span aria-hidden="true">❓</span> Interviewer asks:</span> “What is <code>playwright.config.ts</code>, and what do you configure in it?”</div>
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">The config file is</span> <code>playwright.config.ts</code>, the central control panel for the whole test suite.</p>
+        <p class="sl"><span class="anchor">It decides</span> the base URL, retries, workers, reporters, and which browsers run.</p>
+        <p class="sl"><span class="anchor">I set</span> <code>baseURL</code> so tests use relative paths instead of hardcoded URLs.</p>
+        <p class="sl"><span class="anchor">On CI, I set</span> <code>retries: 2</code> to absorb network flakiness.</p>
+        <p class="sl"><span class="anchor">I fill the</span> <code>projects</code> array so tests run on Chromium, Firefox, and WebKit.</p>
+        <p class="sl"><span class="anchor">That gives me</span> cross-browser coverage without duplicating any code.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> one config file controls everything, so I can change environments and browsers without touching a single test.</p>
+      </div>
+      <div class="speech-alt"><span aria-hidden="true">🔄</span> Also asked as: "How do you configure Playwright?" · "How do you run tests on multiple browsers?"</div>
+      <div class="speech-follow">Follow-up Qs: "How do you set different retries for CI and local?" → "What are fixtures?"</div>
+    </div>
+  </div>
+
+  <div class="page-num">4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 5 — Basic Test Structure
+     ═══════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-label">
+    <span><span aria-hidden="true">🎭</span> Playwright Fundamentals — Phase 1</span>
+    <span>Basic Test Structure</span>
+  </div>
+
+  <h1 class="page-title">5. Basic Test Structure <span aria-hidden="true">🧪</span></h1>
+
+  <h2 class="section-head"><span aria-hidden="true">🔑</span> The Three Pillars: test() · expect() · describe()</h2>
+
+  <div class="codebox"><span class="tok-com">// Full anatomy of a Playwright test file</span>
+<span class="tok-kw">import</span> { <span class="tok-fn">test</span>, <span class="tok-fn">expect</span> } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/test'</span>;
+
+<span class="tok-com">// describe() — groups related tests (like a suite/module)</span>
+<span class="tok-fn">test</span>.<span class="tok-fn">describe</span>(<span class="tok-str">'Login Page Tests'</span>, () => {
+
+  <span class="tok-com">// beforeAll() — runs ONCE before all tests in this group</span>
+  <span class="tok-fn">test</span>.<span class="tok-fn">beforeAll</span>(<span class="tok-kw">async</span> ({ <span class="tok-var">browser</span> }) => {
+    <span class="tok-com">// e.g. seed DB, create test data</span>
+  });
+
+  <span class="tok-com">// beforeEach() — runs before EVERY test in this group</span>
+  <span class="tok-fn">test</span>.<span class="tok-fn">beforeEach</span>(<span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => {
+    <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">goto</span>(<span class="tok-str">'/'</span>);  <span class="tok-com">// navigate before each test</span>
+  });
+
+  <span class="tok-com">// test() — a single test case</span>
+  <span class="tok-fn">test</span>(<span class="tok-str">'should show error for wrong password'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => {
+    <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">fill</span>(<span class="tok-str">'#email'</span>, <span class="tok-str">'user@test.com'</span>);
+    <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">fill</span>(<span class="tok-str">'#password'</span>, <span class="tok-str">'wrong'</span>);
+    <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">click</span>(<span class="tok-str">'button[type="submit"]'</span>);
+
+    <span class="tok-com">// expect() — assertion (auto-retries until timeout)</span>
+    <span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'.error-msg'</span>)).<span class="tok-fn">toBeVisible</span>();
+  });
+
+  <span class="tok-com">// afterEach() — runs after EVERY test</span>
+  <span class="tok-fn">test</span>.<span class="tok-fn">afterEach</span>(<span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => {
+    <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">screenshot</span>({ <span class="tok-prop">path</span>: <span class="tok-str">'screenshot.png'</span> });
+  });
+
+  <span class="tok-com">// afterAll() — runs ONCE after all tests in this group</span>
+  <span class="tok-fn">test</span>.<span class="tok-fn">afterAll</span>(<span class="tok-kw">async</span> () => {
+    <span class="tok-com">// e.g. clean up DB, close connections</span>
+  });
+});</div>
+
+  <h2 class="section-head"><span aria-hidden="true">📋</span> What Each Hook Does</h2>
+
+  <div class="concept-grid">
+    <div class="cg-key"><span class="hl-yellow">test()</span></div>
+    <div class="cg-val">Defines a single test case. Must have a name and an async function.</div>
+    <div class="cg-key"><span class="hl-yellow">expect()</span></div>
+    <div class="cg-val">Assertion helper. Auto-retries until condition passes or timeout hits.</div>
+    <div class="cg-key"><span class="hl-green">describe()</span></div>
+    <div class="cg-val">Groups tests logically. Scopes hooks to the group. Nestable.</div>
+    <div class="cg-key"><span class="hl-blue">beforeEach()</span></div>
+    <div class="cg-val">Runs before every test. Use for navigation, login, page setup.</div>
+    <div class="cg-key"><span class="hl-blue">afterEach()</span></div>
+    <div class="cg-val">Runs after every test. Use for screenshots, cleanup per test.</div>
+    <div class="cg-key"><span class="hl-orange">beforeAll()</span></div>
+    <div class="cg-val">Runs ONCE before the group. Use for DB seed, server start.</div>
+    <div class="cg-key"><span class="hl-orange">afterAll()</span></div>
+    <div class="cg-val">Runs ONCE after the group. Use for DB cleanup, close connections.</div>
+  </div>
+
+  <div class="warn-box">
+    <span aria-hidden="true">⚠️</span> <strong>Gotcha:</strong> <code>beforeAll</code>/<code>afterAll</code> hooks receive <code>{ browser }</code> fixture (not <code>page</code>) by default, because a page doesn't persist across all tests. Use <code>page</code> only in <code>beforeEach</code>/<code>afterEach</code>.
+  </div>
+
+  <div class="page-num">5</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 6 — Test Naming, Organization & Interview
+     ═══════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="page">
+  <div class="page-label">
+    <span><span aria-hidden="true">🎭</span> Playwright Fundamentals — Phase 1</span>
+    <span>Test Naming &amp; Organization</span>
+  </div>
+
+  <h1 class="page-title">6. Test Naming, Organization &amp; Best Practices <span aria-hidden="true">📂</span></h1>
+
+  <h2 class="section-head"><span aria-hidden="true">✅</span> Test Naming Best Practices</h2>
+  <ul>
+    <li>Use <span class="hl-yellow">plain English</span> — "should show error when email is empty"</li>
+    <li>Follow pattern: <span class="hl-green">"should [action] when [condition]"</span></li>
+    <li>Be specific — avoid generic names like "test1" or "checkLogin"</li>
+    <li>Name reveals <em>intent</em>, not implementation</li>
+    <li>Names appear in reports — make them <span class="hl-blue">self-documenting</span></li>
+  </ul>
+
+  <div class="codebox"><span class="tok-com">// <span aria-hidden="true">❌</span> Bad naming</span>
+<span class="tok-fn">test</span>(<span class="tok-str">'test1'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => { ... });
+<span class="tok-fn">test</span>(<span class="tok-str">'login'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => { ... });
+
+<span class="tok-com">// <span aria-hidden="true">✅</span> Good naming</span>
+<span class="tok-fn">test</span>(<span class="tok-str">'should redirect to dashboard after successful login'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => { ... });
+<span class="tok-fn">test</span>(<span class="tok-str">'should show validation error when email is missing'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => { ... });</div>
+
+  <h2 class="section-head"><span aria-hidden="true">📁</span> Test Organization Strategies</h2>
+
+  <div class="two-col">
+    <div class="sticky green-note">
+      <strong>By Feature (recommended)</strong><br>
+      tests/<br>
+      &nbsp;&nbsp;login/login.spec.ts<br>
+      &nbsp;&nbsp;checkout/checkout.spec.ts<br>
+      &nbsp;&nbsp;dashboard/dashboard.spec.ts
+    </div>
+    <div class="sticky blue-note">
+      <strong>By Type</strong><br>
+      tests/<br>
+      &nbsp;&nbsp;e2e/login.spec.ts<br>
+      &nbsp;&nbsp;api/auth.spec.ts<br>
+      &nbsp;&nbsp;visual/home.spec.ts
+    </div>
+  </div>
+
+  <h2 class="section-head"><span aria-hidden="true">🏷️</span> Tagging &amp; Filtering Tests</h2>
+  <div class="codebox"><span class="tok-com">// Tag tests with @smoke, @regression, @critical etc.</span>
+<span class="tok-fn">test</span>(<span class="tok-str">'@smoke should load homepage'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => { ... });
+
+<span class="tok-com">// Run only tagged tests from CLI</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span> <span class="tok-kw">--grep</span> <span class="tok-str">"@smoke"</span>
+
+<span class="tok-com">// Skip a test</span>
+<span class="tok-fn">test</span>.<span class="tok-fn">skip</span>(<span class="tok-str">'skipping broken test temporarily'</span>, <span class="tok-kw">async</span> () => { ... });
+
+<span class="tok-com">// Run only this test (debug mode - don't commit!)</span>
+<span class="tok-fn">test</span>.<span class="tok-fn">only</span>(<span class="tok-str">'should login as admin'</span>, <span class="tok-kw">async</span> () => { ... });</div>
+
+  <hr class="divider">
+
+  <h2 class="section-head"><span aria-hidden="true">🎤</span> Interview Q&amp;A — Test Structure</h2>
+  <div class="table-scroll">
+  <table class="nb-table" aria-label="Interview questions on test structure">
+    <caption style="font-family:'Patrick Hand',cursive;font-size:12px;color:#666;text-align:left;">Interview questions — know these!</caption>
+    <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="hl-yellow">What is the difference between beforeEach and beforeAll?</span></td>
+        <td><code>beforeEach</code> runs before every test; <code>beforeAll</code> runs once before all tests in the describe block.</td>
+      </tr>
+      <tr>
+        <td>When would you use describe()?</td>
+        <td>To group logically related tests so hooks and setup scope correctly to that group.</td>
+      </tr>
+      <tr>
+        <td><span class="hl-yellow">What does expect() do in Playwright?</span></td>
+        <td>Makes assertions with auto-retry — it keeps checking until condition passes or the assertion timeout hits.</td>
+      </tr>
+      <tr>
+        <td>What is test.only() and why is it dangerous?</td>
+        <td>Runs only that test, skipping all others — dangerous if accidentally committed to CI, whole suite won't run.</td>
+      </tr>
+      <tr>
+        <td>How do you skip a flaky test temporarily?</td>
+        <td>Use <code>test.skip()</code> with a comment explaining why, then file a ticket to fix it.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="speech-wrap">
+    <div class="speech-badge" aria-hidden="true">🎤</div>
+    <div class="speech-box green">
+      <div class="speech-title"><span aria-hidden="true">🗣️</span> How I'd say it in an interview</div>
+      <div class="speech-q"><span class="qlabel"><span aria-hidden="true">❓</span> Interviewer asks:</span> “What lifecycle hooks does Playwright provide, and when do you use each?”</div>
+      <div class="speech-inner">
+        <p class="sl"><span class="anchor">Playwright has four lifecycle hooks:</span> <code>beforeEach</code>, <code>afterEach</code>, <code>beforeAll</code>, and <code>afterAll</code>.</p>
+        <p class="sl"><span class="anchor">They handle</span> setup and teardown, so tests stay clean and independent.</p>
+        <p class="sl"><span class="anchor">Before every test, I use</span> <code>beforeEach</code> to navigate to the right page.</p>
+        <p class="sl"><span class="anchor">After every test, I use</span> <code>afterEach</code> to capture a screenshot on failure.</p>
+        <p class="sl"><span class="anchor">For heavy setup, I use</span> <code>beforeAll</code>, which runs once for the whole group.</p>
+        <p class="sl"><span class="anchor">For final cleanup, I use</span> <code>afterAll</code> to release those resources.</p>
+        <p class="sl closer"><span class="anchor">So, in short,</span> I keep repeated steps in hooks and heavy setup in <code>beforeAll</code>, so the suite stays fast, clean, and easy to maintain.</p>
+      </div>
+      <div class="speech-alt"><span aria-hidden="true">🔄</span> Also asked as: "How do you manage test setup and teardown?" · "Walk me through the Playwright test lifecycle."</div>
+      <div class="speech-follow">Follow-up Qs: "In what order do hooks run?" → "Why can't <code>beforeAll</code> use the <code>page</code> fixture?"</div>
+    </div>
+  </div>
+
+  <div class="page-num">6</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 7 — QUICK REVISION SHEET, PART 1
+     ═══════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="qrs-page">
+  <div class="qrs-label">
+    <span><span aria-hidden="true">⚡</span> Quick Revision Sheet</span>
+    <span>Scan before your interview!</span>
+  </div>
+
+  <div class="qrs-main-title"><span aria-hidden="true">⚡</span> Quick Revision Sheet — Part 1<span class="qrs-title-sub">Playwright Phase 1</span></div>
+
+  <div class="how-to-use">
+    <strong><span aria-hidden="true">⚡</span> HOW TO USE THIS PAGE</strong> (read once, then ignore this box)<br>
+    <strong>TIER 1</strong> — Scan the Topic Map. Fuzzy branch? → drop to Tier 2.<br>
+    <strong>TIER 2</strong> — Read ONLY the rows that felt weak in Tier 1.<br>
+    <strong>TIER 3</strong> — ALWAYS read Mistakes + Memory Tricks, even if Tiers 1 &amp; 2 felt perfect. These catch the gaps you don't know you have.<br>
+    <strong>LOOKUP</strong> — Key Commands: glance only if tested on exact syntax.
+  </div>
+
+  <div class="qrs-sec-head tier1">
+    <span><span aria-hidden="true">🗺️</span> Section 1 — Topic Map</span>
+    <span class="tier-tag t1">TIER 1 · 30 sec scan</span>
+  </div>
+  <div class="mindmap-wrap">
+  <svg viewBox="0 0 700 290" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Playwright Phase 1 topic map">
+    <g stroke-width="2.2" fill="none">
+      <line x1="265" y1="124" x2="230" y2="60" stroke="#f9a825"/>
+      <line x1="265" y1="146" x2="230" y2="222" stroke="#3949ab"/>
+      <line x1="435" y1="124" x2="470" y2="60" stroke="#2e7d32"/>
+      <line x1="435" y1="146" x2="470" y2="222" stroke="#c62828"/>
+      <line x1="350" y1="156" x2="350" y2="234" stroke="#00838f"/>
+    </g>
+    <rect x="265" y="112" width="170" height="44" rx="22" fill="#00695c" stroke="#004d40" stroke-width="2"/>
+    <text x="350" y="139" text-anchor="middle" font-family="Kalam,cursive" font-size="15" fill="#fff" font-weight="bold">Playwright P1</text>
+    <rect x="30" y="14" width="200" height="48" rx="9" fill="#fff8e1" stroke="#f9a825" stroke-width="1.8"/>
+    <text x="130" y="34" text-anchor="middle" font-family="Kalam,cursive" font-size="14" fill="#222" font-weight="bold">Introduction</text>
+    <text x="130" y="52" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12.5" fill="#a66f00">vs Selenium · browsers · langs</text>
+    <rect x="30" y="206" width="200" height="48" rx="9" fill="#e8eaf6" stroke="#3949ab" stroke-width="1.8"/>
+    <text x="130" y="226" text-anchor="middle" font-family="Kalam,cursive" font-size="14" fill="#222" font-weight="bold">Architecture</text>
+    <text x="130" y="244" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12.5" fill="#283593">CDP · Context · Page · Route</text>
+    <rect x="470" y="14" width="200" height="48" rx="9" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.8"/>
+    <text x="570" y="34" text-anchor="middle" font-family="Kalam,cursive" font-size="14" fill="#222" font-weight="bold">Installation</text>
+    <text x="570" y="52" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12.5" fill="#1b5e20">npm init · install · headless</text>
+    <rect x="470" y="206" width="200" height="48" rx="9" fill="#fce4ec" stroke="#c62828" stroke-width="1.8"/>
+    <text x="570" y="226" text-anchor="middle" font-family="Kalam,cursive" font-size="14" fill="#222" font-weight="bold">playwright.config</text>
+    <text x="570" y="244" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12.5" fill="#a31515">retries · workers · projects</text>
+    <rect x="250" y="234" width="200" height="48" rx="9" fill="#e0f7fa" stroke="#00838f" stroke-width="1.8"/>
+    <text x="350" y="254" text-anchor="middle" font-family="Kalam,cursive" font-size="14" fill="#222" font-weight="bold">Test Structure</text>
+    <text x="350" y="272" text-anchor="middle" font-family="Patrick Hand,cursive" font-size="12.5" fill="#006064">test · expect · hooks · .only</text>
+  </svg>
+  </div>
+
+  <div class="qrs-sec-head tier2">
+    <span><span aria-hidden="true">🔑</span> Section 2 — Must-Know Concepts</span>
+    <span class="tier-tag t2">TIER 2 · read weak rows only</span>
+  </div>
+  <div class="qrs-legend">
+    <span style="--c:#f9a825">Introduction</span><span style="--c:#3949ab">Architecture</span><span style="--c:#2e7d32">Installation</span><span style="--c:#c62828">Config</span><span style="--c:#00838f">Test Structure</span>
+  </div>
+    <div class="qr-row b1"><span class="k"><span class="hl-yellow">Playwright</span></span><span>Microsoft's open-source browser automation framework (2020) for fast, reliable E2E tests.</span></div>
+    <div class="qr-row b1"><span class="k">vs Selenium</span><span>CDP / WebSocket instead of HTTP WebDriver; auto-wait, shadow DOM, iframes, network mock built in.</span></div>
+    <div class="qr-row b1"><span class="k">Browsers</span><span>Chromium (Chrome/Edge), Firefox, WebKit (Safari), all from one API.</span></div>
+    <div class="qr-row b1"><span class="k">Languages</span><span>JavaScript / TypeScript, Python, Java, C# (.NET).</span></div>
+    <div class="qr-row b2"><span class="k">Browser</span><span>The launched browser instance: Chromium, Firefox, or WebKit.</span></div>
+    <div class="qr-row b2"><span class="k"><span class="hl-green">BrowserContext</span></span><span>Isolated session with its own cookies and storage, like incognito. One per test.</span></div>
+    <div class="qr-row b2"><span class="k">Page</span><span>A single tab; the main object tests interact with, such as <code>page.goto()</code>.</span></div>
+    <div class="qr-row b2"><span class="k">Locator</span><span>Lazy element reference that auto-waits and retries; more stable than raw selectors.</span></div>
+    <div class="qr-row b2"><span class="k">Frame / Worker</span><span>An <code>&lt;iframe&gt;</code> inside a page / a service or web worker on the page.</span></div>
+    <div class="qr-row b2"><span class="k">Route</span><span>Network interception: mock, modify, or block requests with <code>page.route()</code>.</span></div>
+    <div class="qr-row b2"><span class="k">Tracing</span><span>Records DOM snapshots, network calls, and screenshots into a zip for debugging.</span></div>
+    <div class="qr-row b2"><span class="k">CDP</span><span>Chrome DevTools Protocol: Playwright's direct WebSocket channel to Chromium.</span></div>
+    <div class="qr-row b2"><span class="k">Auto-waiting</span><span>Before every action: wait until visible, enabled, and stable. No manual waits.</span></div>
+    <div class="qr-row b3"><span class="k">Prerequisite</span><span>Node.js v16+; check with <code>node -v</code> and <code>npm -v</code>.</span></div>
+    <div class="qr-row b3"><span class="k">Install</span><span><code>npm init playwright@latest</code> scaffolds the project; <code>npx playwright install</code> gets browsers.</span></div>
+    <div class="qr-row b3"><span class="k">Headed vs headless</span><span>Headless is the default and runs in the background; <code>--headed</code> shows the browser.</span></div>
+    <div class="qr-row b3"><span class="k">Project structure</span><span><code>playwright.config.ts</code>, <code>tests/</code>, <code>tests-examples/</code>, <code>package.json</code>.</span></div>
+    <div class="qr-row b4"><span class="k"><code>playwright.config</code></span><span>Central control panel: testDir, timeout, retries, workers, baseURL, reporter, projects.</span></div>
+    <div class="qr-row b4"><span class="k"><code>testDir</code> / <code>timeout</code></span><span>Path to the tests folder / max milliseconds one test may run.</span></div>
+    <div class="qr-row b4"><span class="k"><code>retries</code></span><span>How many times a failing test is re-run automatically.</span></div>
+    <div class="qr-row b4"><span class="k"><code>workers</code> / <code>fullyParallel</code></span><span>Parallel test threads / run tests inside one file in parallel.</span></div>
+    <div class="qr-row b4"><span class="k"><code>baseURL</code></span><span>URL prefix so <code>page.goto('/')</code> needs no hardcoded host.</span></div>
+    <div class="qr-row b4"><span class="k"><code>screenshot</code> / <code>trace</code></span><span>When to capture evidence: off, on, only-on-failure, on-first-retry.</span></div>
+    <div class="qr-row b4"><span class="k"><code>projects</code></span><span>Array of browser or device configs; the same tests run in each.</span></div>
+    <div class="qr-row b4"><span class="k">Runner vs Library</span><span><code>@playwright/test</code> has runner, fixtures, expect; <code>playwright</code> is automation only.</span></div>
+    <div class="qr-row b5"><span class="k"><code>test()</code></span><span>Defines one test case: a name plus an async function with <code>{ page }</code>.</span></div>
+    <div class="qr-row b5"><span class="k"><code>expect()</code></span><span>Assertion that auto-retries until it passes or the expect timeout hits.</span></div>
+    <div class="qr-row b5"><span class="k"><code>describe()</code></span><span>Groups related tests and scopes their hooks; can be nested.</span></div>
+    <div class="qr-row b5"><span class="k"><code>beforeEach</code> / <code>afterEach</code></span><span>Run around every test: navigation, login, screenshots, per-test cleanup.</span></div>
+    <div class="qr-row b5"><span class="k"><code>beforeAll</code> / <code>afterAll</code></span><span>Run once per group; they get <code>browser</code>, not <code>page</code>.</span></div>
+    <div class="qr-row b5"><span class="k"><code>test.only</code> / <code>test.skip</code></span><span>Run only this test (never commit it) / skip a test with a reason.</span></div>
+    <div class="qr-row b5"><span class="k">Naming &amp; tags</span><span>"should [action] when [condition]"; tag with <code>@smoke</code>, filter with <code>--grep</code>.</span></div>
+    <div class="qr-row b5"><span class="k">Organisation</span><span>Group by feature (recommended) or by type: e2e, api, visual.</span></div>
+
+  <div class="page-num">7</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 8 — QUICK REVISION SHEET, PART 2
+     ═══════════════════════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="qrs-page">
+  <div class="qrs-label">
+    <span><span aria-hidden="true">⚡</span> Quick Revision Sheet</span>
+    <span>Scan before your interview!</span>
+  </div>
+
+  <div class="qrs-main-title"><span aria-hidden="true">⚡</span> Quick Revision Sheet — Part 2<span class="qrs-title-sub">Playwright Phase 1</span></div>
+
+  <div class="qrs-sec-head tier2">
+    <span><span aria-hidden="true">🎯</span> Section 5 — Interview Rapid-Fire</span>
+    <span class="tier-tag t2">TIER 2 · Q → recall → check</span>
+  </div>
+  <p class="qrs-note">Cover the answer, recall it, then check. Turn ☆ into ★ on the ones you missed.</p>
+  <div class="table-scroll">
+  <table class="qrs-table" aria-label="Interview rapid-fire Q and A">
+    <thead><tr><th class="star" aria-label="Mark if missed">★</th><th style="width:44%">Question</th><th>One-line Answer</th></tr></thead>
+    <tbody>
+      <tr><td class="star">☆</td><td><span class="hl-yellow">What is Playwright and who made it?</span></td><td>Microsoft's open-source browser automation + E2E testing framework (2020).</td></tr>
+      <tr><td class="star">☆</td><td><span class="hl-yellow">How is Playwright faster than Selenium?</span></td><td>Direct CDP/WebSocket channel, no HTTP WebDriver overhead; no manual waits needed.</td></tr>
+      <tr><td class="star">☆</td><td>Which browsers and languages does it support?</td><td>Chromium, Firefox, WebKit; JavaScript/TypeScript, Python, Java, C#.</td></tr>
+      <tr><td class="star">☆</td><td><span class="hl-yellow">Browser vs BrowserContext vs Page?</span></td><td>Browser = app; Context = isolated session (incognito); Page = one tab.</td></tr>
+      <tr><td class="star">☆</td><td>What is auto-waiting in Playwright?</td><td>Before every action it waits for the element to be visible, enabled, and stable.</td></tr>
+      <tr><td class="star">☆</td><td>Command to install Playwright + scaffold?</td><td><code>npm init playwright@latest</code>, then <code>npx playwright install</code>.</td></tr>
+      <tr><td class="star">☆</td><td>How do you run tests headed vs headless?</td><td><code>--headed</code> flag or <code>headless: false</code> in config. Headless is the default.</td></tr>
+      <tr><td class="star">☆</td><td><span class="hl-yellow">What does playwright.config.ts control?</span></td><td>testDir, timeout, retries, workers, baseURL, reporter, screenshot, trace, projects.</td></tr>
+      <tr><td class="star">☆</td><td>Difference: beforeEach vs beforeAll?</td><td><code>beforeEach</code> = every test; <code>beforeAll</code> = once per group (gets <code>browser</code>, not <code>page</code>).</td></tr>
+      <tr><td class="star">☆</td><td>What does expect() do differently?</td><td>Auto-retries the assertion until it passes or the assertion timeout hits.</td></tr>
+      <tr><td class="star">☆</td><td>What is test.only() and its risk?</td><td>Runs only that test; if committed to CI, the rest of the suite never runs.</td></tr>
+      <tr><td class="star">☆</td><td>How do you run only smoke tests?</td><td>Tag tests <code>@smoke</code>, then <code>npx playwright test --grep "@smoke"</code>.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="qrs-sec-head lookup">
+    <span><span aria-hidden="true">⚡</span> Section 3 — Key Commands</span>
+    <span class="lookup-badge"><span aria-hidden="true">🔍</span> LOOKUP ONLY</span>
+    <span class="tier-tag lu">on demand</span>
+  </div>
+
+  <div class="qrs-cmt">Install, run, and check Node (terminal)</div>
+  <div class="qrs-codebox"><span class="tok-var">npm</span> <span class="tok-fn">init</span> <span class="tok-str">playwright@latest</span>              <span class="tok-com"># scaffold project</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-kw">install</span>                   <span class="tok-com"># all browsers</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-kw">install</span> <span class="tok-str">chromium</span>           <span class="tok-com"># one browser</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span>                      <span class="tok-com"># run all tests</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span> <span class="tok-kw">--headed</span>             <span class="tok-com"># see the browser</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span> <span class="tok-kw">--headless</span>           <span class="tok-com"># default mode</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span> <span class="tok-kw">--ui</span>                 <span class="tok-com"># UI mode</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">test</span> <span class="tok-kw">--grep</span> <span class="tok-str">"@smoke"</span>      <span class="tok-com"># tagged tests only</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-str">show-report</span>               <span class="tok-com"># HTML report</span>
+<span class="tok-var">node</span> <span class="tok-kw">-v</span>   <span class="tok-var">npm</span> <span class="tok-kw">-v</span>                           <span class="tok-com"># check versions</span></div>
+
+  <div class="qrs-cmt">playwright.config.ts essentials</div>
+  <div class="qrs-codebox"><span class="tok-kw">import</span> { <span class="tok-def">defineConfig</span>, <span class="tok-def">devices</span> } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/test'</span>;
+<span class="tok-kw">export default</span> <span class="tok-fn">defineConfig</span>({
+  <span class="tok-prop">testDir</span>: <span class="tok-str">'./tests'</span>, <span class="tok-prop">timeout</span>: <span class="tok-num">30000</span>, <span class="tok-prop">retries</span>: <span class="tok-num">2</span>, <span class="tok-prop">workers</span>: <span class="tok-num">4</span>,
+  <span class="tok-prop">fullyParallel</span>: <span class="tok-kw">true</span>, <span class="tok-prop">reporter</span>: <span class="tok-str">'html'</span>,
+  <span class="tok-prop">use</span>: {
+    <span class="tok-prop">baseURL</span>: <span class="tok-str">'http://localhost:3000'</span>, <span class="tok-prop">headless</span>: <span class="tok-kw">true</span>,
+    <span class="tok-prop">screenshot</span>: <span class="tok-str">'only-on-failure'</span>, <span class="tok-prop">video</span>: <span class="tok-str">'retain-on-failure'</span>,
+    <span class="tok-prop">trace</span>: <span class="tok-str">'on-first-retry'</span>,
+  },
+  <span class="tok-prop">projects</span>: [
+    { <span class="tok-prop">name</span>: <span class="tok-str">'chromium'</span>, <span class="tok-prop">use</span>: { ...devices[<span class="tok-str">'Desktop Chrome'</span>] } },
+    { <span class="tok-prop">name</span>: <span class="tok-str">'firefox'</span>,  <span class="tok-prop">use</span>: { ...devices[<span class="tok-str">'Desktop Firefox'</span>] } },
+    { <span class="tok-prop">name</span>: <span class="tok-str">'webkit'</span>,   <span class="tok-prop">use</span>: { ...devices[<span class="tok-str">'Desktop Safari'</span>] } },
+  ],
+});</div>
+
+  <div class="qrs-cmt">Test anatomy: describe, hooks, test, expect</div>
+  <div class="qrs-codebox"><span class="tok-kw">import</span> { <span class="tok-fn">test</span>, <span class="tok-fn">expect</span> } <span class="tok-kw">from</span> <span class="tok-str">'@playwright/test'</span>;
+
+<span class="tok-fn">test</span>.<span class="tok-fn">describe</span>(<span class="tok-str">'Suite'</span>, () => {
+  <span class="tok-fn">test</span>.<span class="tok-fn">beforeAll</span>(<span class="tok-kw">async</span> ({ <span class="tok-var">browser</span> }) => { <span class="tok-com">/* once: seed data */</span> });
+  <span class="tok-fn">test</span>.<span class="tok-fn">beforeEach</span>(<span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => { <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">goto</span>(<span class="tok-str">'/'</span>); });
+  <span class="tok-fn">test</span>(<span class="tok-str">'should do X when Y'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => {
+    <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">fill</span>(<span class="tok-str">'#email'</span>, <span class="tok-str">'user@test.com'</span>);
+    <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">click</span>(<span class="tok-str">'button[type="submit"]'</span>);
+    <span class="tok-kw">await</span> <span class="tok-fn">expect</span>(<span class="tok-var">page</span>.<span class="tok-fn">locator</span>(<span class="tok-str">'.error-msg'</span>)).<span class="tok-fn">toBeVisible</span>();
+  });
+  <span class="tok-fn">test</span>.<span class="tok-fn">afterEach</span>(<span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => { <span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">screenshot</span>({ <span class="tok-prop">path</span>: <span class="tok-str">'screenshot.png'</span> }); });
+  <span class="tok-fn">test</span>.<span class="tok-fn">afterAll</span>(<span class="tok-kw">async</span> () => { <span class="tok-com">/* once: cleanup */</span> });
+});
+
+<span class="tok-fn">test</span>(<span class="tok-str">'@smoke should load homepage'</span>, <span class="tok-kw">async</span> ({ <span class="tok-var">page</span> }) => { ... });
+<span class="tok-fn">test</span>.<span class="tok-fn">skip</span>(<span class="tok-str">'skipping broken test temporarily'</span>, <span class="tok-kw">async</span> () => { ... });
+<span class="tok-fn">test</span>.<span class="tok-fn">only</span>(<span class="tok-str">'should login as admin'</span>, <span class="tok-kw">async</span> () => { ... });   <span class="tok-com">// never commit!</span></div>
+
+  <div class="qrs-sec-head tier3">
+    <span><span aria-hidden="true">⚠️</span> Section 4 — Common Mistakes &amp; Gotchas</span>
+    <span class="always-read-badge">ALWAYS READ</span>
+    <span class="tier-tag t3">TIER 3</span>
+  </div>
+  <ul class="qrs-mistakes">
+    <li><span aria-hidden="true">⚠️</span> Using <span class="hl-pink">test.only()</span> and committing to git: the entire CI suite runs just that one test.</li>
+    <li><span aria-hidden="true">⚠️</span> Using the <span class="hl-orange">page</span> fixture in <code>beforeAll</code>; pages are per-test, so use <code>browser</code> there.</li>
+    <li><span aria-hidden="true">⚠️</span> Forgetting <span class="hl-pink">await</span> before a Playwright call: silent failures with no useful error.</li>
+    <li><span aria-hidden="true">⚠️</span> Hardcoding URLs instead of using <span class="hl-orange">baseURL</span> in config; it breaks when you switch environments.</li>
+    <li><span aria-hidden="true">⚠️</span> Committing <span class="hl-pink">headless: false</span>: CI has no display, so tests will fail.</li>
+    <li><span aria-hidden="true">⚠️</span> Setting <span class="hl-orange">workers</span> high while tests share state: tests will interfere with each other.</li>
+    <li><span aria-hidden="true">⚠️</span> Running <span class="hl-pink">npx playwright test</span> before <code>npx playwright install</code>: "browser not found" error.</li>
+  </ul>
+
+  <div class="qrs-sec-head tier3">
+    <span><span aria-hidden="true">🧠</span> Section 6 — Memory Tricks &amp; Last-Minute Tips</span>
+    <span class="tier-tag t3">TIER 3 · read last</span>
+  </div>
+  <div class="two-col">
+    <div class="qrs-trick">
+      <span aria-hidden="true">🧠</span> <strong>B-C-P hierarchy:</strong><br>
+      <strong>B</strong>rowser → <strong>C</strong>ontext → <strong>P</strong>age<br>
+      = App → Incognito Window → Tab<br>
+      Each test gets its own C &amp; P.
+    </div>
+    <div class="qrs-trick">
+      <span aria-hidden="true">🧠</span> <strong>Hook order: "Before-Before-After-After"</strong><br>
+      <code>beforeAll</code> → <code>beforeEach</code> → TEST → <code>afterEach</code> → <code>afterAll</code><br>
+      Outer runs before inner. Mirrors describe nesting.
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="qrs-trick">
+      <span aria-hidden="true">🧠</span> <strong>Playwright vs Selenium = express vs slow train</strong><br>
+      CDP = direct fibre line. WebDriver = HTTP mail coach. Same destination, very different speed.
+    </div>
+    <div class="qrs-trick">
+      <span aria-hidden="true">🧠</span> <strong>expect() is patient, test() is not</strong><br>
+      expect() retries until the assertion timeout. test() fails at the test timeout. Set both in config.
+    </div>
+  </div>
+  <ul class="tips-list">
+    <li>Always run <code>npx playwright install</code> after cloning a project; browsers don't come with node_modules.</li>
+    <li>Set <code>retries: 2</code> in CI config but <code>retries: 0</code> locally so failures surface immediately during dev.</li>
+    <li>Use <code>--ui</code> mode when debugging a failing test; it shows a step-by-step trace right in the browser.</li>
+    <li>Never leave <code>test.only()</code> in code that gets pushed; add an ESLint rule to catch it automatically.</li>
+    <li>Name your tests "should [verb] when [condition]"; it reads like a spec and maps directly to bug reports.</li>
+  </ul>
+
+  <div class="page-num">8</div>
+</div>
+</div>
+
+</div><!-- /pages-container -->
+</body>
+</html>

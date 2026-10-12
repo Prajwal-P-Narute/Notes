@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Playwright: Codegen, Inspector & VS Code Extension — Study Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  * , *::before, *::after { box-sizing: border-box; }
+
+  :root{
+    --page-w: 794px;
+    --page-h: 1123px;
+    --ink: #1a3fa0;
+    --ink-dark: #0d1b3d;
+    --head: #10131a;
+    --sub: #12306b;
+  }
+
+  body{
+    margin:0;
+    background:#e8e8e8;
+    font-family: 'Kalam', 'Patrick Hand', cursive;
+  }
+
+  .pages-container{
+    width:100%;
+    background:#e8e8e8;
+    padding-bottom:40px;
+  }
+
+  .page-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:24px 12px;
+  }
+  @media (min-width: 860px){ .page-wrapper{ padding:40px 24px; } }
+
+  .page{
+    width:100%;
+    max-width: var(--page-w);
+    min-height: var(--page-h);
+    position:relative;
+    background:
+      repeating-linear-gradient(#fffdf8 0, #fffdf8 27px, #cfe3f7 28px);
+    background-color:#fffdf8;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    rotate: -0.25deg;
+    padding: 95px 34px 95px 62px;
+    overflow: visible;
+  }
+  .page:nth-of-type(even){ rotate: 0.25deg; }
+  .page::before{
+    content:"";
+    position:absolute;
+    top:0; bottom:0; left:46px;
+    width:2px;
+    background: #e08a8a;
+    opacity:0.75;
+  }
+
+  .page-label{
+    display:flex;
+    justify-content:space-between;
+    font-family:'Patrick Hand',cursive;
+    font-size:13px;
+    color:#8a95a8;
+    margin-bottom:14px;
+    letter-spacing:0.3px;
+  }
+
+  .page-number{
+    position:absolute;
+    bottom:22px; right:30px;
+    font-family:'Patrick Hand',cursive;
+    color:#93a0b5;
+    font-size:14px;
+  }
+
+  h1.notebook-title{
+    font-family:'Caveat', cursive;
+    font-size:44px;
+    color: var(--head);
+    margin: 0 0 4px 0;
+    transform: rotate(-0.6deg);
+  }
+  .title-underline{
+    height:4px; width:150px;
+    background: linear-gradient(90deg,#1a3fa0,#6fa8ff);
+    border-radius:3px;
+    margin-bottom:18px;
+  }
+  h2.section-head{
+    font-family:'Caveat', cursive;
+    font-size:30px;
+    color: var(--sub);
+    margin: 22px 0 8px 0;
+    transform: rotate(-0.3deg);
+  }
+  p, li{
+    color: var(--ink);
+    font-size: 19px;
+    line-height: 1.55;
+  }
+  p:nth-of-type(2n){ transform: rotate(-0.3deg); }
+  p:nth-of-type(3n){ transform: rotate(0.3deg); }
+  ul{ margin:6px 0 6px 0; padding-left:22px; }
+  li{ margin-bottom:6px; }
+
+  .hl-yellow{ background: linear-gradient(180deg, transparent 60%, #fff59d 60%); padding:0 2px; }
+  .hl-green{ background: linear-gradient(180deg, transparent 60%, #b9f6ca 60%); padding:0 2px; }
+  .hl-pink{ background: linear-gradient(180deg, transparent 60%, #f8bbd0 60%); padding:0 2px; }
+  .hl-orange{ background: linear-gradient(180deg, transparent 60%, #ffe0b2 60%); padding:0 2px; }
+
+  code, .inline-code{
+    font-family: 'Consolas','Menlo',monospace;
+    background:#eef1fb;
+    border:1px solid #c8d2ec;
+    border-radius:5px;
+    padding:1px 6px;
+    font-size:16px;
+    color:#20305c;
+  }
+
+  .codebox{
+    background:#1e2235;
+    color:#e0e6f5;
+    border-radius:10px;
+    padding:14px 16px;
+    font-family:'Consolas','Menlo',monospace;
+    font-size:15px;
+    line-height:1.6;
+    overflow-x:auto;
+    -webkit-overflow-scrolling: touch;
+    white-space:pre;
+    word-break:normal;
+    margin:12px 0;
+    box-shadow: inset 0 0 0 1px #2c3153;
+    max-width:100%;
+  }
+  .tok-kw{ color:#ff7b72; font-weight:bold; }
+  .tok-fn{ color:#d2a8ff; }
+  .tok-var{ color:#79c0ff; }
+  .tok-str{ color:#a8e6a3; }
+  .tok-prop{ color:#56d364; }
+  .tok-num{ color:#f0883e; }
+  .tok-com{ color:#8b949e; font-style:italic; }
+  .tok-cls{ color:#ffa657; }
+
+  .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; margin:12px 0; }
+  table.nb-table{
+    border-collapse:collapse;
+    width:100%;
+    min-width:420px;
+    font-family:'Kalam',cursive;
+    font-size:17px;
+  }
+  table.nb-table caption{ caption-side:top; text-align:left; font-family:'Patrick Hand',cursive; color:#5b6577; font-size:13px; margin-bottom:4px;}
+  table.nb-table th, table.nb-table td{
+    border:1.5px dashed #7f93c2;
+    padding:8px 10px;
+    color:var(--ink);
+    text-align:left;
+  }
+  table.nb-table th{ background:#eaf1ff; color:var(--sub); }
+
+  .flow{
+    display:flex; flex-wrap:wrap; align-items:center; gap:6px;
+    margin:14px 0;
+  }
+  .flow-box{
+    background:#f4f8ff;
+    border:2px solid #3f61c9;
+    border-radius:10px;
+    padding:8px 12px;
+    font-size:16px;
+    color:#1a3fa0;
+    box-shadow:2px 2px 0 rgba(63,97,201,0.25);
+  }
+  .flow-arrow{ font-size:20px; color:#3f61c9; }
+
+  .sticky{
+    background:#fff59d;
+    border-radius:2px;
+    box-shadow: 3px 4px 10px rgba(0,0,0,0.2);
+    padding:12px 14px;
+    font-size:16px;
+    color:#4a3f00;
+    width:230px;
+    transform: rotate(-3deg);
+    position:relative;
+    margin:14px 10px 14px 0;
+    clip-path: polygon(0 0, 92% 0, 100% 8%, 100% 100%, 0 100%);
+  }
+  .sticky::after{
+    content:"";
+    position:absolute; top:0; right:0;
+    width:0; height:0;
+    border-style:solid;
+    border-width:0 0 14px 14px;
+    border-color: transparent transparent #d6c34a transparent;
+  }
+
+  .callout{
+    border:2px dashed #7f93c2;
+    border-radius:10px;
+    padding:10px 14px;
+    background:#f6f9ff;
+    font-size:16px;
+    color:#1a3fa0;
+    margin:12px 0;
+  }
+
+  .speech-box{
+    max-width:100%;
+    box-sizing:border-box;
+    border-radius:22px;
+    border:3.5px solid #ff8a3d;
+    box-shadow: 4px 4px 0 rgba(255,138,61,0.35), 10px 14px 24px rgba(0,0,0,0.18);
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.55), transparent 55%),
+                linear-gradient(135deg,#fff1e0 0%, #ffd9a8 55%, #ffc178 100%);
+    position:relative;
+    padding:16px 18px 14px 18px;
+    margin:20px 6px;
+    transform: rotate(-0.6deg);
+  }
+  .speech-box::before{
+    content:"";
+    position:absolute;
+    left:34px; bottom:-16px;
+    width:0;height:0;
+    border-style:solid;
+    border-width:18px 14px 0 0;
+    border-color:#ff8a3d transparent transparent transparent;
+  }
+  .speech-box::after{
+    content:"";
+    position:absolute;
+    border: 1.5px dashed rgba(255,255,255,0.85);
+    border-radius:18px;
+    inset:6px;
+    pointer-events:none;
+  }
+  .speech-badge{
+    position:absolute; top:-16px; right:14px;
+    width:40px; height:40px;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #ffe1b8, #ff8a3d);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .speech-title{
+    font-family:'Caveat', cursive;
+    font-size:20px;
+    color:#9a3d00;
+    margin-bottom:6px;
+  }
+  .speech-panel{
+    background:rgba(255,255,255,0.6);
+    border-radius:14px;
+    padding:10px 12px;
+    font-family:'Patrick Hand', cursive;
+    font-size:20px;
+    color:#3d2200;
+    line-height:1.5;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+  }
+  .speech-sub{
+    margin-top:8px;
+    font-size:15px;
+    color:#7a3d00;
+    background:rgba(255,255,255,0.4);
+    border-radius:10px;
+    padding:6px 10px;
+  }
+  .followup{
+    margin-top:6px;
+    font-size:14px;
+    color:#7a3d00;
+  }
+
+  /* Revision sheet specific */
+  .rev-title-bar{
+    background: linear-gradient(120deg,#004d40,#00695c);
+    color:#fdfdfd;
+    border-radius:10px;
+    padding:10px 16px;
+    font-family:'Caveat',cursive;
+    font-size:34px;
+    margin-bottom:6px;
+  }
+  .rev-strip{
+    display:flex; justify-content:space-between;
+    font-family:'Patrick Hand',cursive;
+    font-size:14px;
+    color:#00695c;
+    margin-bottom:10px;
+  }
+  .howto{
+    background:#e0f2f1;
+    border:1px solid #80cbc4;
+    border-radius:8px;
+    padding:10px 14px;
+    font-size:14.5px;
+    color:#004d40;
+    font-family:'Patrick Hand',cursive;
+    margin-bottom:16px;
+    line-height:1.5;
+  }
+  .tier-badge{
+    display:inline-block;
+    font-size:11px;
+    font-family:'Patrick Hand',cursive;
+    color:#fff;
+    background:#00796b;
+    border-radius:6px;
+    padding:1px 8px;
+    margin-left:8px;
+    vertical-align:middle;
+  }
+  .badge-always{
+    display:inline-block;
+    font-size:11px;
+    font-family:'Patrick Hand',cursive;
+    color:#fff;
+    background:#c62828;
+    border-radius:6px;
+    padding:1px 8px;
+    margin-left:8px;
+  }
+  .badge-lookup{
+    display:inline-block;
+    font-size:11px;
+    font-family:'Patrick Hand',cursive;
+    color:#fff;
+    background:#455a64;
+    border-radius:6px;
+    padding:1px 8px;
+    margin-left:8px;
+  }
+  .grid2{
+    display:grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap:6px 10px;
+  }
+  .grid2 .k{
+    font-weight:bold; color:#00695c;
+    border-left:4px solid #26a69a;
+    padding-left:8px;
+    font-size:15.5px;
+  }
+  .grid2 .v{ font-size:15px; color:#123; }
+  .grid2 .k.c-blue{ border-left-color:#42a5f5; }
+  .grid2 .k.c-purple{ border-left-color:#ab47bc; }
+  .grid2 .k.c-orange{ border-left-color:#ffa726; }
+
+  .mindmap-mini{ width:100%; max-width:100%; height:auto; }
+
+  .mistake-list li{ font-size:15px; }
+  .mistake-list li span.trap{ }
+
+  .mnemonic-box{
+    border:2px dashed #7f93c2;
+    border-radius:10px;
+    padding:8px 12px;
+    background:#fbfbff;
+    font-size:14.5px;
+    margin-bottom:8px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .page{ rotate:0deg !important; }
+    .speech-box, .sticky{ transform:none !important; }
+    * { transition:none !important; animation:none !important; }
+  }
+
+  @media print{
+    .page-wrapper{ display:flex !important; page-break-after: always; }
+    .pages-container{ background:white; }
+    .page{ box-shadow:none; rotate:0deg !important; margin:0; border:none; }
+  }
+
+  @media (max-width: 480px){
+    .page{ padding: 80px 18px 80px 42px; }
+    h1.notebook-title{ font-size:34px; }
+    h2.section-head{ font-size:24px; }
+    p, li{ font-size:17px; }
+    .sticky{ width:180px; }
+  }
+
+  /* Interview speech-card refinements */
+  .speech-box{
+    border-color:#f0782f;
+    background:
+      radial-gradient(circle at 22% 14%, rgba(255,255,255,0.72), transparent 52%),
+      linear-gradient(135deg,#fff5e8 0%,#ffe0b8 52%,#ffc982 100%);
+    box-shadow:4px 4px 0 rgba(240,120,47,0.32), 10px 14px 24px rgba(0,0,0,0.16);
+  }
+  .speech-box::after{ border:1.5px dashed rgba(255,255,255,0.95); }
+  .speech-title{ font-size:22px; font-weight:700; margin:0 0 10px; }
+  .speech-q{
+    position:relative;
+    z-index:1;
+    margin:0 0 12px;
+    padding:10px 12px;
+    border-left:5px solid #ffd43b;
+    border-radius:8px;
+    background:rgba(255,255,255,0.92);
+    color:#183d8f;
+    font-family:'Patrick Hand',cursive;
+    font-size:19px;
+    line-height:1.35;
+    box-shadow:0 2px 0 rgba(13,27,61,0.08);
+  }
+  .qlabel{
+    display:block;
+    margin-bottom:3px;
+    color:#d96516;
+    font-family:'Patrick Hand',cursive;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.2px;
+  }
+  .speech-panel p.sl{
+    margin:0 0 7px;
+    color:#3d2200;
+    font-family:'Patrick Hand',cursive;
+    font-size:18px;
+    line-height:1.42;
+    transform:none;
+  }
+  .speech-panel p.sl:last-child{ margin-bottom:0; }
+  .speech-panel .anchor{
+    color:#202020;
+    background:#fff176;
+    font-weight:700;
+    padding:0 3px;
+    border-radius:3px;
+    box-decoration-break:clone;
+    -webkit-box-decoration-break:clone;
+  }
+  .speech-panel p.closer{
+    margin-top:9px;
+    padding-top:8px;
+    border-top:1px dashed #d99048;
+    font-weight:700;
+  }
+  .speech-sub{
+    margin-top:10px;
+    padding:7px 10px;
+    background:rgba(255,255,255,0.55);
+    border-radius:9px;
+    font-size:15px;
+    line-height:1.4;
+  }
+  .followup{
+    margin-top:7px;
+    font-size:14px;
+    line-height:1.4;
+  }
+  @media (max-width:480px){
+    .speech-box{ padding:15px 12px 13px; margin:18px 2px; }
+    .speech-panel p.sl{ font-size:16px; }
+    .speech-q{ font-size:17px; }
+  }
+
+</style>
+</head>
+<body>
+<div class="pages-container">
+
+<!-- ============ PAGE 1 : CODEGEN INTRO ============ -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-label"><span>Phase 14 — Playwright Codegen &amp; Tools</span><span>Codegen · Part 1</span></div>
+  <h1 class="notebook-title">🎬 Playwright Codegen</h1>
+  <div class="title-underline"></div>
+
+  <p><span class="hl-yellow"><b>Codegen</b></span> is a Playwright CLI tool that <b>records your clicks/typing in a real browser</b> and turns them into working test code — automatically.</p>
+
+  <div class="codebox"><span class="tok-com">// run codegen against any URL</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-prop">codegen</span> <span class="tok-str">https://example.com</span></div>
+
+  <h2 class="section-head">📌 Record a test</h2>
+  <ul>
+    <li>Opens <span class="hl-green">two windows</span>: a real browser + the <b>Playwright Inspector</b> panel.</li>
+    <li>Every click, type, check, select you do in the browser is <b>captured live</b> as code in the inspector panel.</li>
+    <li>You can pause recording, edit the browser state manually, then resume.</li>
+  </ul>
+
+  <h2 class="section-head">🎯 Generate locators</h2>
+  <ul>
+    <li>Codegen doesn't grab random CSS — it picks the <span class="hl-yellow">most resilient locator available</span>, in priority order: <code>getByRole</code> → <code>getByText</code> → <code>getByLabel</code> → <code>getByTestId</code> → CSS/XPath (last resort).</li>
+    <li>Hover an element in the app to preview the locator it would generate, before you even click.</li>
+  </ul>
+
+  <h2 class="section-head">⚙️ Generate actions</h2>
+  <p>Common actions Codegen turns into code: click, fill, check/uncheck, select option, hover, press key, and assertions when you toggle "assert visibility" / "assert text" mode.</p>
+
+  <div class="codebox"><span class="tok-com">// example output from a login flow</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">getByLabel</span>(<span class="tok-str">'Username'</span>).<span class="tok-fn">fill</span>(<span class="tok-str">'admin'</span>);
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">getByLabel</span>(<span class="tok-str">'Password'</span>).<span class="tok-fn">fill</span>(<span class="tok-str">'secret123'</span>);
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">getByRole</span>(<span class="tok-str">'button'</span>, { <span class="tok-prop">name:</span> <span class="tok-str">'Log in'</span> }).<span class="tok-fn">click</span>();</div>
+
+  <h2 class="section-head">🗺️ Codegen Workflow</h2>
+  <div class="flow">
+    <div class="flow-box">Run codegen cmd</div><span class="flow-arrow">→</span>
+    <div class="flow-box">Interact in browser</div><span class="flow-arrow">→</span>
+    <div class="flow-box">Actions recorded live</div><span class="flow-arrow">→</span>
+    <div class="flow-box">Copy code into test file</div>
+  </div>
+
+  <div class="sticky">💡 Tip: use <code>--target=python</code> / <code>java</code> / <code>csharp</code> to generate code in a different language than JS.</div>
+
+  <div class="speech-box">
+    <div class="speech-badge" aria-hidden="true">🎤</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>What is Playwright Codegen, and how do you use it?</div>
+    <div class="speech-panel">
+      <p class="sl"><span class="anchor">In simple terms,</span> Playwright Codegen records my browser interactions and converts them into test code automatically.</p><p class="sl"><span class="anchor">To start,</span> I run <code class="inline-code">npx playwright codegen</code> with the target URL and interact with the application in its browser.</p><p class="sl"><span class="anchor">As I work,</span> the Inspector displays generated actions and suggests locators based on the elements I select.</p><p class="sl"><span class="anchor">For locator quality,</span> I prefer accessible role, text, and label locators before relying on CSS or XPath.</p><p class="sl"><span class="anchor">I also use it</span> to discover unfamiliar page elements and quickly scaffold common actions like filling forms or clicking buttons.</p><p class="sl"><span class="anchor">Before reusing the output,</span> I review the generated code, verify locator uniqueness, and add meaningful assertions.</p><p class="sl"><span class="anchor">For different projects,</span> I can choose another supported target language, such as Python, Java, or C#.</p><p class="sl closer">So, in short, Codegen speeds up test creation, but my review turns its recording into reliable automation.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: “How do you quickly create a Playwright test?” · “How do you discover locators on an unfamiliar page?”</div>
+    <div class="followup">Follow-up Qs: “Can Codegen generate assertions?” · “Which locator types does it prefer?” · “Can you choose another language?”</div>
+  </div>
+
+  <div class="page-number">1</div>
+</div></div>
+
+<!-- ============ PAGE 2 : MODIFY GENERATED CODE + WHY NOT BLINDLY USE ============ -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-label"><span>Phase 14 — Playwright Codegen &amp; Tools</span><span>Codegen · Part 2</span></div>
+  <h1 class="notebook-title">✏️ Refining Generated Code</h1>
+  <div class="title-underline"></div>
+
+  <h2 class="section-head">🔧 Modify generated code</h2>
+  <ul>
+    <li>Replace brittle <b>CSS/XPath</b> locators with role/text based ones where codegen fell back to them.</li>
+    <li>Add real <span class="hl-green">assertions</span> — codegen mostly records actions, not checks.</li>
+    <li>Remove any <code>waitForTimeout(...)</code> — replace with proper <b>auto-waiting</b> locator actions.</li>
+    <li>Extract repeated steps into functions / a <b>Page Object Model</b> instead of one long flat script.</li>
+    <li>Parameterize hardcoded test data (usernames, URLs) instead of leaving literals inline.</li>
+  </ul>
+
+  <h2 class="section-head">⚠️ Why you should NOT blindly use generated code</h2>
+  <ul class="mistake-list">
+    <li>⚠️ Codegen can fall back to <span class="hl-pink">fragile CSS selectors</span> (e.g. nth-child) when no good role/text/testid exists — these break on redesigns.</li>
+    <li>⚠️ It records exactly <span class="hl-orange">what you clicked</span>, not what you meant — no built-in business-logic checks.</li>
+    <li>⚠️ Output is a flat script — no reuse, no structure, hard to maintain at scale.</li>
+    <li>⚠️ Doesn't know about your test data strategy — you'll get literal values baked in.</li>
+    <li>⚠️ Timing quirks in the recorded session (slow network, animations) can leak into the generated script.</li>
+  </ul>
+
+  <div class="table-scroll">
+  <table class="nb-table">
+    <caption>Generated Code vs. Refined Code</caption>
+    <tr><th>Aspect</th><th>Generated (raw)</th><th>Refined (production)</th></tr>
+    <tr><td>Locators</td><td>Mix of role + CSS fallback</td><td>Consistent role/testid based</td></tr>
+    <tr><td>Assertions</td><td>Rare/none</td><td>Explicit expect() checks</td></tr>
+    <tr><td>Structure</td><td>One flat script</td><td>Reusable functions / POM</td></tr>
+    <tr><td>Data</td><td>Hardcoded literals</td><td>Parameterized / fixtures</td></tr>
+  </table>
+  </div>
+
+  <div class="callout">📌 Note: Codegen is a <b>starting point</b> for exploration and locator discovery — treat the output as a draft, never as the final test.</div>
+
+  <div class="speech-box">
+    <div class="speech-badge" aria-hidden="true">💬</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>Would you use Codegen output directly in a production automation framework?</div>
+    <div class="speech-panel">
+      <p class="sl"><span class="anchor">My answer is no,</span> because generated code is a useful draft rather than a finished, maintainable production test.</p><p class="sl"><span class="anchor">The main limitation is</span> Codegen records interactions but does not understand the business outcome that the test must verify.</p><p class="sl"><span class="anchor">I first review</span> the locators and replace fragile CSS or XPath selectors whenever stronger accessible locators are available.</p><p class="sl"><span class="anchor">Then I add</span> explicit <code class="inline-code">expect</code> assertions so the test validates outcomes instead of merely performing browser actions.</p><p class="sl"><span class="anchor">For maintainability,</span> I extract repeated workflows into helpers or page objects rather than keeping one long script.</p><p class="sl"><span class="anchor">I also parameterize</span> URLs and test data instead of leaving environment-specific values hardcoded in the test.</p><p class="sl"><span class="anchor">Finally, I remove</span> unnecessary fixed waits and rely on Playwright's locator auto-waiting and explicit conditions.</p><p class="sl closer">So, in short, I use Codegen to accelerate the first draft, then engineer the checks, structure, and data properly.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: “How do you make recorded tests maintainable?” · “What are the risks of relying on generated automation?”</div>
+    <div class="followup">Follow-up Qs: “How do you replace <code class="inline-code">waitForTimeout()</code>?” · “Why are assertions important?” · “When would you introduce page objects?”</div>
+  </div>
+
+  <div class="mnemonic-box">🧠 Memory trick: Codegen = <b>rough draft</b>, not final essay. You still edit before submitting.</div>
+
+  <div class="page-number">2</div>
+</div></div>
+
+<!-- ============ PAGE 3 : PLAYWRIGHT INSPECTOR ============ -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-label"><span>Phase 14 — Playwright Codegen &amp; Tools</span><span>Playwright Inspector</span></div>
+  <h1 class="notebook-title">🔍 Playwright Inspector</h1>
+  <div class="title-underline"></div>
+
+  <p><span class="hl-yellow"><b>Playwright Inspector</b></span> is the GUI debugging companion — it lets you step through a test, inspect the page, and try out locators live.</p>
+
+  <div class="codebox"><span class="tok-com">// three ways to open the Inspector</span>
+<span class="tok-var">PWDEBUG</span>=<span class="tok-num">1</span> <span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-prop">test</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-prop">test</span> <span class="tok-kw">--debug</span>
+<span class="tok-com">// or inside a test:</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">pause</span>();</div>
+
+  <h2 class="section-head">🎯 Inspect locators</h2>
+  <ul>
+    <li>Click the <b>"Pick locator"</b> button, then click any element in the app.</li>
+    <li>Inspector highlights it and shows the <span class="hl-green">suggested locator string</span> instantly.</li>
+  </ul>
+
+  <h2 class="section-head">🐞 Debug actions</h2>
+  <ul>
+    <li><b>Step through</b> the test one action at a time using the step-over control.</li>
+    <li>See the <b>live DOM state</b> in the browser at each step — great for catching timing/race issues.</li>
+    <li><b>Resume</b>, <b>pause</b>, or <b>stop</b> the run at any point.</li>
+  </ul>
+
+  <h2 class="section-head">🧪 Test selectors</h2>
+  <ul>
+    <li>Type any locator (CSS, XPath, role-based) into the Inspector's locator box.</li>
+    <li>Matching elements get <span class="hl-green">highlighted live</span> in the browser — confirms the locator is correct/unique <i>before</i> you put it in code.</li>
+  </ul>
+
+  <h2 class="section-head">🗺️ Inspector Workflow</h2>
+  <div class="flow">
+    <div class="flow-box">Run with --debug / .pause()</div><span class="flow-arrow">→</span>
+    <div class="flow-box">Inspector opens, test paused</div><span class="flow-arrow">→</span>
+    <div class="flow-box">Pick locators / step actions</div><span class="flow-arrow">→</span>
+    <div class="flow-box">Resume run</div>
+  </div>
+
+  <div class="table-scroll">
+  <table class="nb-table">
+    <caption>Inspector vs Codegen</caption>
+    <tr><th>Tool</th><th>Main job</th></tr>
+    <tr><td>Codegen</td><td>Records new actions → generates code</td></tr>
+    <tr><td>Inspector</td><td>Debugs / steps an existing test, tests locators live</td></tr>
+  </table>
+  </div>
+
+  <div class="sticky">💡 Tip: <code>.pause()</code> can be dropped anywhere mid-test to freeze and inspect that exact moment.</div>
+
+  <div class="speech-box">
+    <div class="speech-badge" aria-hidden="true">🎤</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>How do you use Playwright Inspector to debug a failing test?</div>
+    <div class="speech-panel">
+      <p class="sl"><span class="anchor">Playwright Inspector is</span> a debugging interface that lets me pause tests, inspect browser state, and try locators interactively.</p><p class="sl"><span class="anchor">To open it,</span> I can run tests with <code class="inline-code">--debug</code>, set <code class="inline-code">PWDEBUG=1</code>, or insert <code class="inline-code">await page.pause()</code>.</p><p class="sl"><span class="anchor">When debugging,</span> I step through actions individually and observe the page state at the exact point of failure.</p><p class="sl"><span class="anchor">For locator issues,</span> I use the locator field to check which elements match and see them highlighted in the browser.</p><p class="sl"><span class="anchor">This helps me</span> identify incorrect selectors, unexpected page states, and timing problems without guessing from logs alone.</p><p class="sl"><span class="anchor">After finding the cause,</span> I update the test or locator and rerun the relevant scenario to confirm the fix.</p><p class="sl"><span class="anchor">I use it selectively,</span> because interactive debugging is most useful during investigation rather than unattended CI execution.</p><p class="sl closer">So, in short, Inspector helps me reproduce a failure, observe the exact state, and fix the root cause systematically.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: “How do you investigate a flaky Playwright test?” · “How can you validate a locator interactively?”</div>
+    <div class="followup">Follow-up Qs: “What does <code class="inline-code">page.pause()</code> do?” · “How is Inspector different from Codegen?” · “How do you launch debug mode?”</div>
+  </div>
+
+  <div class="page-number">3</div>
+</div></div>
+
+<!-- ============ PAGE 4 : VS CODE EXTENSION ============ -->
+<div class="page-wrapper"><div class="page">
+  <div class="page-label"><span>Phase 14 — Playwright Codegen &amp; Tools</span><span>VS Code Extension</span></div>
+  <h1 class="notebook-title">🧩 Playwright VS Code Extension</h1>
+  <div class="title-underline"></div>
+
+  <p>The official <span class="hl-yellow"><b>Playwright Test for VS Code</b></span> extension brings codegen, inspector, and the test runner directly into the editor.</p>
+
+  <h2 class="section-head">▶️ Run tests</h2>
+  <ul>
+    <li>A green ▶ icon appears in the <b>gutter</b> next to every <code>test(...)</code> block.</li>
+    <li>Click it to run just that test — or run a whole file/project from the sidebar.</li>
+    <li>Results (pass/fail, screenshots, traces) show inline without leaving the editor.</li>
+  </ul>
+
+  <h2 class="section-head">🐞 Debug tests</h2>
+  <ul>
+    <li>Set breakpoints directly in the <code>.spec.ts</code>/<code>.spec.js</code> file.</li>
+    <li>Click the <b>debug icon</b> to launch in headed mode, pausing at breakpoints.</li>
+    <li>Step through, inspect variables, and watch the real browser — same idea as Inspector, integrated into VS Code's debugger UI.</li>
+  </ul>
+
+  <h2 class="section-head">🎯 Pick locator</h2>
+  <ul>
+    <li>Extension button <b>"Pick locator"</b> opens the running browser for the current test.</li>
+    <li>Click an element → the best locator is <span class="hl-green">inserted straight into your editor</span> at the cursor.</li>
+  </ul>
+
+  <h2 class="section-head">📋 Test explorer</h2>
+  <ul>
+    <li>Sidebar <b>tree view</b> of every test, grouped by file/describe block.</li>
+    <li>Run, debug, or watch any node — a single test, a file, or the whole suite.</li>
+    <li>"Watch mode" reruns affected tests automatically as you edit.</li>
+  </ul>
+
+  <h2 class="section-head">🗺️ Extension Feature Map</h2>
+  <div class="flow">
+    <div class="flow-box">Test Explorer (tree)</div><span class="flow-arrow">→</span>
+    <div class="flow-box">Run ▶ / Debug 🐞</div><span class="flow-arrow">→</span>
+    <div class="flow-box">Pick locator 🎯</div><span class="flow-arrow">→</span>
+    <div class="flow-box">Inserted in editor</div>
+  </div>
+
+  <div class="sticky">💡 Tip: the extension also shows a <b>trace viewer</b> button right after a failed run — one click to open the trace.</div>
+
+  <div class="speech-box">
+    <div class="speech-badge" aria-hidden="true">💬</div>
+    <div class="speech-title">🗣️ How I'd say it in an interview</div>
+    <div class="speech-q"><span class="qlabel">❓ Interviewer asks:</span>How does the Playwright VS Code extension help your automation workflow?</div>
+    <div class="speech-panel">
+      <p class="sl"><span class="anchor">The extension brings</span> Playwright test execution, debugging, and locator discovery directly into the Visual Studio Code editor.</p><p class="sl"><span class="anchor">For quick execution,</span> I can use the gutter run icon beside a test or launch tests from Test Explorer.</p><p class="sl"><span class="anchor">To investigate failures,</span> I set breakpoints, start debugging, and inspect variables while stepping through the test.</p><p class="sl"><span class="anchor">When building locators,</span> I can pick an element in the browser and insert the suggested locator into my code.</p><p class="sl"><span class="anchor">The Test Explorer</span> organizes tests by file and suite, making individual tests and larger groups easier to run.</p><p class="sl"><span class="anchor">During development,</span> watch mode can rerun affected tests as I make changes, depending on the configured workflow.</p><p class="sl"><span class="anchor">Overall, it reduces</span> context switching between the editor, terminal, and browser during test development and troubleshooting.</p><p class="sl closer">So, in short, the VS Code extension keeps test authoring, execution, and debugging in one convenient workflow.</p>
+    </div>
+    <div class="speech-sub">🔄 Also asked as: “What advantages does Playwright’s IDE integration provide?” · “How do you run and debug individual tests in VS Code?”</div>
+    <div class="followup">Follow-up Qs: “What is Test Explorer?” · “How does Pick Locator work?” · “Can the extension open a trace after failure?”</div>
+  </div>
+
+  <div class="page-number">4</div>
+</div></div>
+
+<!-- ============ PAGE 5 : QUICK REVISION SHEET ============ -->
+<div class="page-wrapper"><div class="page">
+  <div class="rev-title-bar">⚡ Quick Revision Sheet</div>
+  <div class="rev-strip"><span>⚡ Quick Revision Sheet</span><span>Scan before your interview!</span></div>
+
+  <div class="howto">
+    ⚡ HOW TO USE THIS PAGE (read once, then ignore this box)<br>
+    TIER 1 — Scan the Topic Map. Fuzzy branch? → drop to Tier 2.<br>
+    TIER 2 — Read ONLY the rows that felt weak in Tier 1.<br>
+    TIER 3 — ALWAYS read Mistakes + Memory Tricks, even if Tiers 1&amp;2 felt perfect.<br>
+    LOOKUP — Key Commands: glance only if tested on exact syntax.
+  </div>
+
+  <h2 class="section-head" style="color:#00695c;">🗺️ Topic Map <span class="tier-badge">TIER 1</span></h2>
+  <svg class="mindmap-mini" viewBox="0 0 700 190" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mind map of Codegen, Inspector, VS Code Extension">
+    <circle cx="350" cy="95" r="46" fill="#e0f2f1" stroke="#00796b" stroke-width="2"/>
+    <text x="350" y="100" text-anchor="middle" font-family="Kalam" font-size="14" fill="#004d40">Phase 14</text>
+
+    <line x1="350" y1="60" x2="140" y2="30" stroke="#26a69a" stroke-width="2"/>
+    <circle cx="140" cy="30" r="4" fill="#26a69a"/>
+    <text x="20" y="24" font-family="Kalam" font-size="13" fill="#00695c">Codegen: record · locators · actions · edit</text>
+
+    <line x1="350" y1="130" x2="140" y2="170" stroke="#42a5f5" stroke-width="2"/>
+    <circle cx="140" cy="170" r="4" fill="#42a5f5"/>
+    <text x="20" y="185" font-family="Kalam" font-size="13" fill="#1565c0">Inspector: pick · debug · test selector</text>
+
+    <line x1="350" y1="70" x2="600" y2="30" stroke="#ab47bc" stroke-width="2"/>
+    <circle cx="600" cy="30" r="4" fill="#ab47bc"/>
+    <text x="460" y="24" font-family="Kalam" font-size="13" fill="#6a1b9a">VS Code: run · debug · explorer</text>
+
+    <line x1="350" y1="120" x2="600" y2="170" stroke="#ffa726" stroke-width="2"/>
+    <circle cx="600" cy="170" r="4" fill="#ffa726"/>
+    <text x="460" y="185" font-family="Kalam" font-size="13" fill="#e65100">Pick locator (shared idea)</text>
+  </svg>
+
+  <h2 class="section-head" style="color:#00695c;">🔑 Must-Know Concepts <span class="tier-badge">TIER 2</span></h2>
+  <div class="grid2">
+    <div class="k">Codegen</div><div class="v">CLI tool that records browser actions and writes test code for you.</div>
+    <div class="k">Best locator order</div><div class="v">role → text → label → testid → CSS/XPath (last resort).</div>
+    <div class="k c-blue">Inspector</div><div class="v">GUI to pause, step through, and debug a running test.</div>
+    <div class="k c-blue">.pause()</div><div class="v">Freezes a test at that exact line and opens the Inspector.</div>
+    <div class="k c-purple">VS Code extension</div><div class="v">Brings run/debug/pick-locator/test-explorer into the editor.</div>
+    <div class="k c-purple">Test explorer</div><div class="v">Sidebar tree of all tests; run/debug/watch any node.</div>
+    <div class="k c-orange">Pick locator</div><div class="v">Click an element in the app → locator auto-inserted in code/editor.</div>
+    <div class="k c-orange">Trace viewer</div><div class="v">One-click view of a failed run's step-by-step trace.</div>
+  </div>
+
+  <h2 class="section-head" style="color:#00695c;">🎯 Interview Rapid-Fire <span class="tier-badge">TIER 2</span></h2>
+  <div class="table-scroll">
+  <table class="nb-table">
+    <caption>Q → A self-test</caption>
+    <tr><th>Q</th><th>A</th></tr>
+    <tr><td class="hl-yellow">What does codegen produce?</td><td>Working test code from recorded browser actions.</td></tr>
+    <tr><td>Should you use codegen output as-is?</td><td>No — add assertions, fix brittle locators, refactor.</td></tr>
+    <tr><td class="hl-yellow">How do you open the Inspector?</td><td><code>--debug</code>, <code>PWDEBUG=1</code>, or <code>page.pause()</code>.</td></tr>
+    <tr><td>What does "pick locator" do?</td><td>Lets you click an element to get its best locator.</td></tr>
+    <tr><td class="hl-yellow">What is the Test Explorer?</td><td>VS Code sidebar tree view of all tests, runnable individually.</td></tr>
+    <tr><td>How do you debug in VS Code?</td><td>Set breakpoints, click the debug icon, step through headed.</td></tr>
+    <tr><td>What locator type should you avoid relying on?</td><td>Brittle CSS like nth-child / auto-generated class names.</td></tr>
+    <tr><td class="hl-yellow">Difference: Codegen vs Inspector?</td><td>Codegen records new code; Inspector debugs existing tests.</td></tr>
+  </table>
+  </div>
+
+  <h2 class="section-head" style="color:#455a64;">⚡ Key Commands <span class="badge-lookup">🔍 LOOKUP ONLY</span></h2>
+  <div class="codebox"><span class="tok-com">// launch codegen</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-prop">codegen</span> <span class="tok-str">https://example.com</span>
+<span class="tok-com">// codegen in another language</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-prop">codegen</span> <span class="tok-kw">--target</span>=<span class="tok-str">python</span> <span class="tok-str">https://example.com</span>
+<span class="tok-com">// open inspector via env var</span>
+<span class="tok-var">PWDEBUG</span>=<span class="tok-num">1</span> <span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-prop">test</span>
+<span class="tok-com">// open inspector via flag</span>
+<span class="tok-var">npx</span> <span class="tok-fn">playwright</span> <span class="tok-prop">test</span> <span class="tok-kw">--debug</span>
+<span class="tok-com">// pause inside a test file</span>
+<span class="tok-kw">await</span> <span class="tok-var">page</span>.<span class="tok-fn">pause</span>();</div>
+
+  <h2 class="section-head" style="color:#c62828;">⚠️ Common Mistakes &amp; Gotchas <span class="badge-always">ALWAYS READ</span></h2>
+  <ul class="mistake-list">
+    <li>⚠️ Shipping <span class="hl-pink">raw codegen output</span> straight to CI — no assertions, brittle selectors.</li>
+    <li>⚠️ Forgetting codegen falls back to <span class="hl-orange">fragile CSS</span> when no role/text/testid exists.</li>
+    <li>⚠️ Leaving <code>waitForTimeout()</code> calls from a recorded session in the final test.</li>
+    <li>⚠️ Not realizing <code>.pause()</code> works <span class="hl-pink">anywhere</span> in a test, not just at the start.</li>
+    <li>⚠️ Testing a locator only in the Inspector's box but never confirming it's <b>unique</b> (matches exactly one element).</li>
+  </ul>
+
+  <h2 class="section-head" style="color:#00695c;">🧠 Memory Tricks &amp; Last-Minute Tips <span class="tier-badge">TIER 3</span></h2>
+  <div class="mnemonic-box">🧠 <b>Codegen = rough draft.</b> Inspector = magnifying glass. VS Code extension = the whole toolbox glued to your editor.</div>
+  <div class="mnemonic-box">🧠 Locator priority mnemonic: <b>"Real Text Labels Test CSS last"</b> → Role, Text, Label, TestId, CSS.</div>
+  <ul>
+    <li>✅ Always re-check locators generated by codegen for uniqueness before trusting them.</li>
+    <li>✅ Use the Test Explorer's watch mode while actively writing/debugging a test.</li>
+    <li>✅ Know all three ways to launch the Inspector — interviewers like asking this exact detail.</li>
+  </ul>
+
+  <div class="page-number">5</div>
+</div></div>
+
+</div>
+</body>
+</html>
