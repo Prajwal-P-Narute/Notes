@@ -937,7 +937,7 @@ code {
         <tr><td><code>uses:</code></td><td>Reference an action</td><td><code>actions/checkout@v4</code></td></tr>
         <tr><td><code>with:</code></td><td>Pass inputs to action</td><td><code>node-version: 20</code></td></tr>
         <tr><td><code>env:</code></td><td>Inject env variables</td><td><code>BASE_URL: ${{ secrets.URL }}</code></td></tr>
-        <tr><td><code>if:</code></td><td>Conditional execution</td><td><code>if: always()</code></td></tr>
+        <tr><td><code>if:</code></td><td>Conditional execution</td><td><code>if: ${{ !cancelled() }}</code></td></tr>
       </tbody>
     </table>
   </div>
@@ -1048,7 +1048,7 @@ code {
   <h3>📤 Artifact Upload — Key Points</h3>
   <ul class="note-bullet">
     <li>Use <code>actions/upload-artifact@v4</code> — attach test-results, HTML report, videos</li>
-    <li>Use <code>if: always()</code> so artifacts upload even when tests fail</li>
+    <li>Use <code>if: ${{ !cancelled() }}</code> so artifacts upload even when tests fail</li>
     <li>Set <span class="hl-yellow"><code>retention-days</code></span> (default 90) to manage storage costs</li>
     <li>Download from GitHub Actions run UI or use <code>actions/download-artifact@v4</code></li>
   </ul>
@@ -1065,7 +1065,7 @@ code {
         <p class="sl"><span class="anchor">I set</span> <code>fail-fast: false</code> when I want remaining browser jobs to finish after one browser fails.</p>
         <p class="sl"><span class="anchor">Before testing</span> the workflow checks out the repository, sets up Node.js, installs dependencies, and installs the required browsers.</p>
         <p class="sl"><span class="anchor">For credentials</span> I store sensitive values in GitHub Actions secrets and expose only the variables the tests need.</p>
-        <p class="sl"><span class="anchor">After execution</span> I upload reports and test results with <code>if: always()</code> so diagnostic artifacts survive test failures.</p>
+        <p class="sl"><span class="anchor">After execution</span> I upload reports and test results with <code>if: ${{ !cancelled() }}</code> so diagnostic artifacts survive test failures.</p>
         <p class="sl closer"><span class="anchor">So, in short,</span> I use matrix jobs for broad browser coverage and preserve each run's evidence for focused debugging.</p>
       </div>
       <div class="speech-alt">
@@ -1246,19 +1246,62 @@ code {
 
   <ul class="note-bullet">
     <li>Combine sharding + matrix: <span class="hl-blue">3 shards × 3 browsers = 9 parallel jobs</span></li>
-    <li>Each job uploads its own artifact (<code>shard-${{ matrix.shardIndex }}-report</code>)</li>
-    <li>Merge reports: <code>npx playwright merge-reports ./all-blobs --reporter html</code></li>
+    <li>Each shard uploads its blob report; the merge job downloads all shard artifacts before merging</li>
+    <li>Merge reports only after downloading all blob-report artifacts into <code>./all-blobs</code></li>
     <li>Use <code>blob</code> reporter in each shard, then merge for combined report</li>
   </ul>
 
   <span class="code-label">// Blob reporter + merge for distributed shards</span>
-  <div class="codebox"><span class="tok-com">// In playwright.config.ts (each shard)</span>
-<span class="tok-prop">reporter</span>: [
-  [<span class="tok-str">'blob'</span>, { <span class="tok-prop">outputDir</span>: <span class="tok-str">'./blob-report'</span> }]
-],
+  <div class="codebox"><pre># .github/workflows/playwright-sharded.yml
+name: Playwright Sharded Tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3]
+        shardTotal: [3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --reporter=blob
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report/
+          if-no-files-found: ignore
 
-<span class="tok-com">// Merge job (after all shards complete)</span>
-<span class="tok-fn">npx playwright merge-reports</span> <span class="tok-str">./all-blobs --reporter html,line</span></div>
+  merge-reports:
+    if: ${{ always() }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: blob-report-*
+          path: all-blobs
+          merge-multiple: true
+      - run: npx playwright merge-reports --reporter html ./all-blobs
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore</pre></div>
 
   <div class="mnemonic">
     🧠 <strong>Memory Trick:</strong> Think of sharding like cutting a pizza 🍕 — each person (machine) gets equal slices. Workers = how fast one person chews!
@@ -1350,7 +1393,7 @@ code {
     <div class="mnk-label stripe-g">fail-fast: false</div>
     <div class="mnk-value">Don't cancel other matrix jobs when one fails — get full cross-browser results</div>
     <div class="mnk-label stripe-g"><span class="hl-green">upload-artifact</span></div>
-    <div class="mnk-value"><code>actions/upload-artifact@v4</code> + <code>if: always()</code> so reports save even on failure</div>
+    <div class="mnk-value"><code>actions/upload-artifact@v4</code> + <code>if: ${{ !cancelled() }}</code> so reports save even on failure</div>
     <div class="mnk-label stripe-g">needs:</div>
     <div class="mnk-value">Makes a job wait for listed jobs to complete; used to gate deploy on all test jobs</div>
     <div class="mnk-label stripe-d"><span class="hl-yellow">Playwright Image</span></div>
@@ -1417,7 +1460,7 @@ code {
   <div class="qr-section-title">⚠️ Common Mistakes &amp; Gotchas <span class="tier-strip tier-3">TIER 3</span> <span class="always-read">ALWAYS READ</span></div>
   <ul class="mistake-list">
     <li>⚠️ Using <code>npm install</code> instead of <span class="hl-pink"><code>npm ci</code></span> in CI — causes non-deterministic installs, can silently update deps</li>
-    <li>⚠️ Forgetting <code>if: always()</code> on artifact upload — <span class="hl-pink">reports won't save when tests fail</span> (the only time you need them most!)</li>
+    <li>⚠️ Forgetting <code>if: ${{ !cancelled() }}</code> on artifact upload — <span class="hl-pink">reports won't save when tests fail</span> (the only time you need them most!)</li>
     <li>⚠️ Using <code>:latest</code> Docker tag — <span class="hl-orange">browser version mismatch</span> with your <code>package.json</code> Playwright version causes launch failures</li>
     <li>⚠️ Setting <code>fail-fast: true</code> (default) in matrix — one browser failing cancels all others, you lose cross-browser insights</li>
     <li>⚠️ Forgetting <code>--with-deps</code> on GitHub Actions — browsers install but <span class="hl-pink">system libs are missing</span> → tests crash on Linux</li>
@@ -1432,7 +1475,7 @@ code {
     <div class="trick-card">🍕 <strong>Sharding = Pizza Slices</strong><br>Each machine gets equal slices (tests). Workers = how fast one machine chews through its slice.</div>
     <div class="trick-card">🔒 <strong>Docker = Zip bag</strong><br>Everything the test needs (browsers + libs) packed in one sealed bag. Same bag → same environment, always.</div>
     <div class="trick-card">🎭 <strong>matrix = Clone Army</strong><br>GitHub Actions sends the same job to multiple environments simultaneously — like cloning your test team.</div>
-    <div class="trick-card">📦 <strong>always() = safety net</strong><br><code>if: always()</code> is like a parachute — it opens even if everything above it fails. Put artifact upload here.</div>
+    <div class="trick-card">📦 <strong>always() = safety net</strong><br><code>if: ${{ !cancelled() }}</code> is like a parachute — it opens even if everything above it fails. Put artifact upload here.</div>
   </div>
 
   <ul class="tips-list">
