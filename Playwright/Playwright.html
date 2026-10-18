@@ -72,6 +72,7 @@
     .topic-card:nth-child(6n + 4) { --card-accent:#21a47e; --card-tint:#e6f8f0; }
     .topic-card:nth-child(6n + 5) { --card-accent:#e48a36; --card-tint:#fff1df; }
     .topic-card:nth-child(6n + 6) { --card-accent:#e35d85; --card-tint:#ffebf1; }
+    .topic-card[data-level="commands"] { --card-accent:#9a5be8; --card-tint:#f3eaff; }
     .topic-card:hover { transform:translateY(-3px); border-color:var(--card-accent); box-shadow:0 14px 34px color-mix(in srgb,var(--card-accent) 18%,transparent); }
     .topic-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; }
     .topic-icon { display:grid; width:31px; height:31px; place-items:center; border-radius:9px; color:#536be0; background:#f0f2ff; font-size:14px; }
@@ -84,7 +85,8 @@
     .level-dot { width:6px; height:6px; border-radius:50%; background:#7e92ed; }
     [data-level="core"] .level-dot { background:#61b899; }
     [data-level="advanced"] .level-dot { background:#e9ad58; }
-    [data-level="revision"] .level-dot { background:#a67bd1; }
+    [data-level="revision"] .level-dot { background:#e35d85; }
+    [data-level="commands"] .level-dot { background:#9a5be8; }
     .topic-arrow { color:#a5aec0; font-size:14px; transition:transform .18s,color .18s; }
     .topic-card:hover .topic-arrow { color:var(--blue); transform:translateX(3px); }
     .empty-state { display:none; padding:38px 20px; border:1px dashed #d8deea; border-radius:12px; color:var(--muted); text-align:center; background:#fff; }
@@ -145,17 +147,16 @@
         <h1>Playwright</h1>
         <section aria-labelledby="topics-title">
           <div class="section-heading">
-            <div><h2 id="topics-title">Topics</h2><p id="resultCount">All 23 topics</p></div>
+            <div><h2 id="topics-title">Topics</h2></div>
             <label class="search-box"><span class="search-icon" aria-hidden="true">⌕</span><input id="topicSearch" type="search" placeholder="Search topics..." aria-label="Search Playwright topics"></label>
           </div>
           <div class="filters" role="group" aria-label="Filter topics">
             <button class="filter" type="button" data-filter="all" aria-pressed="true">All topics</button>
-            <button class="filter" type="button" data-filter="core" aria-pressed="false">Core skills</button>
-            <button class="filter" type="button" data-filter="advanced" aria-pressed="false">Advanced</button>
+            <button class="filter" type="button" data-filter="commands" aria-pressed="false">Commands</button>
             <button class="filter" type="button" data-filter="revision" aria-pressed="false">Revision</button>
           </div>
           <div class="topic-grid" id="topicGrid">
-            <a class="topic-card" data-level="revision" data-search="commands topic revision quick reference" href="./commands.html"><div class="topic-top"><span class="topic-icon">⌘</span><span class="topic-phase">Quick reference</span></div><h3>Playwright Commands</h3><p>A handy reference for everyday Playwright commands and patterns.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Revision</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="commands" data-search="commands topic quick reference" href="./commands.html"><div class="topic-top"><span class="topic-icon">⌘</span><span class="topic-phase">Quick reference</span></div><h3>Playwright Commands</h3><p>A handy reference for everyday Playwright commands and patterns.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Commands</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
             <a class="topic-card" data-level="core" data-search="phase 01 fundamentals getting started browser test" href="./Phase_01_Playwright_Fundamentals.html"><div class="topic-top"><span class="topic-icon">✦</span><span class="topic-phase">Phase 01</span></div><h3>Playwright Fundamentals</h3><p>Get started with Playwright, its architecture, and your first browser test.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
             <a class="topic-card" data-level="core" data-search="phase 02 locators selectors find elements" href="./Phase_02_Locators_and_Selectors.html"><div class="topic-top"><span class="topic-icon">⌕</span><span class="topic-phase">Phase 02</span></div><h3>Locators and Selectors</h3><p>Find page elements with resilient, user-focused locators.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
             <a class="topic-card" data-level="core" data-search="phase 03 browser context page operations tabs" href="./Phase_03_Browser_Context_and_Page_Operations.html"><div class="topic-top"><span class="topic-icon">▣</span><span class="topic-phase">Phase 03</span></div><h3>Browser Context and Page Operations</h3><p>Work with browser sessions, contexts, pages, and tabs.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
@@ -190,7 +191,6 @@
       const cards = [...document.querySelectorAll('.topic-card')];
       const buttons = [...document.querySelectorAll('.filter')];
       const search = document.getElementById('topicSearch');
-      const count = document.getElementById('resultCount');
       const empty = document.getElementById('emptyState');
       const sidebar = document.getElementById('sidebar');
       const menu = document.getElementById('menuButton');
@@ -205,7 +205,6 @@
           card.hidden = !show;
           if (show) visible++;
         });
-        count.textContent = query || activeFilter !== 'all' ? `${visible} ${visible === 1 ? 'topic' : 'topics'} found` : `All ${cards.length} topics`;
         empty.style.display = visible ? 'none' : 'block';
       };
       buttons.forEach(button => button.addEventListener('click', () => {
