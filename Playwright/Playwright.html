@@ -1,23 +1,288 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Playwright Guide | IT Topics Hub</title><style>body{font:16px/1.6 system-ui,sans-serif;max-width:900px;margin:40px auto;padding:0 24px;color:#1f2937}h1{color:#2563eb}li{margin:8px 0}a{color:#2563eb}</style></head><body><h1>Playwright Guide</h1><p>Playwright notes and revision material.</p><h2>Topics</h2><ul><li><a href="./commands.html">Playwright Commands — Topic Revision</a></li><li><a href="./Phase_01_Playwright_Fundamentals.html">Phase 01 Playwright Fundamentals</a></li>
-<li><a href="./Phase_02_Locators_and_Selectors.html">Phase 02 Locators and Selectors</a></li>
-<li><a href="./Phase_03_Browser_Context_and_Page_Operations.html">Phase 03 Browser Context and Page Operations</a></li>
-<li><a href="./Phase_04_Auto-Waiting_and_Assertions.html">Phase 04 Auto-Waiting and Assertions</a></li>
-<li><a href="./Phase_05_Real-World_Web_App_Interactions.html">Phase 05 Real-World Web App Interactions</a></li>
-<li><a href="./Phase_06_Network_and_API_Testing.html">Phase 06 Network and API Testing</a></li>
-<li><a href="./Phase_07_Authentication_and_Session_Management.html">Phase 07 Authentication and Session Management</a></li>
-<li><a href="./Phase_08_Page_Object_Model.html">Phase 08 Page Object Model</a></li>
-<li><a href="./Phase_09_Fixtures_and_Reusable_Test_Setup.html">Phase 09 Fixtures and Reusable Test Setup</a></li>
-<li><a href="./Phase_10_Configuration_and_Test_Settings.html">Phase 10 Configuration and Test Settings</a></li>
-<li><a href="./Phase_11_Cross-Browser_and_Device_Emulation.html">Phase 11 Cross-Browser and Device Emulation</a></li>
-<li><a href="./Phase_12_Parallel_Execution_and_Sharding.html">Phase 12 Parallel Execution and Sharding</a></li>
-<li><a href="./Phase_13_Reporting_Tracing_and_Debugging.html">Phase 13 Reporting Tracing and Debugging</a></li>
-<li><a href="./Phase_14_Codegen_and_Inspector_Tools.html">Phase 14 Codegen and Inspector Tools</a></li>
-<li><a href="./Phase_15_Browser_State_Permissions_and_Files.html">Phase 15 Browser State Permissions and Files</a></li>
-<li><a href="./Phase_16_Visual_Accessibility_and_Mobile_Testing.html">Phase 16 Visual Accessibility and Mobile Testing</a></li>
-<li><a href="./Phase_17_Error_Handling_Timeouts_and_Stability.html">Phase 17 Error Handling Timeouts and Stability</a></li>
-<li><a href="./Phase_18_CI-CD_Integration.html">Phase 18 CI-CD Integration</a></li>
-<li><a href="./Phase_19_Cloud_Browser_Execution.html">Phase 19 Cloud Browser Execution</a></li>
-<li><a href="./Phase_20_Enterprise_Framework_Design.html">Phase 20 Enterprise Framework Design</a></li>
-<li><a href="./Phase_21_Advanced_Testing_and_Network_Control.html">Phase 21 Advanced Testing and Network Control</a></li>
-<li><a href="./Playwright_Revision.html">Playwright Revision</a></li></ul></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="description" content="A practical, structured Playwright learning path from browser fundamentals to enterprise testing.">
+  <title>Playwright Learning Hub | IT Topics Hub</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #192438;
+      --muted: #6e7a8d;
+      --line: #e7eaf1;
+      --surface: #fff;
+      --canvas: #f7f8fc;
+      --blue: #4869e8;
+      --blue-dark: #3452c7;
+      --blue-soft: #eef1ff;
+      --green: #24866e;
+      --shadow: 0 16px 45px rgba(31, 46, 87, .07);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--canvas); font-size: 14px; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    .app-shell { min-height: 100vh; }
+    .sidebar {
+      position: fixed; inset: 0 auto 0 0; z-index: 5; display: flex; flex-direction: column;
+      width: 248px; padding: 25px 16px 18px; background: #fff; border-right: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; padding: 0 10px; margin-bottom: 38px; }
+    .brand-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; color: white; background: linear-gradient(145deg,#5978f1,#3555d3); font-size: 18px; font-weight: 800; box-shadow: 0 6px 14px #4869e83a; }
+    .brand-name { font-size: 14px; font-weight: 750; letter-spacing: -.02em; }
+    .brand-sub { display: block; color: #8a95a6; font-size: 11px; font-weight: 500; }
+    .nav-caption { padding: 0 12px; margin: 0 0 9px; color: #9aa3b1; font-size: 10px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+    .side-nav { display: grid; gap: 4px; }
+    .side-link { display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 12px; border-radius: 9px; color: #667287; font-weight: 560; transition: .18s ease; }
+    .side-link:hover { color: var(--blue); background: #f5f6ff; }
+    .side-link.active { color: var(--blue-dark); background: var(--blue-soft); font-weight: 700; }
+    .nav-icon { display: grid; place-items: center; width: 20px; font-size: 16px; }
+    .side-bottom { margin-top: auto; }
+    .side-note { padding: 15px; border: 1px solid #e8ebf7; border-radius: 12px; background: linear-gradient(145deg,#f8f9ff,#fff); }
+    .side-note strong { display: block; margin-bottom: 4px; font-size: 12px; }
+    .side-note p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .side-foot { padding: 16px 10px 0; color: #9aa3b1; font-size: 11px; }
+    .main { min-height: 100vh; margin-left: 248px; }
+    .topbar { display: flex; height: 68px; align-items: center; justify-content: space-between; padding: 0 42px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.82); }
+    .crumbs { color: #8791a2; font-size: 12px; }
+    .crumbs strong { color: #455168; font-weight: 650; }
+    .top-actions { display: flex; align-items: center; gap: 13px; }
+    .status-pill { display: flex; align-items: center; gap: 7px; padding: 7px 11px; border: 1px solid #e7eaf1; border-radius: 30px; background: #fff; color: #667287; font-size: 11px; font-weight: 600; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #47b58b; box-shadow: 0 0 0 3px #e9f7f1; }
+    .avatar { display: grid; width: 31px; height: 31px; place-items: center; border-radius: 50%; color: #3551bd; background: #e9edff; font-size: 11px; font-weight: 750; }
+    .content { width: min(1120px, 100%); padding: 37px 42px 64px; margin: 0 auto; }
+    .eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: var(--blue); font-size: 11px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+    .eyebrow-mark { display: grid; width: 21px; height: 21px; place-items: center; border: 1px solid #dfe4ff; border-radius: 6px; background: #f0f2ff; font-size: 12px; letter-spacing: 0; }
+    h1 { margin: 0; font-size: clamp(30px, 3vw, 39px); line-height: 1.18; letter-spacing: -.045em; }
+    .intro { max-width: 650px; margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+    .hero { position: relative; display: grid; grid-template-columns: 1fr 260px; gap: 24px; overflow: hidden; padding: 30px 32px; margin: 27px 0 22px; border: 1px solid #dfe5ff; border-radius: 17px; background: linear-gradient(110deg,#f0f3ff 0%,#f7f8ff 56%,#edf5ff 100%); }
+    .hero:after { position:absolute; right: 145px; bottom:-125px; width: 265px; height:265px; border:1px solid #dce4ff; border-radius:50%; content:""; box-shadow:0 0 0 28px #e6ebff55,0 0 0 58px #e6ebff38; pointer-events:none; }
+    .hero-copy { position: relative; z-index: 1; }
+    .hero-kicker { margin-bottom: 7px; color: #6d7dd1; font-size: 11px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+    .hero h2 { margin: 0; font-size: 23px; letter-spacing: -.035em; }
+    .hero p { max-width: 540px; margin: 8px 0 18px; color: #68758e; font-size: 13px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+    .button { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; gap: 9px; padding: 0 14px; border: 1px solid transparent; border-radius: 8px; font-size: 12px; font-weight: 700; transition: .18s ease; }
+    .button-primary { color: #fff; background: var(--blue); box-shadow: 0 5px 13px #4869e833; }
+    .button-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .button-secondary { color: #52617b; border-color: #dce2f3; background: #ffffffb8; }
+    .button-secondary:hover { border-color: #bfcaf0; background: white; }
+    .hero-metrics { position: relative; z-index: 1; display: grid; align-content: center; gap: 11px; padding-left: 23px; border-left: 1px solid #dce3fa; }
+    .metric { display: flex; align-items: center; gap: 11px; }
+    .metric-icon { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid #e0e5fc; border-radius: 10px; background: #fff9; font-size: 15px; }
+    .metric strong { display:block; font-size: 16px; line-height:1.2; letter-spacing:-.03em; }
+    .metric span:last-child { color: #7b879c; font-size: 10px; }
+    .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 35px; }
+    .stat-card { display: flex; align-items: center; gap: 13px; padding: 15px 17px; border: 1px solid var(--line); border-radius: 11px; background: #fff; }
+    .stat-icon { display:grid; width:36px; height:36px; place-items:center; border-radius:10px; background:#f1f3ff; font-size:16px; }
+    .stat-card:nth-child(2) .stat-icon { background:#edf8f4; }
+    .stat-card:nth-child(3) .stat-icon { background:#fff5e8; }
+    .stat-number { display:block; font-size:16px; font-weight:750; letter-spacing:-.03em; line-height:1.2; }
+    .stat-label { color:var(--muted); font-size:10px; }
+    .section-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom: 15px; }
+    .section-heading h2 { margin:0; font-size:18px; letter-spacing:-.03em; }
+    .section-heading p { margin:3px 0 0; color:var(--muted); font-size:11px; }
+    .search-box { position:relative; width:min(290px,100%); }
+    .search-box input { width:100%; height:39px; padding:0 12px 0 37px; border:1px solid #e1e5ed; border-radius:9px; outline:none; color:var(--ink); background:#fff; font-size:12px; transition:.18s; }
+    .search-box input:focus { border-color:#9cafff; box-shadow:0 0 0 3px #4869e817; }
+    .search-box input::placeholder { color:#a3acba; }
+    .search-icon { position:absolute; top:10px; left:12px; color:#9aa4b4; font-size:15px; pointer-events:none; }
+    .filters { display:flex; gap:7px; overflow:auto; padding-bottom:3px; margin-bottom:18px; }
+    .filter { flex:0 0 auto; padding:7px 12px; border:1px solid #e5e8ef; border-radius:30px; color:#748096; background:#fff; font-size:11px; font-weight:650; cursor:pointer; transition:.18s; }
+    .filter:hover { border-color:#cbd4ff; color:var(--blue); }
+    .filter[aria-pressed="true"] { border-color:#d9e0ff; color:var(--blue-dark); background:#edf0ff; }
+    .topic-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .topic-card { position:relative; display:flex; min-height:153px; flex-direction:column; padding:17px; border:1px solid var(--line); border-radius:12px; background:var(--surface); transition:transform .18s,border-color .18s,box-shadow .18s; }
+    .topic-card:hover { transform:translateY(-2px); border-color:#cfd7fa; box-shadow:var(--shadow); }
+    .topic-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; }
+    .topic-icon { display:grid; width:31px; height:31px; place-items:center; border-radius:9px; color:#536be0; background:#f0f2ff; font-size:14px; }
+    .topic-card[data-level="core"] .topic-icon { color:#31846e; background:#edf8f4; }
+    .topic-card[data-level="advanced"] .topic-icon { color:#bb7a27; background:#fff6e9; }
+    .topic-card[data-level="revision"] .topic-icon { color:#8b60bd; background:#f5effb; }
+    .topic-phase { color:#98a1b0; font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+    .topic-card h3 { margin:0; font-size:13px; font-weight:720; letter-spacing:-.015em; line-height:1.35; }
+    .topic-card p { margin:6px 0 13px; color:#7c8798; font-size:11px; line-height:1.45; }
+    .topic-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:auto; color:#97a0af; font-size:10px; }
+    .topic-level { display:inline-flex; align-items:center; gap:5px; }
+    .level-dot { width:6px; height:6px; border-radius:50%; background:#7e92ed; }
+    [data-level="core"] .level-dot { background:#61b899; }
+    [data-level="advanced"] .level-dot { background:#e9ad58; }
+    [data-level="revision"] .level-dot { background:#a67bd1; }
+    .topic-arrow { color:#a5aec0; font-size:14px; transition:transform .18s,color .18s; }
+    .topic-card:hover .topic-arrow { color:var(--blue); transform:translateX(3px); }
+    .empty-state { display:none; padding:38px 20px; border:1px dashed #d8deea; border-radius:12px; color:var(--muted); text-align:center; background:#fff; }
+    .empty-state strong { display:block; margin-bottom:4px; color:var(--ink); }
+    .footer { display:flex; justify-content:space-between; gap:20px; margin-top:32px; padding-top:17px; border-top:1px solid var(--line); color:#9aa3b1; font-size:10px; }
+    .mobile-menu { display:none; border:0; color:#52617b; background:transparent; font-size:20px; cursor:pointer; }
+    @media (max-width: 1120px) { .topic-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .content { padding-inline:30px; } .topbar { padding-inline:30px; } }
+    @media (max-width: 780px) {
+      .sidebar { width:220px; transform:translateX(-100%); transition:transform .2s ease; box-shadow:12px 0 32px #1e2c4b20; }
+      .sidebar.open { transform:translateX(0); }
+      .main { margin-left:0; }
+      .topbar { height:60px; padding-inline:20px; }
+      .mobile-menu { display:block; margin-right:10px; }
+      .topbar-left { display:flex; align-items:center; }
+      .content { padding:27px 20px 45px; }
+      .hero { grid-template-columns:1fr; padding:24px; }
+      .hero-metrics { grid-template-columns:1fr 1fr; padding:14px 0 0; border-top:1px solid #dce3fa; border-left:0; }
+      .hero:after { right:-25px; }
+    }
+    @media (max-width: 560px) {
+      .content { padding-inline:15px; }
+      .topbar { padding-inline:14px; }
+      .crumbs { font-size:11px; }
+      .status-pill { display:none; }
+      .intro { font-size:13px; }
+      .hero { gap:18px; padding:21px 19px; }
+      .hero h2 { font-size:20px; }
+      .hero-metrics { gap:8px; }
+      .stat-row { grid-template-columns:1fr; gap:8px; margin-bottom:28px; }
+      .stat-card { padding:11px 13px; }
+      .section-heading { align-items:stretch; flex-direction:column; gap:12px; }
+      .search-box { width:100%; }
+      .topic-grid { grid-template-columns:1fr; }
+      .topic-card { min-height:138px; }
+      .footer { flex-direction:column; gap:5px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <a class="brand" href="../index.html" aria-label="IT Topics Hub home">
+        <span class="brand-mark">IT</span><span class="brand-name">Topics Hub<span class="brand-sub">Your learning workspace</span></span>
+      </a>
+      <p class="nav-caption">Workspace</p>
+      <nav class="side-nav">
+        <a class="side-link" href="../index.html"><span class="nav-icon">⌂</span>Overview</a>
+        <a class="side-link active" href="./Playwright.html" aria-current="page"><span class="nav-icon">◈</span>Playwright</a>
+        <a class="side-link" href="../Cypress/Cypress.html"><span class="nav-icon">◉</span>Cypress</a>
+        <a class="side-link" href="../Selenium/index.html"><span class="nav-icon">▣</span>Selenium</a>
+        <a class="side-link" href="../API/index.html"><span class="nav-icon">⌘</span>API Testing</a>
+        <a class="side-link" href="../Manual/index.html"><span class="nav-icon">▤</span>Manual Testing</a>
+      </nav>
+      <div class="side-bottom">
+        <div class="side-note"><strong>Keep your momentum</strong><p>A few focused minutes each day adds up. Pick a topic and keep moving forward.</p></div>
+        <div class="side-foot">IT Topics Hub · Learning library</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left"><button class="mobile-menu" id="menuButton" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="crumbs">Workspace <span aria-hidden="true">/</span> <strong>Playwright</strong></div></div>
+        <div class="top-actions"><span class="status-pill"><span class="status-dot"></span>Learning library</span><span class="avatar" aria-label="IT Topics Hub">IT</span></div>
+      </header>
+
+      <div class="content">
+        <div class="eyebrow"><span class="eyebrow-mark">◈</span>Automation testing</div>
+        <h1>Playwright learning hub</h1>
+        <p class="intro">A practical path to building reliable browser tests. Start with the fundamentals, then explore the tools and patterns used in production teams.</p>
+
+        <section class="hero" aria-labelledby="path-title">
+          <div class="hero-copy">
+            <div class="hero-kicker">Your guided learning path</div>
+            <h2 id="path-title">Build confidence, one phase at a time.</h2>
+            <p>Move from your first browser test to advanced framework design with concise notes and examples organized into 21 focused phases.</p>
+            <div class="hero-actions"><a class="button button-primary" href="./Phase_01_Playwright_Fundamentals.html">Start with fundamentals <span aria-hidden="true">→</span></a><a class="button button-secondary" href="./Playwright_Revision.html">Open revision notes</a></div>
+          </div>
+          <div class="hero-metrics" aria-label="Course overview">
+            <div class="metric"><span class="metric-icon">▤</span><span><strong>21</strong><span>learning phases</span></span></div>
+            <div class="metric"><span class="metric-icon">⌁</span><span><strong>1</strong><span>revision guide</span></span></div>
+          </div>
+        </section>
+
+        <section class="stat-row" aria-label="Learning library summary">
+          <div class="stat-card"><span class="stat-icon">✦</span><span><strong class="stat-number">21 phases</strong><span class="stat-label">From setup to advanced workflows</span></span></div>
+          <div class="stat-card"><span class="stat-icon">⌘</span><span><strong class="stat-number">Hands-on topics</strong><span class="stat-label">Browser, API, and framework skills</span></span></div>
+          <div class="stat-card"><span class="stat-icon">↻</span><span><strong class="stat-number">Quick revision</strong><span class="stat-label">Return to key ideas when you need them</span></span></div>
+        </section>
+
+        <section aria-labelledby="topics-title">
+          <div class="section-heading">
+            <div><h2 id="topics-title">Explore the curriculum</h2><p id="resultCount">All 23 topics in your learning library</p></div>
+            <label class="search-box"><span class="search-icon" aria-hidden="true">⌕</span><input id="topicSearch" type="search" placeholder="Search topics..." aria-label="Search Playwright topics"></label>
+          </div>
+          <div class="filters" role="group" aria-label="Filter topics">
+            <button class="filter" type="button" data-filter="all" aria-pressed="true">All topics</button>
+            <button class="filter" type="button" data-filter="core" aria-pressed="false">Core skills</button>
+            <button class="filter" type="button" data-filter="advanced" aria-pressed="false">Advanced</button>
+            <button class="filter" type="button" data-filter="revision" aria-pressed="false">Revision</button>
+          </div>
+          <div class="topic-grid" id="topicGrid">
+            <a class="topic-card" data-level="revision" data-search="commands topic revision quick reference" href="./commands.html"><div class="topic-top"><span class="topic-icon">⌘</span><span class="topic-phase">Quick reference</span></div><h3>Playwright Commands</h3><p>A handy reference for everyday Playwright commands and patterns.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Revision</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 01 fundamentals getting started browser test" href="./Phase_01_Playwright_Fundamentals.html"><div class="topic-top"><span class="topic-icon">✦</span><span class="topic-phase">Phase 01</span></div><h3>Playwright Fundamentals</h3><p>Get started with Playwright, its architecture, and your first browser test.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 02 locators selectors find elements" href="./Phase_02_Locators_and_Selectors.html"><div class="topic-top"><span class="topic-icon">⌕</span><span class="topic-phase">Phase 02</span></div><h3>Locators and Selectors</h3><p>Find page elements with resilient, user-focused locators.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 03 browser context page operations tabs" href="./Phase_03_Browser_Context_and_Page_Operations.html"><div class="topic-top"><span class="topic-icon">▣</span><span class="topic-phase">Phase 03</span></div><h3>Browser Context and Page Operations</h3><p>Work with browser sessions, contexts, pages, and tabs.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 04 auto waiting assertions reliability" href="./Phase_04_Auto-Waiting_and_Assertions.html"><div class="topic-top"><span class="topic-icon">✓</span><span class="topic-phase">Phase 04</span></div><h3>Auto-Waiting and Assertions</h3><p>Make tests dependable with built-in waits and clear checks.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 05 real world web app interactions forms" href="./Phase_05_Real-World_Web_App_Interactions.html"><div class="topic-top"><span class="topic-icon">↗</span><span class="topic-phase">Phase 05</span></div><h3>Real-World Web App Interactions</h3><p>Model realistic user flows across common web interfaces.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 06 network api testing requests responses" href="./Phase_06_Network_and_API_Testing.html"><div class="topic-top"><span class="topic-icon">⌁</span><span class="topic-phase">Phase 06</span></div><h3>Network and API Testing</h3><p>Inspect requests, mock responses, and test APIs in context.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 07 authentication session management login" href="./Phase_07_Authentication_and_Session_Management.html"><div class="topic-top"><span class="topic-icon">◉</span><span class="topic-phase">Phase 07</span></div><h3>Authentication and Session Management</h3><p>Reuse signed-in state and cover important authentication flows.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 08 page object model pom reusable structure" href="./Phase_08_Page_Object_Model.html"><div class="topic-top"><span class="topic-icon">▤</span><span class="topic-phase">Phase 08</span></div><h3>Page Object Model</h3><p>Organize selectors and actions into reusable page objects.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 09 fixtures reusable test setup" href="./Phase_09_Fixtures_and_Reusable_Test_Setup.html"><div class="topic-top"><span class="topic-icon">⚙</span><span class="topic-phase">Phase 09</span></div><h3>Fixtures and Reusable Test Setup</h3><p>Share clean setup, teardown, and test dependencies.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="core" data-search="phase 10 configuration test settings projects" href="./Phase_10_Configuration_and_Test_Settings.html"><div class="topic-top"><span class="topic-icon">⚙</span><span class="topic-phase">Phase 10</span></div><h3>Configuration and Test Settings</h3><p>Configure projects, environments, retries, and test options.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Core skills</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 11 cross browser device emulation mobile" href="./Phase_11_Cross-Browser_and_Device_Emulation.html"><div class="topic-top"><span class="topic-icon">▱</span><span class="topic-phase">Phase 11</span></div><h3>Cross-Browser and Device Emulation</h3><p>Run consistent checks across browsers and device profiles.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 12 parallel execution sharding workers scale" href="./Phase_12_Parallel_Execution_and_Sharding.html"><div class="topic-top"><span class="topic-icon">⫶</span><span class="topic-phase">Phase 12</span></div><h3>Parallel Execution and Sharding</h3><p>Speed up larger test suites with workers and shards.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 13 reporting tracing debugging errors" href="./Phase_13_Reporting_Tracing_and_Debugging.html"><div class="topic-top"><span class="topic-icon">◷</span><span class="topic-phase">Phase 13</span></div><h3>Reporting, Tracing and Debugging</h3><p>Use reports, traces, and debugging tools to find failures.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 14 codegen inspector tools generate tests" href="./Phase_14_Codegen_and_Inspector_Tools.html"><div class="topic-top"><span class="topic-icon">⌘</span><span class="topic-phase">Phase 14</span></div><h3>Codegen and Inspector Tools</h3><p>Explore test generation and the Playwright Inspector.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 15 browser state permissions files upload download" href="./Phase_15_Browser_State_Permissions_and_Files.html"><div class="topic-top"><span class="topic-icon">▧</span><span class="topic-phase">Phase 15</span></div><h3>Browser State, Permissions and Files</h3><p>Handle permissions, browser state, and file workflows.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 16 visual accessibility mobile testing" href="./Phase_16_Visual_Accessibility_and_Mobile_Testing.html"><div class="topic-top"><span class="topic-icon">◐</span><span class="topic-phase">Phase 16</span></div><h3>Visual, Accessibility and Mobile Testing</h3><p>Cover visual changes, accessibility, and mobile experiences.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 17 error handling timeouts stability flaky tests" href="./Phase_17_Error_Handling_Timeouts_and_Stability.html"><div class="topic-top"><span class="topic-icon">⏱</span><span class="topic-phase">Phase 17</span></div><h3>Error Handling, Timeouts and Stability</h3><p>Diagnose timeouts and make suites more stable.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 18 ci cd integration pipelines github actions" href="./Phase_18_CI-CD_Integration.html"><div class="topic-top"><span class="topic-icon">⇄</span><span class="topic-phase">Phase 18</span></div><h3>CI/CD Integration</h3><p>Run browser tests as part of a continuous delivery pipeline.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 19 cloud browser execution remote grid" href="./Phase_19_Cloud_Browser_Execution.html"><div class="topic-top"><span class="topic-icon">☁</span><span class="topic-phase">Phase 19</span></div><h3>Cloud Browser Execution</h3><p>Run tests on remote browser infrastructure and services.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 20 enterprise framework design architecture" href="./Phase_20_Enterprise_Framework_Design.html"><div class="topic-top"><span class="topic-icon">▦</span><span class="topic-phase">Phase 20</span></div><h3>Enterprise Framework Design</h3><p>Bring structure, maintainability, and scale to test frameworks.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="advanced" data-search="phase 21 advanced testing network control mocking" href="./Phase_21_Advanced_Testing_and_Network_Control.html"><div class="topic-top"><span class="topic-icon">⌁</span><span class="topic-phase">Phase 21</span></div><h3>Advanced Testing and Network Control</h3><p>Control network behavior for complex and focused test cases.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Advanced</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+            <a class="topic-card" data-level="revision" data-search="playwright revision recap review notes" href="./Playwright_Revision.html"><div class="topic-top"><span class="topic-icon">↻</span><span class="topic-phase">Study guide</span></div><h3>Playwright Revision</h3><p>Review the concepts and techniques covered throughout the course.</p><div class="topic-footer"><span class="topic-level"><i class="level-dot"></i>Revision</span><span class="topic-arrow" aria-hidden="true">→</span></div></a>
+          </div>
+          <div class="empty-state" id="emptyState"><strong>No topics found</strong>Try a different search or choose another filter.</div>
+        </section>
+        <footer class="footer"><span>© IT Topics Hub · Playwright learning library</span><span>Learn at your own pace</span></footer>
+      </div>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const cards = [...document.querySelectorAll('.topic-card')];
+      const buttons = [...document.querySelectorAll('.filter')];
+      const search = document.getElementById('topicSearch');
+      const count = document.getElementById('resultCount');
+      const empty = document.getElementById('emptyState');
+      const sidebar = document.getElementById('sidebar');
+      const menu = document.getElementById('menuButton');
+      let activeFilter = 'all';
+      const update = () => {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        cards.forEach(card => {
+          const matchesFilter = activeFilter === 'all' || card.dataset.level === activeFilter;
+          const matchesSearch = !query || `${card.textContent} ${card.dataset.search}`.toLowerCase().includes(query);
+          const show = matchesFilter && matchesSearch;
+          card.hidden = !show;
+          if (show) visible++;
+        });
+        count.textContent = query || activeFilter !== 'all' ? `${visible} ${visible === 1 ? 'topic' : 'topics'} found` : `All ${cards.length} topics in your learning library`;
+        empty.style.display = visible ? 'none' : 'block';
+      };
+      buttons.forEach(button => button.addEventListener('click', () => {
+        activeFilter = button.dataset.filter;
+        buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+        update();
+      }));
+      search.addEventListener('input', update);
+      menu.addEventListener('click', () => {
+        const open = sidebar.classList.toggle('open');
+        menu.setAttribute('aria-expanded', String(open));
+        menu.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      });
+      document.addEventListener('click', event => {
+        if (window.innerWidth <= 780 && sidebar.classList.contains('open') && !sidebar.contains(event.target) && !menu.contains(event.target)) {
+          sidebar.classList.remove('open'); menu.setAttribute('aria-expanded', 'false');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
