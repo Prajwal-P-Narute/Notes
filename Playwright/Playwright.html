@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f8fc">
   <meta name="description" content="A practical, structured Playwright learning path from browser fundamentals to enterprise testing.">
-  <title>Playwright Learning Hub | IT Topics Hub</title>
+  <title>Playwright | IT Topics Hub</title>
   <style>
     :root {
       color-scheme: light;
@@ -51,18 +51,6 @@
     .eyebrow-mark { display: grid; width: 21px; height: 21px; place-items: center; border: 1px solid #dfe4ff; border-radius: 6px; background: #f0f2ff; font-size: 12px; letter-spacing: 0; }
     h1 { margin: 0; font-size: clamp(30px, 3vw, 39px); line-height: 1.18; letter-spacing: -.045em; }
     .intro { max-width: 650px; margin: 12px 0 0; color: var(--muted); font-size: 14px; }
-    .hero { position: relative; display: block; overflow: hidden; padding: 26px 30px; margin: 24px 0 34px; border: 0; border-radius: 17px; color: #fff; background: linear-gradient(112deg,#5149d8 0%,#586be8 48%,#25a9b3 100%); box-shadow: 0 14px 34px #465bd52e; }
-    .hero:after { position:absolute; right: 70px; bottom:-175px; width: 330px; height:330px; border:1px solid #ffffff3c; border-radius:50%; content:""; box-shadow:0 0 0 30px #ffffff12,0 0 0 68px #ffffff0b; pointer-events:none; }
-    .hero-copy { position: relative; z-index: 1; }
-    .hero-kicker { margin-bottom: 5px; color: #e5e9ff; font-size: 10px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
-    .hero h2 { margin: 0; color: white; font-size: 23px; letter-spacing: -.035em; }
-    .hero p { max-width: 540px; margin: 7px 0 15px; color: #eef0ff; font-size: 12px; }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 9px; }
-    .button { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; gap: 9px; padding: 0 14px; border: 1px solid transparent; border-radius: 8px; font-size: 12px; font-weight: 700; transition: .18s ease; }
-    .button-primary { color: #4b52c9; background: #fff; box-shadow: 0 5px 13px #18278325; }
-    .button-primary:hover { background: #f1f2ff; transform: translateY(-1px); }
-    .button-secondary { color: #fff; border-color: #ffffff70; background: #ffffff18; }
-    .button-secondary:hover { border-color: #fff; background: #ffffff28; }
     .section-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom: 15px; }
     .section-heading h2 { margin:0; font-size:18px; letter-spacing:-.03em; }
     .section-heading p { margin:3px 0 0; color:var(--muted); font-size:11px; }
@@ -112,16 +100,12 @@
       .mobile-menu { display:block; margin-right:10px; }
       .topbar-left { display:flex; align-items:center; }
       .content { padding:27px 20px 45px; }
-      .hero { padding:24px; }
-      .hero:after { right:-25px; }
     }
     @media (max-width: 560px) {
       .content { padding-inline:15px; }
       .topbar { padding-inline:14px; }
       .crumbs { font-size:11px; }
       .intro { font-size:13px; }
-      .hero { gap:18px; padding:21px 19px; }
-      .hero h2 { font-size:20px; }
       .stat-card { padding:11px 13px; }
       .section-heading { align-items:stretch; flex-direction:column; gap:12px; }
       .search-box { width:100%; }
@@ -158,21 +142,10 @@
       </header>
 
       <div class="content">
-        <h1>Playwright learning hub</h1>
-        <p class="intro">Learn Playwright from your first browser test to advanced testing workflows.</p>
-
-        <section class="hero" aria-labelledby="path-title">
-          <div class="hero-copy">
-            <div class="hero-kicker">21 phases · 1 revision guide</div>
-            <h2 id="path-title">Start learning Playwright</h2>
-            <p>Follow the course in order or jump directly to a topic.</p>
-            <div class="hero-actions"><a class="button button-primary" href="./Phase_01_Playwright_Fundamentals.html">Start with fundamentals <span aria-hidden="true">→</span></a><a class="button button-secondary" href="./Playwright_Revision.html">Open revision notes</a></div>
-          </div>
-        </section>
-
+        <h1>Playwright</h1>
         <section aria-labelledby="topics-title">
           <div class="section-heading">
-            <div><h2 id="topics-title">Explore the curriculum</h2><p id="resultCount">All 23 topics in your learning library</p></div>
+            <div><h2 id="topics-title">Topics</h2><p id="resultCount">All 23 topics</p></div>
             <label class="search-box"><span class="search-icon" aria-hidden="true">⌕</span><input id="topicSearch" type="search" placeholder="Search topics..." aria-label="Search Playwright topics"></label>
           </div>
           <div class="filters" role="group" aria-label="Filter topics">
@@ -232,7 +205,7 @@
           card.hidden = !show;
           if (show) visible++;
         });
-        count.textContent = query || activeFilter !== 'all' ? `${visible} ${visible === 1 ? 'topic' : 'topics'} found` : `All ${cards.length} topics in your learning library`;
+        count.textContent = query || activeFilter !== 'all' ? `${visible} ${visible === 1 ? 'topic' : 'topics'} found` : `All ${cards.length} topics`;
         empty.style.display = visible ? 'none' : 'block';
       };
       buttons.forEach(button => button.addEventListener('click', () => {
